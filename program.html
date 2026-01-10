@@ -1,140 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Program | 2027 ICSWHMH</title>
-    <script src="navbar.js" defer></script>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #f3f3eb;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #333;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-        .header-section {
-            background-color: #1d0a3f;
-            color: white;
-            padding: 150px 20px 50px;
-            /* Top padding accounts for navbar */
-            text-align: center;
-        }
+<title>Program</title>
+<script src ="navbar.js"></script>
+<!-- Bootstrap 5 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-        .header-section h1 {
-            font-size: 3rem;
-            margin: 0;
-        }
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+    }
 
-        .container {
-            max-width: 1000px;
-            margin: 50px auto;
-            padding: 0 20px;
-        }
+    body {
+        display: flex;
+        flex-direction: column;
+        background-color: #fdfbf7   ;
+    }
 
-        .schedule-day {
-            margin-bottom: 40px;
-        }
+    main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 1.5rem;
+    }
 
-        .schedule-day h2 {
-            color: #4b1c9b;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 10px;
-        }
+    .program-text {
+        max-width: 1000px; /* desktop readable width */
+        width: 100%;
+    }
 
-        .session {
-            background: white;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            display: flex;
-            align-items: center;
-            transition: transform 0.2s;
-        }
+    .program-text p {
+        font-size: 17px;
+        margin-bottom: 0.75rem;
+        line-height: 1.6;
+        white-space: normal; /* default */
+    }
 
-        .session:hover {
-            transform: translateX(5px);
+    /* LARGE DESKTOP ONLY */
+    @media (min-width: 1200px) {
+        .program-text p.short {
+            white-space: nowrap; /* first two only */
         }
-
-        .time {
-            font-weight: bold;
-            color: #1d0a3f;
-            min-width: 100px;
-        }
-
-        .details h3 {
-            margin: 0 0 5px;
-            font-size: 1.1rem;
-        }
-
-        .details p {
-            margin: 0;
-            color: #666;
-            font-size: 0.9rem;
-        }
-    </style>
+    }
+</style>
 </head>
 
 <body>
 
-    <floating-navbar></floating-navbar>
+<header class="py-3 text-center">
+    <!-- Header under development -->
+</header>
+<floating-navbar></floating-navbar>
+<main class="container">
+    <h1 class="mb-3">Program</h1>
+    <h2 class="mb-4">Program was delivered</h2>
 
-    <div class="header-section">
-        <h1>Conference Program</h1>
-        <p>Explore our schedule of events, workshops, and keynotes.</p>
+    <div class="program-text">
+        <p class="short">
+            Spanning three days, the Conference main program will be offered over eleven concurrent streams each day.
+        </p>
+
+        <p class="short">
+            The diverse range of topics covered in each stream will explore the intersection between social workers and Health and Mental Health care.
+        </p>
+
+        <p>
+            Blending keynote and featured speakers, plenary and concurrent sessions and workshops, the Conference program will bring forward new concepts, discuss existing practices and give attendees the most up to date subject knowledge available.
+        </p>
     </div>
+</main>
 
-    <div class="container">
-        <div class="schedule-day">
-            <h2>Day 1 - Opening & Keynotes</h2>
-
-            <div class="session">
-                <div class="time">09:00 AM</div>
-                <div class="details">
-                    <h3>Registration & Welcome Coffee</h3>
-                    <p>Main Hall Foyer</p>
-                </div>
-            </div>
-
-            <div class="session">
-                <div class="time">10:00 AM</div>
-                <div class="details">
-                    <h3>Opening Ceremony</h3>
-                    <p>Grand Ballroom</p>
-                </div>
-            </div>
-
-            <div class="session">
-                <div class="time">11:30 AM</div>
-                <div class="details">
-                    <h3>Keynote Address: Future of Social Work</h3>
-                    <p>Dr. Jane Doe, Grand Ballroom</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="schedule-day">
-            <h2>Day 2 - Workshops & Panels</h2>
-            <div class="session">
-                <div class="time">09:00 AM</div>
-                <div class="details">
-                    <h3>Panel Discussion: Mental Health Policy</h3>
-                    <p>Room A</p>
-                </div>
-            </div>
-            <div class="session">
-                <div class="time">02:00 PM</div>
-                <div class="details">
-                    <h3>Workshop: Community Outreach Strategies</h3>
-                    <p>Room B</p>
-                </div>
-            </div>
-        </div>
-    </div>
+<footer class="py-3 text-center">
+    <!-- Footer under development -->
+</footer>
 
 </body>
-
 </html>
