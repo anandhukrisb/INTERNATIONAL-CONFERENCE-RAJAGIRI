@@ -258,7 +258,7 @@ class FloatingNavbar extends HTMLElement {
                     background-color: #f0f0f0;
                 }
 
-                /* Mobile Styles */
+                /* Mobile toggle button (hamburger) container */
                 .mobile-toggle {
                     display: none;
                     flex-direction: column;
@@ -279,6 +279,7 @@ class FloatingNavbar extends HTMLElement {
                     transition: all 0.3s ease;
                 }
 
+                /* Conference title displayed only on mobile headers */
                 .mobile-title {
                     display: none;
                     color: white;
@@ -289,6 +290,7 @@ class FloatingNavbar extends HTMLElement {
                     white-space: nowrap;
                 }
 
+                /* Logo container specifically for mobile view */
                 .logo-container-mobile {
                     display: none;
                     height: 100%;
@@ -324,6 +326,7 @@ class FloatingNavbar extends HTMLElement {
                     margin-top: 20px;
                 }
 
+                /* Media query for mobile and tablet devices */
                 @media (max-width: 1024px) {
                     .floating-navbar {
                         width: 100% !important;
@@ -539,6 +542,7 @@ class FloatingNavbar extends HTMLElement {
             </nav>
         `;
 
+        /* Handle opening/closing of the mobile navigation menu */
         // Mobile toggle logic
         const mobileToggle = this.shadowRoot.getElementById('mobile-toggle');
         const navbarLinks = this.shadowRoot.querySelector('.navbar-links');
@@ -550,6 +554,7 @@ class FloatingNavbar extends HTMLElement {
             });
         }
 
+        /* Ensure sub-menus work on mobile via click events */
         // Add click event listeners for mobile/click support
         const navItems = this.shadowRoot.querySelectorAll('.navbar-links > li');
         navItems.forEach(item => {
