@@ -42,6 +42,22 @@
         line-height: 1.6;
         white-space: normal; /* default */
     }
+    .custom-btn {
+        background-color: #1d0a3f;
+        border-color: #1d0a3f;
+        color: #ffffff;
+        box-shadow: 0 6px 15px rgba(29, 10, 63, 0.35);
+        transition: box-shadow 0.3s ease, transform 0.2s ease;
+        border-radius: 20px;
+    }
+
+    .custom-btn:hover {
+        background-color: #1d0a3f; /* slightly darker for hover */
+        border-color: #1d0a3f;
+        color: #ffffff;
+        box-shadow: 0 6px 15px rgba(29, 10, 63, 0.35);
+        transform: translateY(-2px);
+    }
 
     /* LARGE DESKTOP ONLY */
     @media (min-width: 1200px) {
@@ -55,6 +71,7 @@
 <body>
 
 <header class="py-3 text-center">
+    #4b1c9b
     <!-- Header under development -->
 </header>
 <floating-navbar></floating-navbar>
@@ -74,6 +91,11 @@
         <p>
             Blending keynote and featured speakers, plenary and concurrent sessions and workshops, the Conference program will bring forward new concepts, discuss existing practices and give attendees the most up to date subject knowledge available.
         </p>
+        <div class="text-center mt-4">
+            <a href="#" class="btn custom-btn px-4 py-2">
+            Download Full Program
+            </a>
+        </div>
     </div>
 </main>
 
