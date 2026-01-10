@@ -315,22 +315,39 @@ class FloatingNavbar extends HTMLElement {
                 }
 
                 @media (max-width: 1024px) {
+                    .floating-navbar {
+                        width: 100% !important;
+                        left: 0 !important;
+                        transform: none !important;
+                        top: 0;
+                        border-radius: 0;
+                    }
+
                     .navbar-links {
-                        display: none;
+                        display: flex;
                         position: absolute;
                         top: 100%;
-                        left: 0;
-                        width: 100%;
+                        left: 0 !important;
+                        width: 100% !important;
                         background: linear-gradient(135deg, #1d0a3f 0%, #4b1c9b 100%);
                         flex-direction: column;
                         padding: 20px 0;
                         height: auto;
-                        border-radius: 20px;
+                        border-radius: 0 0 20px 20px;
                         box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+                        /* Smooth transition setup */
+                        opacity: 0;
+                        visibility: hidden;
+                        transform: translateY(-10px);
+                        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+                        pointer-events: none;
                     }
 
                     .navbar-links.mobile-active {
-                        display: flex;
+                        opacity: 1;
+                        visibility: visible;
+                        transform: translateY(0);
+                        pointer-events: auto;
                     }
 
                     .navbar-links li {
@@ -367,26 +384,30 @@ class FloatingNavbar extends HTMLElement {
                         transform: none;
                         opacity: 1;
                         visibility: visible;
-                        display: none;
+                        display: block; /* Always block but height 0 for transition */
+                        max-height: 0;
+                        overflow: hidden;
                         width: 100%;
-                        background: rgba(255, 255, 255, 0.05);
+                        background: transparent; /* Fix: removed gray background */
                         box-shadow: none;
                         border-radius: 0;
                         padding: 0;
+                        transition: max-height 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
                     }
 
-                    .dropdown-menu::before {
-                        display: none;
+                    .dropdown-menu::before,
+                    .dropdown-menu::after {
+                        display: none !important;
+                        content: none !important;
                     }
 
                     li.active .dropdown-menu {
-                        display: block;
-                        top: 0;
+                        max-height: 500px; /* Sufficient height for dropdown */
                     }
 
                     .dropdown-menu li a {
                         color: white;
-                        padding-left: 50px;
+                        padding: 12px 30px 12px 50px; /* Consistent alignment */
                     }
 
                     .navbar-links a.contact-btn {
