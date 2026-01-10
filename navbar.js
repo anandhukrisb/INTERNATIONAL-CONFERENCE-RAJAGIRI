@@ -135,7 +135,7 @@ class FloatingNavbar extends HTMLElement {
                     font-size: 14px;
                     font-weight: 500;
                     transition: opacity 0.3s;
-                    font-family: sans-serif;
+                    font-family: 'Inter', sans-serif;
                     white-space: nowrap;
                     display: flex;
                     align-items: center;
@@ -276,7 +276,7 @@ class FloatingNavbar extends HTMLElement {
                 .mobile-title {
                     display: none;
                     color: white;
-                    font-family: sans-serif;
+                    font-family: 'Momo Trust Display', sans-serif;
                     font-size: 20px;
                     font-weight: 700;
                     margin-left: 20px;
@@ -406,8 +406,14 @@ class FloatingNavbar extends HTMLElement {
                     }
 
                     .dropdown-menu li a {
+                        color: rgba(255, 255, 255, 0.8);
+                        padding: 12px 30px 12px 60px; /* Indented for submenu feel */
+                        font-size: 13px;
+                    }
+
+                    .dropdown-menu li a:hover {
                         color: white;
-                        padding: 12px 30px 12px 50px; /* Consistent alignment */
+                        background: rgba(255, 255, 255, 0.1);
                     }
 
                     .navbar-links a.contact-btn {
