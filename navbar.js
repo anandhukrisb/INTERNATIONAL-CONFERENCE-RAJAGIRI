@@ -3,6 +3,7 @@ class FloatingNavbar extends HTMLElement {
         super();
         this.attachShadow({ mode: 'open' });
         this.handleScroll = this.handleScroll.bind(this);
+        this.toggleMobileMenu = this.toggleMobileMenu.bind(this);
     }
 
     connectedCallback() {
@@ -250,9 +251,177 @@ class FloatingNavbar extends HTMLElement {
                     box-shadow: 0 6px 15px rgba(0,0,0,0.3);
                     background-color: #f0f0f0;
                 }
+
+                /* Mobile Styles */
+                .mobile-toggle {
+                    display: none;
+                    flex-direction: column;
+                    gap: 5px;
+                    cursor: pointer;
+                    padding: 10px;
+                    margin-left: auto;
+                    margin-right: 20px;
+                    z-index: 1001;
+                }
+
+                .mobile-toggle span {
+                    display: block;
+                    width: 25px;
+                    height: 3px;
+                    background-color: white;
+                    border-radius: 3px;
+                    transition: all 0.3s ease;
+                }
+
+                .mobile-title {
+                    display: none;
+                    color: white;
+                    font-family: sans-serif;
+                    font-size: 20px;
+                    font-weight: 700;
+                    margin-left: 20px;
+                    white-space: nowrap;
+                }
+
+                .logo-container-mobile {
+                    display: none;
+                    height: 100%;
+                    background: white;
+                    padding: 0 20px 0 10px;
+                    border-top-left-radius: 50px;
+                    border-bottom-left-radius: 50px;
+                    border-bottom-right-radius: 100px;
+                    border-top-right-radius: 20px;
+                    align-items: center;
+                    position: relative;
+                    z-index: 2;
+                }
+
+                .floating-navbar.scrolled .logo-container-mobile {
+                    border-top-left-radius: 0;
+                    border-bottom-left-radius: 0;
+                }
+
+                .logo-container-mobile img.rajagiri-mobile {
+                    height: 70%;
+                    width: auto;
+                }
+
+                .logo-container-mobile img.rcss-mobile {
+                    height: 50%;
+                    width: auto;
+                    margin-left: -10px;
+                    margin-top: 20px;
+                }
+
+                @media (max-width: 1024px) {
+                    .navbar-links {
+                        display: none;
+                        position: absolute;
+                        top: 100%;
+                        left: 0;
+                        width: 100%;
+                        background: linear-gradient(135deg, #1d0a3f 0%, #4b1c9b 100%);
+                        flex-direction: column;
+                        padding: 20px 0;
+                        height: auto;
+                        border-radius: 20px;
+                        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+                    }
+
+                    .navbar-links.mobile-active {
+                        display: flex;
+                    }
+
+                    .navbar-links li {
+                        width: 100%;
+                        height: auto;
+                        flex-direction: column;
+                        align-items: flex-start;
+                    }
+
+                    .navbar-links a {
+                        width: 100%;
+                        padding: 15px 30px;
+                        box-sizing: border-box;
+                    }
+
+                    .mobile-toggle {
+                        display: flex;
+                    }
+
+                    .mobile-title {
+                        display: block;
+                    }
+
+                    .logo-container-mobile {
+                        display: flex;
+                    }
+
+                    .navbar-logo {
+                        display: none;
+                    }
+
+                    .dropdown-menu {
+                        position: static;
+                        transform: none;
+                        opacity: 1;
+                        visibility: visible;
+                        display: none;
+                        width: 100%;
+                        background: rgba(255, 255, 255, 0.05);
+                        box-shadow: none;
+                        border-radius: 0;
+                        padding: 0;
+                    }
+
+                    .dropdown-menu::before {
+                        display: none;
+                    }
+
+                    li.active .dropdown-menu {
+                        display: block;
+                        top: 0;
+                    }
+
+                    .dropdown-menu li a {
+                        color: white;
+                        padding-left: 50px;
+                    }
+
+                    .navbar-links a.contact-btn {
+                        margin: 10px 30px;
+                        width: auto;
+                        display: inline-block;
+                    }
+                    
+                    /* Hamburger Animation */
+                    .mobile-toggle.active span:nth-child(1) {
+                        transform: translateY(8px) rotate(45deg);
+                    }
+                    .mobile-toggle.active span:nth-child(2) {
+                        opacity: 0;
+                    }
+                    .mobile-toggle.active span:nth-child(3) {
+                        transform: translateY(-8px) rotate(-45deg);
+                    }
+                }
             </style>
 
             <nav class="floating-navbar">
+                <div class="logo-container-mobile">
+                    <img src="assets/rajagiri_logo.png" alt="Rajagiri" class="rajagiri-mobile">
+                    <img src="assets/rcss_logo.png" alt="RCSS" class="rcss-mobile">
+                </div>
+
+                <div class="mobile-title">ICSWHMH 27</div>
+
+                <div class="mobile-toggle" id="mobile-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
                 <div class="navbar-logo">
                     <!-- Base Logo -->
                     <img src="${logoSrc}" alt="Conference Logo" class="logo-base">
@@ -330,21 +499,44 @@ class FloatingNavbar extends HTMLElement {
             </nav>
         `;
 
+        // Mobile toggle logic
+        const mobileToggle = this.shadowRoot.getElementById('mobile-toggle');
+        const navbarLinks = this.shadowRoot.querySelector('.navbar-links');
+
+        if (mobileToggle) {
+            mobileToggle.addEventListener('click', () => {
+                mobileToggle.classList.toggle('active');
+                navbarLinks.classList.toggle('mobile-active');
+            });
+        }
+
         // Add click event listeners for mobile/click support
         const navItems = this.shadowRoot.querySelectorAll('.navbar-links > li');
         navItems.forEach(item => {
             const link = item.querySelector('a');
             if (link && item.querySelector('.dropdown-menu')) {
                 link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    // Close others
-                    navItems.forEach(other => {
-                        if (other !== item) other.classList.remove('active');
-                    });
-                    item.classList.toggle('active');
+                    // Only prevent default on mobile or if it's a dropdown toggle
+                    if (window.innerWidth <= 1024) {
+                        e.preventDefault();
+                        // Close others
+                        navItems.forEach(other => {
+                            if (other !== item) other.classList.remove('active');
+                        });
+                        item.classList.toggle('active');
+                    }
                 });
             }
         });
+    }
+
+    toggleMobileMenu() {
+        const mobileToggle = this.shadowRoot.getElementById('mobile-toggle');
+        const navbarLinks = this.shadowRoot.querySelector('.navbar-links');
+        if (mobileToggle && navbarLinks) {
+            mobileToggle.classList.toggle('active');
+            navbarLinks.classList.toggle('mobile-active');
+        }
     }
 }
 
