@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program | 2027 ICSWHMH</title>
+    <script src="navbar.js" defer></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f3f3eb;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+
+        .header-section {
+            background-color: #1d0a3f;
+            color: white;
+            padding: 150px 20px 50px;
+            /* Top padding accounts for navbar */
+            text-align: center;
+        }
+
+        .header-section h1 {
+            font-size: 3rem;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .schedule-day {
+            margin-bottom: 40px;
+        }
+
+        .schedule-day h2 {
+            color: #4b1c9b;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        .session {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .session:hover {
+            transform: translateX(5px);
+        }
+
+        .time {
+            font-weight: bold;
+            color: #1d0a3f;
+            min-width: 100px;
+        }
+
+        .details h3 {
+            margin: 0 0 5px;
+            font-size: 1.1rem;
+        }
+
+        .details p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <floating-navbar></floating-navbar>
+
+    <div class="header-section">
+        <h1>Conference Program</h1>
+        <p>Explore our schedule of events, workshops, and keynotes.</p>
+    </div>
+
+    <div class="container">
+        <div class="schedule-day">
+            <h2>Day 1 - Opening & Keynotes</h2>
+
+            <div class="session">
+                <div class="time">09:00 AM</div>
+                <div class="details">
+                    <h3>Registration & Welcome Coffee</h3>
+                    <p>Main Hall Foyer</p>
+                </div>
+            </div>
+
+            <div class="session">
+                <div class="time">10:00 AM</div>
+                <div class="details">
+                    <h3>Opening Ceremony</h3>
+                    <p>Grand Ballroom</p>
+                </div>
+            </div>
+
+            <div class="session">
+                <div class="time">11:30 AM</div>
+                <div class="details">
+                    <h3>Keynote Address: Future of Social Work</h3>
+                    <p>Dr. Jane Doe, Grand Ballroom</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="schedule-day">
+            <h2>Day 2 - Workshops & Panels</h2>
+            <div class="session">
+                <div class="time">09:00 AM</div>
+                <div class="details">
+                    <h3>Panel Discussion: Mental Health Policy</h3>
+                    <p>Room A</p>
+                </div>
+            </div>
+            <div class="session">
+                <div class="time">02:00 PM</div>
+                <div class="details">
+                    <h3>Workshop: Community Outreach Strategies</h3>
+                    <p>Room B</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
