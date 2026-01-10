@@ -4,137 +4,472 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Program | 2027 ICSWHMH</title>
-    <script src="navbar.js" defer></script>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #f3f3eb;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #333;
-        }
+    <title>Program - ICSWHMH 2027</title>
 
-        .header-section {
-            background-color: #1d0a3f;
-            color: white;
-            padding: 150px 20px 50px;
-            /* Top padding accounts for navbar */
-            text-align: center;
-        }
+    <!-- Fonts (System UI) -->
+    <!-- Using Segoe UI as primary font, no external requests needed -->
 
-        .header-section h1 {
-            font-size: 3rem;
-            margin: 0;
-        }
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
-        .container {
-            max-width: 1000px;
-            margin: 50px auto;
-            padding: 0 20px;
-        }
+    <!-- Floating Navbar (Styles merged into program.css) -->
+    <!-- <link rel="stylesheet" href="floating-navbar.css"> -->
+    <script src="floating-navbar.js" defer></script>
 
-        .schedule-day {
-            margin-bottom: 40px;
-        }
-
-        .schedule-day h2 {
-            color: #4b1c9b;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 10px;
-        }
-
-        .session {
-            background: white;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            display: flex;
-            align-items: center;
-            transition: transform 0.2s;
-        }
-
-        .session:hover {
-            transform: translateX(5px);
-        }
-
-        .time {
-            font-weight: bold;
-            color: #1d0a3f;
-            min-width: 100px;
-        }
-
-        .details h3 {
-            margin: 0 0 5px;
-            font-size: 1.1rem;
-        }
-
-        .details p {
-            margin: 0;
-            color: #666;
-            font-size: 0.9rem;
-        }
-    </style>
+    <link rel="stylesheet" href="program.css">
 </head>
 
 <body>
 
-    <floating-navbar></floating-navbar>
+    <!-- ============ HEADER (Replaced by Floating Navbar) ============ -->
 
-    <div class="header-section">
-        <h1>Conference Program</h1>
-        <p>Explore our schedule of events, workshops, and keynotes.</p>
-    </div>
+    <nav class="floating-navbar">
+        <div class="navbar-logo">
+            <!-- Base Logo -->
+            <img src="assets/logo.png" alt="Conference Logo" class="logo-base">
 
-    <div class="container">
-        <div class="schedule-day">
-            <h2>Day 1 - Opening & Keynotes</h2>
+            <!-- Overlays -->
+            <img src="assets/rajagiri_logo.png" alt="Rajagiri" class="logo-overlay rajagiri">
+            <img src="assets/rcss_logo.png" alt="RCSS" class="logo-overlay rcss">
+        </div>
+        <ul class="navbar-links">
+            <li>
+                <a href="index.html">2027 ICSWHMH</a>
+                <ul class="dropdown-menu">
+                    <li><a href="index.html">2027 ICSWHMH</a></li>
+                    <li><a href="#">History</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="program.html">Program</a>
+                <ul class="dropdown-menu">
+                    <li><a href="program.html">Program</a></li>
+                    <li><a href="#">Workshops</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="topics.html">Topics</a>
+            </li>
+            <li>
+                <a href="#">Speakers</a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Speakers</a></li>
+                    <li><a href="#">Invited</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">Registration</a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Registration</a></li>
+                    <li><a href="#">Student</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">Abstracts</a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Abstracts</a></li>
+                    <li><a href="#">Guidelines</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">Scholarships</a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Scholarships</a></li>
+                    <li><a href="#">Criteria</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">Social Functions</a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Social Functions</a></li>
+                    <li><a href="#">Tours</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">Host city</a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Host city</a></li>
+                    <li><a href="#">Travel</a></li>
+                </ul>
+            </li>
+            <li><a href="#" class="contact-btn">Contacts</a></li>
+        </ul>
+    </nav>
 
-            <div class="session">
-                <div class="time">09:00 AM</div>
-                <div class="details">
-                    <h3>Registration & Welcome Coffee</h3>
-                    <p>Main Hall Foyer</p>
+    <!-- ============ BANNER IMAGE SPACE ============ -->
+    <section class="banner-hero">
+        <!-- ADD YOUR BANNER IMAGE HERE:
+        <img src="images/program-banner.jpg" alt="Conference Program">
+        -->
+        <div class="banner-placeholder">
+            <i class="bi bi-image"></i>
+            <p><strong>Banner Image Space</strong><br>1920 x 400px recommended<br>Add: &lt;img
+                src="images/program-banner.jpg" alt="Program Banner"&gt;</p>
+        </div>
+    </section>
+
+    <!-- ============ MAIN CONTENT ============ -->
+    <main class="main-content">
+        <div class="container">
+
+            <!-- Page Title -->
+            <div class="page-title-section">
+                <h1>Conference Program</h1>
+                <p class="lead">A comprehensive three-day experience featuring eleven concurrent streams, exploring the
+                    intersection of social work with health and mental health care.</p>
+            </div>
+
+            <!-- Program Overview -->
+            <div class="program-card">
+                <h2>Program Overview</h2>
+                <p>Spanning three days, the Conference main program will be offered over <strong>eleven concurrent
+                        streams</strong> each day. The diverse range of topics covered in each stream will explore the
+                    intersection between social workers and Health and Mental Health care.</p>
+                <p>Blending keynote and featured speakers, plenary and concurrent sessions and workshops, the Conference
+                    program will bring forward new concepts, discuss existing practices and give attendees the most
+                    up-to-date subject knowledge available.</p>
+
+                <!-- Statistics -->
+                <div class="stats-section">
+                    <div class="stat-box">
+                        <div class="number">3</div>
+                        <div class="label">Days</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="number">11</div>
+                        <div class="label">Streams</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="number">1000+</div>
+                        <div class="label">Delegates</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="number">62</div>
+                        <div class="label">Topics</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="session">
-                <div class="time">10:00 AM</div>
-                <div class="details">
-                    <h3>Opening Ceremony</h3>
-                    <p>Grand Ballroom</p>
+            <!-- Download Program -->
+            <div class="download-box">
+                <h3>Download Full Program</h3>
+                <p>Access the complete conference program with detailed session information, timings, and speaker
+                    details.</p>
+                <a href="#" class="btn-download"><i class="bi bi-download"></i> Download PDF</a>
+            </div>
+
+            <!-- Program Features -->
+            <div class="program-details">
+                <h2 class="section-title">What to Expect</h2>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="program-feature">
+                            <h3>Keynote & Featured Speakers</h3>
+                            <p>Hear from internationally renowned experts who are shaping the future of social work in
+                                health and mental health. Our keynote presentations will challenge conventional thinking
+                                and inspire innovative approaches to practice.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="program-feature">
+                            <h3>Plenary Sessions</h3>
+                            <p>Engage in comprehensive discussions that bring together diverse perspectives on critical
+                                issues. These sessions foster collaborative thinking and knowledge exchange among
+                                delegates from around the world.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="program-feature">
+                            <h3>Concurrent Sessions</h3>
+                            <p>Choose from eleven parallel streams covering specialized topics. Each stream offers deep
+                                dives into specific practice domains, emerging research, and innovative methodologies in
+                                health and mental health social work.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="program-feature">
+                            <h3>Interactive Workshops</h3>
+                            <p>Participate in hands-on workshops designed to build practical skills. Learn new
+                                techniques, tools, and methodologies directly applicable to your professional practice
+                                from experienced facilitators.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="session">
-                <div class="time">11:30 AM</div>
-                <div class="details">
-                    <h3>Keynote Address: Future of Social Work</h3>
-                    <p>Dr. Jane Doe, Grand Ballroom</p>
+            <!-- Session Formats -->
+            <div class="program-card">
+                <h2>Session Formats</h2>
+                <p>The conference offers varied session formats to accommodate different learning preferences and
+                    professional development needs:</p>
+                <ul>
+                    <li><strong>Keynote Presentations (60 minutes)</strong> – Inspiring talks from leading international
+                        experts addressing major themes and challenges in the field</li>
+                    <li><strong>Plenary Sessions (90 minutes)</strong> – Large-group discussions featuring panels of
+                        experts exploring critical issues from multiple perspectives</li>
+                    <li><strong>Concurrent Sessions (45 minutes)</strong> – Focused presentations on specific research
+                        findings, innovative practices, and case studies across 11 parallel streams</li>
+                    <li><strong>Workshops (2 hours)</strong> – Interactive, hands-on sessions for skill development and
+                        practical application of new methodologies</li>
+                    <li><strong>Panel Discussions (75 minutes)</strong> – Multi-perspective explorations of complex
+                        issues featuring diverse expert viewpoints</li>
+                    <li><strong>Networking Sessions</strong> – Dedicated time for connecting with colleagues, building
+                        relationships, and informal knowledge exchange</li>
+                </ul>
+            </div>
+
+            <!-- Schedule Structure -->
+            <div class="schedule-section">
+                <h2 class="section-title">Conference Schedule</h2>
+
+                <div class="schedule-container-wrapper">
+                    <!-- Tabs -->
+                    <ul class="nav nav-tabs justify-content-center mb-5" id="programTabs" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active" id="tue-tab" data-bs-toggle="tab" data-bs-target="#tue"
+                                type="button">Tuesday, Nov 19</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="wed-tab" data-bs-toggle="tab" data-bs-target="#wed"
+                                type="button">Wednesday, Nov 20</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="thu-tab" data-bs-toggle="tab" data-bs-target="#thu"
+                                type="button">Thursday, Nov 21</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="fri-tab" data-bs-toggle="tab" data-bs-target="#fri"
+                                type="button">Friday, Nov 22</button>
+                        </li>
+                    </ul>
+
+                    <!-- Content -->
+                    <div class="tab-content" id="programTabsContent">
+
+                        <!-- TUESDAY -->
+                        <div class="tab-pane fade show active" id="tue" role="tabpanel">
+                            <p class="text-center text-muted mb-4"><i class="bi bi-info-circle"></i> Scroll horizontally
+                                to view all streams</p>
+                            <div class="schedule-container">
+                                <div class="schedule-grid">
+                                    <!-- Header Row -->
+                                    <div class="grid-header time-col-header">Time</div>
+                                    <div class="grid-header">Stream 1<br><small
+                                            style="font-weight:400; opacity:0.8;">Mental Health</small></div>
+                                    <div class="grid-header">Stream 2<br><small
+                                            style="font-weight:400; opacity:0.8;">Child Wellbeing</small></div>
+                                    <div class="grid-header">Stream 3<br><small
+                                            style="font-weight:400; opacity:0.8;">Aged Care</small></div>
+                                    <div class="grid-header">Stream 4<br><small
+                                            style="font-weight:400; opacity:0.8;">Disability</small></div>
+                                    <div class="grid-header">Stream 5<br><small
+                                            style="font-weight:400; opacity:0.8;">Education</small></div>
+
+                                    <!-- 09:00 Slot -->
+                                    <div class="time-slot">09:00 - 10:30</div>
+                                    <div class="session-cell session-plenary" style="grid-column: 2 / -1;">
+                                        <div class="session-card"
+                                            style="border-left-color: var(--primary-purple); background: #f3f0ff;">
+                                            <h4><span class="badge bg-primary mb-2">Keynote</span> Opening Ceremony &
+                                                Presidential Address</h4>
+                                            <p><strong>Speaker: Dr. Jane Doe</strong> - "The Future of Social Work in a
+                                                Digital Age"</p>
+                                            <div class="room-badge"><i class="bi bi-geo-alt"></i> Grand Ballroom</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 10:30 Break -->
+                                    <div class="time-slot">10:30 - 11:00</div>
+                                    <div class="session-row-break">
+                                        <i class="bi bi-cup-hot-fill"></i> Morning Tea & Networking Break
+                                    </div>
+
+                                    <!-- 11:00 Slot -->
+                                    <div class="time-slot">11:00 - 12:30</div>
+
+                                    <!-- Stream 1 -->
+                                    <div class="session-cell">
+                                        <div class="session-card">
+                                            <h4>Trauma-Informed Practice in Clinical Settings</h4>
+                                            <p>Exploring new methodologies for PTSD treatment in public health.</p>
+                                            <div class="room-badge">Room A101</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Stream 2 -->
+                                    <div class="session-cell">
+                                        <div class="session-card">
+                                            <h4>Safeguarding Children in Digital Spaces</h4>
+                                            <p>Addressing cyberbullying and online exploitation risks.</p>
+                                            <div class="room-badge">Room B205</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Stream 3 -->
+                                    <div class="session-cell">
+                                        <div class="session-card">
+                                            <h4>Dementia Care: A Holistic Approach</h4>
+                                            <p>Supporting families and caregivers through transition phases.</p>
+                                            <div class="room-badge">Room C301</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Stream 4 -->
+                                    <div class="session-cell">
+                                        <div class="session-card">
+                                            <h4>NDIS Policy Reforms</h4>
+                                            <p>Navigating the changing landscape of disability support services.</p>
+                                            <div class="room-badge">Room D410</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Stream 5 -->
+                                    <div class="session-cell">
+                                        <div class="session-card">
+                                            <h4>Social Work Education Curriculum</h4>
+                                            <p>Integrating field practice with academic theory effectively.</p>
+                                            <div class="room-badge">Room E102</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 12:30 Lunch -->
+                                    <div class="time-slot">12:30 - 13:30</div>
+                                    <div class="session-row-break"
+                                        style="background: #e9ecef; color: var(--text-dark); font-weight: 600;">
+                                        <i class="bi bi-basket-fill"></i> Networking Lunch
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- WEDNESDAY (Demo structure) -->
+                        <div class="tab-pane fade" id="wed" role="tabpanel">
+                            <div class="alert alert-light text-center border p-5">
+                                <h4>Wednesday Schedule</h4>
+                                <p>Detailed sessions for Wednesday will appear here with the same grid layout.</p>
+                            </div>
+                        </div>
+
+                        <!-- THURSDAY -->
+                        <div class="tab-pane fade" id="thu" role="tabpanel">
+                            <div class="alert alert-light text-center border p-5">
+                                <h4>Thursday Schedule</h4>
+                                <p>Detailed sessions for Thursday will appear here.</p>
+                            </div>
+                        </div>
+
+                        <!-- FRIDAY -->
+                        <div class="tab-pane fade" id="fri" role="tabpanel">
+                            <div class="alert alert-light text-center border p-5">
+                                <h4>Friday Schedule</h4>
+                                <p>Detailed sessions for Friday will appear here.</p>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
+
+            <!-- Additional Info -->
+            <div class="row mt-5">
+                <div class="col-lg-6">
+                    <div class="program-feature">
+                        <h3>CPD Accreditation</h3>
+                        <p>All conference sessions are eligible for Continuing Professional Development (CPD) points,
+                            helping you meet your professional learning requirements. Attendees will receive
+                            certificates upon completion.</p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="program-feature">
+                        <h3>Hybrid Participation</h3>
+                        <p>Join us in-person in Kerala for the full experience, or participate virtually from anywhere
+                            in the world. Virtual attendees have access to live-streamed sessions, Q&A, and on-demand
+                            recordings.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="row">
+
+                <!-- About -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-section">
+                        <h5>About ICSWHMH 2027</h5>
+                        <p>The 10th International Conference on Social Work in Health and Mental Health brings together
+                            over 1000+ delegates from around the world to exchange insights on current challenges and
+                            trends in the social work sector.</p>
+                        <div class="social-links">
+                            <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                            <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+                            <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                            <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="col-lg-2 col-md-6">
+                    <div class="footer-section">
+                        <h5>Quick Links</h5>
+                        <ul>
+                            <li><a href="program.html">Program</a></li>
+                            <li><a href="speakers.html">Speakers</a></li>
+                            <li><a href="registration.html">Registration</a></li>
+                            <li><a href="abstracts.html">Abstracts</a></li>
+                            <li><a href="host-city.html">Host City</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Resources -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="footer-section">
+                        <h5>Resources</h5>
+                        <ul>
+                            <li><a href="scholarships.html">Scholarships</a></li>
+                            <li><a href="social-functions.html">Social Functions</a></li>
+                            <li><a href="sponsorships.html">Sponsorships</a></li>
+                            <li><a href="accommodation.html">Accommodation</a></li>
+                            <li><a href="faq.html">FAQ</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Contact -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="footer-section">
+                        <h5>Contact Us</h5>
+                        <div class="contact-info">
+                            <p><i class="bi bi-geo-alt-fill"></i><span>Rajagiri College of Social Sciences<br>Kerala,
+                                    India</span></p>
+                            <p><i class="bi bi-telephone-fill"></i><span>+61 2 8667 0737</span></p>
+                            <p><i class="bi bi-envelope-fill"></i><span>aasw@forumgroupevents.com.au</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <p>&copy; 2025 Rajagiri College of Social Sciences. All Rights Reserved.</p>
+            <p>Website Designed and Maintained by Your Team</p>
         </div>
 
-        <div class="schedule-day">
-            <h2>Day 2 - Workshops & Panels</h2>
-            <div class="session">
-                <div class="time">09:00 AM</div>
-                <div class="details">
-                    <h3>Panel Discussion: Mental Health Policy</h3>
-                    <p>Room A</p>
-                </div>
-            </div>
-            <div class="session">
-                <div class="time">02:00 PM</div>
-                <div class="details">
-                    <h3>Workshop: Community Outreach Strategies</h3>
-                    <p>Room B</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    </footer>
 
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
