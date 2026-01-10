@@ -149,13 +149,8 @@ class FloatingNavbar extends HTMLElement {
 
                 /* Dropdown Styles */
                 .dropdown-menu {
-                    position: absolute;
-                    top: 80px; /* Slight offset from center */
-                    left: 50%;
-                    transform: translateX(-50%) translateY(20px);
-                    background: rgba(255, 255, 255, 0.95);
                     backdrop-filter: blur(10px);
-                    min-width: 300px; /* Increased width */
+                    min-width: 300px;
                     border-radius: 15px;
                     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
                     padding: 10px 0;
@@ -165,26 +160,37 @@ class FloatingNavbar extends HTMLElement {
                     transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
                     z-index: 100;
                 }
-                
-                /* Triangle/Arrow */
-                .dropdown-menu::before {
-                    content: '';
-                    position: absolute;
-                    top: -6px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    border-left: 6px solid transparent;
-                    border-right: 6px solid transparent;
-                    border-bottom: 6px solid rgba(255, 255, 255, 0.95);
-                }
 
-                /* Show Dropdown on Hover or Active class */
-                li:hover .dropdown-menu,
-                li.active .dropdown-menu {
-                    opacity: 1;
-                    visibility: visible;
-                    transform: translateX(-50%) translateY(0);
-                    top: 60px; /* Moves up slightly */
+                /* Desktop-only dropdown behaviors */
+                @media (min-width: 1025px) {
+                    .dropdown-menu {
+                        position: absolute;
+                        top: 80px;
+                        left: 50%;
+                        transform: translateX(-50%) translateY(20px);
+                        background: rgba(255, 255, 255, 0.95);
+                    }
+
+                    /* Triangle/Arrow */
+                    .dropdown-menu::before {
+                        content: '';
+                        position: absolute;
+                        top: -6px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        border-left: 6px solid transparent;
+                        border-right: 6px solid transparent;
+                        border-bottom: 6px solid rgba(255, 255, 255, 0.95);
+                    }
+
+                    /* Show Dropdown on Hover or Active class */
+                    li:hover .dropdown-menu,
+                    li.active .dropdown-menu {
+                        opacity: 1;
+                        visibility: visible;
+                        transform: translateX(-50%) translateY(0);
+                        top: 60px;
+                    }
                 }
 
                 .dropdown-menu li {
@@ -278,7 +284,7 @@ class FloatingNavbar extends HTMLElement {
                     color: white;
                     font-family: 'Momo Trust Display', sans-serif;
                     font-size: 20px;
-                    font-weight: 700;
+                    font-weight: 500;
                     margin-left: 20px;
                     white-space: nowrap;
                 }
@@ -286,15 +292,19 @@ class FloatingNavbar extends HTMLElement {
                 .logo-container-mobile {
                     display: none;
                     height: 100%;
-                    background: white;
-                    padding: 0 20px 0 10px;
+                    background: url('${logoSrc}') no-repeat center center;
+                    background-size: cover;
                     border-top-left-radius: 50px;
                     border-bottom-left-radius: 50px;
-                    border-bottom-right-radius: 100px;
-                    border-top-right-radius: 20px;
+                    padding: 0 20px 0 10px;
                     align-items: center;
                     position: relative;
                     z-index: 2;
+                }
+                
+                .logo-container-mobile.scrolled {
+                    border-top-left-radius: 0;
+                    border-bottom-left-radius: 0;
                 }
 
                 .floating-navbar.scrolled .logo-container-mobile {
@@ -320,7 +330,9 @@ class FloatingNavbar extends HTMLElement {
                         left: 0 !important;
                         transform: none !important;
                         top: 0;
-                        border-radius: 0;
+                        border-radius: 0 !important;
+                        background: #1d0a3f;
+                        transition: background 0.4s ease; /* Simple transition */
                     }
 
                     .navbar-links {
@@ -329,7 +341,7 @@ class FloatingNavbar extends HTMLElement {
                         top: 100%;
                         left: 0 !important;
                         width: 100% !important;
-                        background: linear-gradient(135deg, #1d0a3f 0%, #4b1c9b 100%);
+                        background: #1d0a3f;
                         flex-direction: column;
                         padding: 20px 0;
                         height: auto;
@@ -373,6 +385,7 @@ class FloatingNavbar extends HTMLElement {
 
                     .logo-container-mobile {
                         display: flex;
+                        border-radius: 0 !important;
                     }
 
                     .navbar-logo {
