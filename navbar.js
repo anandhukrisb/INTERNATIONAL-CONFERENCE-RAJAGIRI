@@ -132,7 +132,7 @@ class FloatingNavbar extends HTMLElement {
                 .navbar-links a {
                     color: white;
                     text-decoration: none;
-                    font-size: 14px;
+                    font-size: 16px;
                     font-weight: 500;
                     transition: opacity 0.3s;
                     font-family: 'Inter', sans-serif;
@@ -537,7 +537,7 @@ class FloatingNavbar extends HTMLElement {
                             <li><a href="#">Travel</a></li>
                         </ul>
                     </li>
-                    <li><a href="#" class="contact-btn">Contacts</a></li>
+                    <li><a href="#" class="contact-btn">Contact Us</a></li>
                 </ul>
             </nav>
         `;
