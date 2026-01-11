@@ -170,16 +170,31 @@
 
         @media (max-width: 768px) {
             .speaker-title {
-                margin-left: 20px;
+                margin-top: 120px;
+                /* Reduced from 180px */
+                margin-left: 0;
+                /* Centered or just left aligned with container padding */
+                text-align: center;
+            }
+
+            .speaker-image-col {
+                margin-top: 30px;
+                margin-bottom: 30px;
             }
 
             .speaker-image-col img {
-                width: 220px;
-                height: 220px;
+                width: 200px;
+                height: 200px;
             }
 
             .speaker-content {
                 max-width: 100%;
+                text-align: center;
+            }
+
+            .speaker-content p {
+                text-align: left;
+                /* Keep readable paragraph alignment */
             }
         }
     </style>
@@ -272,8 +287,8 @@
                 <div class="speaker-front">
                     <div class="row align-items-center">
 
-                        <!-- TEXT FIRST -->
-                        <div class="col-md-8 speaker-content">
+                        <!-- TEXT FIRST (Desktop: Left, Mobile: Second) -->
+                        <div class="col-md-8 speaker-content order-2 order-md-1">
                             <h3>DR MICHAEL UNGAR</h3>
                             <h6>Director, Resilience Research Centre, Canada</h6>
 
@@ -290,8 +305,8 @@
                             <button class="speaker-btn mt-3" onclick="flipContent(this)">Read More</button>
                         </div>
 
-                        <!-- IMAGE RIGHT -->
-                        <div class="col-md-4 speaker-image-col">
+                        <!-- IMAGE RIGHT (Desktop: Right, Mobile: First) -->
+                        <div class="col-md-4 speaker-image-col order-1 order-md-2">
                             <img src="assets/speaker2.jpg" class="rounded-circle" alt="speaker">
                         </div>
 
@@ -409,8 +424,8 @@
                 <div class="speaker-front">
                     <div class="row align-items-center">
 
-                        <!-- TEXT FIRST -->
-                        <div class="col-md-8 speaker-content">
+                        <!-- TEXT FIRST (Desktop: Left, Mobile: Second) -->
+                        <div class="col-md-8 speaker-content order-2 order-md-1">
                             <h3>PROFESSOR TOM CALMA</h3>
                             <h6>AO FAA FASSA FAHA FANZSOG, Australia</h6>
 
@@ -431,8 +446,8 @@
                             <button class="speaker-btn mt-3" onclick="flipContent(this)">Read More</button>
                         </div>
 
-                        <!-- IMAGE RIGHT -->
-                        <div class="col-md-4 speaker-image-col">
+                        <!-- IMAGE RIGHT (Desktop: Right, Mobile: First) -->
+                        <div class="col-md-4 speaker-image-col order-1 order-md-2">
                             <img src="assets/speaker4.jpg" class="rounded-circle" alt="speaker">
                         </div>
 
