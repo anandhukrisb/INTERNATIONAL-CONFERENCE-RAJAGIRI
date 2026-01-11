@@ -17,7 +17,8 @@ class FloatingNavbar extends HTMLElement {
     handleScroll() {
         const navbar = this.shadowRoot.querySelector('.floating-navbar');
         if (navbar) {
-            if (window.scrollY > 50) {
+            // Trigger animation earlier to finish before touching banner
+            if (window.scrollY > 10) {
                 navbar.classList.add('scrolled');
             } else {
                 navbar.classList.remove('scrolled');
@@ -41,7 +42,7 @@ class FloatingNavbar extends HTMLElement {
                     width: 97%; /* User defined */
                     height: 90px; /* User defined */
                     // background-color: #007720;
-                    background: linear-gradient(135deg, #1d0a3f 0%, #4b1c9b 100%);
+                    background: linear-gradient(to right, #F5F7F6 5%, transparent 5%), linear-gradient(135deg, #1d0a3f 0%, #4b1c9b 100%);
                     border-radius: 50px;
                     display: flex;
                     align-items: center;
@@ -49,7 +50,7 @@ class FloatingNavbar extends HTMLElement {
                     // box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
                     z-index: 1000;
                     /* overflow: hidden; Removed to allow dropdowns to show */
-                    transition: all 0.6s ease-in-out; /* Smooth slow animation */
+                    transition: all 0.4s ease-in-out; /* Faster animation */
                 }
 
                 .floating-navbar.scrolled {
