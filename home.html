@@ -73,13 +73,24 @@
         }
 
         .title-section h1 {
-            color: #1d0a3f;
+            /* color: #1d0a3f;
             text-transform: uppercase;
             font-size: 2.5rem;
             line-height: 1.2;
             text-align: left;
             margin: 0;
             flex: 1;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; */
+            font-size: 2rem;
+            /* Bigger, bolder */
+            color: #1d0a3f;
+            /* Deep purple primary */
+            text-transform: none;
+            /* easier to read */
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            letter-spacing: -1px;
         }
 
         .title-section img {
@@ -224,6 +235,10 @@
             .about-section {
                 flex-direction: column;
                 text-align: center;
+                gap: 20px;
+                align-items: center;
+                width: 100%;
+                box-sizing: border-box;
             }
 
             .about-content h2 {
@@ -245,12 +260,42 @@
             .title-section h1 {
                 text-align: center;
                 font-size: 1.8rem;
+                width: 100%;
+                flex: none;
+                margin: 0;
+            }
+
+            .title-section img {
+                margin: 0 auto !important;
+                display: block;
             }
 
             .about-image {
-                max-width: 100%;
-                margin-bottom: 40px;
-                /* Add space between image and text */
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0;
+                padding: 0;
+                width: 100%;
+                margin: 0 auto 40px;
+                height: auto;
+            }
+
+            .card-1,
+            .card-2 {
+                display: none !important;
+            }
+
+            .card-img {
+                position: relative;
+                flex-shrink: 0;
+                width: 250px;
+                height: 320px;
+                transform: none !important;
+                z-index: 1 !important;
+                margin: 0 auto;
+                border-radius: 20px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
             }
         }
 
@@ -493,26 +538,26 @@
 
         .welcome-content {
             flex: 0 0 30%;
-            /* Reduced width */
             padding-bottom: 30px;
-            /* Reduced to move text lower */
             position: relative;
             z-index: 5;
             max-width: 350px;
-            /* Reduced max-width */
             margin-left: 40px;
-            /* Reduced margin */
         }
 
         .welcome-content p {
             font-size: 0.95rem;
-            /* Slightly smaller */
             line-height: 1.8;
             margin-bottom: 25px;
             text-align: justify;
             color: rgba(255, 255, 255, 0.85);
-            /* Slightly transparent */
             font-weight: 300;
+        }
+
+        /* Reveal Animation Classes - No animation on desktop */
+        .reveal-on-scroll {
+            opacity: 1;
+            transform: none;
         }
 
         .ceo-wrapper {
@@ -552,40 +597,6 @@
             font-family: 'Arial Black', sans-serif;
         }
 
-        @media (max-width: 900px) {
-            .welcome-container {
-                flex-direction: column;
-                padding: 100px 30px 0;
-                align-items: center;
-                gap: 0;
-            }
-
-            .welcome-content {
-                flex: auto;
-                max-width: 100%;
-                padding-right: 0;
-                padding-bottom: 40px;
-                text-align: center;
-                margin-left: 0;
-            }
-
-            .welcome-content p {
-                text-align: justify;
-            }
-
-            .ceo-wrapper {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .watermark-text {
-                font-size: 4rem;
-            }
-
-            .ceo-image {
-                height: 350px;
-            }
-        }
 
         .section-separator {
             max-width: 1200px;
@@ -706,6 +717,18 @@
             background-color: #4b1c9b;
         }
 
+        .cta-front-btn {
+            display: none;
+            margin-top: 25px;
+            margin-bottom: 0px;
+            width: 85%;
+            text-align: center;
+        }
+
+        .cta-desc {
+            display: none;
+        }
+
         .cta-text {
             color: #000;
             font-size: 1.1rem;
@@ -714,6 +737,168 @@
             font-weight: 500;
             margin: 0;
             max-width: 90%;
+        }
+
+        @media (max-width: 950px) {
+            .welcome-container {
+                flex-direction: column;
+                padding: 0 30px 0;
+                align-items: center;
+                gap: 0;
+            }
+
+            .welcome-header {
+                position: static !important;
+                padding: 60px 40px 30px;
+                box-sizing: border-box;
+            }
+
+            .watermark-text {
+                font-size: 4rem;
+            }
+
+            .welcome-content {
+                flex: auto;
+                max-width: 100%;
+                padding: 40px;
+                text-align: center;
+                margin-left: 0;
+                padding-bottom: 40px;
+                background: rgba(255, 255, 255, 0.05);
+                backdrop-filter: blur(15px);
+                -webkit-backdrop-filter: blur(15px);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                border-radius: 30px;
+                box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+            }
+
+            .welcome-content p {
+                text-align: justify;
+                font-size: 1rem !important;
+                color: rgba(255, 255, 255, 0.9);
+            }
+
+            /* Reveal Animation ONLY on mobile */
+            .reveal-on-scroll {
+                opacity: 0;
+                transform: translateY(40px);
+                transition: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+            }
+
+            .reveal-on-scroll.revealed {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .delay-1 {
+                transition-delay: 0.2s;
+            }
+
+            .delay-2 {
+                transition-delay: 0.4s;
+            }
+
+            .delay-3 {
+                transition-delay: 0.6s;
+            }
+
+            .ceo-wrapper {
+                position: relative !important;
+                bottom: auto;
+                left: auto;
+                transform: none !important;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                margin-top: 20px;
+                z-index: 6;
+            }
+
+            .ceo-image {
+                height: 400px;
+                width: auto;
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .ceo-title-bg {
+                display: none;
+            }
+
+            .speakers-section {
+                padding: 30px 15px;
+            }
+
+            .speakers-title {
+                margin-bottom: 30px;
+            }
+
+            /* CTA Cards Mobile Refinement */
+            .cta-card {
+                height: auto;
+                min-height: 450px;
+                perspective: none;
+                width: 100%;
+                max-width: 350px;
+            }
+
+            .cta-card:hover .cta-card-inner {
+                transform: none !important;
+            }
+
+            .cta-card-inner {
+                transform: none !important;
+                transition: none !important;
+            }
+
+            .cta-card-front {
+                position: relative !important;
+                transform: none !important;
+                backface-visibility: visible !important;
+                height: auto;
+                padding: 15px 15px 35px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+                width: 100%;
+                opacity: 1 !important;
+                z-index: 5;
+            }
+
+            .cta-card-back {
+                display: none !important;
+            }
+
+            .cta-title {
+                margin-top: 10px;
+                margin-bottom: 3px;
+                font-size: 1.2rem;
+            }
+
+            .cta-desc {
+                display: block;
+                color: #555;
+                font-size: 0.95rem;
+                text-align: center;
+                line-height: 1.5;
+                margin: 0;
+                max-width: 90%;
+            }
+
+            .cta-front-btn {
+                display: inline-block;
+                width: 90%;
+                padding: 12px 0;
+                font-size: 1.1rem;
+            }
+
+            .cta-image-wrapper {
+                height: 220px;
+                margin-bottom: 10px;
+            }
         }
     </style>
 </head>
@@ -762,20 +947,24 @@
     <!-- Welcome Section -->
     <section class="welcome-section">
         <div class="welcome-container">
-            <h3 class="welcome-header">Welcome from the AASW CEO</h3>
+            <h3 class="welcome-header reveal-on-scroll">Welcome from the AASW CEO</h3>
             <div class="watermark-text">#2027 ICSWHMH</div>
 
-            <div class="welcome-content">
+            <div class="welcome-content reveal-on-scroll delay-1">
                 <p>Dear Colleagues,<br>I am delighted to welcome each of you as we embark on the 10th International
-                    Conference on Social Work in Health and Mental Health (10th ICSWHMH). This event takes advantage of
+                    Conference on Social Work in Health and Mental Health (10th ICSWHMH). This event takes advantage
+                    of
                     being a hybrid experience, wherever you are and in the vibrant city of Melbourne.</p>
-                <p>Hosting over 600 national and international delegates, this Conference provides a unique platform to
-                    exchange insights on the current challenges and trends in the social work sector. I look forward to
-                    forging new connections, learning from leading experts, and exploring the latest ideas available.
+                <p>Hosting over 600 national and international delegates, this Conference provides a unique platform
+                    to
+                    exchange insights on the current challenges and trends in the social work sector. I look forward
+                    to
+                    forging new connections, learning from leading experts, and exploring the latest ideas
+                    available.
                 </p>
             </div>
 
-            <div class="ceo-wrapper">
+            <div class="ceo-wrapper reveal-on-scroll delay-2">
                 <div class="ceo-title-bg">
                     CEO<br>AASW
                 </div>
@@ -905,7 +1094,9 @@
                         <div class="cta-image-wrapper">
                             <img src="assets/card_registration.png" alt="Registration">
                         </div>
-                        <p class="cta-text">Registrations for<br>the 10th ICSWHMH</p>
+                        <p class="cta-text cta-title">Registrations for<br>the 10th ICSWHMH</p>
+                        <p class="cta-desc">Join us for the 10th ICSWHMH. Register now to secure your spot.</p>
+                        <a href="#" class="cta-btn cta-front-btn">Register</a>
                     </div>
                     <div class="cta-card-back">
                         <p class="cta-text">Join us for the 10th ICSWHMH. Register now to secure your spot.</p>
@@ -921,7 +1112,9 @@
                         <div class="cta-image-wrapper">
                             <img src="assets/card_abstracts.png" alt="Abstracts">
                         </div>
-                        <p class="cta-text">Call for Abstracts<br>and Proposals</p>
+                        <p class="cta-text cta-title">Call for Abstracts<br>and Proposals</p>
+                        <p class="cta-desc">Submit your abstracts and proposals for the conference program.</p>
+                        <a href="#" class="cta-btn cta-front-btn">Submit Abstract</a>
                     </div>
                     <div class="cta-card-back">
                         <p class="cta-text">Submit your abstracts and proposals for the conference program.</p>
@@ -937,8 +1130,11 @@
                         <div class="cta-image-wrapper">
                             <img src="assets/card_location.png" alt="Melbourne">
                         </div>
-                        <p class="cta-text">Discover Melbourne and<br>Victoria. From urban laneways to regional escapes.
+                        <p class="cta-text cta-title">Discover Melbourne and<br>Victoria. From urban laneways to
+                            regional escapes.
                         </p>
+                        <p class="cta-desc">Explore the vibrant city of Melbourne and the beautiful Victoria region.</p>
+                        <a href="#" class="cta-btn cta-front-btn">Visit Melbourne</a>
                     </div>
                     <div class="cta-card-back">
                         <p class="cta-text">Explore the vibrant city of Melbourne and the beautiful Victoria region.</p>
@@ -1075,6 +1271,23 @@
                 card.classList.remove('flipped');
             }
         }
+
+        // Intersection Observer for Reveal on Scroll
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    // Once revealed, we can stop observing this element
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.15 // Trigger when 15% of the element is visible
+        });
+
+        document.querySelectorAll('.reveal-on-scroll').forEach(el => {
+            revealObserver.observe(el);
+        });
     </script>
 </body>
 
