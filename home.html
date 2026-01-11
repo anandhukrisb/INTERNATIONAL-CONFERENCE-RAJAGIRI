@@ -73,13 +73,24 @@
         }
 
         .title-section h1 {
-            color: #1d0a3f;
+            /* color: #1d0a3f;
             text-transform: uppercase;
             font-size: 2.5rem;
             line-height: 1.2;
             text-align: left;
             margin: 0;
             flex: 1;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; */
+            font-size: 2rem;
+            /* Bigger, bolder */
+            color: #1d0a3f;
+            /* Deep purple primary */
+            text-transform: none;
+            /* easier to read */
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            letter-spacing: -1px;
         }
 
         .title-section img {
@@ -224,6 +235,10 @@
             .about-section {
                 flex-direction: column;
                 text-align: center;
+                gap: 20px;
+                align-items: center;
+                width: 100%;
+                box-sizing: border-box;
             }
 
             .about-content h2 {
@@ -245,12 +260,42 @@
             .title-section h1 {
                 text-align: center;
                 font-size: 1.8rem;
+                width: 100%;
+                flex: none;
+                margin: 0;
+            }
+
+            .title-section img {
+                margin: 0 auto !important;
+                display: block;
             }
 
             .about-image {
-                max-width: 100%;
-                margin-bottom: 40px;
-                /* Add space between image and text */
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0;
+                padding: 0;
+                width: 100%;
+                margin: 0 auto 40px;
+                height: auto;
+            }
+
+            .card-1,
+            .card-2 {
+                display: none !important;
+            }
+
+            .card-img {
+                position: relative;
+                flex-shrink: 0;
+                width: 250px;
+                height: 320px;
+                transform: none !important;
+                z-index: 1 !important;
+                margin: 0 auto;
+                border-radius: 20px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
             }
         }
 
