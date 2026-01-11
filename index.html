@@ -310,11 +310,28 @@
         }
 
         .speakers-title {
-            text-align: center;
-            color: #C9A227;
+            text-align: left;
+            color: #1D0A3F;
+            /* Primary Color */
             /* text-transform: uppercase; */
             font-size: 2rem;
             margin-bottom: 50px;
+            position: relative;
+            display: inline-block;
+            /* allows line to match text width if desired, or block for full width */
+            width: 100%;
+        }
+
+        .speakers-title::after {
+            content: "";
+            display: block;
+            width: 80px;
+            /* Fixed width line like other headers */
+            height: 4px;
+            background-color: #C9A227;
+            /* Secondary/Gold Color */
+            margin-top: 10px;
+            border-radius: 3px;
         }
 
         .speakers-grid {
