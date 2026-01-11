@@ -9,6 +9,38 @@ class FloatingNavbar extends HTMLElement {
     connectedCallback() {
         this.render();
         window.addEventListener('scroll', this.handleScroll);
+        this.highlightActiveLink();
+    }
+
+    highlightActiveLink() {
+        const currentPath = window.location.pathname;
+        // Handle root path / or /index.html
+        let pageName = currentPath.split('/').pop();
+        if (pageName === '' || pageName === undefined) pageName = 'index.html';
+
+        const allLinks = this.shadowRoot.querySelectorAll('a');
+
+        allLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            // Check if href matches pageName
+            // We use simple string match assuming relative links like 'index.html', 'program.html'
+            if (href === pageName) {
+                // If it is a top-level link (direct child of .navbar-links > li)
+                // Structure: .navbar-links > li > a
+                const parentLi = link.closest('li');
+                if (parentLi && parentLi.parentElement && parentLi.parentElement.classList.contains('navbar-links')) {
+                    // It is a top level link, just mark it
+                    link.classList.add('active');
+                } else if (link.closest('.dropdown-menu')) {
+                    // It is inside a dropdown
+                    const topLevelLi = link.closest('.navbar-links > li');
+                    if (topLevelLi) {
+                        const topLink = topLevelLi.querySelector(':scope > a');
+                        if (topLink) topLink.classList.add('active');
+                    }
+                }
+            }
+        });
     }
 
     disconnectedCallback() {
@@ -145,6 +177,22 @@ class FloatingNavbar extends HTMLElement {
 
                 .navbar-links a:hover {
                     opacity: 0.8;
+                }
+
+                .navbar-links a.active {
+                    color: #d4af37; /* Gold Text */
+                    position: relative;
+                }
+                
+                .navbar-links a.active::after {
+                    content: '';
+                    position: absolute;
+                    bottom: 20px; /* Adjust based on valid clickable area height */
+                    left: 5px;
+                    width: calc(100% - 10px); /* Match padding */
+                    height: 3px;
+                    background-color: #d4af37;
+                    border-radius: 2px;
                 }
 
                 /* Dropdown Styles */
