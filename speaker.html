@@ -32,6 +32,47 @@
             color: #2D3436;
             /* Body Text */
             font-family: 'Inter', system-ui, sans-serif;
+            overflow-x: hidden;
+            /* Prevent horizontal scroll */
+        }
+
+        /* ... existing styles ... */
+
+        .speaker-front {
+            z-index: 2;
+            /* Ensure front is on top by default */
+            pointer-events: auto;
+        }
+
+        .speaker-back {
+            position: absolute;
+            inset: 0;
+            transform: rotateY(180deg);
+            opacity: 0;
+            overflow-y: auto;
+            max-height: 100%;
+            /* Fill container */
+            border-radius: 20px;
+            /* Match card */
+            pointer-events: none;
+            /* Ignore touches when hidden */
+            z-index: 1;
+        }
+
+        .speaker-flip-wrapper.flipped .speaker-front {
+            transform: rotateY(180deg);
+            opacity: 0;
+            pointer-events: none;
+            /* Ignore touches when hidden */
+        }
+
+        .speaker-flip-wrapper.flipped .speaker-back {
+            transform: rotateY(0deg);
+            opacity: 1;
+            pointer-events: auto;
+            /* Enable touches when visible */
+            z-index: 3;
+            /* bring to top */
         }
 
         /* ================= TITLE ================= */
