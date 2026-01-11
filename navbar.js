@@ -179,20 +179,23 @@ class FloatingNavbar extends HTMLElement {
                     opacity: 0.8;
                 }
 
-                .navbar-links a.active {
-                    color: #d4af37; /* Gold Text */
-                    position: relative;
-                }
-                
-                .navbar-links a.active::after {
-                    content: '';
-                    position: absolute;
-                    bottom: 20px; /* Adjust based on valid clickable area height */
-                    left: 5px;
-                    width: calc(100% - 10px); /* Match padding */
-                    height: 3px;
-                    background-color: #d4af37;
-                    border-radius: 2px;
+                /* Active link styling (Desktop only) */
+                @media (min-width: 1025px) {
+                    .navbar-links a.active {
+                        color: #d4af37; /* Gold Text */
+                        position: relative;
+                    }
+                    
+                    .navbar-links a.active::after {
+                        content: '';
+                        position: absolute;
+                        bottom: 20px; /* Adjust based on valid clickable area height */
+                        left: 5px;
+                        width: calc(100% - 10px); /* Match padding */
+                        height: 3px;
+                        background-color: #d4af37;
+                        border-radius: 2px;
+                    }
                 }
 
                 /* Dropdown Styles */

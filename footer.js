@@ -210,6 +210,24 @@ class MainFooter extends HTMLElement {
                         min-height: auto;
                     }
 
+                    .contact-title{
+                        position: relative;
+                        left: 0;
+                        top: 0;
+                        margin-bottom: 20px;
+                        margin-top: 5px;
+                    }
+
+                    .contact-text{
+                        position: relative;
+                        left: 0;
+                        top: 0;
+                    }
+                    
+                    .address-block{
+                        margin-top: 5px;
+                    }
+
                     .logo-section {
                         position: relative;
                         width: 100%;
@@ -222,8 +240,15 @@ class MainFooter extends HTMLElement {
 
                     .content-section {
                         margin-left: 0;
-                        padding: 40px 20px;
+                        padding: 15px 20px 40px; /* Reduced top padding */
                         flex-direction: column;
+                    }
+
+                    .footer-logo {
+                        position: relative;
+                        left: 0;
+                        top: 0;
+                        align-items: center;
                     }
 
                     .social-icons {
@@ -231,7 +256,8 @@ class MainFooter extends HTMLElement {
                         left: 0;
                         bottom: 0;
                         justify-content: center;
-                        margin: 20px 0;
+                        align-items: center;
+                        margin: 20px 0 0 0; /* Reduced bottom margin */
                     }
 
                     .copyright-section {
@@ -242,6 +268,14 @@ class MainFooter extends HTMLElement {
                         border-top-right-radius: 0;
                         text-align: center;
                         justify-content: center;
+                        padding-right: 0; /* Remove desktop offset */
+                        box-sizing: border-box;
+                        background-color: white; /* Restore background visibility on mobile */
+                    }
+
+                    .footer-shape-bottom {
+                        display: 100; /* Hide background shape on mobile for clean centering */
+                        align-items: center;
                     }
                     
                     .footer-bg {
