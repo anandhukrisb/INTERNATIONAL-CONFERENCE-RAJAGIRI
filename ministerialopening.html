@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="navbar.js"></script>
+
+<style>
+    .title-div {
+    margin-top: 200px; /* or padding-top: 60px; */
+    margin-left: 10px;
+}
+body{
+    background-color: #fdfbf7;
+    }
+    .col-md-8{
+        font-size: 20px;
+        line-height: 1.6;
+    }
+    .card {
+            border-radius: 20px;
+            transition: transform 0.25s ease;
+            will-change: transform;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+    /* Custom button styling */    
+    .custom-btn {
+        background-color: #1d0a3f; /* Background color of the button */
+        color: #ffffff;/* Text color */
+        border: none;/* Remove default border */
+        padding: 10px 22px;/* Space inside the button (top-bottom | left-right) */
+        border-radius: 30px;/* Makes the button pill-shaped */
+        transition: background-color 0.25s ease, transform 0.2s ease;/* Smooth animation for hover effects */
+    }
+    /* Hover effect */
+    .custom-btn:hover {
+        background-color: #16082f;   /* Slightly darker shade on hover */
+        transform: translateY(-2px); /* Small upward movement */
+    }
+    /* Remove default blue outline on focus/click */
+    .custom-btn:focus {
+        box-shadow: none;
+    }
+    /* FLIP EFFECT  */
+    .flip-wrapper{
+        perspective: 1000px;
+        position: relative;
+        transform-style: preserve-3d;
+    }
+    .flip-front,
+    .flip-back {
+            backface-visibility: hidden;
+            transition: transform 1.15s cubic-bezier(0.16, 1, 0.3, 1),opacity 0.9s ease;
+            will-change: transform, opacity;
+            transform: translateZ(1px);
+        }
+    /* Back content hidden initially */
+    .flip-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            transform: rotateY(180deg) translateZ(1px);
+            opacity: 0;
+            font-size: 20px;
+        }
+        /* Flip active state */
+        .flip-wrapper.flipped .flip-front {
+            transform: rotateY(180deg) translateZ(1px);
+            opacity: 0;
+        }
+        .flip-wrapper.flipped .flip-back {
+            transform: rotateY(0deg) translateZ(1px);
+            opacity: 1;
+        }
+</style>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ministerial opening address</title>
+</head>
+<body>
+    <floating-navbar></floating-navbar>
+    <div class="container mt-5">
+    <div class="title-div">
+        <h2 id="pageTitle">VIRTUAL OPENING ADDRESS</h2>
+    </div>
+    <div class="card border-0 p-4 mt-5">
+
+            <!-- Flip wrapper -->
+            <div class="flip-wrapper" id="flipWrapper">
+
+                <!-- ================= FRONT CONTENT ================= -->
+                <div class="flip-front">
+                    <div class="row align-items-center">
+
+                        <!-- Image -->
+                        <div class="col-md-4 d-flex justify-content-center mb-3 mb-md-0">
+                            <img src="assets/ministerial.png"
+                                 alt="ministerial opening"
+                                 class="rounded-circle img-fluid profile-img">
+                        </div>
+
+                        <!-- Text -->
+                        <div class="col-md-8">
+                            <h3>THE HON EMMA MCBRIDE MP</h3>
+                            <h6>Assistant Minister for Mental Health and Suicide Prevention & Assistant Minister for Rural and Regional Health</h6>
+                            <p class="fs-5">
+                                Emma McBride is the Federal Member for the electorate of Dobell, on the Central Coast of NSW and was elected in 2016. After the 2019 election Emma was appointed Shadow Assistant Minister for Mental Health and Shadow Assistant Minister for Carers. Emma was the Deputy Chair of the House of Representatives Select Committee on Mental Health and Suicide Prevention in 2021. Following the 2022 election, Emma McBride was appointed Assistant Minister for Mental Health and Suicide Prevention and Assistant Minister for Rural and Regional Health.
+                            </p>
+
+                            <!-- Read more button -->
+                            <button class="custom-btn mt-3" onclick="flipContent()">
+                                Read More
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ================= BACK CONTENT ================= -->
+                <div class="flip-back">
+                    <h5>More Details</h5>
+
+                    <p class="fs-5">
+                        Emma McBride was the Deputy Chair of the House of Representatives Select Committee
+                        on Mental Health and Suicide Prevention in 2021. Following the 2022 election,
+                        she was appointed Assistant Minister for Mental Health and Suicide Prevention
+                        and Assistant Minister for Rural and Regional Health.
+                    </p>
+
+                    <p class="fs-5">
+                        Emma worked in health for over 20 years, both in Australia and abroad.
+                        She was a Specialist Mental Health Pharmacist and the Chief Pharmacist
+                        at Wyong Hospital, and prior to her election to Parliament, was the
+                        Deputy Director of Pharmacy for Central Coast Local Health District.
+                    </p>
+
+                    <p class="fs-5">
+                        Her background across a wide range of health care settings provides
+                        a unique platform to promote better health services for both her local
+                        area and the broader community.
+                    </p>
+
+                    <p class="fs-5">
+                        Emma is a passionate advocate for quality healthcare close to home.
+                        She recognises the unique challenges facing rural and regional
+                        communities in accessing health care and aims to help shape public
+                        policy that promotes health and wellbeing for all Australians,
+                        regardless of where they live.
+                    </p>
+
+                    <!-- Back button -->
+                    <button class="custom-btn mt-3" onclick="flipContent()">
+                        Back
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        function flipContent(){
+            const flip = document.getElementById("flipWrapper");
+            const title = document.getElementById("pageTitle");
+
+            flip.classList.toggle("flipped");
+
+            if(flip.classList.contains("flipped")){
+                title.textContent="THE HON EMMA McBRIDE MP"
+            }else{
+                title.textContent="VIRTUAL OPENING ADDRESS"
+            }
+        }
+    </script>
+</body>
+</html>

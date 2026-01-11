@@ -4,137 +4,1419 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Program | 2027 ICSWHMH</title>
+    <title>Program - ICSWHMH 2027</title>
+
+    <!-- Fonts (System UI) -->
+    <!-- Using Segoe UI as primary font, no external requests needed -->
+
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- Floating Navbar (Styles merged into program.css) -->
+    <!-- <link rel="stylesheet" href="floating-navbar.css"> -->
     <script src="navbar.js" defer></script>
+
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #f3f3eb;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #333;
+        :root {
+            --primary-purple: #1d0a3f;
+            --secondary-purple: #3d2066;
+            --accent-gold: #d4af37;
+            --text-dark: #2d3436;
+            /* Updated Text (Body) */
+            --text-light: #6b6b6b;
+            --bg-light: #f8f9fa;
+            --bg-base: #FDFDFF;
+            /* Secondary (Base) */
+            --bg-tone: #F1F2F6;
+            /* Support (Tone) */
         }
 
-        .header-section {
-            background-color: #1d0a3f;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-dark);
+            line-height: 1.7;
+            background-color: var(--bg-base);
+        }
+
+        /* Floating Navbar Component */
+        floating-navbar {
+            display: block;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        /* ============ HEADER ============ */
+        .main-header {
+            background: white;
+            padding: 30px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .logo-box {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .logo-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Placeholder for logo */
+        .logo-text {
             color: white;
-            padding: 150px 20px 50px;
-            /* Top padding accounts for navbar */
+            font-size: 1.6rem;
+            font-weight: 700;
+            font-family: 'Segoe UI', serif;
+        }
+
+        .title-section h1 {
+            font-family: 'Segoe UI', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin: 0 0 8px 0;
+            line-height: 1.2;
+        }
+
+        .title-section .subtitle {
+            font-size: 1rem;
+            color: var(--text-light);
+            font-weight: 400;
+            margin: 0 0 5px 0;
+        }
+
+        .title-section .tagline {
+            font-size: 0.95rem;
+            color: var(--secondary-purple);
+            font-style: italic;
+            font-weight: 500;
+        }
+
+        /* ============ NAVIGATION ============ */
+        .main-nav {
+            background: var(--primary-purple);
+            padding: 0;
+        }
+
+        .navbar {
+            padding: 0;
+        }
+
+        .navbar-nav {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .nav-item .nav-link {
+            color: white;
+            padding: 18px 24px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-item .nav-link:hover,
+        .nav-item .nav-link.active {
+            background: var(--accent-gold);
+            color: var(--primary-purple);
+        }
+
+        .navbar-toggler {
+            background: white;
+            border: none;
+            padding: 10px 15px;
+        }
+
+        /* ============ BANNER SPACE ============ */
+        .banner-hero {
+            background: var(--bg-light);
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 5px solid var(--accent-gold);
+            position: relative;
+        }
+
+        .banner-placeholder {
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .banner-placeholder i {
+            font-size: 4rem;
+            color: var(--primary-purple);
+            opacity: 0.3;
+            margin-bottom: 20px;
+        }
+
+        .banner-placeholder p {
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        /* Add banner image here */
+        .banner-hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* ============ MAIN CONTENT ============ */
+        .main-content {
+            padding: 80px 0;
+        }
+
+        .page-title-section {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .page-title-section h1 {
+            font-family: 'Segoe UI', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin-bottom: 20px;
+        }
+
+        .page-title-section .lead {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* Program Overview Card */
+        .program-card {
+            background: var(--bg-tone);
+            padding: 50px;
+            border-radius: 0;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 60px;
+            border-left: 6px solid var(--accent-gold);
+        }
+
+        .program-card h2 {
+            font-family: 'Segoe UI', serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin-bottom: 30px;
+        }
+
+        .program-card p {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        /* Stats Section */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 40px;
+            margin: 50px 0;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 40px 20px;
+            background: var(--bg-light);
+            border-radius: 0;
+            transition: all 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 35px rgba(29, 10, 63, 0.12);
+        }
+
+        .stat-box .number {
+            font-family: 'Segoe UI', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            line-height: 1;
+            margin-bottom: 15px;
+        }
+
+        .stat-box .label {
+            font-size: 1.05rem;
+            color: var(--text-light);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Download Section */
+        .download-box {
+            background: var(--primary-purple);
+            padding: 60px 40px;
+            text-align: center;
+            margin: 60px 0;
+        }
+
+        .download-box h3 {
+            font-family: 'Segoe UI', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .download-box p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            margin-bottom: 35px;
+        }
+
+        .btn-download {
+            background: var(--accent-gold);
+            color: var(--primary-purple);
+            padding: 18px 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-download:hover {
+            background: white;
+            color: var(--primary-purple);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Program Details Section */
+        .program-details {
+            margin: 80px 0;
+        }
+
+        .section-title {
+            font-family: 'Segoe UI', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin-bottom: 50px;
             text-align: center;
         }
 
-        .header-section h1 {
-            font-size: 3rem;
-            margin: 0;
+        .program-feature {
+            background: var(--bg-tone);
+            padding: 40px;
+            margin-bottom: 30px;
+            border-radius: 0;
+            box-shadow: 0 3px 20px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid var(--accent-gold);
+            transition: all 0.3s ease;
         }
 
-        .container {
-            max-width: 1000px;
-            margin: 50px auto;
-            padding: 0 20px;
-        }
-
-        .schedule-day {
-            margin-bottom: 40px;
-        }
-
-        .schedule-day h2 {
-            color: #4b1c9b;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 10px;
-        }
-
-        .session {
-            background: white;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            display: flex;
-            align-items: center;
-            transition: transform 0.2s;
-        }
-
-        .session:hover {
+        .program-feature:hover {
+            box-shadow: 0 8px 35px rgba(0, 0, 0, 0.1);
             transform: translateX(5px);
         }
 
-        .time {
-            font-weight: bold;
-            color: #1d0a3f;
-            min-width: 100px;
+        .program-feature h3 {
+            font-family: 'Segoe UI', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-purple);
+            margin-bottom: 20px;
         }
 
-        .details h3 {
-            margin: 0 0 5px;
+        .program-feature p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        .program-feature ul {
+            margin: 20px 0 0 0;
+            padding-left: 25px;
+        }
+
+        .program-feature ul li {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+
+        .program-feature ul li strong {
+            color: var(--primary-purple);
+        }
+
+        /* Schedule Table Placeholder */
+        .schedule-section {
+            margin: 80px 0;
+        }
+
+        .schedule-placeholder {
+            background: var(--bg-light);
+            padding: 80px 40px;
+            text-align: center;
+            border: 3px dashed var(--primary-purple);
+            border-radius: 0;
+        }
+
+        .schedule-placeholder i {
+            font-size: 5rem;
+            color: var(--primary-purple);
+            opacity: 0.3;
+            margin-bottom: 25px;
+        }
+
+        .schedule-placeholder h3 {
+            font-family: 'Segoe UI', serif;
+            font-size: 2rem;
+            color: var(--primary-purple);
+            margin-bottom: 15px;
+        }
+
+        .schedule-placeholder p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin: 0;
+        }
+
+        /* ============ FOOTER ============ */
+        .main-footer {
+            background: var(--primary-purple);
+            color: white;
+            padding: 70px 0 30px;
+            margin-top: 100px;
+        }
+
+        .footer-section {
+            margin-bottom: 40px;
+        }
+
+        .footer-section h5 {
+            font-family: 'Segoe UI', serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--accent-gold);
+            margin-bottom: 25px;
+        }
+
+        .footer-section p {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 15px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-section ul li a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--accent-gold);
+            padding-left: 8px;
+        }
+
+        .contact-info p {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .contact-info i {
+            color: var(--accent-gold);
+            font-size: 1.2rem;
+            margin-top: 3px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .social-links a {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: var(--accent-gold);
+            color: var(--primary-purple);
+            transform: translateY(-5px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin-top: 50px;
+            padding-top: 30px;
+            text-align: center;
+        }
+
+        .footer-bottom p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin: 8px 0;
+        }
+
+        .footer-bottom a {
+            color: var(--accent-gold);
+            text-decoration: none;
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 992px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .logo-section {
+                flex-direction: column;
+            }
+
+            .title-section h1 {
+                font-size: 1.6rem;
+            }
+
+            .page-title-section h1 {
+                font-size: 2.2rem;
+            }
+
+            .program-card {
+                padding: 35px 25px;
+            }
+
+            .stat-box .number {
+                font-size: 2.8rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .logo-box {
+                width: 70px;
+                height: 70px;
+            }
+
+            .title-section h1 {
+                font-size: 1.4rem;
+            }
+
+            .title-section .subtitle {
+                font-size: 0.9rem;
+            }
+
+            .banner-hero {
+                min-height: 250px;
+            }
+
+            .main-content {
+                padding: 50px 0;
+            }
+
+            .page-title-section h1 {
+                font-size: 1.8rem;
+            }
+
+            .program-card {
+                padding: 30px 20px;
+            }
+
+            .program-card h2 {
+                font-size: 1.7rem;
+            }
+
+            .stats-section {
+                gap: 25px;
+            }
+
+            .download-box {
+                padding: 40px 25px;
+            }
+
+            .program-feature {
+                padding: 30px 20px;
+            }
+
+            .section-title {
+                font-size: 1.9rem;
+            }
+        }
+
+        /* ============ SCHEDULE GRID ============ */
+        .schedule-container-wrapper {
+            margin-top: 40px;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: var(--text-light);
+            font-weight: 600;
+            padding: 15px 30px;
+            border-bottom: 3px solid transparent;
             font-size: 1.1rem;
         }
 
-        .details p {
-            margin: 0;
-            color: #666;
+        .nav-tabs .nav-link.active {
+            color: var(--primary-purple);
+            border-bottom: 3px solid var(--accent-gold);
+            background: transparent;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: var(--primary-purple);
+            border-color: transparent;
+        }
+
+        .schedule-container {
+            overflow-x: auto;
+            border: 1px solid #e9ecef;
+            background: white;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            max-height: 800px;
+            overflow-y: auto;
+        }
+
+        .schedule-grid {
+            display: grid;
+            /* Time column + 5 Streams for demo (expandable) */
+            grid-template-columns: 120px repeat(5, minmax(250px, 1fr));
+            min-width: 1370px;
+            /* Force scroll */
+        }
+
+        .grid-header {
+            background: var(--primary-purple);
+            color: white;
+            padding: 15px;
+            font-weight: 600;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .time-col-header {
+            left: 0;
+            z-index: 30;
+        }
+
+        .time-slot {
+            background: #f8f9fa;
+            position: sticky;
+            left: 0;
+            z-index: 10;
+            padding: 20px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--primary-purple);
+            border-bottom: 1px solid #dee2e6;
+            border-right: 1px solid #dee2e6;
+        }
+
+        .session-cell {
+            padding: 10px;
+            border-bottom: 1px solid #dee2e6;
+            border-right: 1px solid #dee2e6;
+            background: white;
+        }
+
+        .session-card {
+            background: #fdfdfd;
+            border: 1px solid #eee;
+            border-left: 4px solid var(--accent-gold);
+            padding: 15px;
+            height: 100%;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .session-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-left-color: var(--primary-purple);
+        }
+
+        .session-card h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--secondary-purple);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .session-card p {
             font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .room-badge {
+            font-size: 0.75rem;
+            background: #eee;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .session-plenary {
+            background: #fff9e6;
+            /* Light gold bg */
+            border-color: #ffeeba;
+        }
+
+        .session-row-break {
+            grid-column: 2 / -1;
+            background: #f1f3f5;
+            color: #6c757d;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px;
+        }
+
+        /* ============ MERGED FLOATING NAVBAR STYLES ============ */
+        .floating-navbar {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 97%;
+            height: 90px;
+            background: linear-gradient(135deg, #1d0a3f 0%, #4b1c9b 100%);
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            padding: 0;
+            z-index: 1000;
+            transition: all 0.6s ease-in-out;
+        }
+
+        .floating-navbar.scrolled {
+            width: 100%;
+            top: 0;
+            border-radius: 0;
+        }
+
+        .navbar-logo {
+            height: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding-left: 0;
+        }
+
+        /* Base Logo (Conference) */
+        .logo-base {
+            height: 100%;
+            width: auto;
+            object-fit: cover;
+            border-top-left-radius: 50px;
+            border-bottom-left-radius: 50px;
+            transition: border-radius 0.6s ease-in-out;
+            position: relative;
+            z-index: 1;
+        }
+
+        .floating-navbar.scrolled .logo-base {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        /* Overlay Logos */
+        .logo-overlay {
+            position: absolute;
+            z-index: 10;
+            height: 50%;
+            width: auto;
+            object-fit: contain;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .logo-overlay.rajagiri {
+            left: 4px;
+            top: 45px;
+            height: 80%;
+            width: auto;
+        }
+
+        .logo-overlay.rcss {
+            top: 55px;
+            left: 80px;
+            height: 60%;
+            width: auto;
+        }
+
+        .floating-navbar li {
+            position: relative;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-links {
+            margin-left: auto;
+            display: flex;
+            gap: 15px;
+            padding-right: 40px;
+            list-style: none;
+            margin-top: 0;
+            margin-bottom: 0;
+            flex-wrap: nowrap;
+            height: 100%;
+            align-items: center;
+        }
+
+        .navbar-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: opacity 0.3s;
+            font-family: 'Segoe UI', sans-serif;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            padding: 0 5px;
+        }
+
+        .navbar-links a:hover {
+            opacity: 0.8;
+        }
+
+        /* Dropdown Styles */
+        .dropdown-menu {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            min-width: 300px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 10px 0;
+            list-style: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            z-index: 100;
+        }
+
+        .dropdown-menu::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 6px solid rgba(255, 255, 255, 0.95);
+        }
+
+        .floating-navbar li:hover .dropdown-menu,
+        .floating-navbar li.active .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+            top: 60px;
+        }
+
+        .dropdown-menu li {
+            display: block;
+            height: auto;
+            margin: 0;
+        }
+
+        .dropdown-menu li a {
+            color: #1d0a3f;
+            padding: 10px 20px;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            height: auto;
+            border-radius: 0;
+            font-size: 13px;
+            white-space: nowrap;
+            text-align: left;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .dropdown-menu li a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background-color: rgba(29, 10, 63, 0.1);
+            transition: width 0.3s ease;
+            z-index: -1;
+        }
+
+        .dropdown-menu li a:hover::before {
+            width: 100%;
+        }
+
+        .dropdown-menu li a:hover {
+            color: #4b1c9b;
+            opacity: 1;
+        }
+
+        .navbar-links>li:last-child {
+            margin-left: 10px;
+        }
+
+        .navbar-links a.contact-btn {
+            background-color: white;
+            color: #1d0a3f;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            height: auto;
+        }
+
+        .navbar-links a.contact-btn:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            background-color: #f0f0f0;
+        }
+
+        /* ============ TOPICS GRID ============ */
+        .topics-intro {
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto 60px;
+        }
+
+        .topics-intro p {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            line-height: 1.8;
+        }
+
+        .topic-category {
+            background: var(--bg-tone);
+            border-radius: 0;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05);
+            margin-bottom: 40px;
+            overflow: hidden;
+            border-top: 5px solid var(--primary-purple);
+            transition: transform 0.3s ease;
+        }
+
+        .topic-category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-header {
+            background: #fff;
+            padding: 25px 30px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .category-header h3 {
+            margin: 0;
+            font-family: 'Segoe UI', serif;
+            color: var(--primary-purple);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .category-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--bg-tone);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-gold);
+            font-size: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .topic-list {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px 30px;
+        }
+
+        .topic-item {
+            position: relative;
+            padding-left: 25px;
+            font-size: 1rem;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .topic-item::before {
+            content: "•";
+            color: var(--accent-gold);
+            font-weight: bold;
+            font-size: 1.5rem;
+            position: absolute;
+            left: 0;
+            top: -5px;
         }
     </style>
 </head>
 
 <body>
 
+    <!-- ============ HEADER (Replaced by Floating Navbar) ============ -->
     <floating-navbar></floating-navbar>
 
-    <div class="header-section">
-        <h1>Conference Program</h1>
-        <p>Explore our schedule of events, workshops, and keynotes.</p>
-    </div>
 
-    <div class="container">
-        <div class="schedule-day">
-            <h2>Day 1 - Opening & Keynotes</h2>
 
-            <div class="session">
-                <div class="time">09:00 AM</div>
-                <div class="details">
-                    <h3>Registration & Welcome Coffee</h3>
-                    <p>Main Hall Foyer</p>
+    <!-- ============ MAIN CONTENT ============ -->
+    <main class="main-content">
+        <div class="container">
+
+            <!-- Page Title -->
+            <div class="page-title-section">
+                <h1>Conference Program</h1>
+                <p class="lead">A comprehensive three-day experience featuring eleven concurrent streams, exploring the
+                    intersection of social work with health and mental health care.</p>
+            </div>
+
+            <!-- Program Overview -->
+            <div class="program-card">
+                <h2>Program Overview</h2>
+                <p>Spanning three days, the Conference main program will be offered over <strong>eleven concurrent
+                        streams</strong> each day. The diverse range of topics covered in each stream will explore the
+                    intersection between social workers and Health and Mental Health care.</p>
+                <p>Blending keynote and featured speakers, plenary and concurrent sessions and workshops, the Conference
+                    program will bring forward new concepts, discuss existing practices and give attendees the most
+                    up-to-date subject knowledge available.</p>
+
+                <!-- Statistics -->
+                <div class="stats-section">
+                    <div class="stat-box">
+                        <div class="number">3</div>
+                        <div class="label">Days</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="number">11</div>
+                        <div class="label">Streams</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="number">1000+</div>
+                        <div class="label">Delegates</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="number">62</div>
+                        <div class="label">Topics</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="session">
-                <div class="time">10:00 AM</div>
-                <div class="details">
-                    <h3>Opening Ceremony</h3>
-                    <p>Grand Ballroom</p>
+            <!-- Download Program -->
+            <div class="download-box">
+                <h3>Download Full Program</h3>
+                <p>Access the complete conference program with detailed session information, timings, and speaker
+                    details.</p>
+                <a href="#" class="btn-download"><i class="bi bi-download"></i> Download PDF</a>
+            </div>
+
+            <!-- Program Features -->
+            <div class="program-details">
+                <h2 class="section-title">What to Expect</h2>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="program-feature">
+                            <h3>Keynote & Featured Speakers</h3>
+                            <p>Hear from internationally renowned experts who are shaping the future of social work in
+                                health and mental health. Our keynote presentations will challenge conventional thinking
+                                and inspire innovative approaches to practice.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="program-feature">
+                            <h3>Plenary Sessions</h3>
+                            <p>Engage in comprehensive discussions that bring together diverse perspectives on critical
+                                issues. These sessions foster collaborative thinking and knowledge exchange among
+                                delegates from around the world.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="program-feature">
+                            <h3>Concurrent Sessions</h3>
+                            <p>Choose from eleven parallel streams covering specialized topics. Each stream offers deep
+                                dives into specific practice domains, emerging research, and innovative methodologies in
+                                health and mental health social work.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="program-feature">
+                            <h3>Interactive Workshops</h3>
+                            <p>Participate in hands-on workshops designed to build practical skills. Learn new
+                                techniques, tools, and methodologies directly applicable to your professional practice
+                                from experienced facilitators.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="session">
-                <div class="time">11:30 AM</div>
-                <div class="details">
-                    <h3>Keynote Address: Future of Social Work</h3>
-                    <p>Dr. Jane Doe, Grand Ballroom</p>
+            <!-- Session Formats -->
+            <div class="program-card">
+                <h2>Session Formats</h2>
+                <p>The conference offers varied session formats to accommodate different learning preferences and
+                    professional development needs:</p>
+                <ul>
+                    <li><strong>Keynote Presentations (60 minutes)</strong> – Inspiring talks from leading international
+                        experts addressing major themes and challenges in the field</li>
+                    <li><strong>Plenary Sessions (90 minutes)</strong> – Large-group discussions featuring panels of
+                        experts exploring critical issues from multiple perspectives</li>
+                    <li><strong>Concurrent Sessions (45 minutes)</strong> – Focused presentations on specific research
+                        findings, innovative practices, and case studies across 11 parallel streams</li>
+                    <li><strong>Workshops (2 hours)</strong> – Interactive, hands-on sessions for skill development and
+                        practical application of new methodologies</li>
+                    <li><strong>Panel Discussions (75 minutes)</strong> – Multi-perspective explorations of complex
+                        issues featuring diverse expert viewpoints</li>
+                    <li><strong>Networking Sessions</strong> – Dedicated time for connecting with colleagues, building
+                        relationships, and informal knowledge exchange</li>
+                </ul>
+            </div>
+
+            <!-- Schedule Structure -->
+            <div class="schedule-section">
+                <h2 class="section-title">Conference Schedule</h2>
+
+                <div class="schedule-container-wrapper">
+                    <!-- Tabs -->
+                    <ul class="nav nav-tabs justify-content-center mb-5" id="programTabs" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active" id="tue-tab" data-bs-toggle="tab" data-bs-target="#tue"
+                                type="button">Tuesday, Nov 19</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="wed-tab" data-bs-toggle="tab" data-bs-target="#wed"
+                                type="button">Wednesday, Nov 20</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="thu-tab" data-bs-toggle="tab" data-bs-target="#thu"
+                                type="button">Thursday, Nov 21</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="fri-tab" data-bs-toggle="tab" data-bs-target="#fri"
+                                type="button">Friday, Nov 22</button>
+                        </li>
+                    </ul>
+
+                    <!-- Content -->
+                    <div class="tab-content" id="programTabsContent">
+
+                        <!-- TUESDAY -->
+                        <div class="tab-pane fade show active" id="tue" role="tabpanel">
+                            <p class="text-center text-muted mb-4"><i class="bi bi-info-circle"></i> Scroll horizontally
+                                to view all streams</p>
+                            <div class="schedule-container">
+                                <div class="schedule-grid">
+                                    <!-- Header Row -->
+                                    <div class="grid-header time-col-header">Time</div>
+                                    <div class="grid-header">Stream 1<br><small
+                                            style="font-weight:400; opacity:0.8;">Mental Health</small></div>
+                                    <div class="grid-header">Stream 2<br><small
+                                            style="font-weight:400; opacity:0.8;">Child Wellbeing</small></div>
+                                    <div class="grid-header">Stream 3<br><small
+                                            style="font-weight:400; opacity:0.8;">Aged Care</small></div>
+                                    <div class="grid-header">Stream 4<br><small
+                                            style="font-weight:400; opacity:0.8;">Disability</small></div>
+                                    <div class="grid-header">Stream 5<br><small
+                                            style="font-weight:400; opacity:0.8;">Education</small></div>
+
+                                    <!-- 09:00 Slot -->
+                                    <div class="time-slot">09:00 - 10:30</div>
+                                    <div class="session-cell session-plenary" style="grid-column: 2 / -1;">
+                                        <div class="session-card"
+                                            style="border-left-color: var(--primary-purple); background: #f3f0ff;">
+                                            <h4><span class="badge bg-primary mb-2">Keynote</span> Opening Ceremony &
+                                                Presidential Address</h4>
+                                            <p><strong>Speaker: Dr. Jane Doe</strong> - "The Future of Social Work in a
+                                                Digital Age"</p>
+                                            <div class="room-badge"><i class="bi bi-geo-alt"></i> Grand Ballroom</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 10:30 Break -->
+                                    <div class="time-slot">10:30 - 11:00</div>
+                                    <div class="session-row-break">
+                                        <i class="bi bi-cup-hot-fill"></i> Morning Tea & Networking Break
+                                    </div>
+
+                                    <!-- 11:00 Slot -->
+                                    <div class="time-slot">11:00 - 12:30</div>
+
+                                    <!-- Stream 1 -->
+                                    <div class="session-cell">
+                                        <div class="session-card">
+                                            <h4>Trauma-Informed Practice in Clinical Settings</h4>
+                                            <p>Exploring new methodologies for PTSD treatment in public health.</p>
+                                            <div class="room-badge">Room A101</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Stream 2 -->
+                                    <div class="session-cell">
+                                        <div class="session-card">
+                                            <h4>Safeguarding Children in Digital Spaces</h4>
+                                            <p>Addressing cyberbullying and online exploitation risks.</p>
+                                            <div class="room-badge">Room B205</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Stream 3 -->
+                                    <div class="session-cell">
+                                        <div class="session-card">
+                                            <h4>Dementia Care: A Holistic Approach</h4>
+                                            <p>Supporting families and caregivers through transition phases.</p>
+                                            <div class="room-badge">Room C301</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Stream 4 -->
+                                    <div class="session-cell">
+                                        <div class="session-card">
+                                            <h4>NDIS Policy Reforms</h4>
+                                            <p>Navigating the changing landscape of disability support services.</p>
+                                            <div class="room-badge">Room D410</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Stream 5 -->
+                                    <div class="session-cell">
+                                        <div class="session-card">
+                                            <h4>Social Work Education Curriculum</h4>
+                                            <p>Integrating field practice with academic theory effectively.</p>
+                                            <div class="room-badge">Room E102</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 12:30 Lunch -->
+                                    <div class="time-slot">12:30 - 13:30</div>
+                                    <div class="session-row-break"
+                                        style="background: #e9ecef; color: var(--text-dark); font-weight: 600;">
+                                        <i class="bi bi-basket-fill"></i> Networking Lunch
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- WEDNESDAY (Demo structure) -->
+                        <div class="tab-pane fade" id="wed" role="tabpanel">
+                            <div class="alert alert-light text-center border p-5">
+                                <h4>Wednesday Schedule</h4>
+                                <p>Detailed sessions for Wednesday will appear here with the same grid layout.</p>
+                            </div>
+                        </div>
+
+                        <!-- THURSDAY -->
+                        <div class="tab-pane fade" id="thu" role="tabpanel">
+                            <div class="alert alert-light text-center border p-5">
+                                <h4>Thursday Schedule</h4>
+                                <p>Detailed sessions for Thursday will appear here.</p>
+                            </div>
+                        </div>
+
+                        <!-- FRIDAY -->
+                        <div class="tab-pane fade" id="fri" role="tabpanel">
+                            <div class="alert alert-light text-center border p-5">
+                                <h4>Friday Schedule</h4>
+                                <p>Detailed sessions for Friday will appear here.</p>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
+
+            <!-- Additional Info -->
+            <div class="row mt-5">
+                <div class="col-lg-6">
+                    <div class="program-feature">
+                        <h3>CPD Accreditation</h3>
+                        <p>All conference sessions are eligible for Continuing Professional Development (CPD) points,
+                            helping you meet your professional learning requirements. Attendees will receive
+                            certificates upon completion.</p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="program-feature">
+                        <h3>Hybrid Participation</h3>
+                        <p>Join us in-person in Kerala for the full experience, or participate virtually from anywhere
+                            in the world. Virtual attendees have access to live-streamed sessions, Q&A, and on-demand
+                            recordings.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="row">
+
+                <!-- About -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-section">
+                        <h5>About ICSWHMH 2027</h5>
+                        <p>The 10th International Conference on Social Work in Health and Mental Health brings together
+                            over 1000+ delegates from around the world to exchange insights on current challenges and
+                            trends in the social work sector.</p>
+                        <div class="social-links">
+                            <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                            <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+                            <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                            <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="col-lg-2 col-md-6">
+                    <div class="footer-section">
+                        <h5>Quick Links</h5>
+                        <ul>
+                            <li><a href="program.html">Program</a></li>
+                            <li><a href="speakers.html">Speakers</a></li>
+                            <li><a href="registration.html">Registration</a></li>
+                            <li><a href="abstracts.html">Abstracts</a></li>
+                            <li><a href="host-city.html">Host City</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Resources -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="footer-section">
+                        <h5>Resources</h5>
+                        <ul>
+                            <li><a href="scholarships.html">Scholarships</a></li>
+                            <li><a href="social-functions.html">Social Functions</a></li>
+                            <li><a href="sponsorships.html">Sponsorships</a></li>
+                            <li><a href="accommodation.html">Accommodation</a></li>
+                            <li><a href="faq.html">FAQ</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Contact -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="footer-section">
+                        <h5>Contact Us</h5>
+                        <div class="contact-info">
+                            <p><i class="bi bi-geo-alt-fill"></i><span>Rajagiri College of Social Sciences<br>Kerala,
+                                    India</span></p>
+                            <p><i class="bi bi-telephone-fill"></i><span>+61 2 8667 0737</span></p>
+                            <p><i class="bi bi-envelope-fill"></i><span>aasw@forumgroupevents.com.au</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- Footer Bottom -->
+        <div class="footer-bottom">
+            <p>&copy; 2025 Rajagiri College of Social Sciences. All Rights Reserved.</p>
+            <p>Website Designed and Maintained by Your Team</p>
         </div>
 
-        <div class="schedule-day">
-            <h2>Day 2 - Workshops & Panels</h2>
-            <div class="session">
-                <div class="time">09:00 AM</div>
-                <div class="details">
-                    <h3>Panel Discussion: Mental Health Policy</h3>
-                    <p>Room A</p>
-                </div>
-            </div>
-            <div class="session">
-                <div class="time">02:00 PM</div>
-                <div class="details">
-                    <h3>Workshop: Community Outreach Strategies</h3>
-                    <p>Room B</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    </footer>
 
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
