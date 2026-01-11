@@ -475,9 +475,9 @@ class FloatingNavbar extends HTMLElement {
                 </div>
                 <ul class="navbar-links">
                     <li>
-                        <a href="home.html">2027 ICSWHMH</a>
+                        <a href="index.html">2027 ICSWHMH</a>
                         <ul class="dropdown-menu">
-                            <li><a href="home.html">2027 ICSWHMH</a></li>
+                            <li><a href="index.html">2027 ICSWHMH</a></li>
                         </ul>
                     </li>
                     <li>
@@ -490,7 +490,7 @@ class FloatingNavbar extends HTMLElement {
                     <li>
                         <a href="#">Speakers</a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Speakers</a></li>
+                            <li><a href="speaker.html">Speakers</a></li>
                             <li><a href="ministerialopening.html">Ministerrial opening</a></li>
                         </ul>
                     </li>

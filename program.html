@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +16,7 @@
     <!-- Floating Navbar (Styles merged into program.css) -->
     <!-- <link rel="stylesheet" href="floating-navbar.css"> -->
     <script src="navbar.js" defer></script>
+    <script src="footer.js" defer></script>
 
     <style>
         :root {
@@ -170,6 +172,7 @@
             justify-content: center;
             border-bottom: 5px solid var(--accent-gold);
             position: relative;
+            margin-top: 120px;
         }
 
         .banner-placeholder {
@@ -207,6 +210,7 @@
         .page-title-section {
             text-align: center;
             margin-bottom: 60px;
+            margin-top: 90px;
         }
 
         .page-title-section h1 {
@@ -1342,79 +1346,10 @@
         </div>
     </main>
 
-    <!-- ============ FOOTER ============ -->
-    <footer class="main-footer">
-        <div class="container">
-            <div class="row">
-
-                <!-- About -->
-                <div class="col-lg-4 col-md-6">
-                    <div class="footer-section">
-                        <h5>About ICSWHMH 2027</h5>
-                        <p>The 10th International Conference on Social Work in Health and Mental Health brings together
-                            over 1000+ delegates from around the world to exchange insights on current challenges and
-                            trends in the social work sector.</p>
-                        <div class="social-links">
-                            <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-                            <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
-                            <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
-                            <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quick Links -->
-                <div class="col-lg-2 col-md-6">
-                    <div class="footer-section">
-                        <h5>Quick Links</h5>
-                        <ul>
-                            <li><a href="program.html">Program</a></li>
-                            <li><a href="speakers.html">Speakers</a></li>
-                            <li><a href="registration.html">Registration</a></li>
-                            <li><a href="abstracts.html">Abstracts</a></li>
-                            <li><a href="host-city.html">Host City</a></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Resources -->
-                <div class="col-lg-3 col-md-6">
-                    <div class="footer-section">
-                        <h5>Resources</h5>
-                        <ul>
-                            <li><a href="scholarships.html">Scholarships</a></li>
-                            <li><a href="social-functions.html">Social Functions</a></li>
-                            <li><a href="sponsorships.html">Sponsorships</a></li>
-                            <li><a href="accommodation.html">Accommodation</a></li>
-                            <li><a href="faq.html">FAQ</a></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Contact -->
-                <div class="col-lg-3 col-md-6">
-                    <div class="footer-section">
-                        <h5>Contact Us</h5>
-                        <div class="contact-info">
-                            <p><i class="bi bi-geo-alt-fill"></i><span>Rajagiri College of Social Sciences<br>Kerala,
-                                    India</span></p>
-                            <p><i class="bi bi-telephone-fill"></i><span>+61 2 8667 0737</span></p>
-                            <p><i class="bi bi-envelope-fill"></i><span>aasw@forumgroupevents.com.au</span></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        <!-- Footer Bottom -->
-        <div class="footer-bottom">
-            <p>&copy; 2025 Rajagiri College of Social Sciences. All Rights Reserved.</p>
-            <p>Website Designed and Maintained by Your Team</p>
-        </div>
-
-    </footer>
+    <main-footer></main-footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
