@@ -231,6 +231,30 @@
             /* Modern left align instead of justify */
         }
 
+        /* Desktop Container Styles */
+        @media (min-width: 769px) {
+            .about-section {
+                background-color: #F0F0F0;
+                /* Dull colored container */
+                border-left: 6px solid #C9A227;
+                /* Secondary Yellow Border */
+                padding: 60px 40px;
+                /* More padding for container look */
+                border-radius: 0 20px 20px 0;
+                /* Soften right side */
+            }
+
+            .title-section h1 {
+                background-color: #F0F0F0;
+                /* Same dull container */
+                border-left: 6px solid #C9A227;
+                padding: 30px 40px;
+                border-radius: 0 20px 20px 0;
+                width: fit-content;
+                /* Wrap tightly */
+            }
+        }
+
         @media (max-width: 768px) {
 
             .title-section,
@@ -373,9 +397,9 @@
             height: 100%;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
-            border-radius: 20px;
+            border-radius: 10px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            background: white;
+            background: #1D0A3F;
             padding: 30px;
             box-sizing: border-box;
         }
@@ -399,13 +423,26 @@
             overflow-y: auto;
         }
 
+        .speaker-card-back h3 {
+            color: #FFFFFF;
+            margin-top: 0;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .speaker-card-back p {
+            color: #F0F0F0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
         .speaker-img {
             width: 150px;
             height: 150px;
             border-radius: 50%;
             object-fit: cover;
             flex-shrink: 0;
-            border: 4px solid #f3f3eb;
+            /* border: 4px solid #f3f3eb; */
             transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
@@ -415,13 +452,13 @@
         }
 
         .speaker-info h3 {
-            color: #4b1c9b;
+            color: #FFFFFF;
             margin: 0 0 10px 0;
             font-size: 1.5rem;
         }
 
         .speaker-info p {
-            color: #666;
+            color: #F0F0F0;
             font-size: 0.95rem;
             line-height: 1.6;
             margin-bottom: 15px;
@@ -430,23 +467,24 @@
         .read-more-btn {
             display: inline-block;
             padding: 8px 20px;
-            background-color: #1d0a3f;
-            color: white;
+            background-color: #C9A227;
+            color: #1D0A3F;
             text-decoration: none;
-            border-radius: 20px;
+            border-radius: 10px;
             font-size: 0.9rem;
             transition: background 0.3s;
             cursor: pointer;
+            font-weight: 600;
         }
 
         .read-more-btn:hover {
-            background-color: #4b1c9b;
+            background-color: #FDFBF7;
         }
 
         .close-btn {
             background: none;
             border: none;
-            color: #666;
+            color: #C9A227;
             text-decoration: underline;
             cursor: pointer;
             margin-top: 10px;
@@ -677,7 +715,7 @@
             border-radius: 10px;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
             /* Soft shadow matched from previous */
-            background: white;
+            background: #1D0A3F;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -693,7 +731,7 @@
         .cta-card-back {
             transform: rotateY(180deg);
             z-index: 1;
-            background: #fdfbf7;
+            background: #1D0A3F;
             /* Slightly different bg for back */
             gap: 20px;
         }
@@ -718,8 +756,8 @@
         }
 
         .cta-btn {
-            background-color: #1d0a3f;
-            color: white;
+            background-color: #C9A227;
+            color: #1D0A3F;
             text-decoration: none;
             padding: 15px 50px;
             border-radius: 50px;
@@ -733,7 +771,7 @@
         }
 
         .cta-btn:hover {
-            background-color: #4b1c9b;
+            background-color: #FDFBF7;
         }
 
         .cta-front-btn {
@@ -749,7 +787,7 @@
         }
 
         .cta-text {
-            color: #000;
+            color: #FFFFFF;
             font-size: 1.1rem;
             text-align: center;
             line-height: 1.5;
