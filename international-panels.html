@@ -9,63 +9,158 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Momo+Trust+Display:wght@400;700&display=swap"
         rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
     <title>International Panels</title>
 </head>
 <style>
     body {
-        background-color: #f3f3eb;
-        font-family: 'Inter', sans-serif;
+        background-color: #FDFDFF;
+        font-family: 'Inter', serif;
         color: #333;
     }
 
     h1,
     h2 {
-        font-family: 'Momo Trust Display', sans-serif;
+        font-family: 'Lora', serif;
     }
 
     h3 {
-        font-family: 'Momo Trust Display', sans-serif;
+        font-family: 'Lora', serif;
         font-weight: 100;
     }
 
     h4,
     h5,
     h6 {
-        font-family: 'Momo Trust Display', sans-serif;
+        font-family: 'Lora', serif;
     }
 
     .main-heading {
         text-align: center;
         font-size: 50px;
-        font-weight: 100;
+        font-weight: 600;
+        /* Adjusted for better look */
+        color: #1d0a3f;
+        margin-top: 150px;
+        /* Space for navbar */
+        margin-bottom: 10px;
+    }
+
+    .panel-card {
+        background: #F1F2F6;
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        padding: 40px;
+        margin-bottom: 40px;
+        transition: transform 0.3s ease;
+        text-align: justify;
+    }
+
+    .panel-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .panel-title {
+        color: #1D0A3F;
+        /* Consistent with image color */
+        font-weight: 700;
+        margin-bottom: 25px;
+        line-height: 1.4;
+        text-transform: uppercase;
+    }
+
+    .panel-info {
+        margin-bottom: 20px;
+        font-size: 1.1rem;
+    }
+
+    .panel-info strong {
         color: #1d0a3f;
     }
 
-    /* .panels{
-        font-family: 'Inter',sans-serif;
-        margin-left: 10%;
-        margin-right: 10%;
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        display: flex;
+    .panel-description {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: #2D3436;
     }
 
-    .panels h3{
-        text-align: left;
-    }
+    /* Mobile Responsiveness Fixes */
+    @media (max-width: 768px) {
+        .main-heading {
+            font-size: 32px;
+            margin-top: 100px;
+            margin-bottom: 30px;
+            padding: 0 15px;
+        }
 
-    .panels p{
-        font-size: 18px;
-    } */
+        .panel-card {
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+        }
+
+        .panel-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .panel-info {
+            font-size: 0.95rem;
+        }
+
+        .panel-description {
+            font-size: 0.95rem;
+        }
+    }
 </style>
 
 <body>
-    <floating-navbar> </floating-navbar>
-    
+    <floating-navbar></floating-navbar>
 
+    <div class="container mb-5">
+        <h1 class="main-heading text-uppercase">International Panels</h1>
+
+        <!-- Panel 1 -->
+        <div class="panel-card">
+            <h2 class="h4 panel-title">International Hospital Social Work Panel - Hospital Social Work - Models of Care:
+                Policy, Practice and Innovations</h2>
+            <div class="panel-info">
+                <p><strong>Chair:</strong> Professor Lynette Joubert (Australia)</p>
+                <p><strong>Panellists:</strong> Melissa Chew (Singapore), Elisa Gordon (USA), Mary Joyce (Australia), Dr
+                    Hadas Rosenne (Israel) and Dr Samuel Shih-Chih Wang (Taiwan)</p>
+            </div>
+            <p class="panel-description">
+                In the evolving landscape and challenges of hospital social work, our panel will examine how a broader
+                systematization and the social determinants of health can assist in identifying and developing new care
+                models tailored to patient profiles. The panel will also delve into patient autonomy and how changes to
+                legislation in different countries are shaping the future roles and responsibilities of Hospital Social
+                Work.
+            </p>
+        </div>
+
+        <!-- Panel 2 -->
+        <div class="panel-card">
+            <h2 class="h4 panel-title">International Health & Mental Health Panel - The Intersection of Health and
+                Mental Health: Global Perspectives</h2>
+            <div class="panel-info">
+                <p><strong>Chair:</strong> Professor Lynette Joubert (Australia)</p>
+                <p><strong>Panellists:</strong> Dr Fang Fu (China), Dr Nicole Dubus (USA), Professor Susan Green
+                    (Australia), PhD Researcher Miia Ståhle (Finland) and Professor Martin Webber (UK)</p>
+            </div>
+            <p class="panel-description">
+                An opportunity has emerged for global thought leaders to share their experiences on how public health
+                can help prevent diseases and how integrating social work care into healthcare can help reduce the
+                stigmatization of mental health patients. The panel will also explore the relationship between people
+                living with chronic health conditions and their mental health needs.
+            </p>
+        </div>
+    </div>
 </body>
 <script src="navbar.js" defer></script>
 

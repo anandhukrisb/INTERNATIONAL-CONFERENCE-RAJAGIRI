@@ -283,7 +283,7 @@ class FloatingNavbar extends HTMLElement {
                 .mobile-title {
                     display: none;
                     color: white;
-                    font-family: 'Momo Trust Display', sans-serif;
+                    font-family: 'Lora', serif;
                     font-size: 20px;
                     font-weight: 500;
                     margin-left: 20px;
@@ -537,7 +537,7 @@ class FloatingNavbar extends HTMLElement {
                             <li><a href="#">Travel</a></li>
                         </ul>
                     </li>
-                    <li><a href="#" class="contact-btn">Contact Us</a></li>
+                    <li><a href="#" class="contact-btn">Contact</a></li>
                 </ul>
             </nav>
         `;
