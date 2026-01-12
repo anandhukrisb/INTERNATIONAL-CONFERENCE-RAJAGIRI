@@ -8,17 +8,21 @@
     <title>2027 ICSWHMH | International Conference</title>
     <script src="navbar.js" defer></script>
     <script src="footer.js" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@400;600;800&display=swap"
+        rel="stylesheet">
     <style>
         * {
-            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-
+            box-sizing: border-box;
         }
 
         body {
             margin: 0;
             padding: 0;
             background-color: #FDFBF7;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             color: #333;
             height: 300vh;
             /* Make page tall enough to scroll */
@@ -72,6 +76,7 @@
             max-width: 1200px;
             margin: 0 auto;
             margin-top: 120px;
+            font-size: larger;
         }
 
         .title-section h1 {
@@ -87,9 +92,10 @@
             /* Bigger, bolder */
             color: #1d0a3f;
             /* Deep purple primary */
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             text-transform: none;
             /* easier to read */
-            font-weight: 800;
+            font-weight: 600;
             margin-bottom: 20px;
             line-height: 1.2;
             letter-spacing: -1px;
@@ -203,9 +209,10 @@
             /* Bigger, bolder */
             color: #1d0a3f;
             /* Deep purple primary */
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             text-transform: none;
             /* easier to read */
-            font-weight: 800;
+            font-weight: 600;
             margin-bottom: 20px;
             line-height: 1.2;
             letter-spacing: -1px;
@@ -244,14 +251,18 @@
                 /* Soften right side */
             }
 
-            .title-section h1 {
+            .title-section {
                 background-color: #F0F0F0;
-                /* Same dull container */
                 border-left: 6px solid #C9A227;
-                padding: 30px 40px;
+                padding: 60px 40px;
                 border-radius: 0 20px 20px 0;
-                width: fit-content;
-                /* Wrap tightly */
+            }
+
+            .title-section h1 {
+                background-color: transparent;
+                border: none;
+                padding: 0;
+                width: auto;
             }
         }
 
@@ -337,7 +348,8 @@
             text-align: left;
             color: #1D0A3F;
             /* Primary Color */
-            /* text-transform: uppercase; */
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-weight: 600;
             font-size: 2rem;
             margin-bottom: 50px;
             position: relative;
@@ -425,6 +437,7 @@
 
         .speaker-card-back h3 {
             color: #FFFFFF;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin-top: 0;
             font-size: 1.3rem;
             margin-bottom: 10px;
@@ -453,6 +466,7 @@
 
         .speaker-info h3 {
             color: #FFFFFF;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0 0 10px 0;
             font-size: 1.5rem;
         }
@@ -515,14 +529,35 @@
             padding: 60px 20px 80px;
             border-radius: 50px;
             text-align: center;
-            margin-bottom: 50px;
+            max-width: 1400px;
+            margin: 0 auto 50px;
         }
 
         .delegates-title {
-            text-transform: uppercase;
-            font-size: 2.5rem;
-            margin-bottom: 40px;
-            color: #C9A227;
+            text-align: left;
+            color: #1D0A3F;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-weight: 600;
+            font-size: 2rem;
+            margin-bottom: 50px;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 40px;
+            box-sizing: border-box;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .delegates-title::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: #C9A227;
+            margin-top: 10px;
+            border-radius: 3px;
         }
 
         .map-container {
@@ -572,6 +607,7 @@
             left: 0;
             width: 100%;
             text-align: center;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             font-size: 1.5rem;
             text-transform: uppercase;
             color: white;
@@ -651,13 +687,13 @@
             text-align: left;
             z-index: -1;
             text-transform: uppercase;
-            font-family: 'Arial Black', sans-serif;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
 
         .section-separator {
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 50px auto;
             border-top: 1px solid #ddd;
             width: 100%;
         }
@@ -742,8 +778,8 @@
 
         .cta-image-wrapper {
             width: 100%;
-            height: 300px;
-            /* Increased height for front visual */
+            height: 220px;
+            /* Reduced height from 300px */
             border-radius: 10px;
             overflow: hidden;
             margin-bottom: 25px;
@@ -791,9 +827,15 @@
             font-size: 1.1rem;
             text-align: center;
             line-height: 1.5;
-            font-weight: 500;
+            font-weight: 400;
             margin: 0;
             max-width: 90%;
+        }
+
+        .cta-title {
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-weight: 500;
+            /* Extra bold for titles */
         }
 
         @media (max-width: 950px) {
@@ -981,7 +1023,7 @@
         <img src="assets/conf_logo_10th.png" alt="10th International Conference Logo">
     </div>
 
-    <hr />
+    <div class="section-separator"></div>
 
     <!-- About Section -->
     <div class="about-section">
@@ -1132,8 +1174,8 @@
 
 
     <!-- Delegates & Map Section -->
+    <h2 class="delegates-title">1000+ Delegates registered</h2>
     <section class="delegates-section">
-        <h2 class="delegates-title">1000+ Delegates registered</h2>
         <div class="map-container">
             <iframe
                 src="https://maps.google.com/maps?q=Rajagiri+College+of+Social+Sciences+Kalamassery&t=&z=15&ie=UTF8&iwloc=&output=embed"
