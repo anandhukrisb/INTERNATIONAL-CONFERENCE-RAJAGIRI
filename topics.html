@@ -6,8 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conference Topics - ICSWHMH 2027</title>
 
-    <!-- Fonts (System UI) -->
-    <!-- Using Segoe UI as primary font, no external requests needed -->
+    <!-- Professional Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@400;600;800&display=swap"
+        rel="stylesheet">
 
     <!-- Bootstrap 5.3 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -22,14 +24,9 @@
             --primary-purple: #1d0a3f;
             --secondary-purple: #3d2066;
             --accent-gold: #d4af37;
-            --text-dark: #2d3436;
-            /* Updated Text (Body) */
+            --text-dark: #2c2c2c;
             --text-light: #6b6b6b;
             --bg-light: #f8f9fa;
-            --bg-base: #FDFDFF;
-            /* Secondary (Base) */
-            --bg-tone: #F1F2F6;
-            /* Support (Tone) */
         }
 
         * {
@@ -39,11 +36,11 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             color: var(--text-dark);
             line-height: 1.7;
-            background-color: var(--bg-base);
         }
+
 
         /* Floating Navbar Component */
         floating-navbar {
@@ -100,11 +97,11 @@
             color: white;
             font-size: 1.6rem;
             font-weight: 700;
-            font-family: 'Segoe UI', serif;
+            font-family: 'Outfit', sans-serif;
         }
 
         .title-section h1 {
-            font-family: 'Segoe UI', serif;
+            font-family: 'Outfit', sans-serif;
             font-size: 2rem;
             font-weight: 700;
             color: var(--primary-purple);
@@ -213,7 +210,7 @@
         }
 
         .page-title-section h1 {
-            font-family: 'Segoe UI', serif;
+            font-family: 'Outfit', sans-serif;
             font-size: 3rem;
             font-weight: 700;
             color: var(--primary-purple);
@@ -239,7 +236,7 @@
         }
 
         .program-card h2 {
-            font-family: 'Segoe UI', serif;
+            font-family: 'Outfit', sans-serif;
             font-size: 2.2rem;
             font-weight: 700;
             color: var(--primary-purple);
@@ -275,7 +272,7 @@
         }
 
         .stat-box .number {
-            font-family: 'Segoe UI', serif;
+            font-family: 'Outfit', sans-serif;
             font-size: 3.5rem;
             font-weight: 700;
             color: var(--primary-purple);
@@ -300,7 +297,7 @@
         }
 
         .download-box h3 {
-            font-family: 'Segoe UI', serif;
+            font-family: 'Outfit', sans-serif;
             font-size: 2rem;
             font-weight: 700;
             color: white;
@@ -341,7 +338,7 @@
         }
 
         .section-title {
-            font-family: 'Segoe UI', serif;
+            font-family: 'Outfit', sans-serif;
             font-size: 2.5rem;
             font-weight: 700;
             color: var(--primary-purple);
@@ -366,7 +363,7 @@
         }
 
         .program-feature h3 {
-            font-family: 'Segoe UI', serif;
+            font-family: 'Outfit', sans-serif;
             font-size: 1.6rem;
             font-weight: 600;
             color: var(--primary-purple);
@@ -431,7 +428,7 @@
         }
 
         .footer-section h5 {
-            font-family: 'Segoe UI', serif;
+            font-family: 'Outfit', sans-serif;
             font-size: 1.4rem;
             font-weight: 600;
             color: var(--accent-gold);
@@ -599,6 +596,83 @@
             .section-title {
                 font-size: 1.9rem;
             }
+        }
+
+        /* ============ TOPICS GRID ============ */
+        .topics-intro {
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto 60px;
+        }
+
+        .topic-category {
+            background: white;
+            border-radius: 0;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05);
+            margin-bottom: 40px;
+            overflow: hidden;
+            border-top: 5px solid var(--primary-purple);
+            transition: transform 0.3s ease;
+        }
+
+        .topic-category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-header {
+            background: #f8f9fa;
+            padding: 25px 30px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .category-header h3 {
+            margin: 0;
+            font-family: 'Outfit', sans-serif;
+            color: var(--primary-purple);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .category-icon {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-gold);
+            font-size: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .topic-list {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px 30px;
+        }
+
+        .topic-item {
+            position: relative;
+            padding-left: 25px;
+            font-size: 1rem;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .topic-item::before {
+            content: "•";
+            color: var(--accent-gold);
+            font-weight: bold;
+            font-size: 1.5rem;
+            position: absolute;
+            left: 0;
+            top: -5px;
         }
 
         /* ============ MERGED FLOATING NAVBAR STYLES ============ */
@@ -828,143 +902,146 @@
             </div>
 
             <!-- Intro Text -->
-            <div class="program-card">
-                <h2>Topics Overview</h2>
+            <div class="topics-intro">
                 <p>The Conference topics are an indication only and not an exhaustive list. We have endeavored to cover
                     a broad range of topics within the sector and we are sure that whatever your specific field of
                     practice you will find plenty of interest in the program.</p>
             </div>
 
             <!-- Topics Categories -->
-            <div class="row">
 
-                <!-- Category 1 -->
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="program-feature">
-                        <h3><i class="bi bi-briefcase"></i> Practice Domains</h3>
-                        <ul>
-                            <li>Acquired brain injury</li>
-                            <li>Addiction / Substance Use</li>
-                            <li>Cancer care</li>
-                            <li>Child Protection</li>
-                            <li>Chronic health conditions</li>
-                            <li>Critical care and crisis intervention</li>
-                            <li>Disability</li>
-                            <li>Disaster social work</li>
-                            <li>Eating disorders</li>
-                            <li>End of life / Palliative care</li>
-                            <li>Family violence</li>
-                            <li>First Nations peoples' health & wellbeing</li>
-                            <li>Forensic social work</li>
-                            <li>Grief and bereavement</li>
-                            <li>Long COVID</li>
-                            <li>Mental health social work</li>
-                            <li>Neurological conditions</li>
-                            <li>Older persons physical and mental health</li>
-                            <li>Oncology & Haematology</li>
-                            <li>Paediatrics and child health</li>
-                            <li>Private practice</li>
-                            <li>Rehabilitation</li>
-                            <li>Renal social work</li>
-                            <li>Sexual health</li>
-                            <li>Women's health</li>
-                        </ul>
-                    </div>
+            <!-- Category 1: Practice Domains -->
+            <div class="topic-category">
+                <div class="category-header">
+                    <div class="category-icon"><i class="bi bi-briefcase"></i></div>
+                    <h3>Practice Domains</h3>
                 </div>
-
-                <!-- Category 2 -->
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="program-feature">
-                        <h3><i class="bi bi-globe-americas"></i> Global Challenges</h3>
-                        <ul>
-                            <li>Changing climate and environments</li>
-                            <li>Consequences of pandemics</li>
-                            <li>Digital health and telehealth</li>
-                            <li>Housing & homelessness</li>
-                            <li>Immigration and refugee settlement</li>
-                            <li>International social work</li>
-                            <li>Isolation and loneliness</li>
-                            <li>Migration and displacement</li>
-                            <li>Trauma</li>
-                            <li>Veterans and military families</li>
-                        </ul>
-                    </div>
+                <div class="topic-list">
+                    <div class="topic-item">Acquired brain injury</div>
+                    <div class="topic-item">Addiction / Substance Use</div>
+                    <div class="topic-item">Cancer care</div>
+                    <div class="topic-item">Child Protection</div>
+                    <div class="topic-item">Chronic health conditions</div>
+                    <div class="topic-item">Critical care and crisis intervention</div>
+                    <div class="topic-item">Disability</div>
+                    <div class="topic-item">Disaster social work</div>
+                    <div class="topic-item">Eating disorders</div>
+                    <div class="topic-item">End of life / Palliative care</div>
+                    <div class="topic-item">Family violence</div>
+                    <div class="topic-item">First Nations peoples' health & wellbeing</div>
+                    <div class="topic-item">Forensic social work</div>
+                    <div class="topic-item">Grief and bereavement</div>
+                    <div class="topic-item">Long COVID</div>
+                    <div class="topic-item">Mental health social work</div>
+                    <div class="topic-item">Neurological conditions</div>
+                    <div class="topic-item">Older persons physical and mental health</div>
+                    <div class="topic-item">Oncology & Haematology</div>
+                    <div class="topic-item">Paediatrics and child health</div>
+                    <div class="topic-item">Private practice</div>
+                    <div class="topic-item">Rehabilitation</div>
+                    <div class="topic-item">Renal social work</div>
+                    <div class="topic-item">Sexual health</div>
+                    <div class="topic-item">Women's health</div>
                 </div>
+            </div>
 
-                <!-- Category 3 -->
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="program-feature">
-                        <h3><i class="bi bi-people"></i> Social Determinants</h3>
-                        <ul>
-                            <li>Cultural safety and responsiveness</li>
-                            <li>Gender identity and expression</li>
-                            <li>Health and Income inequalities</li>
-                            <li>Intersectionality</li>
-                            <li>LGBTIQA+ health and wellbeing</li>
-                            <li>Rural and Remote health</li>
-                            <li>Social prescribing</li>
-                        </ul>
-                    </div>
+            <!-- Category 2: Global Challenges -->
+            <div class="topic-category">
+                <div class="category-header">
+                    <div class="category-icon"><i class="bi bi-globe-americas"></i></div>
+                    <h3>Global Challenges</h3>
                 </div>
-
-                <!-- Category 4 -->
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="program-feature">
-                        <h3><i class="bi bi-tools"></i> Social Work Intervention</h3>
-                        <ul>
-                            <li>Advocacy and activism</li>
-                            <li>Arts-based interventions</li>
-                            <li>Artificial intelligence in practice</li>
-                            <li>Spirituality and mental health</li>
-                            <li>Suicide prevention and postvention</li>
-                        </ul>
-                    </div>
+                <div class="topic-list">
+                    <div class="topic-item">Changing climate and environments</div>
+                    <div class="topic-item">Consequences of pandemics</div>
+                    <div class="topic-item">Digital health and telehealth</div>
+                    <div class="topic-item">Housing & homelessness</div>
+                    <div class="topic-item">Immigration and refugee settlement</div>
+                    <div class="topic-item">International social work</div>
+                    <div class="topic-item">Isolation and loneliness</div>
+                    <div class="topic-item">Migration and displacement</div>
+                    <div class="topic-item">Trauma</div>
+                    <div class="topic-item">Veterans and military families</div>
                 </div>
+            </div>
 
-                <!-- Category 5 -->
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="program-feature">
-                        <h3><i class="bi bi-balloon-heart"></i> Working with Children</h3>
-                        <ul>
-                            <li>Adolescence and youth mental health</li>
-                            <li>Adverse childhood experiences</li>
-                            <li>Child and family welfare</li>
-                            <li>Child poverty and health</li>
-                            <li>Perinatal and infant mental health</li>
-                        </ul>
-                    </div>
+            <!-- Category 3: Social Determinants -->
+            <div class="topic-category">
+                <div class="category-header">
+                    <div class="category-icon"><i class="bi bi-people"></i></div>
+                    <h3>Social Determinants</h3>
                 </div>
-
-                <!-- Category 6 -->
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="program-feature">
-                        <h3><i class="bi bi-book"></i> Knowledge Production</h3>
-                        <ul>
-                            <li>Co-design and co-production</li>
-                            <li>Interdisciplinary and transdisciplinary practice</li>
-                            <li>Leadership and management</li>
-                            <li>Research and evaluation</li>
-                            <li>Service user and carer participation</li>
-                            <li>Social work education and field education</li>
-                            <li>Supervision and mentoring</li>
-                            <li>Theory and practice knowledge</li>
-                        </ul>
-                    </div>
+                <div class="topic-list">
+                    <div class="topic-item">Cultural safety and responsiveness</div>
+                    <div class="topic-item">Gender identity and expression</div>
+                    <div class="topic-item">Health and Income inequalities</div>
+                    <div class="topic-item">Intersectionality</div>
+                    <div class="topic-item">LGBTIQA+ health and wellbeing</div>
+                    <div class="topic-item">Rural and Remote health</div>
+                    <div class="topic-item">Social prescribing</div>
                 </div>
+            </div>
 
-                <!-- Category 7 -->
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="program-feature">
-                        <h3><i class="bi bi-bank"></i> Law & Policy</h3>
-                        <ul>
-                            <li>Ethics and ethical dilemmas</li>
-                            <li>Human rights and social justice</li>
-                            <li>Mental health law and policy</li>
-                            <li>Social policy and health reform</li>
-                        </ul>
-                    </div>
+            <!-- Category 4: Social Work Intervention -->
+            <div class="topic-category">
+                <div class="category-header">
+                    <div class="category-icon"><i class="bi bi-tools"></i></div>
+                    <h3>Social Work Intervention</h3>
                 </div>
+                <div class="topic-list">
+                    <div class="topic-item">Advocacy and activism</div>
+                    <div class="topic-item">Arts-based interventions</div>
+                    <div class="topic-item">Artificial intelligence in practice</div>
+                    <div class="topic-item">Spirituality and mental health</div>
+                    <div class="topic-item">Suicide prevention and postvention</div>
+                </div>
+            </div>
 
+            <!-- Category 5: Working with Children -->
+            <div class="topic-category">
+                <div class="category-header">
+                    <div class="category-icon"><i class="bi bi-balloon-heart"></i></div>
+                    <h3>Working with Children</h3>
+                </div>
+                <div class="topic-list">
+                    <div class="topic-item">Adolescence and youth mental health</div>
+                    <div class="topic-item">Adverse childhood experiences</div>
+                    <div class="topic-item">Child and family welfare</div>
+                    <div class="topic-item">Child poverty and health</div>
+                    <div class="topic-item">Perinatal and infant mental health</div>
+                </div>
+            </div>
+
+            <!-- Category 6: Knowledge Production -->
+            <div class="topic-category">
+                <div class="category-header">
+                    <div class="category-icon"><i class="bi bi-book"></i></div>
+                    <h3>Knowledge Production</h3>
+                </div>
+                <div class="topic-list">
+                    <div class="topic-item">Co-design and co-production</div>
+                    <div class="topic-item">Interdisciplinary and transdisciplinary practice</div>
+                    <div class="topic-item">Leadership and management</div>
+                    <div class="topic-item">Research and evaluation</div>
+                    <div class="topic-item">Service user and carer participation</div>
+                    <div class="topic-item">Social work education and field education</div>
+                    <div class="topic-item">Supervision and mentoring</div>
+                    <div class="topic-item">Theory and practice knowledge</div>
+                </div>
+            </div>
+
+            <!-- Category 7: Law & Policy -->
+            <div class="topic-category">
+                <div class="category-header">
+                    <div class="category-icon"><i class="bi bi-bank"></i></div>
+                    <h3>Law & Policy</h3>
+                </div>
+                <div class="topic-list">
+                    <div class="topic-item">Ethics and ethical dilemmas</div>
+                    <div class="topic-item">Human rights and social justice</div>
+                    <div class="topic-item">Mental health law and policy</div>
+                    <div class="topic-item">Social policy and health reform</div>
+                </div>
             </div>
 
 
