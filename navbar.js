@@ -3,10 +3,16 @@ class FloatingNavbar extends HTMLElement {
         super();
         this.attachShadow({ mode: 'open' });
         this.toggleMobileMenu = this.toggleMobileMenu.bind(this);
+        this.hasRendered = false; // Prevent re-rendering during view transitions
     }
 
     connectedCallback() {
-        this.render();
+        // Only render once to prevent flickering during view transitions
+        if (!this.hasRendered) {
+            this.render();
+            this.hasRendered = true;
+        }
+        // Always update active link highlighting
         this.highlightActiveLink();
     }
 

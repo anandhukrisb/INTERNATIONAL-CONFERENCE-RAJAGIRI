@@ -14,6 +14,51 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@400;600;800&display=swap"
         rel="stylesheet">
+
+    <!-- View Transitions API CSS -->
+    <style>
+        /* Prevent navbar and footer from flickering during transitions */
+        floating-navbar {
+            view-transition-name: navbar;
+        }
+
+        main-footer {
+            view-transition-name: footer;
+        }
+
+        /* Smooth crossfade animation for page content */
+        ::view-transition-old(root),
+        ::view-transition-new(root) {
+            animation-duration: 0.3s;
+        }
+
+        /* Keep navbar and footer stable (no animation) */
+        ::view-transition-old(navbar),
+        ::view-transition-new(navbar),
+        ::view-transition-old(footer),
+        ::view-transition-new(footer) {
+            animation: none;
+        }
+
+        /* Respect user's motion preferences */
+        @media (prefers-reduced-motion: reduce) {
+
+            ::view-transition-old(root),
+            ::view-transition-new(root) {
+                animation: none !important;
+            }
+        }
+
+        /* Disable page load animations during view transitions to prevent conflicts */
+        html:active-view-transition .title-section h1,
+        html:active-view-transition .title-section img,
+        html:active-view-transition .card-img {
+            animation: none !important;
+            opacity: 1 !important;
+            transform: none !important;
+        }
+    </style>
+
     <style>
         * {
             box-sizing: border-box;

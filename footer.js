@@ -2,10 +2,15 @@ class MainFooter extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
+        this.hasRendered = false; // Prevent re-rendering during view transitions
     }
 
     connectedCallback() {
-        this.render();
+        // Only render once to prevent flickering during view transitions
+        if (!this.hasRendered) {
+            this.render();
+            this.hasRendered = true;
+        }
     }
 
     render() {
