@@ -73,13 +73,13 @@ class MainFooter extends HTMLElement {
                     object-fit: contain;
                 }
 
-                /* Bottom Left White Section (Copyright) */
+                /* Bottom Left White Section (Copyright) - Desktop with curved shape */
                 .copyright-section {
                     position: absolute;
                     bottom: 0;
                     left: 0;
                     width: 550px;
-                    height: 60px; /* Smaller height */
+                    height: 60px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -97,7 +97,7 @@ class MainFooter extends HTMLElement {
                     left: 0;
                     width: 100%;
                     height: 100%;
-                    object-fit: fill; 
+                    object-fit: fill;
                     z-index: -1;
                 }
 
@@ -110,9 +110,9 @@ class MainFooter extends HTMLElement {
                 .social-icons {
                     position: absolute;
                     left: 50px;
-                    bottom: 80px; 
+                    bottom: 100px;
                     display: flex;
-                    gap: 15px;
+                    gap: 10px;
                     z-index: 10;
                 }
 
@@ -153,7 +153,7 @@ class MainFooter extends HTMLElement {
                     z-index: 5;
                     display: grid;
                     grid-template-columns: 1.2fr 0.8fr 1fr; /* Contact, Links, Resources */
-                    gap: 30px;
+                    gap: 20px;
                     align-items: start;
                 }
 
@@ -236,7 +236,7 @@ class MainFooter extends HTMLElement {
                         left: auto;
                         bottom: auto;
                         justify-content: center;
-                        margin: 0 0 30px 0;
+                        margin-top: 20px;
                     }
 
                     .copyright-section {
@@ -245,12 +245,14 @@ class MainFooter extends HTMLElement {
                         height: auto;
                         padding: 20px;
                         bottom: auto;
+                        left: 0;
+                        right: 0;
                         background-color: white;
-                        border-top-left-radius: 30px;
-                        border-top-right-radius: 30px;
                     }
                     
-                    .footer-shape-bottom { display: none; }
+                    .footer-shape-bottom { 
+                        display: none; 
+                    }
                 }
             </style>
 

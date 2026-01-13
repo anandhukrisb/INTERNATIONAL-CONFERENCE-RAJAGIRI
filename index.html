@@ -20,6 +20,10 @@
             font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
+        html {
+            overflow-x: hidden;
+        }
+
         body {
             margin: 0;
             padding: 0;
@@ -28,6 +32,8 @@
             color: #333;
             height: 300vh;
             /* Make page tall enough to scroll */
+            overflow-x: hidden;
+            width: 100%;
         }
 
         /* Floating Navbar Component */
@@ -87,6 +93,7 @@
             margin: 0 auto;
             margin-top: 180px;
             font-size: larger;
+            color: #1D0A3F;
         }
 
         /* Intro Animations */
@@ -312,6 +319,15 @@
                 box-sizing: border-box;
             }
 
+            .title-section {
+                margin-top: 130px;
+                padding: 20px 15px;
+            }
+
+            .about-section {
+                padding: 20px 15px;
+            }
+
             .about-content h2 {
                 font-size: 1.8rem;
                 /* Smaller on mobile */
@@ -367,6 +383,17 @@
                 margin: 0 auto;
                 border-radius: 20px;
                 box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Mobile Ticker - Edge to Edge */
+            .news-ticker-container {
+                width: 100%;
+                left: 0;
+                transform: none;
+                mask-image: none;
+                -webkit-mask-image: none;
+                height: 50px;
+                padding: 10px 0;
             }
         }
 
