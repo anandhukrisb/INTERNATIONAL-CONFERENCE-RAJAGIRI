@@ -110,7 +110,7 @@ class MainFooter extends HTMLElement {
                 .social-icons {
                     position: absolute;
                     left: 50px;
-                    bottom: 100px;
+                    bottom: 75px;
                     display: flex;
                     gap: 10px;
                     z-index: 10;
