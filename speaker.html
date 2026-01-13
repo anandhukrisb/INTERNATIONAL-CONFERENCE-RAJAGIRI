@@ -46,7 +46,8 @@
             max-width: 1200px;
             margin: 0 auto;
             background-color: #FDFBF7;
-            margin-top: 100px; /* Space for navbar */
+            margin-top: 100px;
+            /* Space for navbar */
         }
 
         .speakers-title {
@@ -74,14 +75,15 @@
 
         .speakers-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            grid-template-columns: 1fr 1fr;
             gap: 40px;
             margin-bottom: 60px;
         }
 
         .speaker-card {
             perspective: 1000px;
-            height: 300px; /* Adjusted height for content */
+            height: 300px;
+            /* Adjusted height for content */
             background: transparent;
             padding: 0;
             border-radius: 0;
@@ -206,7 +208,7 @@
             margin-top: 0;
             font-size: 1.3rem;
             margin-bottom: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             padding-bottom: 10px;
             width: 100%;
         }
@@ -248,7 +250,7 @@
             font-weight: 600;
             align-self: flex-end;
         }
-        
+
         .close-btn:hover {
             background-color: #FDFBF7;
         }
@@ -268,11 +270,13 @@
                 text-align: center;
                 gap: 20px;
             }
-            
-            .speaker-info h3, .speaker-info h6, .speaker-info p {
+
+            .speaker-info h3,
+            .speaker-info h6,
+            .speaker-info p {
                 text-align: center;
             }
-            
+
             .speaker-card-back {
                 padding: 20px;
             }
@@ -288,7 +292,7 @@
         <!-- Section 1 -->
         <h2 class="speakers-title">INTERNATIONAL KEYNOTE SPEAKERS</h2>
         <div class="speakers-grid">
-            
+
             <!-- Speaker 1: Dr Cindy Blackstock -->
             <div class="speaker-card">
                 <div class="speaker-card-inner">
@@ -308,17 +312,21 @@
                     <div class="speaker-card-back">
                         <h3>DR CINDY BLACKSTOCK</h3>
                         <p>
-                            A member of the Gitxsan First Nation, Cindy is honoured to serve as the Executive Director of
-                            the First Nations Child and Family Caring Society and a professor at McGill University’s School
+                            A member of the Gitxsan First Nation, Cindy is honoured to serve as the Executive Director
+                            of
+                            the First Nations Child and Family Caring Society and a professor at McGill University’s
+                            School
                             of Social Work. She has over 30 years of experience working in child welfare and Indigenous
                             children’s rights and has published on topics relating to reconciliation, Indigenous theory,
                             First Nations child welfare and human rights. A recipient of the SSHRC Gold Medal, Cindy was
                             honoured to work with First Nations colleagues on a successful human rights challenge to
-                            Canada’s inequitable provision of child and family services and failure to implement Jordan’s
+                            Canada’s inequitable provision of child and family services and failure to implement
+                            Jordan’s
                             Principle.
                         </p>
                         <p>
-                            This hard-fought litigation has resulted in hundreds of thousands of services being provided to
+                            This hard-fought litigation has resulted in hundreds of thousands of services being provided
+                            to
                             First Nations children, youth, and families.
                         </p>
                         <button class="close-btn" onclick="unflipCard(this)">Close</button>
@@ -327,7 +335,7 @@
             </div>
 
             <!-- Speaker 2: Dr Michael Ungar -->
-             <div class="speaker-card">
+            <div class="speaker-card">
                 <div class="speaker-card-inner">
                     <div class="speaker-card-front">
                         <img src="assets/speaker2.jpg" class="speaker-img" alt="Dr Michael Ungar">
@@ -346,12 +354,16 @@
                         <h3>DR MICHAEL UNGAR</h3>
                         <h6>Canada Research Chair in Child, Family and Community Resilience</h6>
                         <p>
-                            Michael Ungar, Ph.D., is a Family Therapist and Professor of Social Work at Dalhousie University
-                            where he holds the Canada Research Chair in Child, Family and Community Resilience. His research
+                            Michael Ungar, Ph.D., is a Family Therapist and Professor of Social Work at Dalhousie
+                            University
+                            where he holds the Canada Research Chair in Child, Family and Community Resilience. His
+                            research
                             on resilience around the world and across cultures has made him the number one ranked Social
                             Work scholar in the world, with numerous educational institutions, government agencies, and
-                            not-for-profits relying on his research and clinical work to guide their approaches to nurturing
-                            child, family, organizational and community wellbeing under stress. He the author of 18 books
+                            not-for-profits relying on his research and clinical work to guide their approaches to
+                            nurturing
+                            child, family, organizational and community wellbeing under stress. He the author of 18
+                            books
                             for mental health professionals, educators, caregivers and employers.
                         </p>
                         <button class="close-btn" onclick="unflipCard(this)">Close</button>
@@ -384,15 +396,20 @@
                     <div class="speaker-card-back">
                         <h3>A/PROFESSOR HEATHER BOETTO</h3>
                         <p>
-                            Heather Boetto is a distinguished expert in the field of Environmental Social Work, also known
+                            Heather Boetto is a distinguished expert in the field of Environmental Social Work, also
+                            known
                             as EcoSocial Work and Green Social Work. Her extensive knowledge of this area centres around
-                            helping people establish and maintain a balanced and diverse ecosystem. Heather understands the
-                            intrinsic connection between environmental well-being and human welfare and actively works to
-                            address and rectify injustices that arise from the unequal distribution of environmental risks.
+                            helping people establish and maintain a balanced and diverse ecosystem. Heather understands
+                            the
+                            intrinsic connection between environmental well-being and human welfare and actively works
+                            to
+                            address and rectify injustices that arise from the unequal distribution of environmental
+                            risks.
                         </p>
                         <p>
                             Heather's academic journey has been marked by significant accomplishments. She obtained her
-                            Doctoral degree, culminating in a PhD with the prestigious Higher Degree by Research Medal in
+                            Doctoral degree, culminating in a PhD with the prestigious Higher Degree by Research Medal
+                            in
                             2017 from Charles Sturt University.
                         </p>
                         <button class="close-btn" onclick="unflipCard(this)">Close</button>
@@ -442,7 +459,7 @@
         <div class="speakers-grid">
 
             <!-- Speaker: Heather Boetto (Again/Different context) -->
-             <div class="speaker-card">
+            <div class="speaker-card">
                 <div class="speaker-card-inner">
                     <div class="speaker-card-front">
                         <img src="assets/speaker3.png" class="speaker-img" alt="A/Professor Heather Boetto">
@@ -460,11 +477,15 @@
                     <div class="speaker-card-back">
                         <h3>A/PROFESSOR HEATHER BOETTO</h3>
                         <p>
-                            Heather Boetto is a distinguished expert in the field of Environmental Social Work, also known
+                            Heather Boetto is a distinguished expert in the field of Environmental Social Work, also
+                            known
                             as EcoSocial Work and Green Social Work. Her extensive knowledge of this area centres around
-                            helping people establish and maintain a balanced and diverse ecosystem. Heather understands the
-                            intrinsic connection between environmental well-being and human welfare and actively works to
-                            address and rectify injustices that arise from the unequal distribution of environmental risks.
+                            helping people establish and maintain a balanced and diverse ecosystem. Heather understands
+                            the
+                            intrinsic connection between environmental well-being and human welfare and actively works
+                            to
+                            address and rectify injustices that arise from the unequal distribution of environmental
+                            risks.
                         </p>
                         <button class="close-btn" onclick="unflipCard(this)">Close</button>
                     </div>
