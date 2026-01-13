@@ -3,239 +3,282 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Speakers</title>
-
+    <title>Speakers | 2027 ICSWHMH</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="navbar.js"></script>
+    <script src="navbar.js" defer></script>
     <script src="footer.js" defer></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@400;600;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@400;600;800&display=swap"
         rel="stylesheet">
 
     <style>
-        /* ================= GLOBAL ================= */
+        * {
+            box-sizing: border-box;
+        }
 
         body {
-            background-color: #FDFDFF;
-            /* Secondary (Base) */
-            color: #2D3436;
-            /* Body Text */
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FDFBF7;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #333;
             overflow-x: hidden;
-            /* Prevent horizontal scroll */
         }
 
-        /* ... existing styles ... */
-
-        .speaker-front {
-            z-index: 2;
-            /* Ensure front is on top by default */
-            pointer-events: auto;
-
-        }
-
-        .speaker-back {
+        /* Floating Navbar Component Styles (if not loaded by js/css) */
+        floating-navbar {
+            display: block;
+            width: 100%;
             position: absolute;
-            inset: 0;
-            transform: rotateY(180deg);
-            opacity: 0;
-            overflow-y: auto;
-            max-height: 100%;
-            /* Fill container */
-            border-radius: 20px;
-            /* Match card */
-            pointer-events: none;
-            /* Ignore touches when hidden */
-            z-index: 1;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
 
-        .speaker-flip-wrapper.flipped .speaker-front {
-            transform: rotateY(180deg);
-            opacity: 0;
-            pointer-events: none;
-            /* Ignore touches when hidden */
+        /* Speakers Section Styles from Index */
+        .speakers-section {
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #FDFBF7;
+            margin-top: 100px;
+            /* Space for navbar */
         }
 
-        .speaker-flip-wrapper.flipped .speaker-back {
-            transform: rotateY(0deg);
-            opacity: 1;
-            pointer-events: auto;
-            /* Enable touches when visible */
-            z-index: 3;
-            /* bring to top */
-            padding-left: 2%;
-            padding-right: 2%;
-        }
-
-        /* ================= TITLE ================= */
-
-        .speaker-title {
-            margin-top: 180px;
-            margin-left: 60px;
-        }
-
-        #pageTitle {
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            font-weight: 700;
+        .speakers-title {
+            text-align: left;
             color: #1D0A3F;
-            /* Primary */
-            text-transform: uppercase;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-weight: 600;
+            font-size: 2rem;
+            margin-bottom: 50px;
+            margin-top: 50px;
             position: relative;
             display: inline-block;
-            padding-left: 5%;
-
+            width: 100%;
         }
 
-        #pageTitle::after {
+        .speakers-title::after {
             content: "";
             display: block;
-            width: 70px;
+            width: 80px;
             height: 4px;
             background-color: #C9A227;
-            ;
             margin-top: 10px;
             border-radius: 3px;
         }
 
-        /* ================= CARD ================= */
+        .speakers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
 
         .speaker-card {
-            border-radius: 20px;
-            padding: 20px;
-            margin-top: 60px;
-            background: #F1F2F6;
-            /* Support tone */
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            perspective: 1000px;
+            height: 300px;
+            /* Adjusted height for content */
+            background: transparent;
+            padding: 0;
+            border-radius: 0;
+            box-shadow: none;
         }
 
-        .speaker-card:hover {
+        .speaker-card:hover .speaker-card-front {
             transform: translateY(-5px);
-            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.12);
         }
 
-        /* ================= CONTENT ================= */
-
-        .speaker-content {
-            font-size: 18px;
-            line-height: 1.65;
+        .speaker-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: left;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
         }
 
-        .speaker-content p,
-        .speaker-back p {
-            text-align: justify;
-            margin-bottom: 0.9rem;
-            color: #2D3436;
+        .speaker-card.flipped .speaker-card-inner {
+            transform: rotateY(-180deg);
         }
 
-        .speaker-content h3,
-        .speaker-content h6 {
+        .speaker-card-front,
+        .speaker-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            background: #1D0A3F;
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        .speaker-card-front {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            z-index: 2;
+            transition: transform 0.3s ease;
+            border-left: 6px solid #C9A227;
+        }
+
+        .speaker-card-back {
+            transform: rotateY(180deg);
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            overflow-y: auto;
+            color: #F0F0F0;
+        }
+
+        .speaker-card-back::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .speaker-card-back::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .speaker-card-back::-webkit-scrollbar-thumb {
+            background-color: #C9A227;
+            border-radius: 3px;
+        }
+
+        .speaker-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .speaker-card:hover .speaker-img {
+            transform: scale(1.1);
+            border-radius: 20px;
+        }
+
+        .speaker-info {
+            flex: 1;
+        }
+
+        .speaker-info h3 {
+            color: #FFFFFF;
             font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            color: #1D0A3F;
-            margin-bottom: 8px;
+            margin: 0 0 5px 0;
+            font-size: 1.4rem;
             font-weight: 600;
         }
 
-        /* ================= BUTTON ================= */
+        .speaker-info h6 {
+            color: #C9A227;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0 0 10px 0;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
 
-        .speaker-btn {
-            background-color: #1D0A3F;
-            color: #FDFDFF;
+        .speaker-info p {
+            color: #F0F0F0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .speaker-card-back h3 {
+            color: #FFFFFF;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin-top: 0;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+            width: 100%;
+        }
+
+        .speaker-card-back p {
+            color: #F0F0F0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .read-more-btn {
+            display: inline-block;
+            padding: 8px 20px;
+            background-color: #C9A227;
+            color: #1D0A3F;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            transition: background 0.3s;
+            cursor: pointer;
+            font-weight: 600;
             border: none;
-            padding: 10px 22px;
-            border-radius: 30px;
-            font-weight: 500;
-            transition: background-color 0.25s ease, transform 0.2s ease;
         }
 
-        .speaker-btn:hover {
-            background-color: #14072C;
-            transform: translateY(-2px);
+        .read-more-btn:hover {
+            background-color: #FDFBF7;
         }
 
-        /* ================= FLIP EFFECT ================= */
-
-        .speaker-flip-wrapper {
-            perspective: 1000px;
-            position: relative;
+        .close-btn {
+            background: #C9A227;
+            border: none;
+            color: #1D0A3F;
+            cursor: pointer;
+            margin-top: auto;
+            padding: 8px 20px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            align-self: flex-end;
         }
 
-        .speaker-front,
-        .speaker-back {
-            backface-visibility: hidden;
-            transition: transform 1s ease, opacity 0.6s ease;
+        .close-btn:hover {
+            background-color: #FDFBF7;
         }
-
-        .speaker-back {
-            position: absolute;
-            inset: 0;
-            transform: rotateY(180deg);
-            opacity: 0;
-            overflow-y: auto;
-            max-height: 420px;
-        }
-
-        .speaker-flip-wrapper.flipped .speaker-front {
-            transform: rotateY(180deg);
-            opacity: 0;
-        }
-
-        .speaker-flip-wrapper.flipped .speaker-back {
-            transform: rotateY(0deg);
-            opacity: 1;
-        }
-
-        /* ================= IMAGE ================= */
-
-        .speaker-image-col {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .speaker-image-col img {
-            width: 280px;
-            height: 280px;
-            object-fit: cover;
-            box-shadow: 0 18px 35px rgba(0, 0, 0, 0.15);
-        }
-
-        /* ================= MOBILE ================= */
 
         @media (max-width: 768px) {
-            .speaker-title {
-                margin-top: 120px;
-                /* Reduced from 180px */
-                margin-left: 0;
-                /* Centered or just left aligned with container padding */
+            .speakers-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .speaker-card {
+                height: auto;
+                min-height: 450px;
+            }
+
+            .speaker-card-front {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+
+            .speaker-info h3,
+            .speaker-info h6,
+            .speaker-info p {
                 text-align: center;
             }
 
-            .speaker-image-col {
-                margin-top: 30px;
-                margin-bottom: 30px;
-            }
-
-            .speaker-image-col img {
-                width: 200px;
-                height: 200px;
-            }
-
-            .speaker-content {
-                max-width: 100%;
-                text-align: center;
-            }
-
-            .speaker-content p {
-                text-align: left;
-                /* Keep readable paragraph alignment */
+            .speaker-card-back {
+                padding: 20px;
             }
         }
     </style>
@@ -244,374 +287,416 @@
 <body>
     <floating-navbar></floating-navbar>
 
-    <div class="speaker-title">
-        <h2 id="pageTitle">INTERNATIONAL KEYNOTE SPEAKERS</h2>
-    </div>
-
-    <div class="container mb-5">
-
-        <!-- ================= SPEAKER 1 (IMAGE LEFT) ================= -->
-
-        <div class="speaker-card">
-            <div class="speaker-flip-wrapper">
-
-                <!-- FRONT -->
-                <div class="speaker-front">
-                    <div class="row align-items-center">
-
-                        <!-- IMAGE LEFT -->
-                        <div class="col-md-4 speaker-image-col">
-                            <img src="assets/speaker1.jpg" class="rounded-circle" alt="speaker">
-                        </div>
-
-                        <!-- TEXT -->
-                        <div class="col-md-8 speaker-content">
-                            <h3><strong>DR CINDY BLACKSTOCK</strong></h3>
-                            <h6>Executive Director, First Nations Child and Family Caring Society, Canada</h6>
-
-                            <p>
-                                A member of the Gitxsan First Nation, Cindy is honoured to serve as the
-                                Executive
-                                Director of the First Nations Child and Family Caring Society and a professor at
-                                McGill
-                                University’s School of Social Work. She has over 30 years of experience working
-                                in child
-                                welfare and Indigenous children’s rights and has published on topics relating to
-                                reconciliation, Indigenous theory, First Nations child welfare and human rights.
-                                A
-                                recipient of the SSHRC Gold Medal, Cindy was honoured to work with First Nations
-                                colleagues on a successful human rights challenge to Canada’s inequitable
-                                provision
-                                of child and family services and failure to implement Jordan’s Principle
-                            </p>
-
-                            <button class="speaker-btn mt-3" onclick="flipContent(this)">Read More</button>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- BACK -->
-                <div class="speaker-back">
-                    <p>
-                        A member of the Gitxsan First Nation, Cindy is honoured to serve as the Executive Director of
-                        the First Nations Child and Family Caring Society and a professor at McGill University’s School
-                        of Social Work. She has over 30 years of experience working in child welfare and Indigenous
-                        children’s rights and has published on topics relating to reconciliation, Indigenous theory,
-                        First Nations child welfare and human rights. A recipient of the SSHRC Gold Medal, Cindy was
-                        honoured to work with First Nations colleagues on a successful human rights challenge to
-                        Canada’s inequitable provision of child and family services and failure to implement Jordan’s
-                        Principle.
-                        This hard-fought litigation has resulted in hundreds of thousands of services being provided to
-                        First Nations children, youth, and families.
-                    </p>
-                    <p>
-                        A member of the Gitxsan First Nation, Cindy is honoured to serve as the Executive Director of
-                        the First Nations Child and Family Caring Society and a professor at McGill University’s School
-                        of Social Work. She has over 30 years of experience working in child welfare and Indigenous
-                        children’s rights and has published on topics relating to reconciliation, Indigenous theory,
-                        First Nations child welfare and human rights. A recipient of the SSHRC Gold Medal, Cindy was
-                        honoured to work with First Nations colleagues on a successful human rights challenge to
-                        Canada’s inequitable provision of child and family services and failure to implement Jordan’s
-                        Principle.
-                        This hard-fought litigation has resulted in hundreds of thousands of services being provided to
-                        First Nations children, youth, and families.
-                    </p>
-
-                    <button class="speaker-btn mt-3" onclick="flipContent(this)">Back</button>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- ================= SPEAKER 2 (IMAGE RIGHT) ================= -->
-
-        <div class="speaker-card">
-            <div class="speaker-flip-wrapper">
-
-                <!-- FRONT -->
-                <div class="speaker-front">
-                    <div class="row align-items-center">
-
-                        <!-- TEXT FIRST (Desktop: Left, Mobile: Second) -->
-                        <div class="col-md-8 speaker-content order-2 order-md-1">
-                            <h3>DR MICHAEL UNGAR</h3>
-                            <h6>Director, Resilience Research Centre, Canada</h6>
-
-                            <p>
-                                Michael Ungar, Ph.D., is a Family Therapist and Professor of Social Work at Dalhousie
-                                University where he holds the Canada Research Chair in Child, Family and Community
-                                Resilience. His research on resilience around the world and across cultures has made him
-                                the number one ranked Social Work scholar in the world, with numerous educational
-                                institutions, government agencies, and not-for-profits relying on his research and
-                                clinical work to guide their approaches to nurturing child,
-                                family, organizational and community wellbeing under stress.
-                            </p>
-
-                            <button class="speaker-btn mt-3" onclick="flipContent(this)">Read More</button>
-                        </div>
-
-                        <!-- IMAGE RIGHT (Desktop: Right, Mobile: First) -->
-                        <div class="col-md-4 speaker-image-col order-1 order-md-2">
-                            <img src="assets/speaker2.jpg" class="rounded-circle" alt="speaker">
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- BACK -->
-                <div class="speaker-back">
-                    <h6>
-                        <p> Canada Research Chair in Child, Family and Community Resilience</p>
-                        <p> Director, Resilience Research Centre</p>
-                        <p> Professor of Social Work, Dalhousie University</p>
-                        <p> AAMFT Clinical Supervisor</p>
-                        <p> Registered Social Worker</p>
-                    </h6>
-                    <p>
-                        Michael Ungar, Ph.D., is a Family Therapist and Professor of Social Work at Dalhousie University
-                        where he holds the Canada Research Chair in Child, Family and Community Resilience. His research
-                        on resilience around the world and across cultures has made him the number one ranked Social
-                        Work scholar in the world, with numerous educational institutions, government agencies, and
-                        not-for-profits relying on his research and clinical work to guide their approaches to nurturing
-                        child, family, organizational and community wellbeing under stress. He the author of 18 books
-                        for mental health professionals, educators, caregivers and employers, including his most recent
-                        works The Limits of Resilience: When to Persevere, When to Change, and When to Quit, a book for
-                        individuals and organizations under stress, Change Your World: The Science of Resilience and the
-                        True Path to Success, a book about our emerging understanding of resilience as more than
-                        individual grit, and Working with Children and Youth with Complex Needs: 20 Skills to Build
-                        Resilience, a book for mental health professionals and educators. As well as having received
-                        numerous awards for his work, including the Canadian Association of Social Workers National
-                        Distinguished Service Award and being named a Fellow of the Royal Society of Canada,
-                        Dr. Ungar maintains a blog, Nurturing Resilience, which can be read on Psychology Today’s
-                        website.
-                    </p>
-
-                    <button class="speaker-btn mt-3" onclick="flipContent(this)">Back</button>
-                </div>
-
-            </div>
-        </div>
-
-    </div>
-    <div class="speaker-title">
-        <h2 id="pageTitle">KEYNOTE SPEAKERS</h2>
-    </div>
-
-    <div class="container mb-5">
-
-        <!-- ================= SPEAKER 1 (IMAGE LEFT) ================= -->
-
-        <div class="speaker-card">
-            <div class="speaker-flip-wrapper">
-
-                <!-- FRONT -->
-                <div class="speaker-front">
-                    <div class="row align-items-center">
-
-                        <!-- IMAGE LEFT -->
-                        <div class="col-md-4 speaker-image-col">
-                            <img src="assets/speaker3.png" class="rounded-circle" alt="speaker">
-                        </div>
-
-                        <!-- TEXT -->
-                        <div class="col-md-8 speaker-content">
-                            <h3>A/PROFESSOR HEATHER BOETTO</h3>
-                            <h6>Associate Professor, Charles Sturt University, Australia</h6>
-
-                            <p>
-                                Heather is an Associate Professor in social work at Charles Sturt University, Australia.
-                                Heather’s research and teaching interests are focused on environmental social work and
-                                disaster practice. She is passionate about supporting students, practitioners,
-                                educators, and the profession to engage in matters relating to social and ecological
-                                wellbeing, global ecological injustice, and creating a healthy and biodiverse ecosystem
-                                for all. Heather is internationally and nationally recognised for her work and enjoys
-                                being involved in various innovative groups and community-based research projects.
-                                She specialises in qualitative research methodologies that promote participatory,
-                                emancipatory, and co-designed processes and outcomes.
-                            </p>
-
-                            <button class="speaker-btn mt-3" onclick="flipContent(this)">Read More</button>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- BACK -->
-                <div class="speaker-back">
-                    <p>
-                        Heather Boetto is a distinguished expert in the field of Environmental Social Work, also known
-                        as EcoSocial Work and Green Social Work. Her extensive knowledge of this area centres around
-                        helping people establish and maintain a balanced and diverse ecosystem. Heather understands the
-                        intrinsic connection between environmental well-being and human welfare and actively works to
-                        address
-                        and rectify injustices that arise from the unequal distribution of environmental risks.
-                    </p>
-                    <p>
-                        Heather's academic journey has been marked by significant accomplishments. She obtained her
-                        Doctoral degree, culminating in a PhD with the prestigious Higher Degree by Research Medal in
-                        2017 from Charles Sturt University. Before this, she achieved a
-                        Master of Social Work with Distinction in 2010 and a dual Bachelor's degree in Social Work and
-                        Arts in 2001, all from the same esteemed institution.
-                    </p>
-
-                    <button class="speaker-btn mt-3" onclick="flipContent(this)">Back</button>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- ================= SPEAKER 2 (IMAGE RIGHT) ================= -->
-
-        <div class="speaker-card">
-            <div class="speaker-flip-wrapper">
-
-                <!-- FRONT -->
-                <div class="speaker-front">
-                    <div class="row align-items-center">
-
-                        <!-- TEXT FIRST (Desktop: Left, Mobile: Second) -->
-                        <div class="col-md-8 speaker-content order-2 order-md-1">
-                            <h3>PROFESSOR TOM CALMA</h3>
-                            <h6>AO FAA FASSA FAHA FANZSOG, Australia</h6>
-
-                            <p>
-                                Professor Tom Calma AO FAA FASSA FAHA FANZSOG is an Aboriginal Elder from the Kungarakan
-                                tribal group and a member of the Iwaidja and Woolwonga tribal groups in the NT and he
-                                lives on Ngunnawal country in Canberra. Graduating in social work and community
-                                development in 1978 he has a long and distinguished career in academia, public service
-                                bureaucracy, social justice and community development.
-                            </p>
-                            <p>
-                                He is the National Coordinator Tackling Indigenous Smoking (2010-present), a Professor
-                                at the University of Sydney (2015-present) and Patron of the five national Poche Centres
-                                for Indigenous Health (2010 to present).
-                            </p>
-
-
-                            <button class="speaker-btn mt-3" onclick="flipContent(this)">Read More</button>
-                        </div>
-
-                        <!-- IMAGE RIGHT (Desktop: Right, Mobile: First) -->
-                        <div class="col-md-4 speaker-image-col order-1 order-md-2">
-                            <img src="assets/speaker4.jpg" class="rounded-circle" alt="speaker">
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- BACK -->
-                <div class="speaker-back">
-                    <h6>
-                        <p> Canada Research Chair in Child, Family and Community Resilience</p>
-                        <p> Director, Resilience Research Centre</p>
-                        <p> Professor of Social Work, Dalhousie University</p>
-                        <p> AAMFT Clinical Supervisor</p>
-                        <p> Registered Social Worker</p>
-                    </h6>
-                    <p>
-                        Michael Ungar, Ph.D., is a Family Therapist and Professor of Social Work at Dalhousie University
-                        where he holds the Canada Research Chair in Child, Family and Community Resilience. His research
-                        on resilience around the world and across cultures has made him the number one ranked Social
-                        Work scholar in the world, with numerous educational institutions, government agencies, and
-                        not-for-profits relying on his research and clinical work to guide their approaches to nurturing
-                        child, family, organizational and community wellbeing under stress. He the author of 18 books
-                        for mental health professionals, educators, caregivers and employers, including his most recent
-                        works The Limits of Resilience: When to Persevere, When to Change, and When to Quit, a book for
-                        individuals and organizations under stress, Change Your World: The Science of Resilience and the
-                        True Path to Success, a book about our emerging understanding of resilience as more than
-                        individual grit, and Working with Children and Youth with Complex Needs: 20 Skills to Build
-                        Resilience, a book for mental health professionals and educators. As well as having received
-                        numerous awards for his work, including the Canadian Association of Social Workers National
-                        Distinguished Service Award and being named a Fellow of the Royal Society of Canada,
-                        Dr. Ungar maintains a blog, Nurturing Resilience, which can be read on Psychology Today’s
-                        website.
-                    </p>
-
-                    <button class="speaker-btn mt-3" onclick="flipContent(this)">Back</button>
-                </div>
-
-            </div>
-        </div>
-
-    </div>
-    <div class="speaker-title">
-        <h2 id="pageTitle">NORMA PARKER ADDRESS</h2>
-    </div>
-
-    <div class="container mb-5">
-
-        <!-- ================= SPEAKER 1 (IMAGE LEFT) ================= -->
-
-        <div class="speaker-card">
-            <div class="speaker-flip-wrapper">
-
-                <!-- FRONT -->
-                <div class="speaker-front">
-                    <div class="row align-items-center">
-
-                        <!-- IMAGE LEFT -->
-                        <div class="col-md-4 speaker-image-col">
-                            <img src="assets/speaker3.png" class="rounded-circle" alt="speaker">
-                        </div>
-
-                        <!-- TEXT -->
-                        <div class="col-md-8 speaker-content">
-                            <h3>A/PROFESSOR HEATHER BOETTO</h3>
-                            <h6>Associate Professor, Charles Sturt University, Australia</h6>
-
-                            <p>
-                                Heather is an Associate Professor in social work at Charles Sturt University, Australia.
-                                Heather’s research and teaching interests are focused on environmental social work and
-                                disaster practice. She is passionate about supporting students, practitioners,
-                                educators, and the profession to engage in matters relating to social and ecological
-                                wellbeing, global ecological injustice, and creating a healthy and biodiverse ecosystem
-                                for all. Heather is internationally and nationally recognised for her work and enjoys
-                                being involved in various innovative groups and community-based research projects.
-                                She specialises in qualitative research methodologies that promote participatory,
-                                emancipatory, and co-designed processes and outcomes.
-                            </p>
-
-                            <button class="speaker-btn mt-3" onclick="flipContent(this)">Read More</button>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- BACK -->
-                <div class="speaker-back">
-                    <p>
-                        Heather Boetto is a distinguished expert in the field of Environmental Social Work, also known
-                        as EcoSocial Work and Green Social Work. Her extensive knowledge of this area centres around
-                        helping people establish and maintain a balanced and diverse ecosystem. Heather understands the
-                        intrinsic connection between environmental well-being and human welfare and actively works to
-                        address
-                        and rectify injustices that arise from the unequal distribution of environmental risks.
-                    </p>
-                    <p>
-                        Heather's academic journey has been marked by significant accomplishments. She obtained her
-                        Doctoral degree, culminating in a PhD with the prestigious Higher Degree by Research Medal in
-                        2017 from Charles Sturt University. Before this, she achieved a
-                        Master of Social Work with Distinction in 2010 and a dual Bachelor's degree in Social Work and
-                        Arts in 2001, all from the same esteemed institution.
-                    </p>
-
-                    <button class="speaker-btn mt-3" onclick="flipContent(this)">Back</button>
-                </div>
-
-            </div>
-        </div>
-
-
-
-    </div>
-    <main-footer></main-footer>
-
-    <script>
-        function flipContent(btn) {
-            btn.closest(".speaker-flip-wrapper").classList.toggle("flipped");
-        }
-    </script>
+    <div class="speakers-section">
+
+        <<<<<<< HEAD <div class="container mb-5">
+
+            <!-- ================= SPEAKER 1 (IMAGE LEFT) ================= -->
+
+            <div class="speaker-card">
+                <div class="speaker-flip-wrapper">
+
+                    <!-- FRONT -->
+                    <div class="speaker-front">
+                        <div class="row align-items-center">
+
+                            <!-- IMAGE LEFT -->
+                            <div class="col-md-4 speaker-image-col">
+                                <img src="assets/speaker1.jpg" class="rounded-circle" alt="speaker">
+                            </div>
+
+                            <!-- TEXT -->
+                            <div class="col-md-8 speaker-content">
+                                <h3><strong>DR CINDY BLACKSTOCK</strong></h3>
+                                =======
+                                <!-- Section 1 -->
+                                <h2 class="speakers-title">INTERNATIONAL KEYNOTE SPEAKERS</h2>
+                                <div class="speakers-grid">
+
+                                    <!-- Speaker 1: Dr Cindy Blackstock -->
+                                    <div class="speaker-card">
+                                        <div class="speaker-card-inner">
+                                            <div class="speaker-card-front">
+                                                <img src="assets/speaker1.jpg" class="speaker-img"
+                                                    alt="Dr Cindy Blackstock">
+                                                <div class="speaker-info">
+                                                    <h3>DR CINDY BLACKSTOCK</h3>
+                                                    >>>>>>> 3e987f9c86b0c06e1101c90fd56a4be18833484e
+                                                    <h6>Executive Director, First Nations Child and Family Caring
+                                                        Society, Canada</h6>
+                                                    <p>
+                                                        <<<<<<< HEAD A member of the Gitxsan First Nation, Cindy is
+                                                            honoured to serve as the Executive Director of the First
+                                                            Nations Child and Family Caring Society and a professor at
+                                                            McGill University’s School of Social Work. She has over 30
+                                                            years of experience working in child welfare and Indigenous
+                                                            children’s rights and has published on topics relating to
+                                                            reconciliation, Indigenous theory, First Nations child
+                                                            welfare and human rights. A recipient of the SSHRC Gold
+                                                            Medal, Cindy was honoured to work with First Nations
+                                                            colleagues on a successful human rights challenge to
+                                                            Canada’s inequitable provision of child and family services
+                                                            and failure to implement Jordan’s Principle=======A member
+                                                            of the Gitxsan First Nation, Cindy is honoured to serve as
+                                                            the Executive Director of the First Nations Child and Family
+                                                            Caring Society and a professor at McGill University’s School
+                                                            of Social Work. She has over 30 years of experience...>
+                                                            >>>>>> 3e987f9c86b0c06e1101c90fd56a4be18833484e
+                                                    </p>
+                                                    <button class="read-more-btn" onclick="flipCard(this)">Read
+                                                        More</button>
+                                                </div>
+                                            </div>
+                                            <div class="speaker-card-back">
+                                                <h3>DR CINDY BLACKSTOCK</h3>
+                                                <p>
+                                                    A member of the Gitxsan First Nation, Cindy is honoured to serve as
+                                                    the Executive Director of
+                                                    the First Nations Child and Family Caring Society and a professor at
+                                                    McGill University’s School
+                                                    of Social Work. She has over 30 years of experience working in child
+                                                    welfare and Indigenous
+                                                    children’s rights and has published on topics relating to
+                                                    reconciliation, Indigenous theory,
+                                                    First Nations child welfare and human rights. A recipient of the
+                                                    SSHRC Gold Medal, Cindy was
+                                                    honoured to work with First Nations colleagues on a successful human
+                                                    rights challenge to
+                                                    Canada’s inequitable provision of child and family services and
+                                                    failure to implement Jordan’s
+                                                    Principle.
+                                                </p>
+                                                <p>
+                                                    This hard-fought litigation has resulted in hundreds of thousands of
+                                                    services being provided to
+                                                    First Nations children, youth, and families.
+                                                </p>
+                                                <button class="close-btn" onclick="unflipCard(this)">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Speaker 2: Dr Michael Ungar -->
+                                    <div class="speaker-card">
+                                        <div class="speaker-card-inner">
+                                            <div class="speaker-card-front">
+                                                <img src="assets/speaker2.jpg" class="speaker-img"
+                                                    alt="Dr Michael Ungar">
+                                                <div class="speaker-info">
+                                                    <h3>DR MICHAEL UNGAR</h3>
+                                                    <h6>Director, Resilience Research Centre, Canada</h6>
+                                                    <p>
+                                                        Michael Ungar, Ph.D., is a Family Therapist and Professor of
+                                                        Social Work at Dalhousie
+                                                        University where he holds the Canada Research Chair in Child,
+                                                        Family and Community
+                                                        Resilience. His research on resilience around the world and
+                                                        across cultures...
+                                                    </p>
+                                                    <button class="read-more-btn" onclick="flipCard(this)">Read
+                                                        More</button>
+                                                </div>
+                                            </div>
+                                            <div class="speaker-card-back">
+                                                <h3>DR MICHAEL UNGAR</h3>
+                                                <h6>Canada Research Chair in Child, Family and Community Resilience</h6>
+                                                <p>
+                                                    Michael Ungar, Ph.D., is a Family Therapist and Professor of Social
+                                                    Work at Dalhousie University
+                                                    where he holds the Canada Research Chair in Child, Family and
+                                                    Community Resilience. His research
+                                                    on resilience around the world and across cultures has made him the
+                                                    number one ranked Social
+                                                    Work scholar in the world, with numerous educational institutions,
+                                                    government agencies, and
+                                                    not-for-profits relying on his research and clinical work to guide
+                                                    their approaches to nurturing
+                                                    child, family, organizational and community wellbeing under stress.
+                                                    He the author of 18 books
+                                                    for mental health professionals, educators, caregivers and
+                                                    employers.
+                                                </p>
+                                                <button class="close-btn" onclick="unflipCard(this)">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!-- Section 2 -->
+                                <h2 class="speakers-title">KEYNOTE SPEAKERS</h2>
+                                <div class="speakers-grid">
+
+                                    <<<<<<< HEAD <div class="container mb-5">
+
+                                        <!-- ================= SPEAKER 1 (IMAGE LEFT) ================= -->
+
+                                        <div class="speaker-card">
+                                            <div class="speaker-flip-wrapper">
+
+                                                <!-- FRONT -->
+                                                <div class="speaker-front">
+                                                    <div class="row align-items-center">
+
+                                                        <!-- IMAGE LEFT -->
+                                                        <div class="col-md-4 speaker-image-col">
+                                                            <img src="assets/speaker3.png" class="rounded-circle"
+                                                                alt="speaker">
+                                                        </div>
+
+                                                        <!-- TEXT -->
+                                                        <div class="col-md-8 speaker-content">
+                                                            =======
+                                                            <!-- Speaker 3: Heather Boetto -->
+                                                            <div class="speaker-card">
+                                                                <div class="speaker-card-inner">
+                                                                    <div class="speaker-card-front">
+                                                                        <img src="assets/speaker3.png"
+                                                                            class="speaker-img"
+                                                                            alt="A/Professor Heather Boetto">
+                                                                        <div class="speaker-info">
+                                                                            >>>>>>>
+                                                                            3e987f9c86b0c06e1101c90fd56a4be18833484e
+                                                                            <h3>A/PROFESSOR HEATHER BOETTO</h3>
+                                                                            <h6>Associate Professor, Charles Sturt
+                                                                                University, Australia</h6>
+                                                                            <p>
+                                                                                Heather is an Associate Professor in
+                                                                                social work at Charles Sturt University,
+                                                                                Australia.
+                                                                                Heather’s research and teaching
+                                                                                interests are focused on environmental
+                                                                                social work and
+                                                                                disaster practice.
+                                                                            </p>
+                                                                            <button class="read-more-btn"
+                                                                                onclick="flipCard(this)">Read
+                                                                                More</button>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="speaker-card-back">
+                                                                        <h3>A/PROFESSOR HEATHER BOETTO</h3>
+                                                                        <p>
+                                                                            Heather Boetto is a distinguished expert in
+                                                                            the field of Environmental Social Work, also
+                                                                            known
+                                                                            as EcoSocial Work and Green Social Work. Her
+                                                                            extensive knowledge of this area centres
+                                                                            around
+                                                                            helping people establish and maintain a
+                                                                            balanced and diverse ecosystem. Heather
+                                                                            understands the
+                                                                            intrinsic connection between environmental
+                                                                            well-being and human welfare and actively
+                                                                            works to
+                                                                            address and rectify injustices that arise
+                                                                            from the unequal distribution of
+                                                                            environmental risks.
+                                                                        </p>
+                                                                        <p>
+                                                                            Heather's academic journey has been marked
+                                                                            by significant accomplishments. She obtained
+                                                                            her
+                                                                            Doctoral degree, culminating in a PhD with
+                                                                            the prestigious Higher Degree by Research
+                                                                            Medal in
+                                                                            2017 from Charles Sturt University.
+                                                                        </p>
+                                                                        <button class="close-btn"
+                                                                            onclick="unflipCard(this)">Close</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Speaker 4: Tom Calma -->
+                                                            <div class="speaker-card">
+                                                                <div class="speaker-card-inner">
+                                                                    <div class="speaker-card-front">
+                                                                        <img src="assets/speaker4.jpg"
+                                                                            class="speaker-img"
+                                                                            alt="Professor Tom Calma">
+                                                                        <div class="speaker-info">
+                                                                            <h3>PROFESSOR TOM CALMA</h3>
+                                                                            <h6>AO FAA FASSA FAHA FANZSOG, Australia
+                                                                            </h6>
+                                                                            <p>
+                                                                                Professor Tom Calma AO FAA FASSA FAHA
+                                                                                FANZSOG is an Aboriginal Elder from the
+                                                                                Kungarakan
+                                                                                tribal group and a member of the Iwaidja
+                                                                                and Woolwonga tribal groups in the NT
+                                                                                and he
+                                                                                lives on Ngunnawal country in Canberra.
+                                                                            </p>
+                                                                            <button class="read-more-btn"
+                                                                                onclick="flipCard(this)">Read
+                                                                                More</button>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="speaker-card-back">
+                                                                        <h3>PROFESSOR TOM CALMA</h3>
+                                                                        <p>
+                                                                            Professor Tom Calma AO FAA FASSA FAHA
+                                                                            FANZSOG is an Aboriginal Elder from the
+                                                                            Kungarakan
+                                                                            tribal group and a member of the Iwaidja and
+                                                                            Woolwonga tribal groups in the NT and he
+                                                                            lives on Ngunnawal country in Canberra.
+                                                                            Graduating in social work and community
+                                                                            development in 1978 he has a long and
+                                                                            distinguished career in academia, public
+                                                                            service
+                                                                            bureaucracy, social justice and community
+                                                                            development.
+                                                                        </p>
+                                                                        <p>
+                                                                            He is the National Coordinator Tackling
+                                                                            Indigenous Smoking (2010-present), a
+                                                                            Professor
+                                                                            at the University of Sydney (2015-present)
+                                                                            and Patron of the five national Poche
+                                                                            Centres
+                                                                            for Indigenous Health (2010 to present).
+                                                                        </p>
+                                                                        <button class="close-btn"
+                                                                            onclick="unflipCard(this)">Close</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                        <!-- Section 3 -->
+                                                        <h2 class="speakers-title">NORMA PARKER ADDRESS</h2>
+                                                        <div class="speakers-grid">
+
+                                                            <<<<<<< HEAD <div class="container mb-5">
+
+                                                                <!-- ================= SPEAKER 1 (IMAGE LEFT) ================= -->
+
+                                                                <div class="speaker-card">
+                                                                    <div class="speaker-flip-wrapper">
+
+                                                                        <!-- FRONT -->
+                                                                        <div class="speaker-front">
+                                                                            <div class="row align-items-center">
+
+                                                                                <!-- IMAGE LEFT -->
+                                                                                <div class="col-md-4 speaker-image-col">
+                                                                                    <img src="assets/speaker3.png"
+                                                                                        class="rounded-circle"
+                                                                                        alt="speaker">
+                                                                                </div>
+
+                                                                                <!-- TEXT -->
+                                                                                <div class="col-md-8 speaker-content">
+                                                                                    =======
+                                                                                    <!-- Speaker: Heather Boetto (Again/Different context) -->
+                                                                                    <div class="speaker-card">
+                                                                                        <div class="speaker-card-inner">
+                                                                                            <div
+                                                                                                class="speaker-card-front">
+                                                                                                <img src="assets/speaker3.png"
+                                                                                                    class="speaker-img"
+                                                                                                    alt="A/Professor Heather Boetto">
+                                                                                                <div
+                                                                                                    class="speaker-info">
+                                                                                                    >>>>>>>
+                                                                                                    3e987f9c86b0c06e1101c90fd56a4be18833484e
+                                                                                                    <h3>A/PROFESSOR
+                                                                                                        HEATHER BOETTO
+                                                                                                    </h3>
+                                                                                                    <h6>Associate
+                                                                                                        Professor,
+                                                                                                        Charles Sturt
+                                                                                                        University,
+                                                                                                        Australia</h6>
+                                                                                                    <p>
+                                                                                                        Heather is an
+                                                                                                        Associate
+                                                                                                        Professor in
+                                                                                                        social work at
+                                                                                                        Charles Sturt
+                                                                                                        University,
+                                                                                                        Australia.
+                                                                                                        Heather’s
+                                                                                                        research and
+                                                                                                        teaching
+                                                                                                        interests are
+                                                                                                        focused on
+                                                                                                        environmental
+                                                                                                        social work and
+                                                                                                        disaster
+                                                                                                        practice.
+                                                                                                    </p>
+                                                                                                    <button
+                                                                                                        class="read-more-btn"
+                                                                                                        onclick="flipCard(this)">Read
+                                                                                                        More</button>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div
+                                                                                                class="speaker-card-back">
+                                                                                                <h3>A/PROFESSOR HEATHER
+                                                                                                    BOETTO</h3>
+                                                                                                <p>
+                                                                                                    Heather Boetto is a
+                                                                                                    distinguished expert
+                                                                                                    in the field of
+                                                                                                    Environmental Social
+                                                                                                    Work, also known
+                                                                                                    as EcoSocial Work
+                                                                                                    and Green Social
+                                                                                                    Work. Her extensive
+                                                                                                    knowledge of this
+                                                                                                    area centres around
+                                                                                                    helping people
+                                                                                                    establish and
+                                                                                                    maintain a balanced
+                                                                                                    and diverse
+                                                                                                    ecosystem. Heather
+                                                                                                    understands the
+                                                                                                    intrinsic connection
+                                                                                                    between
+                                                                                                    environmental
+                                                                                                    well-being and human
+                                                                                                    welfare and actively
+                                                                                                    works to
+                                                                                                    address and rectify
+                                                                                                    injustices that
+                                                                                                    arise from the
+                                                                                                    unequal distribution
+                                                                                                    of environmental
+                                                                                                    risks.
+                                                                                                </p>
+                                                                                                <button
+                                                                                                    class="close-btn"
+                                                                                                    onclick="unflipCard(this)">Close</button>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                </div>
+
+                                                                            </div>
+
+                                                                            <main-footer></main-footer>
+
+                                                                            <script>
+                                                                                function flipCard(btn) {
+                                                                                    const card = btn.closest('.speaker-card');
+                                                                                    if (card) {
+                                                                                        card.classList.add('flipped');
+                                                                                    }
+                                                                                }
+
+                                                                                function unflipCard(btn) {
+                                                                                    const card = btn.closest('.speaker-card');
+                                                                                    if (card) {
+                                                                                        card.classList.remove('flipped');
+                                                                                    }
+                                                                                }
+                                                                            </script>
 
 </body>
 
