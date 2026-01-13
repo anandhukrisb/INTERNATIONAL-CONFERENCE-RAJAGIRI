@@ -38,39 +38,58 @@ async function loadPage(url, scrollTop = true) {
         const doc = parser.parseFromString(text, 'text/html');
 
         // Extract content from the target page
-        // We assume the content is inside <main id="app-content"> or we take body content excluding nav/footer
-        // Based on plan, we are wrapping content in <main id="app-content">
         const newContent = doc.querySelector('#app-content');
         const currentContent = document.querySelector('#app-content');
 
         if (newContent && currentContent) {
-            // Fade out
-            currentContent.style.opacity = '0';
-            currentContent.style.transition = 'opacity 0.2s ease';
+            // Ensure custom elements are fully loaded before transitioning
+            await Promise.all([
+                customElements.whenDefined('floating-navbar'),
+                customElements.whenDefined('main-footer')
+            ]);
 
-            setTimeout(() => {
+            // Check if View Transitions API is supported
+            if (document.startViewTransition) {
+                // Add marker class to disable page load animations during transition
+                document.documentElement.classList.add('active-view-transition');
+
+                // Use View Transitions API for smooth page transitions
+                const transition = document.startViewTransition(() => {
+                    // Update DOM
+                    currentContent.innerHTML = newContent.innerHTML;
+                    document.title = doc.title;
+
+                    // Scroll to top if needed
+                    if (scrollTop) window.scrollTo(0, 0);
+
+                    // Update Navbar Active State
+                    const navbar = document.querySelector('floating-navbar');
+                    if (navbar && navbar.highlightActiveLink) {
+                        navbar.highlightActiveLink();
+                    }
+                });
+
+                // Optional: Handle transition completion
+                try {
+                    await transition.finished;
+                } catch (error) {
+                    console.error('Transition error:', error);
+                } finally {
+                    // Remove marker class after transition completes
+                    document.documentElement.classList.remove('active-view-transition');
+                }
+            } else {
+                // Fallback for browsers without View Transitions API support
                 currentContent.innerHTML = newContent.innerHTML;
                 document.title = doc.title;
 
-                // Re-run scripts if necessary? 
-                // Mostly static content, but if there are card flips we might need to re-attach listeners 
-                // In this simple site, inline handlers like onclick="flipCard()" usually work 
-                // but if they rely on DOMContentLoaded they won't trigger. 
-                // Currently they are inline onclicks, so they should work fine.
-
-                // Scroll to top
                 if (scrollTop) window.scrollTo(0, 0);
 
-                // Fade in
-                currentContent.style.opacity = '1';
-
-                // Update Navbar Active State
                 const navbar = document.querySelector('floating-navbar');
                 if (navbar && navbar.highlightActiveLink) {
                     navbar.highlightActiveLink();
                 }
-            }, 200);
-
+            }
         } else {
             console.error('Could not find #app-content in target or source page');
             // Fallback to full reload if structure is missing
