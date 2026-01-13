@@ -14,15 +14,21 @@ class MainFooter extends HTMLElement {
                 :host {
                     display: block;
                     width: 100%;
-                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    font-family: 'Outfit', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                }
+
+                ul {
+                    list-style: none;
+                    padding: 0;
+                    margin: 0;
                 }
 
                 .footer-container {
                     position: relative;
                     background-color: #1d0a3f;
                     color: white;
-                    min-height: 400px;
-                    overflow: visible; /* Allow white corners to sit on top */
+                    min-height: 290px; /* Reduced height */
+                    overflow: visible;
                     display: flex;
                     flex-direction: column;
                 }
@@ -37,7 +43,7 @@ class MainFooter extends HTMLElement {
                     background-image: url('assets/about_image.jpg');
                     background-size: cover;
                     background-position: center;
-                    opacity: 0.2;
+                    opacity: 0.15;
                     mask-image: linear-gradient(to right, transparent, black);
                     -webkit-mask-image: linear-gradient(to right, transparent, black);
                     pointer-events: none;
@@ -48,24 +54,21 @@ class MainFooter extends HTMLElement {
                     position: absolute;
                     top: 0;
                     left: 0;
-                    width: 500px; /* Adjusted to fit shape image */
-                    height: 180px;
+                    width: 450px;
+                    height: 160px; /* Slightly smaller */
                     background-image: url('assets/footer_top_shape.png');
-                    background-size: cover; /* or 100% 100% depending on shape fit */
+                    background-size: 100% 100%;
                     background-repeat: no-repeat;
-                    background-position: top left;
-                    background-color: transparent; /* Remove solid white */
-                    border-radius: 0; /* Remove border radius as shape handles it */
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    gap: 30px;
+                    gap: 25px;
                     z-index: 10;
-                    padding-right: 50px; /* Padding to keep content away from curve */
+                    padding-right: 40px; 
                 }
 
                 .footer-logo {
-                    height: 110px;
+                    height: 90px; /* Smaller logos */
                     width: auto;
                     object-fit: contain;
                 }
@@ -75,18 +78,15 @@ class MainFooter extends HTMLElement {
                     position: absolute;
                     bottom: 0;
                     left: 0;
-                    width: 600px; /* Adjusted to fit shape image */
-                    height: 80px;
-                    background-color: transparent;
-                    border-radius: 0;
+                    width: 550px;
+                    height: 60px; /* Smaller height */
                     display: flex;
-                    align-items: center; /* Center vertically */
-                    justify-content: center; /* Center horizontally */
-                    padding-left: 0;
-                    padding-right: 50px; /* Slight padding to respect curve if needed, but mostly center */
+                    align-items: center;
+                    justify-content: center;
+                    padding-right: 40px;
                     z-index: 10;
                     color: #000;
-                    font-size: 1rem; /* Bigger */
+                    font-size: 0.85rem;
                     font-weight: 500;
                     text-align: center;
                 }
@@ -97,11 +97,10 @@ class MainFooter extends HTMLElement {
                     left: 0;
                     width: 100%;
                     height: 100%;
-                    object-fit: cover; /* Maintain aspect ratio */
+                    object-fit: fill; 
                     z-index: -1;
                 }
 
-                /* Ensure text is above image */
                 .copyright-text {
                     position: relative;
                     z-index: 1;
@@ -111,27 +110,27 @@ class MainFooter extends HTMLElement {
                 .social-icons {
                     position: absolute;
                     left: 50px;
-                    bottom: 100px; /* Above copyright section */
+                    bottom: 80px; 
                     display: flex;
-                    gap: 20px;
+                    gap: 15px;
                     z-index: 10;
                 }
 
                 .social-icon {
-                    width: 45px;
-                    height: 45px;
+                    width: 40px;
+                    height: 40px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     border-radius: 50%;
                     color: white;
-                    font-size: 1.5rem;
+                    font-size: 1.2rem;
                     cursor: pointer;
                     transition: transform 0.3s;
                 }
 
                 .social-icon:hover {
-                    transform: translateY(-5px);
+                    transform: translateY(-3px);
                 }
 
                 .icon-linkedin { background-color: #0077b5; }
@@ -141,123 +140,103 @@ class MainFooter extends HTMLElement {
                 }
 
                 .social-svg {
-                    width: 24px;
-                    height: 24px;
+                    width: 20px;
+                    height: 20px;
                     fill: white;
                 }
 
-                /* Contact Content (Right Side) */
+                /* Content Grid (Right Side) */
                 .content-section {
-                    margin-left: 500px; /* Clear the left sections */
-                    padding: 60px 50px;
+                    margin-left: 480px; /* Shifted slightly left */
+                    padding: 35px 50px 20px;
                     position: relative;
                     z-index: 5;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: flex-start;
+                    display: grid;
+                    grid-template-columns: 1.2fr 0.8fr 1fr; /* Contact, Links, Resources */
+                    gap: 30px;
+                    align-items: start;
                 }
 
-                .contact-info {
-                    max-width: 600px;
-                }
-
-                .contact-title {
-                    font-size: 3rem;
-                    font-weight: 400;
-                    margin: 0 0 20px 0;
-                    color: white;
-                }
-
-                .contact-text {
-                    font-size: 1.1rem;
-                    line-height: 1.6;
+                .footer-col h3 {
+                    font-size: 1.2rem;
                     margin-bottom: 20px;
-                    color: rgba(255, 255, 255, 0.9);
-                    max-width: 400px;
+                    color: #C9A227; /* Gold color for headers */
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
                 }
 
-                .address-block {
-                    margin-top: 40px;
-                    font-size: 1rem;
-                    line-height: 1.8;
-                    color: rgba(255, 255, 255, 0.8);
+                .footer-col ul li {
+                    margin-bottom: 12px;
                 }
 
-                .address-block strong {
-                    color: white;
-                    display: block;
-                    margin-bottom: 5px;
+                .footer-col ul li a {
+                    color: rgba(255, 255, 255, 0.85);
+                    text-decoration: none;
+                    font-size: 0.95rem;
+                    transition: color 0.3s;
                 }
 
-                .contact-details {
-                    margin-top: 20px;
+                .footer-col ul li a:hover {
+                    color: #fff;
+                    text-decoration: underline;
                 }
-                
+
+                .contact-info p {
+                    font-size: 0.95rem;
+                    line-height: 1.6;
+                    color: rgba(255, 255, 255, 0.85);
+                    margin: 0 0 15px 0;
+                }
+
                 .contact-details a {
                     color: white;
                     text-decoration: none;
-                    display: block;
-                    margin-bottom: 5px;
                 }
 
-                .contact-details a:hover {
-                    text-decoration: underline;
+                @media (max-width: 1100px) {
+                    .content-section {
+                        grid-template-columns: 1fr 1fr;
+                        padding-right: 20px;
+                    }
+                    .col-resources {
+                        grid-column: span 2;
+                    }
                 }
 
                 @media (max-width: 900px) {
                     .footer-container {
-                        flex-direction: column;
                         min-height: auto;
-                    }
-
-                    .contact-title{
-                        position: relative;
-                        left: 0;
-                        top: 0;
-                        margin-bottom: 20px;
-                        margin-top: 5px;
-                    }
-
-                    .contact-text{
-                        position: relative;
-                        left: 0;
-                        top: 0;
-                    }
-                    
-                    .address-block{
-                        margin-top: 5px;
                     }
 
                     .logo-section {
                         position: relative;
                         width: 100%;
-                        height: auto;
-                        padding: 30px 0;
-                        border-bottom-right-radius: 0;
-                        border-bottom-left-radius: 50px; /* Optional Mobile style */
-                        justify-content: center;
+                        height: 120px;
+                        padding: 0;
+                        background: none; /* No shape on mobile? or simple bg */
+                        background-color: white;
+                        border-bottom-left-radius: 30px;
+                        border-bottom-right-radius: 30px;
                     }
 
                     .content-section {
                         margin-left: 0;
-                        padding: 15px 20px 40px; /* Reduced top padding */
-                        flex-direction: column;
+                        padding: 40px 20px;
+                        grid-template-columns: 1fr;
+                        gap: 40px;
+                        text-align: center;
                     }
-
-                    .footer-logo {
-                        position: relative;
-                        left: 0;
-                        top: 0;
-                        align-items: center;
+                    
+                    .footer-col h3 {
+                        margin-bottom: 15px;
                     }
 
                     .social-icons {
                         position: relative;
-                        left: 0;
-                        bottom: 0;
+                        left: auto;
+                        bottom: auto;
                         justify-content: center;
-                        align-items: center;
-                        margin: 20px 0 0 0; /* Reduced bottom margin */
+                        margin: 0 0 30px 0;
                     }
 
                     .copyright-section {
@@ -265,23 +244,13 @@ class MainFooter extends HTMLElement {
                         width: 100%;
                         height: auto;
                         padding: 20px;
-                        border-top-right-radius: 0;
-                        text-align: center;
-                        justify-content: center;
-                        padding-right: 0; /* Remove desktop offset */
-                        box-sizing: border-box;
-                        background-color: white; /* Restore background visibility on mobile */
-                    }
-
-                    .footer-shape-bottom {
-                        display: 100; /* Hide background shape on mobile for clean centering */
-                        align-items: center;
+                        bottom: auto;
+                        background-color: white;
+                        border-top-left-radius: 30px;
+                        border-top-right-radius: 30px;
                     }
                     
-                    .footer-bg {
-                        width: 100%;
-                        opacity: 0.1;
-                    }
+                    .footer-shape-bottom { display: none; }
                 }
             </style>
 
@@ -291,13 +260,12 @@ class MainFooter extends HTMLElement {
                 <!-- Left Top: Logos -->
                 <div class="logo-section">
                     <img src="assets/conf_logo_10th.png" alt="10th Conference Logo" class="footer-logo">
-                    <!-- Assuming RCSS logo filename based on user request context, likely rcss_logo.png or rajagiri_logo.png -->
                     <img src="assets/rajagiri_logo.png" alt="RCSS Logo" class="footer-logo">
                 </div>
 
                 <!-- Left Middle: Social Icons -->
                 <div class="social-icons">
-                    <div class="social-icon icon-linkedin">
+                     <div class="social-icon icon-linkedin">
                         <svg class="social-svg" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
                     </div>
                     <div class="social-icon icon-facebook">
@@ -308,28 +276,52 @@ class MainFooter extends HTMLElement {
                     </div>
                 </div>
 
-                <!-- Right Content Area -->
+                <!-- Right Content Area: CSS Grid -->
                 <div class="content-section">
-                    <div class="contact-info">
-                        <h2 class="contact-title">Contact us</h2>
-                        <p class="contact-text">Please contact the team at Forum Group with any questions regarding the Conference.</p>
+                    <!-- Col 1: Contact -->
+                    <div class="footer-col col-contact">
+                        <h3>Contact Us</h3>
+                        <div class="contact-info">
+                            <p><strong>Forum Group Events & Marketing</strong><br>
+                            Suite 10/Level 1, 285a Crown St,<br>
+                            Surry Hills, NSW, 2010, Australia</p>
+                            
+                            <p>
+                                Phone: <a href="tel:+61286670737">+61 2 8667 0737</a><br>
+                                Email: <a href="mailto:aasw@forumgroupevents.com.au">aasw@forumgroupevents.com.au</a>
+                            </p>
+                        </div>
                     </div>
 
-                    <div class="address-block">
-                        <strong>Forum Group Events & Marketing</strong>
-                        Suite 10/Level 1, 285a Crown St,<br>
-                        Surry Hills, NSW, 2010, Australia<br>
-                        <div class="contact-details">
-                            Phone: <a href="tel:+61286670737" style="display:inline;">+61 2 8667 0737</a><br>
-                            Email: <a href="mailto:aasw@forumgroupevents.com.au" style="display:inline;">aasw@forumgroupevents.com.au</a>
-                        </div>
+                    <!-- Col 2: Quick Links -->
+                    <div class="footer-col col-links">
+                        <h3>Quick Links</h3>
+                        <ul>
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="#">Program</a></li>
+                            <li><a href="#">Speakers</a></li>
+                            <li><a href="#">Registration</a></li>
+                            <li><a href="#">Host City</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Col 3: Resources -->
+                    <div class="footer-col col-resources">
+                        <h3>Resources</h3>
+                        <ul>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms & Conditions</a></li>
+                            <li><a href="#">Code of Conduct</a></li>
+                            <li><a href="#">Sponsorships</a></li>
+                            <li><a href="#">Contact Support</a></li>
+                        </ul>
                     </div>
                 </div>
 
                 <!-- Left Bottom: Copyright -->
                 <div class="copyright-section">
                     <img src="assets/footer_bottom_shape.png" class="footer-shape-bottom" alt="Footer Shape">
-                    <span class="copyright-text">Copyright © 2025 Rajagiri. All Rights Reserved. Website Designed and Maintained by XXXXXX</span>
+                    <span class="copyright-text">Copyright © 2025 Rajagiri. All Rights Reserved.</span>
                 </div>
             </div>
         `;

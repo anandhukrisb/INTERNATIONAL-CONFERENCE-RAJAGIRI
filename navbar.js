@@ -2,13 +2,11 @@ class FloatingNavbar extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
-        this.handleScroll = this.handleScroll.bind(this);
         this.toggleMobileMenu = this.toggleMobileMenu.bind(this);
     }
 
     connectedCallback() {
         this.render();
-        window.addEventListener('scroll', this.handleScroll);
         this.highlightActiveLink();
     }
 
@@ -43,20 +41,7 @@ class FloatingNavbar extends HTMLElement {
         });
     }
 
-    disconnectedCallback() {
-        window.removeEventListener('scroll', this.handleScroll);
-    }
 
-    handleScroll() {
-        const navbar = this.shadowRoot.querySelector('.floating-navbar');
-        if (navbar) {
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        }
-    }
 
     render() {
         const logoSrc = this.getAttribute('logo-src') || 'assets/logo.png';
@@ -66,6 +51,18 @@ class FloatingNavbar extends HTMLElement {
                 :host {
                     display: block;
                 }
+                
+                .navbar-backdrop {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 110px;
+                    background-color: #FDFBF7;
+                    z-index: 999;
+                }
+
+
                 .floating-navbar {
                     position: fixed;
                     top: 10px;
@@ -82,14 +79,11 @@ class FloatingNavbar extends HTMLElement {
                     // box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
                     z-index: 1000;
                     /* overflow: hidden; Removed to allow dropdowns to show */
-                    transition: all 0.6s ease-in-out; /* Smooth slow animation */
+                    border: none;
+
                 }
 
-                .floating-navbar.scrolled {
-                    width: 100%;
-                    top: 0;
-                    border-radius: 0;
-                }
+
 
                 .navbar-logo {
                     height: 100%;
@@ -111,10 +105,7 @@ class FloatingNavbar extends HTMLElement {
                     z-index: 1;
                 }
 
-                .floating-navbar.scrolled .logo-base {
-                    border-top-left-radius: 0;
-                    border-bottom-left-radius: 0;
-                }
+
                 
                 /* Overlay Logos */
                 .logo-overlay {
@@ -167,7 +158,7 @@ class FloatingNavbar extends HTMLElement {
                     font-size: 16px;
                     font-weight: 500;
                     transition: opacity 0.3s;
-                    font-family: 'Inter', sans-serif;
+                    font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
                     white-space: nowrap;
                     display: flex;
                     align-items: center;
@@ -334,7 +325,7 @@ class FloatingNavbar extends HTMLElement {
                 .mobile-title {
                     display: none;
                     color: white;
-                    font-family: 'Lora', serif;
+                    font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
                     font-size: 20px;
                     font-weight: 500;
                     margin-left: 20px;
@@ -355,15 +346,7 @@ class FloatingNavbar extends HTMLElement {
                     z-index: 2;
                 }
                 
-                .logo-container-mobile.scrolled {
-                    border-top-left-radius: 0;
-                    border-bottom-left-radius: 0;
-                }
 
-                .floating-navbar.scrolled .logo-container-mobile {
-                    border-top-left-radius: 0;
-                    border-bottom-left-radius: 0;
-                }
 
                 .logo-container-mobile img.rajagiri-mobile {
                     height: 70%;
@@ -502,6 +485,7 @@ class FloatingNavbar extends HTMLElement {
                 }
             </style>
 
+            <div class="navbar-backdrop"></div>
             <nav class="floating-navbar">
                 <div class="logo-container-mobile">
                     <img src="assets/rajagiri_logo.png" alt="Rajagiri" class="rajagiri-mobile">
@@ -527,14 +511,10 @@ class FloatingNavbar extends HTMLElement {
                 <ul class="navbar-links">
                     <li>
                         <a href="index.html">2027 ICSWHMH</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="index.html">2027 ICSWHMH</a></li>
-                        </ul>
                     </li>
                     <li>
                         <a href="program.html">Program</a>
                         <ul class="dropdown-menu">
-                            <li><a href="program.html">Program</a></li>
                             <li><a href="topics.html">Conference topics</a></li>
                         </ul>
                     </li>
@@ -548,14 +528,12 @@ class FloatingNavbar extends HTMLElement {
                     <li>
                         <a href="#">Registration</a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Registration</a></li>
                             <li><a href="#">Student</a></li>
                         </ul>
                     </li>
                     <li>
                         <a href="#">Abstracts</a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Abstracts</a></li>
                             <li><a href="#">Guidelines</a></li>
                         </ul>
                     </li>
@@ -563,21 +541,18 @@ class FloatingNavbar extends HTMLElement {
                     <li>
                         <a href="#">Social Functions</a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Social Functions</a></li>
                             <li><a href="#">Tours</a></li>
                         </ul>
                     </li>
                     <li>
                         <a href="#">Sponsorships & Exhibitions</a>
                          <ul class="dropdown-menu">
-                            <li><a href="#">Sponsorships & Exhibitions</a></li>
                             <li><a href="#">Floor Plan</a></li>
                         </ul>
                     </li>
                     <li>
                         <a href="#">Host city</a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Host city</a></li>
                             <li><a href="#">Travel</a></li>
                         </ul>
                     </li>
