@@ -188,12 +188,29 @@ class MainFooter extends HTMLElement {
                     margin: 0 0 15px 0;
                 }
 
+
                 .contact-details a {
                     color: white;
                     text-decoration: none;
                 }
 
-                @media (max-width: 1100px) {
+                /* Tablet - Keep all 3 columns horizontal with tighter spacing */
+                @media (max-width: 1100px) and (min-width: 901px) {
+                    .content-section {
+                        grid-template-columns: 1fr 0.8fr 1fr;
+                        gap: 15px;
+                        padding-right: 20px;
+                        font-size: 0.9rem;
+                    }
+                    
+                    .footer-col h3 {
+                        font-size: 1.1rem;
+                    }
+                }
+
+                /* Smaller Tablet - 2 columns with Resources spanning (optional intermediate step) */
+                /* This breakpoint can be removed if direct jump to mobile is preferred */
+                @media (max-width: 900px) and (min-width: 769px) {
                     .content-section {
                         grid-template-columns: 1fr 1fr;
                         padding-right: 20px;
@@ -203,7 +220,7 @@ class MainFooter extends HTMLElement {
                     }
                 }
 
-                @media (max-width: 900px) {
+                @media (max-width: 950px) {
                     .footer-container {
                         min-height: auto;
                     }
@@ -222,9 +239,25 @@ class MainFooter extends HTMLElement {
                     .content-section {
                         margin-left: 0;
                         padding: 40px 20px;
-                        grid-template-columns: 1fr;
-                        gap: 40px;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 30px 20px;
                         text-align: center;
+                    }
+                    
+                    /* Reorder columns: Quick Links and Resources on top, Contact Us below */
+                    .col-contact {
+                        grid-column: 1 / -1;
+                        grid-row: 2;
+                    }
+                    
+                    .col-links {
+                        grid-column: 1;
+                        grid-row: 1;
+                    }
+                    
+                    .col-resources {
+                        grid-column: 2;
+                        grid-row: 1;
                     }
                     
                     .footer-col h3 {
