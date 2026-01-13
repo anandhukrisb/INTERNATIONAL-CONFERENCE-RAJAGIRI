@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2027 ICSWHMH | International Conference</title>
+    <script src="navbar.js" defer></script>
+    <script src="footer.js" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #FDFBF7;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #333;
+            height: 300vh;
+            /* Make page tall enough to scroll */
+        }
+
+        /* Floating Navbar Component */
+        floating-navbar {
+            display: block;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .banner-container {
+            width: 100%;
+            margin-top: 130px;
+            /* Space for fixed navbar */
+            padding-bottom: 20px;
+        }
+
+        .banner-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Ticker styles (if uncommented) */
+        .news-ticker-container {
+            position: fixed;
+            top: 90px;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            color: #1d0a3f;
+            padding: 10px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            z-index: 900;
+            background-color: #FDFBF7;
+            display: flex;
+            align-items: center;
+        }
+
+        .title-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 250px;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            margin-top: 120px;
+            font-size: larger;
+        }
+
+        .title-section h1 {
+            /* color: #1d0a3f;
+            text-transform: uppercase;
+            font-size: 2.5rem;
+            line-height: 1.2;
+            text-align: left;
+            margin: 0;
+            flex: 1;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; */
+            font-size: 2rem;
+            /* Bigger, bolder */
+            color: #1d0a3f;
+            /* Deep purple primary */
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            text-transform: none;
+            /* easier to read */
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            letter-spacing: -1px;
+        }
+
+        .title-section img {
+            height: 150px;
+            width: auto;
+            flex-shrink: 0;
+        }
+
+        .about-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 50px;
+            /* Increased gap */
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            /* margin-top: 100px; */
+            position: relative;
+        }
+
+        .about-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            position: relative;
+            height: 400px;
+            /* Container height for absolute cards */
+            align-items: center;
+        }
+
+        .card-img {
+            position: absolute;
+            width: 240px;
+            height: 320px;
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-origin: center center;
+        }
+
+        /* Default State */
+        .card-1 {
+            transform: translateX(-60px) rotate(-15deg);
+            z-index: 1;
+        }
+
+        .card-2 {
+            transform: translateY(-10px) rotate(0deg);
+            z-index: 2;
+        }
+
+        .card-3 {
+            transform: translateX(60px) rotate(15deg);
+            z-index: 3;
+        }
+
+        /* Hovering Front Card (Card 3) */
+        /* Only pops up, others stay */
+        .card-3:hover {
+            transform: translateX(60px) translateY(-50px) rotate(15deg) scale(1.05);
+        }
+
+
+
+        /* Hovering Middle Card (Card 2) */
+        /* Middle pops up */
+        .card-2:hover {
+            transform: translateY(-50px) rotate(0deg) scale(1.05);
+        }
+
+        /* Front moves right & pops up */
+        .about-image:has(.card-2:hover) .card-3 {
+            transform: translateX(150px) translateY(-30px) rotate(15deg);
+        }
+
+        /* Back moves left & pops up */
+        .about-image:has(.card-2:hover) .card-1 {
+            transform: translateX(-150px) translateY(-30px) rotate(-15deg);
+        }
+
+        /* Hovering Back Card (Card 1) */
+        /* Back pops up */
+        .card-1:hover {
+            transform: translateX(-60px) translateY(-50px) rotate(-15deg) scale(1.05);
+        }
+
+        /* Middle moves right */
+        .about-image:has(.card-1:hover) .card-2 {
+            transform: translateX(100px) translateY(-10px) rotate(0deg);
+        }
+
+        /* Front moves right */
+        .about-image:has(.card-1:hover) .card-3 {
+            transform: translateX(200px) rotate(15deg);
+        }
+
+
+
+        .about-content {
+            flex: 1;
+            will-change: transform;
+        }
+
+        .about-content h2 {
+            font-size: 2rem;
+            /* Bigger, bolder */
+            color: #1d0a3f;
+            /* Deep purple primary */
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            text-transform: none;
+            /* easier to read */
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            letter-spacing: -1px;
+        }
+
+        /* Gold accent for part of the title if we could target it, but for now underline */
+        .about-content h2::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 6px;
+            background: #C9A227;
+            margin-top: 20px;
+            border-radius: 3px;
+        }
+
+        .about-content p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #444;
+            font-weight: 400;
+            text-align: left;
+            /* Modern left align instead of justify */
+        }
+
+        /* Desktop Container Styles */
+        @media (min-width: 769px) {
+            .about-section {
+                background-color: #F0F0F0;
+                /* Dull colored container */
+                border-left: 6px solid #C9A227;
+                /* Secondary Yellow Border */
+                padding: 60px 40px;
+                /* More padding for container look */
+                border-radius: 0 20px 20px 0;
+                /* Soften right side */
+            }
+
+            .title-section {
+                background-color: #F0F0F0;
+                border-left: 6px solid #C9A227;
+                padding: 60px 40px;
+                border-radius: 0 20px 20px 0;
+            }
+
+            .title-section h1 {
+                background-color: transparent;
+                border: none;
+                padding: 0;
+                width: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            .title-section,
+            .about-section {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+                align-items: center;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .about-content h2 {
+                font-size: 1.8rem;
+                /* Smaller on mobile */
+            }
+
+            .about-content h2::after {
+                margin-left: auto;
+                margin-right: auto;
+                /* Center the line */
+            }
+
+            .about-content p {
+                text-align: center;
+                /* Center text on mobile */
+            }
+
+            .title-section h1 {
+                text-align: center;
+                font-size: 1.8rem;
+                width: 100%;
+                flex: none;
+                margin: 0;
+            }
+
+            .title-section img {
+                margin: 0 auto !important;
+                display: block;
+            }
+
+            .about-image {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0;
+                padding: 0;
+                width: 100%;
+                margin: 0 auto 40px;
+                height: auto;
+            }
+
+            .card-1,
+            .card-2 {
+                display: none !important;
+            }
+
+            .card-img {
+                position: relative;
+                flex-shrink: 0;
+                width: 250px;
+                height: 320px;
+                transform: none !important;
+                z-index: 1 !important;
+                margin: 0 auto;
+                border-radius: 20px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        /* Speakers Section */
+        .speakers-section {
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #FDFBF7;
+        }
+
+        .speakers-title {
+            text-align: left;
+            color: #1D0A3F;
+            /* Primary Color */
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-weight: 600;
+            font-size: 2rem;
+            margin-bottom: 50px;
+            position: relative;
+            display: inline-block;
+            /* allows line to match text width if desired, or block for full width */
+            width: 100%;
+        }
+
+        .speakers-title::after {
+            content: "";
+            display: block;
+            width: 80px;
+            /* Fixed width line like other headers */
+            height: 4px;
+            background-color: #C9A227;
+            /* Secondary/Gold Color */
+            margin-top: 10px;
+            border-radius: 3px;
+        }
+
+        .speakers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 40px;
+        }
+
+        .speaker-card {
+            perspective: 1000px;
+            height: 260px;
+            background: transparent;
+            padding: 0;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        .speaker-card:hover .speaker-card-front {
+            transform: translateY(-5px);
+        }
+
+        .speaker-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: left;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .speaker-card.flipped .speaker-card-inner {
+            transform: rotateY(-180deg);
+        }
+
+        .speaker-card-front,
+        .speaker-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            background: #1D0A3F;
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        .speaker-card-front {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            z-index: 2;
+            transition: transform 0.3s ease;
+            border-left: 6px solid #C9A227;
+        }
+
+        .speaker-card-back {
+            transform: rotateY(180deg);
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            overflow-y: auto;
+        }
+
+        .speaker-card-back h3 {
+            color: #FFFFFF;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin-top: 0;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .speaker-card-back p {
+            color: #F0F0F0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .speaker-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            /* border: 4px solid #f3f3eb; */
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .speaker-card:hover .speaker-img {
+            transform: scale(1.3);
+            border-radius: 20px;
+        }
+
+        .speaker-info h3 {
+            color: #FFFFFF;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0 0 10px 0;
+            font-size: 1.5rem;
+        }
+
+        .speaker-info p {
+            color: #F0F0F0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .read-more-btn {
+            display: inline-block;
+            padding: 8px 20px;
+            background-color: #C9A227;
+            color: #1D0A3F;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .read-more-btn:hover {
+            background-color: #FDFBF7;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #C9A227;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 10px;
+            padding: 0;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .speakers-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .speaker-card {
+                height: 400px;
+                /* Increased height for mobile column layout */
+            }
+
+            .speaker-card-front {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        /* Delegates Map Section */
+        .delegates-section {
+            background-color: #1d0a3f;
+            color: white;
+            padding: 60px 20px 80px;
+            border-radius: 50px;
+            text-align: center;
+            max-width: 1400px;
+            margin: 0 auto 50px;
+        }
+
+        .delegates-title {
+            text-align: left;
+            color: #1D0A3F;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-weight: 600;
+            font-size: 2rem;
+            margin-bottom: 50px;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 40px;
+            box-sizing: border-box;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .delegates-title::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: #C9A227;
+            margin-top: 10px;
+            border-radius: 3px;
+        }
+
+        .map-container {
+            width: 100%;
+            max-width: 1000px;
+            height: 500px;
+            margin: 0 auto;
+            background: #eee;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            background-color: #FDFBF7;
+            padding-top: 50px;
+            padding-bottom: 0px;
+        }
+
+        .welcome-container {
+            background-color: #1d0a3f;
+            border-top-left-radius: 80px;
+            border-top-right-radius: 80px;
+            padding: 100px 30px 0;
+            /* Reduced side padding */
+            position: relative;
+            min-height: 500px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-end;
+            overflow: hidden;
+            max-width: 1400px;
+            margin: 0 auto;
+            /* gap: 50px; Removed gap as image is absolute now */
+        }
+
+        .welcome-header {
+            position: absolute;
+            top: 40px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            color: white;
+            z-index: 10;
+            letter-spacing: 2px;
+        }
+
+        .watermark-text {
+            position: absolute;
+            top: 35%;
+            /* Moved up from 50% */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 8rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.1);
+            white-space: nowrap;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .welcome-content {
+            flex: 0 0 30%;
+            padding-bottom: 30px;
+            position: relative;
+            z-index: 5;
+            max-width: 350px;
+            margin-left: 40px;
+        }
+
+        .welcome-content p {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            text-align: justify;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 300;
+        }
+
+        /* Reveal Animation Classes - No animation on desktop */
+        .reveal-on-scroll {
+            opacity: 1;
+            transform: none;
+        }
+
+        .ceo-wrapper {
+            position: absolute;
+            /* Absolute positioning for true center */
+            bottom: 0px;
+            left: 50%;
+            /* Exact center */
+            /* Slightly offset to visually balance or hit exact center */
+            transform: translateX(-50%);
+            z-index: 5;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .ceo-image {
+            height: 480px;
+            /* Slightly larger presence */
+            width: auto;
+            display: block;
+            margin-bottom: -5px;
+        }
+
+        .ceo-title-bg {
+            position: absolute;
+            bottom: 100px;
+            right: -55%;
+            /* Moved even further right */
+            font-size: 7rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.1);
+            line-height: 0.85;
+            text-align: left;
+            z-index: -1;
+            text-transform: uppercase;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+
+        .section-separator {
+            max-width: 1200px;
+            margin: 50px auto;
+            border-top: 1px solid #ddd;
+            width: 100%;
+        }
+
+
+        /* CTA Cards Section */
+        .cta-cards-section {
+            padding: 80px 5%;
+            background-color: transparent;
+            /* Or #F5F7F6 */
+            display: flex;
+            justify-content: center;
+        }
+
+        .cta-cards-grid {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        .cta-card {
+            background: transparent;
+            width: 300px;
+            height: 400px;
+            /* Fixed height for flip consistency */
+            perspective: 1000px;
+            border-radius: 10px;
+            padding: 0;
+            box-shadow: none;
+        }
+
+        .cta-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .cta-card:hover .cta-card-inner {
+            transform: rotateY(-180deg);
+        }
+
+        .cta-card-front,
+        .cta-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+            /* Soft shadow matched from previous */
+            background: #1D0A3F;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .cta-card-front {
+            z-index: 2;
+        }
+
+        .cta-card-back {
+            transform: rotateY(180deg);
+            z-index: 1;
+            background: #1D0A3F;
+            /* Slightly different bg for back */
+            gap: 20px;
+        }
+
+        /* Hover effect originally on card, now needs to be on the faces or just simple elevation */
+        /* Since we flip, maybe just keep simplicity */
+
+
+        .cta-image-wrapper {
+            width: 100%;
+            height: 220px;
+            /* Reduced height from 300px */
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+
+        .cta-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cta-btn {
+            background-color: #C9A227;
+            color: #1D0A3F;
+            text-decoration: none;
+            padding: 15px 50px;
+            border-radius: 50px;
+            /* Pill shape */
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            display: inline-block;
+            transition: background-color 0.3s;
+            white-space: nowrap;
+        }
+
+        .cta-btn:hover {
+            background-color: #FDFBF7;
+        }
+
+        .cta-front-btn {
+            display: none;
+            margin-top: 25px;
+            margin-bottom: 0px;
+            width: 85%;
+            text-align: center;
+        }
+
+        .cta-desc {
+            display: none;
+        }
+
+        .cta-text {
+            color: #FFFFFF;
+            font-size: 1.1rem;
+            text-align: center;
+            line-height: 1.5;
+            font-weight: 400;
+            margin: 0;
+            max-width: 90%;
+        }
+
+        .cta-title {
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-weight: 500;
+            /* Extra bold for titles */
+        }
+
+        @media (max-width: 950px) {
+            .welcome-container {
+                flex-direction: column;
+                padding: 0 30px 0;
+                align-items: center;
+                gap: 0;
+            }
+
+            .welcome-header {
+                position: static !important;
+                padding: 60px 40px 30px;
+                box-sizing: border-box;
+            }
+
+            .watermark-text {
+                font-size: 4rem;
+            }
+
+            .welcome-content {
+                flex: auto;
+                max-width: 100%;
+                padding: 40px;
+                text-align: center;
+                margin-left: 0;
+                padding-bottom: 40px;
+                background: rgba(255, 255, 255, 0.05);
+                backdrop-filter: blur(15px);
+                -webkit-backdrop-filter: blur(15px);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                border-radius: 30px;
+                box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+            }
+
+            .welcome-content p {
+                text-align: justify;
+                font-size: 1rem !important;
+                color: rgba(255, 255, 255, 0.9);
+            }
+
+            /* Reveal Animation ONLY on mobile */
+            .reveal-on-scroll {
+                opacity: 0;
+                transform: translateY(40px);
+                transition: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+            }
+
+            .reveal-on-scroll.revealed {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .delay-1 {
+                transition-delay: 0.2s;
+            }
+
+            .delay-2 {
+                transition-delay: 0.4s;
+            }
+
+            .delay-3 {
+                transition-delay: 0.6s;
+            }
+
+            .ceo-wrapper {
+                position: relative !important;
+                bottom: auto;
+                left: auto;
+                transform: none !important;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                margin-top: 20px;
+                z-index: 6;
+            }
+
+            .ceo-image {
+                height: 400px;
+                width: auto;
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .ceo-title-bg {
+                display: none;
+            }
+
+            .speakers-section {
+                padding: 30px 15px;
+            }
+
+            .speakers-title {
+                margin-bottom: 30px;
+            }
+
+            /* CTA Cards Mobile Refinement */
+            .cta-card {
+                height: auto;
+                min-height: 450px;
+                perspective: none;
+                width: 100%;
+                max-width: 350px;
+            }
+
+            .cta-card:hover .cta-card-inner {
+                transform: none !important;
+            }
+
+            .cta-card-inner {
+                transform: none !important;
+                transition: none !important;
+            }
+
+            .cta-card-front {
+                position: relative !important;
+                transform: none !important;
+                backface-visibility: visible !important;
+                height: auto;
+                padding: 15px 15px 35px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+                width: 100%;
+                opacity: 1 !important;
+                z-index: 5;
+            }
+
+            .cta-card-back {
+                display: none !important;
+            }
+
+            .cta-title {
+                margin-top: 10px;
+                margin-bottom: 3px;
+                font-size: 1.2rem;
+            }
+
+            .cta-desc {
+                display: block;
+                color: #555;
+                font-size: 0.95rem;
+                text-align: center;
+                line-height: 1.5;
+                margin: 0;
+                max-width: 90%;
+            }
+
+            .cta-front-btn {
+                display: inline-block;
+                width: 90%;
+                padding: 12px 0;
+                font-size: 1.1rem;
+            }
+
+            .cta-image-wrapper {
+                height: 220px;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <floating-navbar></floating-navbar>
+    <div class="news-ticker-container" id="tickerContainer">
+        <div class="ticker-wrapper" id="tickerTrack">
+            <span class="ticker-item">Lorem ipsum dolor sit amet, consectetur adipiscing
+                elit, sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veni</span>
+        </div>
+    </div>
+    <!-- <div class="banner-container">
+        <img src="assets/banner.png" alt="Conference Banner">
+    </div> -->
+
+
+
+    <div class="title-section">
+        <h1>International Conference on Social Work in Health and Mental Health</h1>
+        <img src="assets/conf_logo_10th.png" alt="10th International Conference Logo">
+    </div>
+
+    <div class="section-separator"></div>
+
+    <!-- About Section -->
+    <div class="about-section">
+        <div class="about-image">
+            <img src="assets/about_munnar.jpg" alt="Munnar Hills" class="card-img card-1">
+            <img src="assets/about_nets.jpg" alt="Chinese Fishing Nets" class="card-img card-2">
+            <img src="assets/about_image.jpg" alt="Kerala Houseboat" class="card-img card-3">
+        </div>
+        <div class="about-content">
+            <h2>Navigating a Changing World: Empowering Minds and Transforming Lives</h2>
+            <p>
+                The 10th International Conference on Social Work in Health and Mental Health (ICSWHMH) was held from
+                Tuesday 19, November to Friday, 22 November in vibrant Melbourne. This hybrid event gathered over 1100+
+                delegates from Australia and around the world, offering an unparalleled opportunity to connect, learn
+                and innovate in the field of social work.
+            </p>
+        </div>
+    </div>
+
+    <!-- Welcome Section -->
+    <section class="welcome-section">
+        <div class="welcome-container">
+            <h3 class="welcome-header reveal-on-scroll">Welcome from the AASW CEO</h3>
+            <div class="watermark-text">#2027 ICSWHMH</div>
+
+            <div class="welcome-content reveal-on-scroll delay-1">
+                <p>Dear Colleagues,<br>I am delighted to welcome each of you as we embark on the 10th International
+                    Conference on Social Work in Health and Mental Health (10th ICSWHMH). This event takes advantage
+                    of
+                    being a hybrid experience, wherever you are and in the vibrant city of Melbourne.</p>
+                <p>Hosting over 600 national and international delegates, this Conference provides a unique platform
+                    to
+                    exchange insights on the current challenges and trends in the social work sector. I look forward
+                    to
+                    forging new connections, learning from leading experts, and exploring the latest ideas
+                    available.
+                </p>
+            </div>
+
+            <div class="ceo-wrapper reveal-on-scroll delay-2">
+                <div class="ceo-title-bg">
+                    CEO<br>AASW
+                </div>
+                <img src="assets/ceo_image.png" alt="AASW CEO" class="ceo-image">
+            </div>
+        </div>
+    </section>
+
+    <!-- Keynote Speakers Section -->
+    <div class="section-separator"></div>
+    <section class="speakers-section">
+        <h4 class="speakers-title">Keynote Speakers Announced</h4>
+
+        <div class="speakers-grid">
+            <!-- Speaker 1 -->
+            <div class="speaker-card">
+                <div class="speaker-card-inner">
+                    <div class="speaker-card-front">
+                        <img src="assets/speaker1.jpg" class="speaker-img" alt="Speaker Name">
+                        <div class="speaker-info">
+                            <h3>Dr. Sarah Jenkins</h3>
+                            <p>Professor of Social Work at University of Melbourne. Expert in mental health policy and
+                                community
+                                care systems.</p>
+                            <a class="read-more-btn" onclick="flipCard(this)">Read More</a>
+                        </div>
+                    </div>
+                    <div class="speaker-card-back">
+                        <h3>Dr. Sarah Jenkins</h3>
+                        <p>Dr. Jenkins has over 20 years of experience in social work and mental health policy. She has
+                            published numerous papers on community care systems and is a leading voice in advocating for
+                            mental health reform. Her current research focuses on the intersection of social policy and
+                            individual well-being.</p>
+                        <button class="close-btn" onclick="unflipCard(this)">Close</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Speaker 2 -->
+            <div class="speaker-card">
+                <div class="speaker-card-inner">
+                    <div class="speaker-card-front">
+                        <img src="assets/speaker2.jpg" class="speaker-img" alt="Speaker Name">
+                        <div class="speaker-info">
+                            <h3>Prof. David Chen</h3>
+                            <p>Director of Global Health Initiatives. Focusing on cross-cultural social work practices
+                                in
+                                developing nations.</p>
+                            <a class="read-more-btn" onclick="flipCard(this)">Read More</a>
+                        </div>
+                    </div>
+                    <div class="speaker-card-back">
+                        <h3>Prof. David Chen</h3>
+                        <p>Professor Chen leads global initiatives aimed at improving social work practices in
+                            developing nations. His work emphasizes the importance of cultural competence and
+                            sustainable development. He has worked extensively in Southeast Asia and Africa.</p>
+                        <button class="close-btn" onclick="unflipCard(this)">Close</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Speaker 3 -->
+            <div class="speaker-card">
+                <div class="speaker-card-inner">
+                    <div class="speaker-card-front">
+                        <img src="assets/speaker3.png" class="speaker-img" alt="Speaker Name">
+                        <div class="speaker-info">
+                            <h3>Dr. Emily Carter</h3>
+                            <p>Clinical Psychologist and Author. Specializes in trauma-informed care and resilience
+                                building.
+                            </p>
+                            <a class="read-more-btn" onclick="flipCard(this)">Read More</a>
+                        </div>
+                    </div>
+                    <div class="speaker-card-back">
+                        <h3>Dr. Emily Carter</h3>
+                        <p>Dr. Carter is a renowned clinical psychologist specializing in trauma-informed care. She is
+                            the author of several best-selling books on resilience and recovery. Her workshops provide
+                            practical tools for practitioners working with trauma survivors.</p>
+                        <button class="close-btn" onclick="unflipCard(this)">Close</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Speaker 4 -->
+            <div class="speaker-card">
+                <div class="speaker-card-inner">
+                    <div class="speaker-card-front">
+                        <img src="assets/speaker4.jpg" class="speaker-img" alt="Speaker Name">
+                        <div class="speaker-info">
+                            <h3>Mr. James Wilson</h3>
+                            <p>Social Justice Advocate. Dedicating his career to housing equality and urban social work.
+                            </p>
+                            <a class="read-more-btn" onclick="flipCard(this)">Read More</a>
+                        </div>
+                    </div>
+                    <div class="speaker-card-back">
+                        <h3>Mr. James Wilson</h3>
+                        <p>Mr. Wilson has dedicated his career to fighting for housing equality. As a social justice
+                            advocate, he works tirelessly to address urban poverty and homelessness. He is a frequent
+                            speaker at national conferences on urban planning and social equity.</p>
+                        <button class="close-btn" onclick="unflipCard(this)">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Delegates & Map Section -->
+    <h2 class="delegates-title">1000+ Delegates registered</h2>
+    <section class="delegates-section">
+        <div class="map-container">
+            <iframe
+                src="https://maps.google.com/maps?q=Rajagiri+College+of+Social+Sciences+Kalamassery&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+    </section>
+
+    <!-- CTA Cards Section -->
+    <section class="cta-cards-section">
+        <div class="cta-cards-grid">
+            <!-- Card 1: Registration -->
+            <div class="cta-card">
+                <div class="cta-card-inner">
+                    <div class="cta-card-front">
+                        <div class="cta-image-wrapper">
+                            <img src="assets/card_registration.png" alt="Registration">
+                        </div>
+                        <p class="cta-text cta-title">Registrations for<br>the 10th ICSWHMH</p>
+                        <p class="cta-desc">Join us for the 10th ICSWHMH. Register now to secure your spot.</p>
+                        <a href="#" class="cta-btn cta-front-btn">Register</a>
+                    </div>
+                    <div class="cta-card-back">
+                        <p class="cta-text">Join us for the 10th ICSWHMH. Register now to secure your spot.</p>
+                        <a href="#" class="cta-btn">Register</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Abstract/Program -->
+            <div class="cta-card">
+                <div class="cta-card-inner">
+                    <div class="cta-card-front">
+                        <div class="cta-image-wrapper">
+                            <img src="assets/card_abstracts.png" alt="Abstracts">
+                        </div>
+                        <p class="cta-text cta-title">Call for Abstracts<br>and Proposals</p>
+                        <p class="cta-desc">Submit your abstracts and proposals for the conference program.</p>
+                        <a href="#" class="cta-btn cta-front-btn">Submit Abstract</a>
+                    </div>
+                    <div class="cta-card-back">
+                        <p class="cta-text">Submit your abstracts and proposals for the conference program.</p>
+                        <a href="#" class="cta-btn">Submit Abstract</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Visit Host City -->
+            <div class="cta-card">
+                <div class="cta-card-inner">
+                    <div class="cta-card-front">
+                        <div class="cta-image-wrapper">
+                            <img src="assets/card_location.png" alt="Melbourne">
+                        </div>
+                        <p class="cta-text cta-title">Discover Melbourne and<br>Victoria. From urban laneways to
+                            regional escapes.
+                        </p>
+                        <p class="cta-desc">Explore the vibrant city of Melbourne and the beautiful Victoria region.</p>
+                        <a href="#" class="cta-btn cta-front-btn">Visit Melbourne</a>
+                    </div>
+                    <div class="cta-card-back">
+                        <p class="cta-text">Explore the vibrant city of Melbourne and the beautiful Victoria region.</p>
+                        <a href="#" class="cta-btn">Visit Melbourne</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <main-footer></main-footer>
+
+
+    <script>
+        const track = document.getElementById('tickerTrack');
+        const container = document.getElementById('tickerContainer');
+        const item = track.querySelector('.ticker-item');
+
+        // Duplicate content to ensure it fills screen + buffer
+        const content = item.innerHTML;
+        // Create enough duplicates to ensure we can loop seamlessly
+        // We'll add 4 copies just to be safe for wide screens
+        for (let i = 0; i < 4; i++) {
+            const span = document.createElement('span');
+            span.className = 'ticker-item';
+            span.innerHTML = content;
+            track.appendChild(span);
+        }
+
+        let position = 0;
+        let speed = 0.5; // Reduced speed for better readability
+        let currentSpeed = speed;
+        let direction = -1; // -1 for Left (scrolling down), 1 for Right (scrolling up)
+        let lastScrollTop = 0;
+        let isHovered = false;
+
+        // Animation Loop
+        function animate() {
+            if (!isHovered) {
+                position += currentSpeed * direction;
+
+                // Reset logic for seamless loop
+                // Assuming the first item width is the "chunk" size
+                const itemWidth = item.offsetWidth;
+
+                // If moved too far left
+                if (position <= -itemWidth) {
+                    position += itemWidth;
+                }
+
+                // If moved too far right (positive)
+                if (position > 0) {
+                    position -= itemWidth;
+                }
+
+                track.style.transform = `translateX(${position}px)`;
+            }
+            requestAnimationFrame(animate);
+        }
+
+
+        // Hover Handlers
+        container.addEventListener('mouseenter', () => {
+            isHovered = true;
+        });
+
+        container.addEventListener('mouseleave', () => {
+            isHovered = false;
+        });
+
+        // Start animation
+        requestAnimationFrame(animate);
+
+        // Parallax Effect
+        const aboutSection = document.querySelector('.about-section');
+        const aboutContent = document.querySelector('.about-content');
+
+        window.addEventListener('scroll', () => {
+            if (aboutSection && aboutContent) {
+                const rect = aboutSection.getBoundingClientRect();
+                const viewHeight = window.innerHeight;
+
+                // Only animate if in view or close to it
+                if (rect.top <= viewHeight && rect.bottom >= 0) {
+                    const speed = 0.1;
+                    const offset = (window.scrollY - aboutSection.offsetTop) * speed;
+                    aboutContent.style.transform = `translateY(${offset}px)`;
+                }
+            }
+
+            // CEO Section Parallax
+            const ceoSection = document.querySelector('.welcome-section');
+            if (ceoSection) {
+                const rect = ceoSection.getBoundingClientRect();
+                const viewHeight = window.innerHeight;
+                const sectionCenter = rect.top + rect.height / 2;
+                const screenCenter = viewHeight / 2;
+
+                // Difference from center (0 when centered)
+                // Positive when section is below center (scrolling down to it)
+                // Negative when section is above center (scrolling past it)
+                const diff = (screenCenter - sectionCenter);
+
+                if (rect.top <= viewHeight && rect.bottom >= 0) {
+                    // Elements to animate
+                    const watermark = ceoSection.querySelector('.watermark-text');
+                    const ceoTitleBg = ceoSection.querySelector('.ceo-title-bg');
+                    const content = ceoSection.querySelector('.welcome-content');
+                    const header = ceoSection.querySelector('.welcome-header');
+                    const ceoImage = ceoSection.querySelector('.ceo-image');
+
+                    // Speeds: Higher means more movement (looks further away or closer depending on direction)
+                    // We want background to move *more* than foreground to seem "deep"
+
+                    if (watermark) watermark.style.transform = `translate(-50%, calc(-50% + ${diff * 0.45}px))`; // Maintained centering transform
+                    if (ceoTitleBg) ceoTitleBg.style.transform = `translateY(${diff * 0.35}px)`;
+                    if (content) content.style.transform = `translateY(${diff * 0.08}px)`; // Slower (foreground)
+                    if (header) header.style.transform = `translateY(${diff * 0.04}px)`; // Almost static
+                    if (ceoImage) ceoImage.style.transform = `translateY(${diff * 0.12}px)`; // Visible parallax for image
+                }
+            }
+        });
+
+        function flipCard(btn) {
+            // Find the closest speaker-card parent
+            const card = btn.closest('.speaker-card');
+            if (card) {
+                card.classList.add('flipped');
+            }
+        }
+
+        function unflipCard(btn) {
+            const card = btn.closest('.speaker-card');
+            if (card) {
+                card.classList.remove('flipped');
+            }
+        }
+
+        // Intersection Observer for Reveal on Scroll
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    // Once revealed, we can stop observing this element
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.15 // Trigger when 15% of the element is visible
+        });
+
+        document.querySelectorAll('.reveal-on-scroll').forEach(el => {
+            revealObserver.observe(el);
+        });
+    </script>
+</body>
+
+</html>
