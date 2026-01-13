@@ -357,7 +357,7 @@ class FloatingNavbar extends HTMLElement {
                 .logo-container-mobile img.rcss-mobile {
                     height: 50%;
                     width: auto;
-                    margin-left: -10px;
+                    margin-left: -22px;
                     margin-top: 20px;
                 }
 
