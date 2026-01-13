@@ -968,7 +968,7 @@
                 position: relative !important;
                 bottom: auto;
                 left: auto;
-                transform: none !important;
+                /* Removed transform: none to allow parallax */
                 width: 100%;
                 display: flex;
                 justify-content: center;
@@ -982,10 +982,19 @@
                 display: block;
                 margin-left: auto;
                 margin-right: auto;
+                /* Enable parallax transforms */
+                will-change: transform;
+                padding-bottom: 20px;
             }
 
             .ceo-title-bg {
-                display: none;
+                font-size: 3.5rem;
+                bottom: 50px;
+                right: auto;
+                left: 50%;
+                transform: translateX(-50%);
+                /* Allow parallax but center it for mobile */
+                opacity: 0.08;
             }
 
             .speakers-section {
