@@ -14,13 +14,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <!-- Lora (Headings) -->
-    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap"
-        rel="stylesheet">
-
-    <!-- Inter (Body Text) -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@400;600;800&display=swap"
         rel="stylesheet">
 
     <style>
@@ -31,7 +26,7 @@
             /* Secondary (Base) */
             color: #2D3436;
             /* Body Text */
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             overflow-x: hidden;
             /* Prevent horizontal scroll */
         }
@@ -42,6 +37,7 @@
             z-index: 2;
             /* Ensure front is on top by default */
             pointer-events: auto;
+
         }
 
         .speaker-back {
@@ -73,6 +69,8 @@
             /* Enable touches when visible */
             z-index: 3;
             /* bring to top */
+            padding-left: 2%;
+            padding-right: 2%;
         }
 
         /* ================= TITLE ================= */
@@ -83,13 +81,15 @@
         }
 
         #pageTitle {
-            font-family: 'Lora', serif;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             font-weight: 700;
             color: #1D0A3F;
             /* Primary */
             text-transform: uppercase;
             position: relative;
             display: inline-block;
+            padding-left: 5%;
+
         }
 
         #pageTitle::after {
@@ -124,7 +124,6 @@
         /* ================= CONTENT ================= */
 
         .speaker-content {
-            max-width: 680px;
             font-size: 18px;
             line-height: 1.65;
         }
@@ -138,9 +137,10 @@
 
         .speaker-content h3,
         .speaker-content h6 {
-            font-family: 'Lora', serif;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             color: #1D0A3F;
             margin-bottom: 8px;
+            font-weight: 600;
         }
 
         /* ================= BUTTON ================= */
@@ -248,7 +248,7 @@
         <h2 id="pageTitle">INTERNATIONAL KEYNOTE SPEAKERS</h2>
     </div>
 
-    <div class="container">
+    <div class="container mb-5">
 
         <!-- ================= SPEAKER 1 (IMAGE LEFT) ================= -->
 
@@ -266,17 +266,22 @@
 
                         <!-- TEXT -->
                         <div class="col-md-8 speaker-content">
-                            <h3>DR CINDY BLACKSTOCK</h3>
+                            <h3><strong>DR CINDY BLACKSTOCK</strong></h3>
                             <h6>Executive Director, First Nations Child and Family Caring Society, Canada</h6>
 
                             <p>
-                                A member of the Gitxsan First Nation, Cindy is honoured to serve as the Executive
-                                Director of the First Nations Child and Family Caring Society and a professor at McGill
-                                University’s School of Social Work. She has over 30 years of experience working in child
+                                A member of the Gitxsan First Nation, Cindy is honoured to serve as the
+                                Executive
+                                Director of the First Nations Child and Family Caring Society and a professor at
+                                McGill
+                                University’s School of Social Work. She has over 30 years of experience working
+                                in child
                                 welfare and Indigenous children’s rights and has published on topics relating to
-                                reconciliation, Indigenous theory, First Nations child welfare and human rights. A
+                                reconciliation, Indigenous theory, First Nations child welfare and human rights.
+                                A
                                 recipient of the SSHRC Gold Medal, Cindy was honoured to work with First Nations
-                                colleagues on a successful human rights challenge to Canada’s inequitable provision
+                                colleagues on a successful human rights challenge to Canada’s inequitable
+                                provision
                                 of child and family services and failure to implement Jordan’s Principle
                             </p>
 
@@ -393,7 +398,7 @@
         <h2 id="pageTitle">KEYNOTE SPEAKERS</h2>
     </div>
 
-    <div class="container">
+    <div class="container mb-5">
 
         <!-- ================= SPEAKER 1 (IMAGE LEFT) ================= -->
 
@@ -534,7 +539,7 @@
         <h2 id="pageTitle">NORMA PARKER ADDRESS</h2>
     </div>
 
-    <div class="container">
+    <div class="container mb-5">
 
         <!-- ================= SPEAKER 1 (IMAGE LEFT) ================= -->
 
