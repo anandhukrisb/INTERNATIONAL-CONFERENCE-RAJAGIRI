@@ -17,6 +17,7 @@ class FloatingNavbar extends HTMLElement {
         if (pageName === '' || pageName === undefined) pageName = 'index.html';
 
         const allLinks = this.shadowRoot.querySelectorAll('a');
+        allLinks.forEach(l => l.classList.remove('active'));
 
         allLinks.forEach(link => {
             const href = link.getAttribute('href');

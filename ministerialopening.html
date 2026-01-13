@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="navbar.js" defer></script>
     <script src="footer.js" defer></script>
+    <script src="router.js" defer></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Google Fonts -->
@@ -306,185 +307,108 @@
 
 <body>
     <floating-navbar></floating-navbar>
+    <main id="app-content">
 
-    <div class="speaker-title">
-        <h2 id="pageTitle">VIRTUAL OPENING ADDRESS</h2>
-    </div>
+        <div class="ministerial-section">
+            <h2 class="ministerial-title">VIRTUAL OPENING ADDRESS</h2>
 
-    <div class="container mb-5">
+            <div class="ministerial-grid">
 
-        <div class="speaker-card">
-            <div class="speaker-flip-wrapper" id="flipWrapper">
+                <!-- Ministerial Card -->
+                <div class="ministerial-card">
+                    <div class="ministerial-card-inner">
 
-                <!-- FRONT -->
-                <div class="speaker-front">
-                    <div class="row align-items-center">
-
-                        <!-- IMAGE LEFT -->
-                        <div class="col-md-4 speaker-image-col">
-                            <img src="assets/ministerial.png" class="rounded-circle" alt="ministerial opening">
+                        <!-- FRONT -->
+                        <div class="ministerial-card-front">
+                            <img src="assets/ministerial.png" class="ministerial-img" alt="The Hon Emma McBride MP">
+                            <div class="ministerial-info">
+                                <h3>THE HON EMMA MCBRIDE MP</h3>
+                                <h6>Assistant Minister for Mental Health and Suicide Prevention
+                                    & Assistant Minister for Rural and Regional Health</h6>
+                                <p>
+                                    Emma McBride is the Federal Member for the electorate of
+                                    Dobell, on the Central Coast of
+                                    NSW and was elected in 2016. After the 2019 election Emma
+                                    was appointed Shadow Assistant
+                                    Minister for Mental Health and Shadow Assistant Minister for
+                                    Carers...
+                                </p>
+                                <button class="read-more-btn" onclick="flipMinisterialCard(this)">Read More</button>
+                            </div>
                         </div>
 
-                        <!-- TEXT -->
-                        <div class="col-md-8 speaker-content">
+                        <!-- BACK -->
+                        <div class="ministerial-card-back">
                             <h3>THE HON EMMA MCBRIDE MP</h3>
-                            <h6>Assistant Minister for Mental Health and Suicide Prevention & Assistant Minister for
-                                Rural and Regional Health</h6>
+                            <p>
+                                Emma McBride is the Federal Member for the electorate of Dobell,
+                                on the Central Coast of
+                                NSW and was elected in 2016. After the 2019 election Emma was
+                                appointed Shadow Assistant
+                                Minister for Mental Health and Shadow Assistant Minister for
+                                Carers. Emma was the Deputy
+                                Chair of the House of Representatives Select Committee on Mental
+                                Health and Suicide
+                                Prevention in 2021. Following the 2022 election, Emma McBride
+                                was appointed Assistant
+                                Minister for Mental Health and Suicide Prevention and Assistant
+                                Minister for Rural and
+                                Regional Health.
+                            </p>
+                            <p>
+                                Emma worked in health for over 20 years, both in Australia and
+                                abroad.
+                                She was a Specialist Mental Health Pharmacist and the Chief
+                                Pharmacist
+                                at Wyong Hospital, and prior to her election to Parliament, was
+                                the
+                                Deputy Director of Pharmacy for Central Coast Local Health
+                                District.
+                            </p>
+                            <p>
+                                Her background across a wide range of health care settings
+                                provides
+                                a unique platform to promote better health services for both her
+                                local
+                                area and the broader community.
+                            </p>
+                            <p>
+                                Emma is a passionate advocate for quality healthcare close to
+                                home.
+                                She recognises the unique challenges facing rural and regional
+                                communities in accessing health care and aims to help shape
+                                public
+                                policy that promotes health and wellbeing for all Australians,
+                                regardless of where they live.
+                            </p>
+                            <button class="close-btn" onclick="unflipMinisterialCard(this)">Close</button>
+                        </div>
 
-                            =======
-                            <div class="ministerial-section">
-                                <h2 class="ministerial-title">VIRTUAL OPENING ADDRESS</h2>
+                    </div>
+                </div>
 
-                                <div class="ministerial-grid">
+            </div>
 
-                                    <!-- Ministerial Card -->
-                                    <div class="ministerial-card">
-                                        <div class="ministerial-card-inner">
+        </div>
 
-                                            <!-- FRONT -->
-                                            <div class="ministerial-card-front">
-                                                <img src="assets/ministerial.png" class="ministerial-img"
-                                                    alt="The Hon Emma McBride MP">
-                                                <div class="ministerial-info">
-                                                    <h3>THE HON EMMA MCBRIDE MP</h3>
-                                                    <h6>Assistant Minister for Mental Health and Suicide Prevention
-                                                        & Assistant Minister for Rural and Regional Health</h6>
-                                                    >>>>>>> 3e987f9c86b0c06e1101c90fd56a4be18833484e
-                                                    <p>
-                                                        Emma McBride is the Federal Member for the electorate of
-                                                        Dobell, on the Central Coast of
-                                                        NSW and was elected in 2016. After the 2019 election Emma
-                                                        was appointed Shadow Assistant
-                                                        Minister for Mental Health and Shadow Assistant Minister for
-                                                        Carers...
-                                                    </p>
-                                                    <<<<<<< HEAD <button class="speaker-btn mt-3"
-                                                        onclick="flipContent()">Read More</button>
-                                                        =======
-                                                        <button class="read-more-btn"
-                                                            onclick="flipMinisterialCard(this)">Read More</button>
-                                                        >>>>>>> 3e987f9c86b0c06e1101c90fd56a4be18833484e
-                                                </div>
-                                            </div>
+    </main>
+    <main-footer></main-footer>
 
-                                            <!-- BACK -->
-                                            <div class="ministerial-card-back">
-                                                <h3>THE HON EMMA MCBRIDE MP</h3>
-                                                <p>
-                                                    Emma McBride is the Federal Member for the electorate of Dobell,
-                                                    on the Central Coast of
-                                                    NSW and was elected in 2016. After the 2019 election Emma was
-                                                    appointed Shadow Assistant
-                                                    Minister for Mental Health and Shadow Assistant Minister for
-                                                    Carers. Emma was the Deputy
-                                                    Chair of the House of Representatives Select Committee on Mental
-                                                    Health and Suicide
-                                                    Prevention in 2021. Following the 2022 election, Emma McBride
-                                                    was appointed Assistant
-                                                    Minister for Mental Health and Suicide Prevention and Assistant
-                                                    Minister for Rural and
-                                                    Regional Health.
-                                                </p>
-                                                <p>
-                                                    Emma worked in health for over 20 years, both in Australia and
-                                                    abroad.
-                                                    She was a Specialist Mental Health Pharmacist and the Chief
-                                                    Pharmacist
-                                                    at Wyong Hospital, and prior to her election to Parliament, was
-                                                    the
-                                                    Deputy Director of Pharmacy for Central Coast Local Health
-                                                    District.
-                                                </p>
-                                                <p>
-                                                    Her background across a wide range of health care settings
-                                                    provides
-                                                    a unique platform to promote better health services for both her
-                                                    local
-                                                    area and the broader community.
-                                                </p>
-                                                <p>
-                                                    Emma is a passionate advocate for quality healthcare close to
-                                                    home.
-                                                    She recognises the unique challenges facing rural and regional
-                                                    communities in accessing health care and aims to help shape
-                                                    public
-                                                    policy that promotes health and wellbeing for all Australians,
-                                                    regardless of where they live.
-                                                </p>
-                                                <button class="close-btn"
-                                                    onclick="unflipMinisterialCard(this)">Close</button>
-                                            </div>
+    <script>
+        function flipMinisterialCard(btn) {
+            const card = btn.closest('.ministerial-card');
+            if (card) {
+                card.classList.add('flipped');
+            }
+        }
 
-                                        </div>
-                                        <<<<<<< HEAD <!-- BACK -->
-                                            <div class="speaker-back">
-                                                <p>
-                                                    Emma McBride was the Deputy Chair of the House of
-                                                    Representatives Select Committee
-                                                    on Mental Health and Suicide Prevention in 2021. Following the
-                                                    2022 election,
-                                                    she was appointed Assistant Minister for Mental Health and
-                                                    Suicide Prevention
-                                                    and Assistant Minister for Rural and Regional Health.
-                                                </p>
-
-                                                <p>
-                                                    Emma worked in health for over 20 years, both in Australia and
-                                                    abroad.
-                                                    She was a Specialist Mental Health Pharmacist and the Chief
-                                                    Pharmacist
-                                                    at Wyong Hospital, and prior to her election to Parliament, was
-                                                    the
-                                                    Deputy Director of Pharmacy for Central Coast Local Health
-                                                    District.
-                                                </p>
-
-                                                <p>
-                                                    Her background across a wide range of health care settings
-                                                    provides
-                                                    a unique platform to promote better health services for both her
-                                                    local
-                                                    area and the broader community.
-                                                </p>
-
-                                                <p>
-                                                    Emma is a passionate advocate for quality healthcare close to
-                                                    home.
-                                                    She recognises the unique challenges facing rural and regional
-                                                    communities in accessing health care and aims to help shape
-                                                    public
-                                                    policy that promotes health and wellbeing for all Australians,
-                                                    regardless of where they live.
-                                                </p>
-
-                                                <button class="speaker-btn mt-3" onclick="flipContent()">Back</button>
-                                            </div>
-
-                                            =======
-                                            >>>>>>> 3e987f9c86b0c06e1101c90fd56a4be18833484e
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            <main-footer></main-footer>
-
-                            <script>
-                                function flipMinisterialCard(btn) {
-                                    const card = btn.closest('.ministerial-card');
-                                    if (card) {
-                                        card.classList.add('flipped');
-                                    }
-                                }
-
-                                function unflipMinisterialCard(btn) {
-                                    const card = btn.closest('.ministerial-card');
-                                    if (card) {
-                                        card.classList.remove('flipped');
-                                    }
-                                }
-                            </script>
+        function unflipMinisterialCard(btn) {
+            const card = btn.closest('.ministerial-card');
+            if (card) {
+                card.classList.remove('flipped');
+            }
+        }
+    </script>
 
 </body>
 
