@@ -347,8 +347,7 @@ class MainFooter extends HTMLElement {
                     <div class="footer-col col-contact">
                         <h3>Contact Us</h3>
                         <div class="contact-info">
-                            <p><strong>Forum Group Events & Marketing</strong><br>
-                            Suite 10/Level 1, 285a Crown St</p>
+                            <p><strong>Forum Group Events & Marketing</strong></p>
                             
                             <p>
                                 Phone: <a href="tel:+6123523423" class="contact-link">+61 23523423</a><br>
