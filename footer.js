@@ -152,7 +152,7 @@ class MainFooter extends HTMLElement {
 
                 /* Content Grid (Right Side) */
                 .content-section {
-                    margin-left: 480px; /* Shifted slightly left */
+                    margin-left: 580px; /* Shifted slightly right from 480px */
                     padding: 35px 50px 20px;
                     position: relative;
                     z-index: 5;
