@@ -36,9 +36,17 @@
 
         /* ================= TITLE ================= */
         .contact-title-section {
-            margin-top: 180px;
-            margin-left: 60px;
+            margin-top: 150px;
             margin-bottom: 50px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 20px;
+            /* padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #FDFBF7;
+            margin-top: 100px; */
         }
 
         #pageTitle {
@@ -62,21 +70,37 @@
         }
 
         .contact-intro {
-            padding-left: 80px;
+            padding: 0 20px;
             font-size: 1.1rem;
             color: #444;
             margin-bottom: 60px;
-            max-width: 1000px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         /* ================= CONTACT INFO ================= */
         .contact-grid {
-            padding: 0 80px;
+            padding: 0 20px;
             margin-bottom: 20px;
+            max-width: 1200px;
+            margin: 0 auto 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
         }
 
-        .contact-grid .col-md-4 {
+        .contact-grid>div {
             display: flex;
+            flex: 1 1 calc(33.333% - 30px);
+            min-width: 280px;
+            max-width: 380px;
+        }
+
+        /* When only one card on last row, center it */
+        .contact-grid>div:last-child:nth-child(3n + 1) {
+            margin: 0 auto;
         }
 
         .contact-card {
@@ -267,46 +291,44 @@
         <p>Please contact the team at Forum Group with any questions regarding the Conference:</p>
     </div>
 
-    <div class="container-fluid">
-        <div class="row contact-grid g-4">
-            <!-- Address -->
-            <div class="col-md-4">
-                <div class="contact-item contact-card">
-                    <div class="contact-icon">
-                        <i class="bi bi-geo-alt"></i>
-                    </div>
-                    <div class="contact-text">
-                        <h4>Address</h4>
-                        <p>Suite 10/Level 1, 285a Crown St,<br>
-                            Surry Hills, NSW, 2010,<br>
-                            Australia</p>
-                    </div>
+    <div class="contact-grid">
+        <!-- Address -->
+        <div>
+            <div class="contact-item contact-card">
+                <div class="contact-icon">
+                    <i class="bi bi-geo-alt"></i>
+                </div>
+                <div class="contact-text">
+                    <h4>Address</h4>
+                    <p>Suite 10/Level 1, 285a Crown St,<br>
+                        Surry Hills, NSW, 2010,<br>
+                        Australia</p>
                 </div>
             </div>
+        </div>
 
-            <!-- Phone -->
-            <div class="col-md-4">
-                <div class="contact-item contact-card">
-                    <div class="contact-icon">
-                        <i class="bi bi-phone"></i>
-                    </div>
-                    <div class="contact-text">
-                        <h4>Phone</h4>
-                        <p>+ 61 2 8667 0737</p>
-                    </div>
+        <!-- Phone -->
+        <div>
+            <div class="contact-item contact-card">
+                <div class="contact-icon">
+                    <i class="bi bi-phone"></i>
+                </div>
+                <div class="contact-text">
+                    <h4>Phone</h4>
+                    <p>+ 61 2 8667 0737</p>
                 </div>
             </div>
+        </div>
 
-            <!-- Email -->
-            <div class="col-md-4">
-                <div class="contact-item contact-card">
-                    <div class="contact-icon">
-                        <i class="bi bi-envelope"></i>
-                    </div>
-                    <div class="contact-text">
-                        <h4>Email</h4>
-                        <p><a href="mailto:aasw@forumgroupevents.com.au">aasw@forumgroupevents.com.au</a></p>
-                    </div>
+        <!-- Email -->
+        <div>
+            <div class="contact-item contact-card">
+                <div class="contact-icon">
+                    <i class="bi bi-envelope"></i>
+                </div>
+                <div class="contact-text">
+                    <h4>Email</h4>
+                    <p><a href="mailto:aasw@forumgroupevents.com.au">aasw@forumgroupevents.com.au</a></p>
                 </div>
             </div>
         </div>
