@@ -8,25 +8,80 @@
     <title>2027 ICSWHMH | International Conference</title>
     <script src="navbar.js" defer></script>
     <script src="footer.js" defer></script>
+    <script src="router.js" defer></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@400;600;800&display=swap"
         rel="stylesheet">
+
+    <!-- View Transitions API CSS -->
+    <style>
+        /* Prevent navbar and footer from flickering during transitions */
+        floating-navbar {
+            view-transition-name: navbar;
+        }
+
+        main-footer {
+            view-transition-name: footer;
+        }
+
+        /* Smooth crossfade animation for page content */
+        ::view-transition-old(root),
+        ::view-transition-new(root) {
+            animation-duration: 0.3s;
+        }
+
+        /* Keep navbar and footer stable (no animation) */
+        ::view-transition-old(navbar),
+        ::view-transition-new(navbar),
+        ::view-transition-old(footer),
+        ::view-transition-new(footer) {
+            animation: none;
+        }
+
+        /* Respect user's motion preferences */
+        @media (prefers-reduced-motion: reduce) {
+
+            ::view-transition-old(root),
+            ::view-transition-new(root) {
+                animation: none !important;
+            }
+        }
+
+        /* Disable page load animations during view transitions to prevent conflicts */
+        html:active-view-transition .title-section h1,
+        html:active-view-transition .title-section img,
+        html:active-view-transition .card-img {
+            animation: none !important;
+            opacity: 1 !important;
+            transform: none !important;
+        }
+    </style>
+
     <style>
         * {
             box-sizing: border-box;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        html {
+            overflow-x: hidden;
         }
 
         body {
             margin: 0;
             padding: 0;
             background-color: #FDFBF7;
-            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             color: #333;
             height: 300vh;
             /* Make page tall enough to scroll */
+            overflow-x: hidden;
+            width: 100%;
         }
+
+        /* Floating Navbar Component */
 
         /* Floating Navbar Component */
         floating-navbar {
@@ -38,9 +93,10 @@
             z-index: 1000;
         }
 
+
         .banner-container {
             width: 100%;
-            margin-top: 130px;
+            margin-top: 180px;
             /* Space for fixed navbar */
             padding-bottom: 20px;
         }
@@ -56,8 +112,9 @@
         .news-ticker-container {
             position: fixed;
             top: 90px;
-            left: 0;
-            width: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 88%;
             height: 50px;
             color: #1d0a3f;
             padding: 10px 0;
@@ -67,6 +124,8 @@
             background-color: #FDFBF7;
             display: flex;
             align-items: center;
+            mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
         }
 
         .title-section {
@@ -77,36 +136,61 @@
             padding: 40px 20px;
             max-width: 1200px;
             margin: 0 auto;
-            margin-top: 120px;
+            margin-top: 180px;
             font-size: larger;
+            color: #1D0A3F;
+        }
+
+        /* Intro Animations */
+        @keyframes fadeInScale {
+            0% {
+                opacity: 0;
+                transform: scale(1.05);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .title-section h1 {
-            /* color: #1d0a3f;
-            text-transform: uppercase;
-            font-size: 2.5rem;
-            line-height: 1.2;
-            text-align: left;
-            margin: 0;
-            flex: 1;
-            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; */
             font-size: 2rem;
-            /* Bigger, bolder */
             color: #1d0a3f;
-            /* Deep purple primary */
             font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             text-transform: none;
-            /* easier to read */
             font-weight: 600;
             margin-bottom: 20px;
             line-height: 1.2;
             letter-spacing: -1px;
+
+            /* Animation */
+            opacity: 0;
+            /* Star invisible */
+            animation: fadeInUp 1s ease-out 0.4s forwards;
         }
 
         .title-section img {
             height: 150px;
             width: auto;
             flex-shrink: 0;
+
+            /* Animation */
+            opacity: 0;
+            /* Start invisible */
+            animation: fadeInUp 1s ease-out 0.6s forwards;
         }
 
         .about-section {
@@ -280,6 +364,15 @@
                 box-sizing: border-box;
             }
 
+            .title-section {
+                margin-top: 130px;
+                padding: 20px 15px;
+            }
+
+            .about-section {
+                padding: 20px 15px;
+            }
+
             .about-content h2 {
                 font-size: 1.8rem;
                 /* Smaller on mobile */
@@ -336,11 +429,22 @@
                 border-radius: 20px;
                 box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
             }
+
+            /* Mobile Ticker - Edge to Edge */
+            .news-ticker-container {
+                width: 100%;
+                left: 0;
+                transform: none;
+                mask-image: none;
+                -webkit-mask-image: none;
+                height: 50px;
+                padding: 10px 0;
+            }
         }
 
         /* Speakers Section */
         .speakers-section {
-            padding: 60px 20px;
+            padding: 20px 20px 60px;
             max-width: 1200px;
             margin: 0 auto;
             background-color: #FDFBF7;
@@ -388,7 +492,8 @@
         }
 
         .speaker-card:hover .speaker-card-front {
-            transform: translateY(-5px);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
         }
 
         .speaker-card-inner {
@@ -462,7 +567,7 @@
         }
 
         .speaker-card:hover .speaker-img {
-            transform: scale(1.3);
+            transform: scale(1.1);
             border-radius: 20px;
         }
 
@@ -531,7 +636,7 @@
             padding: 60px 20px 80px;
             border-radius: 50px;
             text-align: center;
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto 50px;
         }
 
@@ -543,10 +648,10 @@
             font-size: 2rem;
             margin-bottom: 50px;
             position: relative;
-            display: inline-block;
+            display: block;
             width: 100%;
             max-width: 1200px;
-            padding: 0 40px;
+            padding: 0 20px;
             box-sizing: border-box;
             margin-left: auto;
             margin-right: auto;
@@ -598,7 +703,7 @@
             justify-content: flex-start;
             align-items: flex-end;
             overflow: hidden;
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             /* gap: 50px; Removed gap as image is absolute now */
         }
@@ -695,7 +800,7 @@
 
         .section-separator {
             max-width: 1200px;
-            margin: 50px auto;
+            margin: 10px auto;
             border-top: 1px solid #ddd;
             width: 100%;
         }
@@ -715,7 +820,7 @@
             gap: 40px;
             justify-content: center;
             flex-wrap: wrap;
-            max-width: 1400px;
+            max-width: 1200px;
             width: 100%;
         }
 
@@ -908,7 +1013,7 @@
                 position: relative !important;
                 bottom: auto;
                 left: auto;
-                transform: none !important;
+                /* Removed transform: none to allow parallax */
                 width: 100%;
                 display: flex;
                 justify-content: center;
@@ -922,10 +1027,19 @@
                 display: block;
                 margin-left: auto;
                 margin-right: auto;
+                /* Enable parallax transforms */
+                will-change: transform;
+                padding-bottom: 20px;
             }
 
             .ceo-title-bg {
-                display: none;
+                font-size: 3.5rem;
+                bottom: 50px;
+                right: auto;
+                left: 50%;
+                transform: translateX(-50%);
+                /* Allow parallax but center it for mobile */
+                opacity: 0.08;
             }
 
             .speakers-section {
@@ -1007,244 +1121,298 @@
 <body>
 
     <floating-navbar></floating-navbar>
-    <div class="news-ticker-container" id="tickerContainer">
-        <div class="ticker-wrapper" id="tickerTrack">
-            <span class="ticker-item">Lorem ipsum dolor sit amet, consectetur adipiscing
-                elit, sed do eiusmod tempor
-                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veni</span>
+    <main id="app-content">
+        <div class="news-ticker-container" id="tickerContainer">
+            <div class="ticker-wrapper" id="tickerTrack">
+                <span class="ticker-item">Lorem ipsum dolor sit amet, consectetur adipiscing
+                    elit, sed do eiusmod tempor
+                    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veni</span>
+            </div>
         </div>
-    </div>
-    <!-- <div class="banner-container">
+        <!-- <div class="banner-container">
         <img src="assets/banner.png" alt="Conference Banner">
     </div> -->
 
 
 
-    <div class="title-section">
-        <h1>International Conference on Social Work in Health and Mental Health</h1>
-        <img src="assets/conf_logo_10th.png" alt="10th International Conference Logo">
-    </div>
-
-    <div class="section-separator"></div>
-
-    <!-- About Section -->
-    <div class="about-section">
-        <div class="about-image">
-            <img src="assets/about_munnar.jpg" alt="Munnar Hills" class="card-img card-1">
-            <img src="assets/about_nets.jpg" alt="Chinese Fishing Nets" class="card-img card-2">
-            <img src="assets/about_image.jpg" alt="Kerala Houseboat" class="card-img card-3">
+        <div class="title-section">
+            <h1>International Conference on Social Work in Health and Mental Health</h1>
+            <img src="assets/conf_logo_10th.png" alt="10th International Conference Logo">
         </div>
-        <div class="about-content">
-            <h2>Navigating a Changing World: Empowering Minds and Transforming Lives</h2>
-            <p>
-                The 10th International Conference on Social Work in Health and Mental Health (ICSWHMH) was held from
-                Tuesday 19, November to Friday, 22 November in vibrant Melbourne. This hybrid event gathered over 1100+
-                delegates from Australia and around the world, offering an unparalleled opportunity to connect, learn
-                and innovate in the field of social work.
-            </p>
-        </div>
-    </div>
 
-    <!-- Welcome Section -->
-    <section class="welcome-section">
-        <div class="welcome-container">
-            <h3 class="welcome-header reveal-on-scroll">Welcome from the AASW CEO</h3>
-            <div class="watermark-text">#2027 ICSWHMH</div>
+        <div class="section-separator"></div>
 
-            <div class="welcome-content reveal-on-scroll delay-1">
-                <p>Dear Colleagues,<br>I am delighted to welcome each of you as we embark on the 10th International
-                    Conference on Social Work in Health and Mental Health (10th ICSWHMH). This event takes advantage
-                    of
-                    being a hybrid experience, wherever you are and in the vibrant city of Melbourne.</p>
-                <p>Hosting over 600 national and international delegates, this Conference provides a unique platform
-                    to
-                    exchange insights on the current challenges and trends in the social work sector. I look forward
-                    to
-                    forging new connections, learning from leading experts, and exploring the latest ideas
-                    available.
+        <!-- About Section -->
+        <div class="about-section">
+            <div class="about-image">
+                <img src="assets/about_munnar.jpg" alt="Munnar Hills" class="card-img card-1">
+                <img src="assets/about_nets.jpg" alt="Chinese Fishing Nets" class="card-img card-2">
+                <img src="assets/about_image.jpg" alt="Kerala Houseboat" class="card-img card-3">
+            </div>
+            <div class="about-content">
+                <h2>Navigating a Changing World: Empowering Minds and Transforming Lives</h2>
+                <p>
+                    The 10th International Conference on Social Work in Health and Mental Health (ICSWHMH)
+                    was
+                    held from
+                    Tuesday 19, November to Friday, 22 November in vibrant Melbourne. This hybrid event
+                    gathered
+                    over 1100+
+                    delegates from Australia and around the world, offering an unparalleled opportunity to
+                    connect, learn
+                    and innovate in the field of social work.
                 </p>
             </div>
-
-            <div class="ceo-wrapper reveal-on-scroll delay-2">
-                <div class="ceo-title-bg">
-                    CEO<br>AASW
-                </div>
-                <img src="assets/ceo_image.png" alt="AASW CEO" class="ceo-image">
-            </div>
         </div>
-    </section>
 
-    <!-- Keynote Speakers Section -->
-    <div class="section-separator"></div>
-    <section class="speakers-section">
-        <h4 class="speakers-title">Keynote Speakers Announced</h4>
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <div class="welcome-container">
+                <h3 class="welcome-header reveal-on-scroll">Welcome from the AASW CEO</h3>
+                <div class="watermark-text">#2027 ICSWHMH</div>
 
-        <div class="speakers-grid">
-            <!-- Speaker 1 -->
-            <div class="speaker-card">
-                <div class="speaker-card-inner">
-                    <div class="speaker-card-front">
-                        <img src="assets/speaker1.jpg" class="speaker-img" alt="Speaker Name">
-                        <div class="speaker-info">
+                <div class="welcome-content reveal-on-scroll delay-1">
+                    <p>Dear Colleagues,<br>I am delighted to welcome each of you as we embark on the 10th
+                        International
+                        Conference on Social Work in Health and Mental Health (10th ICSWHMH). This event
+                        takes
+                        advantage
+                        of
+                        being a hybrid experience, wherever you are and in the vibrant city of Melbourne.
+                    </p>
+                    <p>Hosting over 600 national and international delegates, this Conference provides a
+                        unique
+                        platform
+                        to
+                        exchange insights on the current challenges and trends in the social work sector. I
+                        look
+                        forward
+                        to
+                        forging new connections, learning from leading experts, and exploring the latest
+                        ideas
+                        available.
+                    </p>
+                </div>
+
+                <div class="ceo-wrapper reveal-on-scroll delay-2">
+                    <div class="ceo-title-bg">
+                        CEO<br>AASW
+                    </div>
+                    <img src="assets/ceo_image.png" alt="AASW CEO" class="ceo-image">
+                </div>
+            </div>
+        </section>
+
+        <!-- Keynote Speakers Section -->
+        <div class="section-separator"></div>
+        <section class="speakers-section">
+            <h4 class="speakers-title">Keynote Speakers Announced</h4>
+
+            <div class="speakers-grid">
+                <!-- Speaker 1 -->
+                <div class="speaker-card">
+                    <div class="speaker-card-inner">
+                        <div class="speaker-card-front">
+                            <img src="assets/speaker1.jpg" class="speaker-img" alt="Speaker Name">
+                            <div class="speaker-info">
+                                <h3>Dr. Sarah Jenkins</h3>
+                                <p>Professor of Social Work at University of Melbourne. Expert in mental
+                                    health
+                                    policy and
+                                    community
+                                    care systems.</p>
+                                <a class="read-more-btn" onclick="flipCard(this)">Read More</a>
+                            </div>
+                        </div>
+                        <div class="speaker-card-back">
                             <h3>Dr. Sarah Jenkins</h3>
-                            <p>Professor of Social Work at University of Melbourne. Expert in mental health policy and
-                                community
-                                care systems.</p>
-                            <a class="read-more-btn" onclick="flipCard(this)">Read More</a>
-                        </div>
-                    </div>
-                    <div class="speaker-card-back">
-                        <h3>Dr. Sarah Jenkins</h3>
-                        <p>Dr. Jenkins has over 20 years of experience in social work and mental health policy. She has
-                            published numerous papers on community care systems and is a leading voice in advocating for
-                            mental health reform. Her current research focuses on the intersection of social policy and
-                            individual well-being.</p>
-                        <button class="close-btn" onclick="unflipCard(this)">Close</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Speaker 2 -->
-            <div class="speaker-card">
-                <div class="speaker-card-inner">
-                    <div class="speaker-card-front">
-                        <img src="assets/speaker2.jpg" class="speaker-img" alt="Speaker Name">
-                        <div class="speaker-info">
-                            <h3>Prof. David Chen</h3>
-                            <p>Director of Global Health Initiatives. Focusing on cross-cultural social work practices
+                            <p>Dr. Jenkins has over 20 years of experience in social work and mental health
+                                policy. She has
+                                published numerous papers on community care systems and is a leading voice
                                 in
-                                developing nations.</p>
-                            <a class="read-more-btn" onclick="flipCard(this)">Read More</a>
+                                advocating for
+                                mental health reform. Her current research focuses on the intersection of
+                                social
+                                policy and
+                                individual well-being.</p>
+                            <button class="close-btn" onclick="unflipCard(this)">Close</button>
                         </div>
                     </div>
-                    <div class="speaker-card-back">
-                        <h3>Prof. David Chen</h3>
-                        <p>Professor Chen leads global initiatives aimed at improving social work practices in
-                            developing nations. His work emphasizes the importance of cultural competence and
-                            sustainable development. He has worked extensively in Southeast Asia and Africa.</p>
-                        <button class="close-btn" onclick="unflipCard(this)">Close</button>
+                </div>
+
+                <!-- Speaker 2 -->
+                <div class="speaker-card">
+                    <div class="speaker-card-inner">
+                        <div class="speaker-card-front">
+                            <img src="assets/speaker2.jpg" class="speaker-img" alt="Speaker Name">
+                            <div class="speaker-info">
+                                <h3>Prof. David Chen</h3>
+                                <p>Director of Global Health Initiatives. Focusing on cross-cultural social
+                                    work
+                                    practices
+                                    in
+                                    developing nations.</p>
+                                <a class="read-more-btn" onclick="flipCard(this)">Read More</a>
+                            </div>
+                        </div>
+                        <div class="speaker-card-back">
+                            <h3>Prof. David Chen</h3>
+                            <p>Professor Chen leads global initiatives aimed at improving social work
+                                practices
+                                in
+                                developing nations. His work emphasizes the importance of cultural
+                                competence
+                                and
+                                sustainable development. He has worked extensively in Southeast Asia and
+                                Africa.
+                            </p>
+                            <button class="close-btn" onclick="unflipCard(this)">Close</button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Speaker 3 -->
-            <div class="speaker-card">
-                <div class="speaker-card-inner">
-                    <div class="speaker-card-front">
-                        <img src="assets/speaker3.png" class="speaker-img" alt="Speaker Name">
-                        <div class="speaker-info">
+                <!-- Speaker 3 -->
+                <div class="speaker-card">
+                    <div class="speaker-card-inner">
+                        <div class="speaker-card-front">
+                            <img src="assets/speaker3.png" class="speaker-img" alt="Speaker Name">
+                            <div class="speaker-info">
+                                <h3>Dr. Emily Carter</h3>
+                                <p>Clinical Psychologist and Author. Specializes in trauma-informed care and
+                                    resilience
+                                    building.
+                                </p>
+                                <a class="read-more-btn" onclick="flipCard(this)">Read More</a>
+                            </div>
+                        </div>
+                        <div class="speaker-card-back">
                             <h3>Dr. Emily Carter</h3>
-                            <p>Clinical Psychologist and Author. Specializes in trauma-informed care and resilience
-                                building.
-                            </p>
-                            <a class="read-more-btn" onclick="flipCard(this)">Read More</a>
+                            <p>Dr. Carter is a renowned clinical psychologist specializing in
+                                trauma-informed
+                                care. She is
+                                the author of several best-selling books on resilience and recovery. Her
+                                workshops provide
+                                practical tools for practitioners working with trauma survivors.</p>
+                            <button class="close-btn" onclick="unflipCard(this)">Close</button>
                         </div>
                     </div>
-                    <div class="speaker-card-back">
-                        <h3>Dr. Emily Carter</h3>
-                        <p>Dr. Carter is a renowned clinical psychologist specializing in trauma-informed care. She is
-                            the author of several best-selling books on resilience and recovery. Her workshops provide
-                            practical tools for practitioners working with trauma survivors.</p>
-                        <button class="close-btn" onclick="unflipCard(this)">Close</button>
-                    </div>
                 </div>
-            </div>
 
-            <!-- Speaker 4 -->
-            <div class="speaker-card">
-                <div class="speaker-card-inner">
-                    <div class="speaker-card-front">
-                        <img src="assets/speaker4.jpg" class="speaker-img" alt="Speaker Name">
-                        <div class="speaker-info">
+                <!-- Speaker 4 -->
+                <div class="speaker-card">
+                    <div class="speaker-card-inner">
+                        <div class="speaker-card-front">
+                            <img src="assets/speaker4.jpg" class="speaker-img" alt="Speaker Name">
+                            <div class="speaker-info">
+                                <h3>Mr. James Wilson</h3>
+                                <p>Social Justice Advocate. Dedicating his career to housing equality and
+                                    urban
+                                    social work.
+                                </p>
+                                <a class="read-more-btn" onclick="flipCard(this)">Read More</a>
+                            </div>
+                        </div>
+                        <div class="speaker-card-back">
                             <h3>Mr. James Wilson</h3>
-                            <p>Social Justice Advocate. Dedicating his career to housing equality and urban social work.
+                            <p>Mr. Wilson has dedicated his career to fighting for housing equality. As a
+                                social
+                                justice
+                                advocate, he works tirelessly to address urban poverty and homelessness. He
+                                is a
+                                frequent
+                                speaker at national conferences on urban planning and social equity.</p>
+                            <button class="close-btn" onclick="unflipCard(this)">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Delegates & Map Section -->
+        <h2 class="delegates-title">1000+ Delegates registered</h2>
+        <section class="delegates-section">
+            <div class="map-container">
+                <iframe
+                    src="https://maps.google.com/maps?q=Rajagiri+College+of+Social+Sciences+Kalamassery&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                    width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </section>
+
+        <!-- CTA Cards Section -->
+        <section class="cta-cards-section">
+            <div class="cta-cards-grid">
+                <!-- Card 1: Registration -->
+                <div class="cta-card">
+                    <div class="cta-card-inner">
+                        <div class="cta-card-front">
+                            <div class="cta-image-wrapper">
+                                <img src="assets/card_registration.png" alt="Registration">
+                            </div>
+                            <p class="cta-text cta-title">Registrations for<br>the 10th ICSWHMH</p>
+                            <p class="cta-desc">Join us for the 10th ICSWHMH. Register now to secure your
+                                spot.
                             </p>
-                            <a class="read-more-btn" onclick="flipCard(this)">Read More</a>
+                            <a href="#" class="cta-btn cta-front-btn">Register</a>
+                        </div>
+                        <div class="cta-card-back">
+                            <p class="cta-text">Join us for the 10th ICSWHMH. Register now to secure your
+                                spot.
+                            </p>
+                            <a href="#" class="cta-btn">Register</a>
                         </div>
                     </div>
-                    <div class="speaker-card-back">
-                        <h3>Mr. James Wilson</h3>
-                        <p>Mr. Wilson has dedicated his career to fighting for housing equality. As a social justice
-                            advocate, he works tirelessly to address urban poverty and homelessness. He is a frequent
-                            speaker at national conferences on urban planning and social equity.</p>
-                        <button class="close-btn" onclick="unflipCard(this)">Close</button>
+                </div>
+
+                <!-- Card 2: Abstract/Program -->
+                <div class="cta-card">
+                    <div class="cta-card-inner">
+                        <div class="cta-card-front">
+                            <div class="cta-image-wrapper">
+                                <img src="assets/card_abstracts.png" alt="Abstracts">
+                            </div>
+                            <p class="cta-text cta-title">Call for Abstracts<br>and Proposals</p>
+                            <p class="cta-desc">Submit your abstracts and proposals for the conference
+                                program.
+                            </p>
+                            <a href="#" class="cta-btn cta-front-btn">Submit Abstract</a>
+                        </div>
+                        <div class="cta-card-back">
+                            <p class="cta-text">Submit your abstracts and proposals for the conference
+                                program.
+                            </p>
+                            <a href="#" class="cta-btn">Submit Abstract</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Visit Host City -->
+                <div class="cta-card">
+                    <div class="cta-card-inner">
+                        <div class="cta-card-front">
+                            <div class="cta-image-wrapper">
+                                <img src="assets/card_location.png" alt="Melbourne">
+                            </div>
+                            <p class="cta-text cta-title">Discover Melbourne and<br>Victoria. From urban
+                                laneways to
+                                regional escapes.
+                            </p>
+                            <p class="cta-desc">Explore the vibrant city of Melbourne and the beautiful
+                                Victoria
+                                region.</p>
+                            <a href="#" class="cta-btn cta-front-btn">Visit Melbourne</a>
+                        </div>
+                        <div class="cta-card-back">
+                            <p class="cta-text">Explore the vibrant city of Melbourne and the beautiful
+                                Victoria
+                                region.</p>
+                            <a href="#" class="cta-btn">Visit Melbourne</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-
-    <!-- Delegates & Map Section -->
-    <h2 class="delegates-title">1000+ Delegates registered</h2>
-    <section class="delegates-section">
-        <div class="map-container">
-            <iframe
-                src="https://maps.google.com/maps?q=Rajagiri+College+of+Social+Sciences+Kalamassery&t=&z=15&ie=UTF8&iwloc=&output=embed"
-                width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-        </div>
-    </section>
-
-    <!-- CTA Cards Section -->
-    <section class="cta-cards-section">
-        <div class="cta-cards-grid">
-            <!-- Card 1: Registration -->
-            <div class="cta-card">
-                <div class="cta-card-inner">
-                    <div class="cta-card-front">
-                        <div class="cta-image-wrapper">
-                            <img src="assets/card_registration.png" alt="Registration">
-                        </div>
-                        <p class="cta-text cta-title">Registrations for<br>the 10th ICSWHMH</p>
-                        <p class="cta-desc">Join us for the 10th ICSWHMH. Register now to secure your spot.</p>
-                        <a href="#" class="cta-btn cta-front-btn">Register</a>
-                    </div>
-                    <div class="cta-card-back">
-                        <p class="cta-text">Join us for the 10th ICSWHMH. Register now to secure your spot.</p>
-                        <a href="#" class="cta-btn">Register</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 2: Abstract/Program -->
-            <div class="cta-card">
-                <div class="cta-card-inner">
-                    <div class="cta-card-front">
-                        <div class="cta-image-wrapper">
-                            <img src="assets/card_abstracts.png" alt="Abstracts">
-                        </div>
-                        <p class="cta-text cta-title">Call for Abstracts<br>and Proposals</p>
-                        <p class="cta-desc">Submit your abstracts and proposals for the conference program.</p>
-                        <a href="#" class="cta-btn cta-front-btn">Submit Abstract</a>
-                    </div>
-                    <div class="cta-card-back">
-                        <p class="cta-text">Submit your abstracts and proposals for the conference program.</p>
-                        <a href="#" class="cta-btn">Submit Abstract</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 3: Visit Host City -->
-            <div class="cta-card">
-                <div class="cta-card-inner">
-                    <div class="cta-card-front">
-                        <div class="cta-image-wrapper">
-                            <img src="assets/card_location.png" alt="Melbourne">
-                        </div>
-                        <p class="cta-text cta-title">Discover Melbourne and<br>Victoria. From urban laneways to
-                            regional escapes.
-                        </p>
-                        <p class="cta-desc">Explore the vibrant city of Melbourne and the beautiful Victoria region.</p>
-                        <a href="#" class="cta-btn cta-front-btn">Visit Melbourne</a>
-                    </div>
-                    <div class="cta-card-back">
-                        <p class="cta-text">Explore the vibrant city of Melbourne and the beautiful Victoria region.</p>
-                        <a href="#" class="cta-btn">Visit Melbourne</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        </section>
+    </main>
     <main-footer></main-footer>
 
 

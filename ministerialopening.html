@@ -6,234 +6,300 @@
     <title>Ministerial Opening address</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="navbar.js"></script>
+    <script src="navbar.js" defer></script>
     <script src="footer.js" defer></script>
+    <script src="router.js" defer></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@400;600;800&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@400;600;800&display=swap"
         rel="stylesheet">
 
     <style>
-        /* ================= GLOBAL ================= */
+        * {
+            box-sizing: border-box;
+        }
 
         body {
-            background-color: #FDFDFF;
-            /* Secondary (Base) */
-            color: #2D3436;
-            /* Body Text */
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FDFBF7;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #333;
             overflow-x: hidden;
-            /* Prevent horizontal scroll */
         }
 
-        .speaker-front {
-            z-index: 2;
-            /* Ensure front is on top by default */
-            pointer-events: auto;
-
-        }
-
-        .speaker-back {
+        /* Floating Navbar Component Styles */
+        floating-navbar {
+            display: block;
+            width: 100%;
             position: absolute;
-            inset: 0;
-            transform: rotateY(180deg);
-            opacity: 0;
-            overflow-y: auto;
-            max-height: 100%;
-            /* Fill container */
-            border-radius: 20px;
-            /* Match card */
-            pointer-events: none;
-            /* Ignore touches when hidden */
-            z-index: 1;
+            top: 0;
+            left: 0;
+            z-index: 1000;
         }
 
-        .speaker-flip-wrapper.flipped .speaker-front {
-            transform: rotateY(180deg);
-            opacity: 0;
-            pointer-events: none;
-            /* Ignore touches when hidden */
-            padding-right: 5%;
+        /* Ministerial Section Styles (Renamed from Speakers) */
+        .ministerial-section {
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #FDFBF7;
+            margin-top: 100px;
         }
 
-        .speaker-flip-wrapper.flipped .speaker-back {
-            transform: rotateY(0deg);
-            opacity: 1;
-            pointer-events: auto;
-            /* Enable touches when visible */
-            z-index: 3;
-            /* bring to top */
-            padding-left: 2%;
-            padding-right: 2%;
-        }
-
-        /* ================= TITLE ================= */
-
-        .speaker-title {
-            margin-top: 180px;
-            margin-left: 60px;
-        }
-
-        #pageTitle {
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            font-weight: 700;
+        .ministerial-title {
+            text-align: left;
             color: #1D0A3F;
-            /* Primary */
-            text-transform: uppercase;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-weight: 600;
+            font-size: 2rem;
+            margin-bottom: 50px;
+            margin-top: 50px;
             position: relative;
             display: inline-block;
-            padding-left: 5%;
-
+            width: 100%;
         }
 
-        #pageTitle::after {
+        .ministerial-title::after {
             content: "";
             display: block;
-            width: 70px;
+            width: 80px;
             height: 4px;
             background-color: #C9A227;
-            ;
             margin-top: 10px;
             border-radius: 3px;
         }
 
-        /* ================= CARD ================= */
-
-        .speaker-card {
-            border-radius: 20px;
-            padding: 20px;
-            margin-top: 60px;
-            background: #F1F2F6;
-            /* Support tone */
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-        }
-
-        .speaker-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.12);
-        }
-
-        /* ================= CONTENT ================= */
-
-        .speaker-content {
-            font-size: 18px;
-            line-height: 1.65;
-        }
-
-        .speaker-content p,
-        .speaker-back p {
-            text-align: justify;
-            margin-bottom: 0.9rem;
-            color: #2D3436;
-        }
-
-        .speaker-content h3,
-        .speaker-content h6 {
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            color: #1D0A3F;
-            margin-bottom: 8px;
-        }
-
-        /* ================= BUTTON ================= */
-
-        .speaker-btn {
-            background-color: #1D0A3F;
-            color: #FDFDFF;
-            border: none;
-            padding: 10px 22px;
-            border-radius: 30px;
-            font-weight: 500;
-            transition: background-color 0.25s ease, transform 0.2s ease;
-        }
-
-        .speaker-btn:hover {
-            background-color: #14072C;
-            transform: translateY(-2px);
-        }
-
-        /* ================= FLIP EFFECT ================= */
-
-        .speaker-flip-wrapper {
-            perspective: 1000px;
-            position: relative;
-        }
-
-        .speaker-front,
-        .speaker-back {
-            backface-visibility: hidden;
-            transition: transform 1.15s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.9s ease;
-        }
-
-        .speaker-back {
-            position: absolute;
-            inset: 0;
-            transform: rotateY(180deg);
-            opacity: 0;
-            overflow-y: auto;
-            max-height: 420px;
-        }
-
-        .speaker-flip-wrapper.flipped .speaker-front {
-            transform: rotateY(180deg);
-            opacity: 0;
-        }
-
-        .speaker-flip-wrapper.flipped .speaker-back {
-            transform: rotateY(0deg);
-            opacity: 1;
-        }
-
-        /* ================= IMAGE ================= */
-
-        .speaker-image-col {
-            display: flex;
+        .ministerial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+            /* Center the single item */
             justify-content: center;
+        }
+
+        /* Card Styles */
+        .ministerial-card {
+            perspective: 1000px;
+            height: 350px;
+            /* Slightly taller for more content */
+            background: transparent;
+            padding: 0;
+            border-radius: 0;
+            box-shadow: none;
+            /* If we have only one card and want it centered but not stretching widely */
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .ministerial-card:hover .ministerial-card-front {
+            transform: translateY(-5px);
+        }
+
+        .ministerial-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: left;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .ministerial-card.flipped .ministerial-card-inner {
+            transform: rotateY(-180deg);
+        }
+
+        .ministerial-card-front,
+        .ministerial-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            background: #1D0A3F;
+            padding: 40px;
+            /* Increased padding */
+            box-sizing: border-box;
+        }
+
+        .ministerial-card-front {
+            display: flex;
             align-items: center;
+            gap: 40px;
+            z-index: 2;
+            transition: transform 0.3s ease;
+            border-left: 6px solid #C9A227;
         }
 
-        .speaker-image-col img {
-            width: 280px;
-            height: 280px;
+        .ministerial-card-back {
+            transform: rotateY(180deg);
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            overflow-y: auto;
+            color: #F0F0F0;
+        }
+
+        /* Scrollbar styles for the back */
+        .ministerial-card-back::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .ministerial-card-back::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .ministerial-card-back::-webkit-scrollbar-thumb {
+            background-color: #C9A227;
+            border-radius: 3px;
+        }
+
+        .ministerial-img {
+            width: 180px;
+            /* Larger image for featured minister */
+            height: 180px;
+            border-radius: 50%;
             object-fit: cover;
-            box-shadow: 0 18px 35px rgba(0, 0, 0, 0.15);
+            flex-shrink: 0;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* ================= MOBILE ================= */
+        .ministerial-card:hover .ministerial-img {
+            transform: scale(1.1);
+            border-radius: 20px;
+        }
+
+        .ministerial-info {
+            flex: 1;
+        }
+
+        .ministerial-info h3 {
+            color: #FFFFFF;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0 0 5px 0;
+            font-size: 1.6rem;
+            /* Larger Name */
+            font-weight: 600;
+        }
+
+        .ministerial-info h6 {
+            color: #C9A227;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0 0 15px 0;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            line-height: 1.4;
+        }
+
+        .ministerial-info p {
+            color: #F0F0F0;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            /* Show fewer lines on front */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .ministerial-card-back h3 {
+            color: #FFFFFF;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin-top: 0;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+            width: 100%;
+        }
+
+        .ministerial-card-back p {
+            color: #F0F0F0;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .read-more-btn {
+            display: inline-block;
+            padding: 10px 24px;
+            background-color: #C9A227;
+            color: #1D0A3F;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+            cursor: pointer;
+            font-weight: 600;
+            border: none;
+        }
+
+        .read-more-btn:hover {
+            background-color: #FDFBF7;
+        }
+
+        .close-btn {
+            background: #C9A227;
+            border: none;
+            color: #1D0A3F;
+            cursor: pointer;
+            margin-top: auto;
+            padding: 8px 20px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            align-self: flex-end;
+        }
+
+        .close-btn:hover {
+            background-color: #FDFBF7;
+        }
 
         @media (max-width: 768px) {
-            .speaker-title {
-                margin-top: 120px;
-                /* Reduced from 180px */
-                margin-left: 0;
-                /* Centered or just left aligned with container padding */
-                text-align: center;
+            .ministerial-grid {
+                grid-template-columns: 1fr;
             }
 
-            .speaker-image-col {
-                margin-top: 30px;
-                margin-bottom: 30px;
-            }
-
-            .speaker-image-col img {
-                width: 200px;
-                height: 200px;
-            }
-
-            .speaker-content {
+            .ministerial-card {
+                height: auto;
+                min-height: 500px;
                 max-width: 100%;
+            }
+
+            .ministerial-card-front {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+                padding: 30px;
+            }
+
+            .ministerial-info h3,
+            .ministerial-info h6,
+            .ministerial-info p {
                 text-align: center;
             }
 
-            .speaker-content p {
-                text-align: left;
-                /* Keep readable paragraph alignment */
+            .ministerial-card-back {
+                padding: 25px;
+            }
+
+            .ministerial-img {
+                width: 150px;
+                height: 150px;
             }
         }
     </style>
@@ -241,98 +307,105 @@
 
 <body>
     <floating-navbar></floating-navbar>
+    <main id="app-content">
 
-    <div class="speaker-title">
-        <h2 id="pageTitle">VIRTUAL OPENING ADDRESS</h2>
-    </div>
+        <div class="ministerial-section">
+            <h2 class="ministerial-title">VIRTUAL OPENING ADDRESS</h2>
 
-    <div class="container mb-5">
+            <div class="ministerial-grid">
 
-        <div class="speaker-card">
-            <div class="speaker-flip-wrapper" id="flipWrapper">
+                <!-- Ministerial Card -->
+                <div class="ministerial-card">
+                    <div class="ministerial-card-inner">
 
-                <!-- FRONT -->
-                <div class="speaker-front">
-                    <div class="row align-items-center">
-
-                        <!-- IMAGE LEFT -->
-                        <div class="col-md-4 speaker-image-col">
-                            <img src="assets/ministerial.png" class="rounded-circle" alt="ministerial opening">
+                        <!-- FRONT -->
+                        <div class="ministerial-card-front">
+                            <img src="assets/ministerial.png" class="ministerial-img" alt="The Hon Emma McBride MP">
+                            <div class="ministerial-info">
+                                <h3>THE HON EMMA MCBRIDE MP</h3>
+                                <h6>Assistant Minister for Mental Health and Suicide Prevention
+                                    & Assistant Minister for Rural and Regional Health</h6>
+                                <p>
+                                    Emma McBride is the Federal Member for the electorate of
+                                    Dobell, on the Central Coast of
+                                    NSW and was elected in 2016. After the 2019 election Emma
+                                    was appointed Shadow Assistant
+                                    Minister for Mental Health and Shadow Assistant Minister for
+                                    Carers...
+                                </p>
+                                <button class="read-more-btn" onclick="flipMinisterialCard(this)">Read More</button>
+                            </div>
                         </div>
 
-                        <!-- TEXT -->
-                        <div class="col-md-8 speaker-content">
+                        <!-- BACK -->
+                        <div class="ministerial-card-back">
                             <h3>THE HON EMMA MCBRIDE MP</h3>
-                            <h6>Assistant Minister for Mental Health and Suicide Prevention & Assistant Minister for
-                                Rural and Regional Health</h6>
-
                             <p>
-                                Emma McBride is the Federal Member for the electorate of Dobell, on the Central Coast of
-                                NSW and was elected in 2016. After the 2019 election Emma was appointed Shadow Assistant
-                                Minister for Mental Health and Shadow Assistant Minister for Carers. Emma was the Deputy
-                                Chair of the House of Representatives Select Committee on Mental Health and Suicide
-                                Prevention in 2021. Following the 2022 election, Emma McBride was appointed Assistant
-                                Minister for Mental Health and Suicide Prevention and Assistant Minister for Rural and
+                                Emma McBride is the Federal Member for the electorate of Dobell,
+                                on the Central Coast of
+                                NSW and was elected in 2016. After the 2019 election Emma was
+                                appointed Shadow Assistant
+                                Minister for Mental Health and Shadow Assistant Minister for
+                                Carers. Emma was the Deputy
+                                Chair of the House of Representatives Select Committee on Mental
+                                Health and Suicide
+                                Prevention in 2021. Following the 2022 election, Emma McBride
+                                was appointed Assistant
+                                Minister for Mental Health and Suicide Prevention and Assistant
+                                Minister for Rural and
                                 Regional Health.
                             </p>
-
-                            <button class="speaker-btn mt-3" onclick="flipContent()">Read More</button>
+                            <p>
+                                Emma worked in health for over 20 years, both in Australia and
+                                abroad.
+                                She was a Specialist Mental Health Pharmacist and the Chief
+                                Pharmacist
+                                at Wyong Hospital, and prior to her election to Parliament, was
+                                the
+                                Deputy Director of Pharmacy for Central Coast Local Health
+                                District.
+                            </p>
+                            <p>
+                                Her background across a wide range of health care settings
+                                provides
+                                a unique platform to promote better health services for both her
+                                local
+                                area and the broader community.
+                            </p>
+                            <p>
+                                Emma is a passionate advocate for quality healthcare close to
+                                home.
+                                She recognises the unique challenges facing rural and regional
+                                communities in accessing health care and aims to help shape
+                                public
+                                policy that promotes health and wellbeing for all Australians,
+                                regardless of where they live.
+                            </p>
+                            <button class="close-btn" onclick="unflipMinisterialCard(this)">Close</button>
                         </div>
 
                     </div>
                 </div>
 
-                <!-- BACK -->
-                <div class="speaker-back">
-                    <p>
-                        Emma McBride was the Deputy Chair of the House of Representatives Select Committee
-                        on Mental Health and Suicide Prevention in 2021. Following the 2022 election,
-                        she was appointed Assistant Minister for Mental Health and Suicide Prevention
-                        and Assistant Minister for Rural and Regional Health.
-                    </p>
-
-                    <p>
-                        Emma worked in health for over 20 years, both in Australia and abroad.
-                        She was a Specialist Mental Health Pharmacist and the Chief Pharmacist
-                        at Wyong Hospital, and prior to her election to Parliament, was the
-                        Deputy Director of Pharmacy for Central Coast Local Health District.
-                    </p>
-
-                    <p>
-                        Her background across a wide range of health care settings provides
-                        a unique platform to promote better health services for both her local
-                        area and the broader community.
-                    </p>
-
-                    <p>
-                        Emma is a passionate advocate for quality healthcare close to home.
-                        She recognises the unique challenges facing rural and regional
-                        communities in accessing health care and aims to help shape public
-                        policy that promotes health and wellbeing for all Australians,
-                        regardless of where they live.
-                    </p>
-
-                    <button class="speaker-btn mt-3" onclick="flipContent()">Back</button>
-                </div>
-
             </div>
+
         </div>
 
-    </div>
-
+    </main>
     <main-footer></main-footer>
 
     <script>
-        function flipContent() {
-            const flip = flipWrapper;
-            const title = document.getElementById("pageTitle");
+        function flipMinisterialCard(btn) {
+            const card = btn.closest('.ministerial-card');
+            if (card) {
+                card.classList.add('flipped');
+            }
+        }
 
-            flip.classList.toggle("flipped");
-
-            if (flip.classList.contains("flipped")) {
-                title.textContent = "THE HON EMMA McBRIDE MP"
-            } else {
-                title.textContent = "VIRTUAL OPENING ADDRESS"
+        function unflipMinisterialCard(btn) {
+            const card = btn.closest('.ministerial-card');
+            if (card) {
+                card.classList.remove('flipped');
             }
         }
     </script>
