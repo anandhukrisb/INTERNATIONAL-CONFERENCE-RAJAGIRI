@@ -288,7 +288,8 @@
             background: var(--bg-tone);
             padding: 50px;
             border-radius: 0;
-            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            background: #1D0A3F;
             margin-bottom: 60px;
             border-left: 6px solid var(--accent-gold);
         }
@@ -297,7 +298,7 @@
             font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             font-size: 2.2rem;
             font-weight: 600;
-            color: var(--primary-purple);
+            color:#FFFFFF;
             margin-bottom: 30px;
         }
 
@@ -305,7 +306,7 @@
             font-size: 1.05rem;
             line-height: 1.9;
             margin-bottom: 20px;
-            color: var(--text-dark);
+            color: #FFFFFF;
         }
 
         /* Stats Section */
@@ -345,6 +346,7 @@
             text-transform: none;
             letter-spacing: 1px;
         }
+        
 
         /* Download Section */
         .download-box {
@@ -405,17 +407,17 @@
         }
 
         .program-feature {
-            background: var(--bg-tone);
+            background: #1D0A3F;
             padding: 40px;
             margin-bottom: 30px;
             border-radius: 0;
-            box-shadow: 0 3px 20px rgba(0, 0, 0, 0.05);
+            box-shadow:0 10px 30px rgba(0, 0, 0, 0.05);
             border-left: 5px solid var(--accent-gold);
             transition: all 0.3s ease;
         }
 
         .program-feature:hover {
-            box-shadow: 0 8px 35px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             transform: translateX(5px);
         }
 
@@ -423,27 +425,30 @@
             font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             font-size: 1.8rem;
             font-weight: 600;
-            color: var(--primary-purple);
+            color: #FFFFFF;
             margin-bottom: 20px;
         }
 
         .program-feature p {
             font-size: 1.05rem;
             line-height: 1.8;
-            color: var(--text-dark);
+            color: #FFFFFF;
             margin: 0;
         }
 
-        .program-feature ul {
+        .program-card ul {
             margin: 20px 0 0 0;
             padding-left: 25px;
         }
 
-        .program-feature ul li {
+        .program-card ul li {
             font-size: 1.05rem;
             line-height: 1.9;
             margin-bottom: 12px;
-            color: var(--text-dark);
+            color: #FFFFFF;
+        }
+        ul li::marker {
+            color:var(--accent-gold);
         }
 
         .program-feature ul li strong {
