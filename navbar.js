@@ -473,6 +473,7 @@ class FloatingNavbar extends HTMLElement {
                         width: 100% !important;
                         border-radius: 0 !important;
                          background: #1d0a3f;
+                        top: 0px;
                      }
                      .navbar-links {
                          display: none; /* Hide visible strip entirely */
