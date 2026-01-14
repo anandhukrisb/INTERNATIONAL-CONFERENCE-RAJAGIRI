@@ -450,6 +450,20 @@
                 height: 50px;
                 padding: 10px 0;
             }
+
+            /* Mobile Banner Alignment */
+            .banner-container {
+                justify-content: flex-start;
+            }
+
+            .banner-container img {
+                max-width: 100%;
+                height: 280px;
+                object-fit: cover;
+                object-position: left;
+                border-radius: 0;
+                transform: none;
+            }
         }
 
         /* Speakers Section */
@@ -1643,9 +1657,12 @@
                 if (rect.top <= viewHeight && rect.bottom >= 0) {
                     const bannerImage = bannerSection.querySelector('img');
                     if (bannerImage) {
-                        // Apply parallax. Limit the range if needed.
-                        // Start with a scale to prevent edges showing
-                        bannerImage.style.transform = `scale(1.1) translateY(${diff * 0.1}px)`;
+                        // Apply parallax only on desktop
+                        if (window.innerWidth > 768) {
+                            bannerImage.style.transform = `scale(1.1) translateY(${diff * 0.1}px)`;
+                        } else {
+                            bannerImage.style.transform = 'none';
+                        }
                     }
                 }
             }
