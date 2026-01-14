@@ -21,7 +21,7 @@
         :root {
             --primary-purple: #1D0A3F;
             --accent-gold: #C9A227;
-            --bg-light: #FDFDFF;
+            --bg-light: #FDFBF7;
             --text-dark: #2D3436;
             --text-muted: #555;
             --white: #ffffff;
@@ -103,15 +103,16 @@
         }
 
         .inclusion-card {
-            background: var(--white);
+            background: #1D0A3F;
             padding: 40px;
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            border-top: 5px solid var(--accent-gold);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border-left: 6px solid var(--accent-gold);
+            border-top: none;
         }
 
         .inclusion-card h3 {
-            color: var(--primary-purple);
+            color: var(--white);
             margin-bottom: 20px;
             font-size: 1.4rem;
             font-weight: 700;
@@ -126,7 +127,7 @@
             padding-left: 25px;
             margin-bottom: 12px;
             font-size: 1rem;
-            color: var(--text-muted);
+            color: #F0F0F0;
         }
 
         .inclusion-list li::before {
