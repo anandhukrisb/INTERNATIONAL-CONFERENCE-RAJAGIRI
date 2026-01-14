@@ -297,7 +297,7 @@ class FloatingNavbar extends HTMLElement {
                     font-weight: 600;
                     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
                     transition: all 0.3s ease;
-                    height: 20px; 
+                    height: 20px;
                 }
 
                 .navbar-links a.contact-btn:hover {
@@ -522,13 +522,14 @@ class FloatingNavbar extends HTMLElement {
                     <li>
                         <a href="program.html">Program</a>
                         <ul class="dropdown-menu">
+                            <li><a href="program.html">Events</a></li>
                             <li><a href="topics.html">Conference topics</a></li>
                         </ul>
                     </li>
                     <li>
                         <a href="#">Speakers</a>
                         <ul class="dropdown-menu">
-                            <li><a href="speaker.html">Speakers</a></li>
+                            <li><a href="speaker.html">Speakers list</a></li>
                             <li><a href="ministerialopening.html">Ministerrial opening</a></li>
                         </ul>
                     </li>

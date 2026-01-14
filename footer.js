@@ -200,16 +200,30 @@ class MainFooter extends HTMLElement {
                 }
 
                 /* Tablet - Keep all 3 columns horizontal with tighter spacing */
-                @media (max-width: 1100px) and (min-width: 901px) {
+                @media (max-width: 1100px) and (min-width: 951px) {
+                    .footer-container {
+                        min-height: auto; /* Remove min-height to prevent white space */
+                    }
+
                     .content-section {
                         grid-template-columns: 1fr 0.8fr 1fr;
                         gap: 15px;
-                        padding-right: 20px;
+                        padding: 35px 30px 20px;
+                        margin-left: 420px;
                         font-size: 0.9rem;
                     }
                     
                     .footer-col h3 {
                         font-size: 1.1rem;
+                    }
+
+                    .logo-section {
+                        width: 400px;
+                        height: 140px;
+                    }
+
+                    .copyright-section {
+                        width: 500px;
                     }
                 }
 

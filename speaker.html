@@ -67,6 +67,12 @@
         }
 
         /* Floating Navbar Component Styles (if not loaded by js/css)*/ 
+        html {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        /* Floating Navbar Component Styles (if not loaded by js/css) */
         floating-navbar {
             display: block;
             width: 100%;
@@ -293,19 +299,34 @@
         }
 
         @media (max-width: 768px) {
+            body {
+                overflow-x: hidden !important;
+            }
+
+            .speakers-section {
+                padding: 40px 15px;
+                margin: 0;
+                max-width: 100%;
+                width: 100%;
+                overflow-x: hidden;
+            }
+
             .speakers-grid {
                 grid-template-columns: 1fr;
+                gap: 30px;
             }
 
             .speaker-card {
                 height: auto;
                 min-height: 450px;
+                max-width: 100%;
             }
 
             .speaker-card-front {
                 flex-direction: column;
                 text-align: center;
                 gap: 20px;
+                padding: 25px;
             }
 
             .speaker-info h3,
@@ -316,6 +337,11 @@
 
             .speaker-card-back {
                 padding: 20px;
+            }
+
+            .speaker-img {
+                width: 120px;
+                height: 120px;
             }
         }
     </style>
