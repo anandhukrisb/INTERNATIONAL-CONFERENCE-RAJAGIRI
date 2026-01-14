@@ -194,6 +194,17 @@ class MainFooter extends HTMLElement {
                 }
 
 
+                .contact-link {
+                    color: #d4af37;
+                    text-decoration: none;
+                    transition: color 0.3s;
+                }
+
+                .contact-link:hover {
+                    text-decoration: underline;
+                    color: #d4af37;
+                }
+
                 .contact-details a {
                     color: white;
                     text-decoration: none;
@@ -341,8 +352,8 @@ class MainFooter extends HTMLElement {
                             Surry Hills, NSW, 2010, Australia</p>
                             
                             <p>
-                                Phone: <span style="color: white;">+61 23523423</span><br>
-                                Email: <span style="color: white;">example@gmail.com.au</span>
+                                Phone: <a href="tel:+6123523423" class="contact-link">+61 23523423</a><br>
+                                Email: <a href="mailto:example@gmail.com.au" class="contact-link">example@gmail.com.au</a>
                             </p>
                         </div>
                     </div>
