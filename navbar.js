@@ -35,7 +35,9 @@ class FloatingNavbar extends HTMLElement {
                 const parentLi = link.closest('li');
                 if (parentLi && parentLi.parentElement && parentLi.parentElement.classList.contains('navbar-links')) {
                     // It is a top level link, just mark it
-                    link.classList.add('active');
+                    if (!link.classList.contains('contact-btn')) {
+                        link.classList.add('active');
+                    }
                 } else if (link.closest('.dropdown-menu')) {
                     // It is inside a dropdown
                     const topLevelLi = link.closest('.navbar-links > li');
