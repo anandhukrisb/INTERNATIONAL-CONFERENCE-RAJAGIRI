@@ -152,7 +152,7 @@ class FloatingNavbar extends HTMLElement {
                     height: 100%;
                     align-items: center;
                     /* Priority+ Flex Behavior */
-                    overflow: hidden;
+                    /* overflow: hidden; Removed to fix dropdown overlap */
                     flex: 1;
                     justify-content: flex-end;
                 }
