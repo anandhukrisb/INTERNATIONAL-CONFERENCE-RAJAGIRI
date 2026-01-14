@@ -929,6 +929,33 @@
             font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
+        .ceo-name {
+            position: absolute;
+            right: -250px;
+            bottom: 120px;
+            color: white;
+            text-align: left;
+            z-index: 6;
+        }
+
+        .ceo-name h3 {
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-size: 2rem;
+            font-weight: 600;
+            margin: 0 0 5px 0;
+            margin-left: 20px;
+            color: #C9A227;
+        }
+
+        .ceo-name p {
+            font-size: 1rem;
+            margin: 0;
+            margin-left: 20px;
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 400;
+        }
+
         /* Kathakali Section Styles */
         .kathakali-section {
             background-color: #FDFBF7;
@@ -1194,6 +1221,36 @@
             /* Extra bold for titles */
         }
 
+        /* Tablet - CEO name above image */
+        @media (max-width: 949px) {
+            .ceo-wrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .ceo-name {
+                order: -1;
+                position: static;
+                margin-bottom: 30px;
+                margin-top: 0;
+                text-align: center;
+            }
+
+            .ceo-name h3 {
+                margin-left: 0;
+            }
+
+            .ceo-name p {
+                margin-left: 0;
+                margin-bottom: 0;
+            }
+
+            .ceo-image {
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+
         @media (max-width: 950px) {
             .welcome-container {
                 flex-direction: column;
@@ -1289,6 +1346,20 @@
                 transform: translateX(-50%);
                 /* Allow parallax but center it for mobile */
                 opacity: 0.08;
+            }
+
+            .ceo-name {
+                position: static;
+                margin-top: 20px;
+                text-align: center;
+            }
+
+            .ceo-name h3 {
+                font-size: 1.7rem;
+            }
+
+            .ceo-name p {
+                font-size: 0.9rem;
             }
 
             .speakers-section {
@@ -1454,6 +1525,10 @@
                         CEO<br>AASW
                     </div>
                     <img src="assets/ceo_image.png" alt="AASW CEO" class="ceo-image">
+                    <div class="ceo-name">
+                        <h3>Dr. Emma Richardson</h3>
+                        <p>Chief Executive Officer</p>
+                    </div>
                 </div>
             </div>
         </section>
