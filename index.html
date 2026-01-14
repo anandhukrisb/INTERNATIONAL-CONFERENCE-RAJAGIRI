@@ -17,6 +17,104 @@
 
     <!-- View Transitions API CSS -->
     <style>
+        /* Bouncing Ball Loader */
+        #page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #FDFBF7;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .loader-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ball-wrapper {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .ball {
+            width: 40px;
+            height: 40px;
+            background-color: #1D0A3F;
+            border-radius: 50%;
+            position: absolute;
+            left: 30px;
+            /* Center horizontally in 100px wrapper (100-40)/2 */
+            top: 0;
+            animation: bounce 0.6s infinite alternate cubic-bezier(0.4, 0, 1, 1);
+        }
+
+        .shadow {
+            width: 40px;
+            height: 10px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+            position: absolute;
+            bottom: 0;
+            left: 30px;
+            animation: shadow-pulse 0.6s infinite alternate cubic-bezier(0.4, 0, 1, 1);
+        }
+
+        @keyframes bounce {
+            0% {
+                transform: translateY(0) scale(1.1, 0.9);
+                /* Squash at bottom */
+            }
+
+            100% {
+                transform: translateY(-60px) scale(0.9, 1.1);
+                /* Stretch at top */
+            }
+        }
+
+        @keyframes shadow-pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scale(0.6);
+                opacity: 0.2;
+            }
+        }
+
+        .loader-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            color: #1D0A3F;
+            letter-spacing: 1px;
+            animation: pulse 1.5s ease-in-out infinite;
+            margin-top: 10px;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
         /* Prevent navbar and footer from flickering during transitions */
         floating-navbar {
             view-transition-name: navbar;
@@ -100,22 +198,14 @@
             padding-bottom: 0px;
             display: flex;
             justify-content: center;
-            overflow: hidden;
-            position: relative;
-            /* box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); */
-            bottom: 20px;
         }
 
         .banner-container img {
             width: 100%;
-            max-width: 1100px;
+            max-width: 1200px;
             height: auto;
             display: block;
             /* box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); */
-            will-change: transform;
-            transform: scale(1.1);
-            border-radius: 20px;
-            /* Zoom in slightly to avoid white gaps during parallax */
         }
 
         /* Ticker styles (if uncommented) */
@@ -1258,6 +1348,17 @@
 
 <body>
 
+    <!-- Loading Screen -->
+    <div id="page-loader">
+        <div class="loader-content">
+            <div class="ball-wrapper">
+                <div class="ball"></div>
+                <div class="shadow"></div>
+            </div>
+            <div class="loader-text">Loading...</div>
+        </div>
+    </div>
+
     <floating-navbar></floating-navbar>
     <main id="app-content">
         <div class="news-ticker-container" id="tickerContainer">
@@ -1270,24 +1371,6 @@
         <div class="banner-container">
             <img src="assets/banner_combined.png" alt="Conference Banner">
         </div>
-
-
-
-        <!-- Kathakali Section (Replacing Title Section) -->
-        <!-- <section class="kathakali-section">
-            <div class="kathakali-container">
-                <h3 class="kathakali-header reveal-on-scroll">International Conference on Social Work in<br>Health and
-                    Mental Health</h3>
-                <div class="kathakali-watermark">2027 ICSWHMH</div>
-
-                <div class="kathakali-wrapper reveal-on-scroll delay-1">
-                    <div class="kathakali-entrance">
-                        <img src="assets/kathakali.png" alt="Kathakali" class="kathakali-image">
-                    </div>
-                    <img src="assets/conf_logo_10th.png" alt="Conference Logo" class="kathakali-logo">
-                </div>
-            </div>
-        </section> -->
 
         <div class="section-separator"></div>
 
@@ -1568,6 +1651,19 @@
 
 
     <script>
+        // Page Loader Logic
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('page-loader');
+            if (loader) {
+                setTimeout(() => {
+                    loader.style.opacity = '0';
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                    }, 500);
+                }, 800);
+            }
+        });
+
         const track = document.getElementById('tickerTrack');
         const container = document.getElementById('tickerContainer');
         const item = track.querySelector('.ticker-item');
@@ -1642,28 +1738,6 @@
                     const scrollTop = window.scrollY;
                     const offset = (scrollTop - aboutSection.offsetTop) * speed;
                     aboutContent.style.transform = `translateY(${offset}px)`;
-                }
-            }
-
-            // Banner Parallax
-            const bannerSection = document.querySelector('.banner-container');
-            if (bannerSection) {
-                const rect = bannerSection.getBoundingClientRect();
-                const viewHeight = window.innerHeight;
-                const sectionCenter = rect.top + rect.height / 2;
-                const screenCenter = viewHeight / 2;
-                const diff = (screenCenter - sectionCenter);
-
-                if (rect.top <= viewHeight && rect.bottom >= 0) {
-                    const bannerImage = bannerSection.querySelector('img');
-                    if (bannerImage) {
-                        // Apply parallax only on desktop
-                        if (window.innerWidth > 768) {
-                            bannerImage.style.transform = `scale(1.1) translateY(${diff * 0.1}px)`;
-                        } else {
-                            bannerImage.style.transform = 'none';
-                        }
-                    }
                 }
             }
 
