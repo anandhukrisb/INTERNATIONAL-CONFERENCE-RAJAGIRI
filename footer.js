@@ -341,8 +341,8 @@ class MainFooter extends HTMLElement {
                             Surry Hills, NSW, 2010, Australia</p>
                             
                             <p>
-                                Phone: <a href="tel:+61286670737">+61 2 8667 0737</a><br>
-                                Email: <a href="mailto:aasw@forumgroupevents.com.au">aasw@forumgroupevents.com.au</a>
+                                Phone: <span style="color: white;">+61 23523423</span><br>
+                                Email: <span style="color: white;">example@gmail.com.au</span>
                             </p>
                         </div>
                     </div>

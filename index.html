@@ -703,14 +703,24 @@
         }
 
         .close-btn {
-            background: none;
-            border: none;
-            color: #C9A227;
-            text-decoration: underline;
-            cursor: pointer;
-            margin-top: 10px;
-            padding: 0;
+            display: inline-block;
+            padding: 8px 20px;
+            background-color: #C9A227;
+            color: #1D0A3F;
+            text-decoration: none;
+            border-radius: 10px;
             font-size: 0.9rem;
+            transition: background 0.3s;
+            cursor: pointer;
+            font-weight: 600;
+            border: none;
+            margin-top: 10px;
+            /* Ensure it looks good as a button element */
+            font-family: inherit;
+        }
+
+        .close-btn:hover {
+            background-color: #FDFBF7;
         }
 
         @media (max-width: 768px) {
