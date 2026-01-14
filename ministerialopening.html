@@ -32,6 +32,11 @@
             overflow-x: hidden;
         }
 
+        html {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
         /* Floating Navbar Component Styles */
         floating-navbar {
             display: block;
@@ -272,6 +277,7 @@
         @media (max-width: 768px) {
             .ministerial-grid {
                 grid-template-columns: 1fr;
+                gap: 30px;
             }
 
             .ministerial-card {
@@ -284,7 +290,7 @@
                 flex-direction: column;
                 text-align: center;
                 gap: 20px;
-                padding: 30px;
+                padding: 25px;
             }
 
             .ministerial-info h3,
@@ -294,12 +300,16 @@
             }
 
             .ministerial-card-back {
-                padding: 25px;
+                padding: 20px;
             }
 
             .ministerial-img {
-                width: 150px;
-                height: 150px;
+                width: 140px;
+                height: 140px;
+            }
+
+            .read-more-btn {
+                margin-top: -10px;
             }
         }
     </style>
