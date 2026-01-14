@@ -520,7 +520,7 @@ class FloatingNavbar extends HTMLElement {
                         <a href="index.html">2027 ICSWHMH</a>
                     </li>
                     <li>
-                        <a href="program.html">Program</a>
+                        <a href="#">Program</a>
                         <ul class="dropdown-menu">
                             <li><a href="program.html">Events</a></li>
                             <li><a href="topics.html">Conference topics</a></li>
@@ -534,7 +534,7 @@ class FloatingNavbar extends HTMLElement {
                         </ul>
                     </li>
                     <li>
-                        <a href="#">Registration</a>
+                        <a href="registration.html">Registration</a>
                         <ul class="dropdown-menu">
                             <li><a href="#">Student</a></li>
                         </ul>
@@ -564,7 +564,7 @@ class FloatingNavbar extends HTMLElement {
                             <li><a href="#">Travel</a></li>
                         </ul>
                     </li>
-                    <li><a href="#" class="contact-btn">Contact Us</a></li>
+                    <li><a href="contact-us.html" class="contact-btn">Contact Us</a></li>
                 </ul>
             </nav>
         `;

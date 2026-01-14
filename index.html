@@ -129,17 +129,53 @@
         }
 
         .title-section {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 250px;
-            padding: 40px 20px;
-            max-width: 1200px;
+            display: block;
+            width: 100%;
             margin: 0 auto;
             margin-top: 180px;
-            font-size: larger;
-            color: #1D0A3F;
+            padding-bottom: 50px;
+            background: transparent;
         }
+
+        .welcome-container.title-hero {
+            align-items: center;
+            /* Center vertically */
+            justify-content: center;
+            /* Center horizontally */
+            text-align: center;
+        }
+
+        .title-hero .welcome-content {
+            flex: 0 0 auto;
+            max-width: 900px;
+            margin: 0;
+            padding-bottom: 0;
+            text-align: center;
+        }
+
+        .title-hero .ceo-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            bottom: auto;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .title-hero .ceo-title-bg {
+            /* Adjust for better background placement in center mode */
+            top: 50%;
+            right: 5%;
+            bottom: auto;
+            transform: translateY(-50%);
+            line-height: 1;
+            opacity: 0.15;
+            /* SLightly more visible */
+        }
+
+        /* Adjust parallax JS to handle new positions if needed, but existing logic might suffice if we tweak CSS */
 
         /* Intro Animations */
         @keyframes fadeInScale {
@@ -166,32 +202,40 @@
             }
         }
 
-        .title-section h1 {
-            font-size: 2rem;
-            color: #1d0a3f;
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            text-transform: none;
-            font-weight: 600;
-            margin-bottom: 20px;
-            line-height: 1.2;
-            letter-spacing: -1px;
+        @keyframes fadeInDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
 
-            /* Animation */
-            opacity: 0;
-            /* Star invisible */
-            animation: fadeInUp 1s ease-out 0.4s forwards;
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .title-section img {
-            height: 150px;
-            width: auto;
-            flex-shrink: 0;
-
-            /* Animation */
+        .title-logo {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 150px;
+            /* Adjust size as needed */
+            height: auto;
+            z-index: 20;
+            /* Above watermark, maybe above header? */
             opacity: 0;
-            /* Start invisible */
-            animation: fadeInUp 1s ease-out 0.6s forwards;
+            animation: fadeInDown 1s ease-out 0.5s forwards;
         }
+
+        @media (max-width: 768px) {
+            .title-logo {
+                width: 100px;
+                top: 10px;
+                right: 10px;
+            }
+        }
+
+        /* Removed old .title-section h1/img styles to avoid conflict */
 
         .about-section {
             display: flex;
@@ -337,24 +381,11 @@
                 /* Soften right side */
             }
 
-            .title-section {
-                background-color: #F0F0F0;
-                border-left: 6px solid #C9A227;
-                padding: 60px 40px;
-                border-radius: 0 20px 20px 0;
-            }
-
-            .title-section h1 {
-                background-color: transparent;
-                border: none;
-                padding: 0;
-                width: auto;
-            }
+            /* Removed title-section specific desktop style */
         }
 
         @media (max-width: 768px) {
 
-            .title-section,
             .about-section {
                 flex-direction: column;
                 text-align: center;
@@ -365,6 +396,8 @@
             }
 
             .title-section {
+                width: 100%;
+                box-sizing: border-box;
                 margin-top: 130px;
                 padding: 20px 15px;
             }
@@ -387,19 +420,6 @@
             .about-content p {
                 text-align: center;
                 /* Center text on mobile */
-            }
-
-            .title-section h1 {
-                text-align: center;
-                font-size: 1.8rem;
-                width: 100%;
-                flex: none;
-                margin: 0;
-            }
-
-            .title-section img {
-                margin: 0 auto !important;
-                display: block;
             }
 
             .about-image {
@@ -1136,8 +1156,27 @@
 
 
         <div class="title-section">
-            <h1>International Conference on Social Work in Health and Mental Health</h1>
-            <img src="assets/conf_logo_10th.png" alt="10th International Conference Logo">
+            <div class="welcome-container title-hero" id="title-parallax-container">
+                <img src="assets/conf_logo_10th.png" alt="10th Conference Logo" class="title-logo">
+                <h3 class="welcome-header reveal-on-scroll" style="position: relative; top: -20px;">10th ICSWHMH</h3>
+                <div class="watermark-text" style="top: 20%; font-size: 6rem;">#2027</div>
+
+                <div class="welcome-content reveal-on-scroll delay-1">
+                    <h1
+                        style="color: white; font-size: 3.5rem; font-weight: 700; font-family: 'Outfit'; margin-top: 0; line-height: 1.2; text-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                        International Conference on<br>Social Work in Health and<br>Mental Health</h1>
+                    <p
+                        style="color: rgba(255,255,255,0.9); font-size: 1.2rem; margin-top: 20px; font-weight: 300; max-width: 700px; margin-left: auto; margin-right: auto;">
+                        Empowering Minds, Transforming Lives. Join us in Melbourne.
+                    </p>
+                </div>
+
+                <div class="ceo-wrapper reveal-on-scroll delay-2">
+                    <div class="ceo-title-bg">
+                        CONF<br>2027
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="section-separator"></div>
@@ -1522,6 +1561,32 @@
                     if (content) content.style.transform = `translateY(${diff * 0.08}px)`; // Slower (foreground)
                     if (header) header.style.transform = `translateY(${diff * 0.04}px)`; // Almost static
                     if (ceoImage) ceoImage.style.transform = `translateY(${diff * 0.12}px)`; // Visible parallax for image
+                }
+            }
+
+            // Title Section Parallax (Replica)
+            const titleParallaxSection = document.querySelector('.title-section'); // Wrapper
+            const titleContainer = document.getElementById('title-parallax-container'); // Helper for rect?
+
+            if (titleParallaxSection && titleContainer) {
+                const rect = titleParallaxSection.getBoundingClientRect();
+                const viewHeight = window.innerHeight;
+                const sectionCenter = rect.top + rect.height / 2;
+                const screenCenter = viewHeight / 2;
+                const diff = (screenCenter - sectionCenter);
+
+                if (rect.top <= viewHeight && rect.bottom >= 0) {
+                    const watermark = titleContainer.querySelector('.watermark-text');
+                    const bgText = titleContainer.querySelector('.ceo-title-bg');
+                    const content = titleContainer.querySelector('.welcome-content');
+                    const header = titleContainer.querySelector('.welcome-header');
+                    const image = titleContainer.querySelector('.ceo-image');
+
+                    if (watermark) watermark.style.transform = `translate(-50%, calc(-50% + ${diff * 0.45}px))`;
+                    if (bgText) bgText.style.transform = `translateY(${diff * 0.25}px)`; // Gently move background text
+                    if (content) content.style.transform = `translateY(${diff * 0.05}px)`; // Text subtly moves
+                    if (header) header.style.transform = `translateY(${diff * 0.02}px)`;
+                    // No image to animate
                 }
             }
         });
