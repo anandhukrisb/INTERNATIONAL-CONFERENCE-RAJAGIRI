@@ -157,7 +157,7 @@ class MainFooter extends HTMLElement {
                     position: relative;
                     z-index: 5;
                     display: grid;
-                    grid-template-columns: 1.2fr 0.8fr 1fr; /* Contact, Links, Resources */
+                    grid-template-columns: 1fr 1fr; /* Contact, Resources */
                     gap: 20px;
                     align-items: start;
                 }
@@ -217,7 +217,7 @@ class MainFooter extends HTMLElement {
                     }
 
                     .content-section {
-                        grid-template-columns: 1fr 0.8fr 1fr;
+                        grid-template-columns: 1fr 1fr;
                         gap: 15px;
                         padding: 35px 30px 20px;
                         margin-left: 420px;
@@ -240,15 +240,7 @@ class MainFooter extends HTMLElement {
 
                 /* Smaller Tablet - 2 columns with Resources spanning (optional intermediate step) */
                 /* This breakpoint can be removed if direct jump to mobile is preferred */
-                @media (max-width: 900px) and (min-width: 769px) {
-                    .content-section {
-                        grid-template-columns: 1fr 1fr;
-                        padding-right: 20px;
-                    }
-                    .col-resources {
-                        grid-column: span 2;
-                    }
-                }
+
 
                 @media (max-width: 950px) {
                     .footer-container {
@@ -280,13 +272,10 @@ class MainFooter extends HTMLElement {
                         grid-row: 2;
                     }
                     
-                    .col-links {
-                        grid-column: 1;
-                        grid-row: 1;
-                    }
+
                     
                     .col-resources {
-                        grid-column: 2;
+                        grid-column: 1 / -1;
                         grid-row: 1;
                     }
                     
@@ -348,6 +337,8 @@ class MainFooter extends HTMLElement {
                         <h3>Contact Us</h3>
                         <div class="contact-info">
                             <p><strong>Forum Group Events & Marketing</strong></p>
+
+                            
                             
                             <p>
                                 Phone: <a href="tel:+6123523423" class="contact-link">+61 23523423</a><br>
@@ -356,16 +347,7 @@ class MainFooter extends HTMLElement {
                         </div>
                     </div>
 
-                    <!-- Col 2: Quick Links -->
-                    <div class="footer-col col-links">
-                        <h3>Quick Links</h3>
-                        <ul>
-                            <li><a href="index.html">Home</a></li>
-                            <li><a href="program.html">Program</a></li>
-                            <li><a href="speaker.html">Speakers</a></li>
-                            <li><a href="registration.html">Registration</a></li>
-                        </ul>
-                    </div>
+
 
                     <!-- Col 3: Resources -->
                     <div class="footer-col col-resources">
