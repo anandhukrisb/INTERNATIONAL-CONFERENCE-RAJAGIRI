@@ -95,16 +95,27 @@
 
         .banner-container {
             width: 100%;
-            margin-top: 180px;
+            margin-top: 160px;
             /* Space for fixed navbar */
-            padding-bottom: 20px;
+            padding-bottom: 0px;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            /* box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); */
+            bottom: 20px;
         }
 
         .banner-container img {
             width: 100%;
+            max-width: 1100px;
             height: auto;
             display: block;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            /* box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); */
+            will-change: transform;
+            transform: scale(1.1);
+            border-radius: 20px;
+            /* Zoom in slightly to avoid white gaps during parallax */
         }
 
         /* Ticker styles (if uncommented) */
@@ -692,8 +703,7 @@
 
         .welcome-container {
             background-color: #1d0a3f;
-            border-top-left-radius: 80px;
-            border-top-right-radius: 80px;
+            border-radius: 50px;
             padding: 100px 30px 0;
             /* Reduced side padding */
             position: relative;
@@ -793,6 +803,122 @@
             z-index: -1;
             text-transform: uppercase;
             font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* Kathakali Section Styles */
+        .kathakali-section {
+            background-color: #FDFBF7;
+            padding-top: 50px;
+            margin-top: 100px;
+            padding-bottom: 0px;
+        }
+
+        .kathakali-container {
+            background-color: #FDFBF7;
+            border-top-left-radius: 80px;
+            border-top-right-radius: 80px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            padding: 100px 30px 0;
+            position: relative;
+            min-height: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            overflow: hidden;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .kathakali-header {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            left: auto;
+            width: 100%;
+            text-align: right;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-size: 2rem;
+            text-transform: uppercase;
+            color: #1d0a3f;
+            z-index: 10;
+            letter-spacing: 2px;
+            padding: 0 50px 0 0;
+            line-height: 1.4;
+            max-width: 800px;
+        }
+
+        .kathakali-watermark {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.04);
+            white-space: nowrap;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .kathakali-entrance {
+            position: absolute;
+            bottom: 0px;
+            left: -30px;
+            z-index: 2;
+            height: 480px;
+            transform-origin: bottom left;
+            animation: rotateDiagonal 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        .kathakali-image {
+            height: 100%;
+            width: auto;
+            opacity: 0.9;
+            will-change: transform;
+        }
+
+        @keyframes rotateDiagonal {
+            0% {
+                transform: translate(-50px, 50px) rotate(-10deg);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        .kathakali-logo {
+            position: absolute;
+            bottom: 50px;
+            right: 50px;
+            height: 250px;
+            width: auto;
+            z-index: 5;
+        }
+
+        @media (max-width: 768px) {
+            .kathakali-header {
+                font-size: 1.2rem;
+                top: 40px;
+            }
+
+            .kathakali-watermark {
+                font-size: 3rem;
+            }
+
+            .kathakali-image {
+                height: 300px;
+                left: -20px;
+            }
+
+            .kathakali-logo {
+                height: 150px;
+                right: 20px;
+                bottom: 20px;
+            }
         }
 
 
@@ -1127,16 +1253,27 @@
                     incididunt ut labore et dolore magna aliqua. Ut enim ad minim veni</span>
             </div>
         </div>
-        <!-- <div class="banner-container">
-        <img src="assets/banner.png" alt="Conference Banner">
-    </div> -->
-
-
-
-        <div class="title-section">
-            <h1>International Conference on Social Work in Health and Mental Health</h1>
-            <img src="assets/conf_logo_10th.png" alt="10th International Conference Logo">
+        <div class="banner-container">
+            <img src="assets/banner_combined.png" alt="Conference Banner">
         </div>
+
+
+
+        <!-- Kathakali Section (Replacing Title Section) -->
+        <!-- <section class="kathakali-section">
+            <div class="kathakali-container">
+                <h3 class="kathakali-header reveal-on-scroll">International Conference on Social Work in<br>Health and
+                    Mental Health</h3>
+                <div class="kathakali-watermark">2027 ICSWHMH</div>
+
+                <div class="kathakali-wrapper reveal-on-scroll delay-1">
+                    <div class="kathakali-entrance">
+                        <img src="assets/kathakali.png" alt="Kathakali" class="kathakali-image">
+                    </div>
+                    <img src="assets/conf_logo_10th.png" alt="Conference Logo" class="kathakali-logo">
+                </div>
+            </div>
+        </section> -->
 
         <div class="section-separator"></div>
 
@@ -1162,6 +1299,8 @@
                 </p>
             </div>
         </div>
+
+
 
         <!-- Welcome Section -->
         <section class="welcome-section">
@@ -1489,6 +1628,47 @@
                     const scrollTop = window.scrollY;
                     const offset = (scrollTop - aboutSection.offsetTop) * speed;
                     aboutContent.style.transform = `translateY(${offset}px)`;
+                }
+            }
+
+            // Banner Parallax
+            const bannerSection = document.querySelector('.banner-container');
+            if (bannerSection) {
+                const rect = bannerSection.getBoundingClientRect();
+                const viewHeight = window.innerHeight;
+                const sectionCenter = rect.top + rect.height / 2;
+                const screenCenter = viewHeight / 2;
+                const diff = (screenCenter - sectionCenter);
+
+                if (rect.top <= viewHeight && rect.bottom >= 0) {
+                    const bannerImage = bannerSection.querySelector('img');
+                    if (bannerImage) {
+                        // Apply parallax. Limit the range if needed.
+                        // Start with a scale to prevent edges showing
+                        bannerImage.style.transform = `scale(1.1) translateY(${diff * 0.1}px)`;
+                    }
+                }
+            }
+
+            // Kathakali Section Parallax
+            const kathakaliSection = document.querySelector('.kathakali-section');
+            if (kathakaliSection) {
+                const rect = kathakaliSection.getBoundingClientRect();
+                const viewHeight = window.innerHeight;
+                const sectionCenter = rect.top + rect.height / 2;
+                const screenCenter = viewHeight / 2;
+                const diff = (screenCenter - sectionCenter);
+
+                if (rect.top <= viewHeight && rect.bottom >= 0) {
+                    const watermark = kathakaliSection.querySelector('.kathakali-watermark');
+                    const header = kathakaliSection.querySelector('.kathakali-header');
+                    const kImage = kathakaliSection.querySelector('.kathakali-image');
+                    const kLogo = kathakaliSection.querySelector('.kathakali-logo');
+
+                    if (watermark) watermark.style.transform = `translate(-50%, calc(-50% + ${diff * 0.45}px))`;
+                    if (header) header.style.transform = `translateY(${diff * 0.04}px)`;
+                    if (kImage) kImage.style.transform = `translateY(${diff * 0.12}px)`;
+                    if (kLogo) kLogo.style.transform = `translateY(${diff * 0.18}px)`;
                 }
             }
 
