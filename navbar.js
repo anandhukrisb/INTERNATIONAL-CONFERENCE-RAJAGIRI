@@ -66,7 +66,7 @@ class FloatingNavbar extends HTMLElement {
                     top: 0;
                     left: 0;
                     width: 100%;
-                    height: 110px;
+                    height: 100px;
                     background-color: #FDFBF7;
                     z-index: 999;
                 }
