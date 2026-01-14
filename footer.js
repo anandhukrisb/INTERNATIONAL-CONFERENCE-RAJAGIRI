@@ -338,10 +338,9 @@ class MainFooter extends HTMLElement {
                         <h3>Quick Links</h3>
                         <ul>
                             <li><a href="index.html">Home</a></li>
-                            <li><a href="#">Program</a></li>
-                            <li><a href="#">Speakers</a></li>
-                            <li><a href="#">Registration</a></li>
-                            <li><a href="#">Host City</a></li>
+                            <li><a href="program.html">Program</a></li>
+                            <li><a href="speaker.html">Speakers</a></li>
+                            <li><a href="registration.html">Registration</a></li>
                         </ul>
                     </div>
 
@@ -349,11 +348,11 @@ class MainFooter extends HTMLElement {
                     <div class="footer-col col-resources">
                         <h3>Resources</h3>
                         <ul>
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Terms & Conditions</a></li>
-                            <li><a href="#">Code of Conduct</a></li>
-                            <li><a href="#">Sponsorships</a></li>
-                            <li><a href="#">Contact Support</a></li>
+                            <li>Privacy Policy</li>
+                            <li>Terms & Conditions</li>
+                            <li>Code of Conduct</li>
+                            <li>Sponsorships</li>
+                            <li>Contact Support</li>
                         </ul>
                     </div>
                 </div>
