@@ -404,6 +404,14 @@
             letter-spacing: -1px;
         }
 
+        .about-content p {
+            text-align: justify;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
         /* Gold accent for part of the title if we could target it, but for now underline */
         .about-content h2::after {
             content: '';
@@ -420,7 +428,7 @@
             line-height: 1.6;
             color: #444;
             font-weight: 400;
-            text-align: left;
+            text-align: justify;
             /* Modern left align instead of justify */
         }
 
@@ -540,6 +548,20 @@
                 height: 50px;
                 padding: 10px 0;
             }
+
+            /* Mobile Banner Alignment */
+            .banner-container {
+                justify-content: flex-start;
+            }
+
+            .banner-container img {
+                max-width: 100%;
+                height: 280px;
+                object-fit: cover;
+                object-position: left;
+                border-radius: 0;
+                transform: none;
+            }
         }
 
         /* Speakers Section */
@@ -654,6 +676,7 @@
             color: #F0F0F0;
             font-size: 0.95rem;
             line-height: 1.6;
+            text-align: justify;
         }
 
         .speaker-img {
@@ -683,6 +706,7 @@
             font-size: 0.95rem;
             line-height: 1.6;
             margin-bottom: 15px;
+            text-align: justify;
         }
 
         .read-more-btn {
@@ -1089,6 +1113,7 @@
             justify-content: center;
             padding: 20px;
             box-sizing: border-box;
+            color: #FFFFFF;
         }
 
         .cta-card-front {
@@ -1150,7 +1175,7 @@
         }
 
         .cta-desc {
-            display: none;
+            color: #FFFFFF;
         }
 
         .cta-text {
@@ -1319,7 +1344,7 @@
 
             .cta-desc {
                 display: block;
-                color: #555;
+                color: #FFFFFF;
                 font-size: 0.95rem;
                 text-align: center;
                 line-height: 1.5;
