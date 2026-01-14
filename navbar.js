@@ -180,7 +180,7 @@ class FloatingNavbar extends HTMLElement {
                 }
 
                 /* Active link styling (Desktop only) */
-                @media (min-width: 1025px) {
+                @media (min-width: 1419px) {
                     .navbar-links a.active {
                         color: #d4af37; /* Gold Text */
                         position: relative;
@@ -213,7 +213,7 @@ class FloatingNavbar extends HTMLElement {
                 }
 
                 /* Desktop-only dropdown behaviors */
-                @media (min-width: 1025px) {
+                @media (min-width: 1419px) {
                     .dropdown-menu {
                         position: absolute;
                         top: 80px;
@@ -370,7 +370,7 @@ class FloatingNavbar extends HTMLElement {
                 }
 
                 /* Media query for mobile and tablet devices */
-                @media (max-width: 1024px) {
+                @media (max-width: 1418px) {
                     .floating-navbar {
                         width: 100% !important;
                         left: 0 !important;
@@ -582,7 +582,7 @@ class FloatingNavbar extends HTMLElement {
             if (link && item.querySelector('.dropdown-menu')) {
                 link.addEventListener('click', (e) => {
                     // Only prevent default on mobile or if it's a dropdown toggle
-                    if (window.innerWidth <= 1024) {
+                    if (window.innerWidth <= 1418) {
                         e.preventDefault();
                         // Close others
                         navItems.forEach(other => {
