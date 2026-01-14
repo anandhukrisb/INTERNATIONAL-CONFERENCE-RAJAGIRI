@@ -348,8 +348,7 @@ class MainFooter extends HTMLElement {
                         <h3>Contact Us</h3>
                         <div class="contact-info">
                             <p><strong>Forum Group Events & Marketing</strong><br>
-                            Suite 10/Level 1, 285a Crown St,<br>
-                            Surry Hills, NSW, 2010, Australia</p>
+                            Suite 10/Level 1, 285a Crown St</p>
                             
                             <p>
                                 Phone: <a href="tel:+6123523423" class="contact-link">+61 23523423</a><br>
