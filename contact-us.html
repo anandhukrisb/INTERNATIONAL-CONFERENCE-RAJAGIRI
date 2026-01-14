@@ -75,21 +75,58 @@
             margin-bottom: 20px;
         }
 
+        .contact-grid .col-md-4 {
+            display: flex;
+        }
+
+        .contact-card {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: #1D0A3F;
+            color: #FFFFFF;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            border-left: 6px solid #C9A227;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+        }
+
         .contact-item {
             display: flex;
             align-items: flex-start;
             gap: 20px;
         }
 
+        /* Card style for each contact info */
+        .contact-card {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            background: #1D0A3F;
+            color: #FFFFFF;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
         .contact-icon {
             font-size: 2.5rem;
-            color: #1D0A3F;
+            color: #FFFFFF;
             line-height: 1;
         }
 
         .contact-text h4 {
             font-weight: 600;
-            color: #1D0A3F;
+            color: #FFFFFF;
             margin-bottom: 15px;
             font-size: 1.25rem;
         }
@@ -97,11 +134,11 @@
         .contact-text p {
             margin: 0;
             line-height: 1.6;
-            color: #555;
+            color: #FFFFFF;
         }
 
         .contact-text a {
-            color: #00779B;
+            color: #C9A227;
             text-decoration: none;
             font-weight: 500;
         }
@@ -133,11 +170,12 @@
         .social-icons a {
             font-size: 2.5rem;
             color: #333;
-            transition: color 0.3s ease;
+            transition: color 0.3s ease, transform 0.3s ease;
         }
 
         .social-icons a:hover {
             color: #1D0A3F;
+            transform: translateY(-5px);
         }
 
         .hashtag-text {
@@ -146,7 +184,7 @@
         }
 
         .hashtag-text span {
-            color: #C43E5D;
+            color: #C9A227;
             /* Closest to the reddish hashtag in image */
             font-weight: 600;
         }
@@ -233,7 +271,7 @@
         <div class="row contact-grid g-4">
             <!-- Address -->
             <div class="col-md-4">
-                <div class="contact-item">
+                <div class="contact-item contact-card">
                     <div class="contact-icon">
                         <i class="bi bi-geo-alt"></i>
                     </div>
@@ -248,7 +286,7 @@
 
             <!-- Phone -->
             <div class="col-md-4">
-                <div class="contact-item">
+                <div class="contact-item contact-card">
                     <div class="contact-icon">
                         <i class="bi bi-phone"></i>
                     </div>
@@ -261,7 +299,7 @@
 
             <!-- Email -->
             <div class="col-md-4">
-                <div class="contact-item">
+                <div class="contact-item contact-card">
                     <div class="contact-icon">
                         <i class="bi bi-envelope"></i>
                     </div>
