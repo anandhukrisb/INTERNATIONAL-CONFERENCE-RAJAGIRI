@@ -543,34 +543,19 @@ class FloatingNavbar extends HTMLElement {
                     </li>
                     <li>
                         <a href="registration.html">Registration</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Student</a></li>
-                        </ul>
                     </li>
                     <li>
                         <a href="#">Abstracts</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Guidelines</a></li>
-                        </ul>
                     </li>
 
                     <li>
                         <a href="#">Social Functions</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Tours</a></li>
-                        </ul>
                     </li>
                     <li>
                         <a href="#">Sponsorships & Exhibitions</a>
-                         <ul class="dropdown-menu">
-                            <li><a href="#">Floor Plan</a></li>
-                        </ul>
                     </li>
                     <li>
                         <a href="#">Host city</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Travel</a></li>
-                        </ul>
                     </li>
                     <li><a href="contact-us.html" class="contact-btn">Contact Us</a></li>
                 </ul>
