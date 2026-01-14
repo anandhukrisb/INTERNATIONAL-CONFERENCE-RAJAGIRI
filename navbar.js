@@ -387,8 +387,10 @@ class FloatingNavbar extends HTMLElement {
                         width: 100% !important;
                         background: #1d0a3f;
                         flex-direction: column;
-                        padding: 20px 0;
+                        padding: 20px 0 40px 0;
                         height: auto;
+                        max-height: calc(100vh - 90px);
+                        overflow-y: auto;
                         border-radius: 0 0 20px 20px;
                         box-shadow: 0 10px 20px rgba(0,0,0,0.2);
                         /* Smooth transition setup */
@@ -397,6 +399,7 @@ class FloatingNavbar extends HTMLElement {
                         transform: translateY(-10px);
                         transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
                         pointer-events: none;
+                        -webkit-overflow-scrolling: touch;
                     }
 
                     .navbar-links.mobile-active {
@@ -477,6 +480,9 @@ class FloatingNavbar extends HTMLElement {
                         margin: 10px 30px;
                         width: auto;
                         display: inline-block;
+                        height: auto; /* Fix text overflow */
+                        line-height: normal;
+                        padding: 12px 30px;
                     }
                     
                     /* Hamburger Animation */
