@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Committee | 2027 ICSWHMH</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@400;600;800&display=swap"
+        rel="stylesheet">
+
+    <!-- ================= CSS ================= -->
+       <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background-color: #FDFBF7;
+            font-family: 'Inter', system-ui, sans-serif;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        floating-navbar {
+            display: block;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        /* Section */
+        .committee-section {
+            max-width: 1200px;
+            margin: 100px auto 0;
+            padding: 60px 20px;
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1D0A3F;
+            margin-bottom: 40px;
+        }
+
+        .section-title::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: #C9A227;
+            margin-top: 10px;
+            border-radius: 3px;
+        }
+
+        /* ================= GRID LAYOUT ================= */
+        .committee-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            padding: 40px 0 80px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .committee-card {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 380px;
+            background: #1D0A3F;
+            color: #FFFFFF;
+            border-radius: 12px;
+            border-left: 6px solid #C9A227;
+            box-shadow: -1rem 0 3rem rgba(0,0,0,0.4);
+            position: relative;
+            transition:
+                transform 0.35s ease,
+                box-shadow 0.35s ease,
+                opacity 0.35s ease;
+        }
+
+        /* ================= CORRECT FOCUS BEHAVIOUR ================= */
+
+        /* Hovered card grows */
+        .committee-card:hover {
+            transform: scale(1.08) translateY(-20px);
+            z-index: 10;
+            opacity: 1;
+            box-shadow: -1rem 0 4rem rgba(0,0,0,0.7);
+        }
+
+        /* Disable hover scaling when expanded */
+        .committee-card.active,
+        .committee-card.active:hover {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+            z-index: 5;
+        }
+
+        /* ================= CONTENT ================= */
+        .card-header {
+            text-align: center;
+            padding: 30px 20px 15px;
+        }
+
+        .card-header img {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 1.05rem;
+        }
+
+        .card-header h4 {
+            margin: 6px 0 0;
+            font-size: 0.85rem;
+            font-weight: 400;
+            color: #C9A227;
+        }
+
+        /* Details */
+        .card-body {
+            display: none;
+            padding: 0 20px 20px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #F0F0F0;
+            text-align: justify;
+        }
+
+        .committee-card.active .card-body {
+            display: block;
+        }
+
+        .card-footer {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .toggle-btn {
+            background: #C9A227;
+            color: #1D0A3F;
+            border: none;
+            padding: 8px 22px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .toggle-btn:hover {
+            background: #FDFBF7;
+        }
+
+        /* ================= MOBILE FALLBACK ================= */
+        @media (max-width: 992px) {
+            .committee-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .committee-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .committee-card {
+                width: 100%;
+                margin-left: 0 !important;
+                transform: none !important;
+                opacity: 1 !important;
+            }
+
+            .committee-grid:hover .committee-card:not(:hover),
+            .committee-card:hover,
+            .committee-card:hover ~ .committee-card {
+                transform: none;
+            }
+        }
+    </style>
+
+    <!-- JS -->
+    <script src="navbar.js" defer></script>
+    <script src="footer.js" defer></script>
+    <script src="router.js" defer></script>
+
+</head>
+
+<body>
+
+<floating-navbar></floating-navbar>
+
+<main id="app-content">
+<div class="committee-section">
+
+    <!-- ================= EXTERNAL ================= -->
+    <h2 class="section-title">EXTERNAL COMMITTEE MEMBERS</h2>
+
+    <div class="committee-grid">
+
+        <div class="committee-card">
+            <div class="card-header">
+                <img src="assets/placeholder.jpg">
+                <h3>PROF LYNETTE JOUBERT</h3>
+                <h4>University of Melbourne</h4>
+            </div>
+            <div class="card-body">
+                Professor Lynette Joubert is an internationally recognised scholar in social work
+                education and mental health practice with extensive leadership experience.
+            </div>
+            <div class="card-footer">
+                <button class="toggle-btn" onclick="toggleCard(this)">View Profile</button>
+            </div>
+        </div>
+
+        <div class="committee-card">
+            <div class="card-header">
+                <img src="assets/placeholder.jpg">
+                <h3>PROF VARDA SOSKOLNE</h3>
+                <h4>Bar-Ilan University</h4>
+            </div>
+            <div class="card-body">
+                Professor Varda Soskolne specialises in health, disability studies, and social policy
+                with strong international academic collaboration.
+            </div>
+            <div class="card-footer">
+                <button class="toggle-btn" onclick="toggleCard(this)">View Profile</button>
+            </div>
+        </div>
+
+        <div class="committee-card">
+            <div class="card-header">
+                <img src="assets/placeholder.jpg">
+                <h3>DR HADAS ROSENNE</h3>
+                <h4>Hadassah Medical Center, Israel</h4>
+            </div>
+            <div class="card-body">
+                Dr. Hadas Rosenne works in medical social work focusing on trauma-informed care and
+                interdisciplinary healthcare practice.
+            </div>
+            <div class="card-footer">
+                <button class="toggle-btn" onclick="toggleCard(this)">View Profile</button>
+            </div>
+        </div>
+
+        <div class="committee-card">
+            <div class="card-header">
+                <img src="assets/placeholder.jpg">
+                <h3>PROF. (PhD) MIRIAM SCHIFF</h3>
+                <h4>The Hebrew University of Jerusalem</h4>
+            </div>
+            <div class="card-body">
+                Professor Miriam Schiff is Dean of the Paul Baerwald School of Social Work and Social
+                Welfare with research interests in trauma, migration, and resilience.
+            </div>
+            <div class="card-footer">
+                <button class="toggle-btn" onclick="toggleCard(this)">View Profile</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ================= INTERNAL ================= -->
+    <h2 class="section-title">INTERNAL COMMITTEE MEMBERS</h2>
+
+    <div class="committee-grid">
+
+        <div class="committee-card"><div class="card-header"><img src="assets/placeholder.jpg"><h3>PROF SAJU MD</h3><h4>RCSS</h4></div><div class="card-body">Professor Saju MD is engaged in academic leadership and social work education at RCSS.</div><div class="card-footer"><button class="toggle-btn" onclick="toggleCard(this)">View Profile</button></div></div>
+
+        <div class="committee-card"><div class="card-header"><img src="assets/placeholder.jpg"><h3>DR ANISH KR</h3><h4>RCSS</h4></div><div class="card-body">Dr. Anish KR contributes to teaching and research in social work education.</div><div class="card-footer"><button class="toggle-btn" onclick="toggleCard(this)">View Profile</button></div></div>
+
+        <div class="committee-card"><div class="card-header"><img src="assets/placeholder.jpg"><h3>DR KIRAN THAMPI</h3><h4>RCSS</h4></div><div class="card-body">Dr. Kiran Thampi focuses on academic research and community practice.</div><div class="card-footer"><button class="toggle-btn" onclick="toggleCard(this)">View Profile</button></div></div>
+
+        <div class="committee-card"><div class="card-header"><img src="assets/placeholder.jpg"><h3>DR SUNIROSE IP</h3><h4>RCSS</h4></div><div class="card-body">Dr. Sunirose IP works in teaching, research, and field-based interventions.</div><div class="card-footer"><button class="toggle-btn" onclick="toggleCard(this)">View Profile</button></div></div>
+
+        <div class="committee-card"><div class="card-header"><img src="assets/placeholder.jpg"><h3>DR NYCIL ROMIS THOMAS</h3><h4>RCSS</h4></div><div class="card-body">Dr. Nycil Romis Thomas focuses on pedagogy and practice innovation.</div><div class="card-footer"><button class="toggle-btn" onclick="toggleCard(this)">View Profile</button></div></div>
+
+        <div class="committee-card"><div class="card-header"><img src="assets/placeholder.jpg"><h3>DR SHINTO JOSEPH</h3><h4>RCSS</h4></div><div class="card-body">Dr. Shinto Joseph contributes to institutional and academic development.</div><div class="card-footer"><button class="toggle-btn" onclick="toggleCard(this)">View Profile</button></div></div>
+
+        <div class="committee-card"><div class="card-header"><img src="assets/placeholder.jpg"><h3>DR RAJEEV SP</h3><h4>RCSS</h4></div><div class="card-body">Dr. Rajeev SP is involved in research coordination and academic administration.</div><div class="card-footer"><button class="toggle-btn" onclick="toggleCard(this)">View Profile</button></div></div>
+
+        <div class="committee-card"><div class="card-header"><img src="assets/placeholder.jpg"><h3>DR ANIL JOHN</h3><h4>RCSS</h4></div><div class="card-body">Dr. Anil John works in curriculum development and professional training.</div><div class="card-footer"><button class="toggle-btn" onclick="toggleCard(this)">View Profile</button></div></div>
+
+    </div>
+
+</div>
+</main>
+
+<main-footer></main-footer>
+
+<script>
+function toggleCard(btn) {
+    const card = btn.closest('.committee-card');
+    card.classList.toggle('active');
+    btn.textContent = card.classList.contains('active')
+        ? 'Hide Profile'
+        : 'View Profile';
+}
+</script>
+
+</body>
+</html>
