@@ -26,6 +26,8 @@
         /* Prevent navbar and footer from flickering during transitions */
         floating-navbar {
             view-transition-name: navbar;
+            position: relative;
+            z-index: 9999;
         }
 
         main-footer {
@@ -101,115 +103,6 @@
             color: var(--text-dark);
         }
 
-
-
-        /* ============ HEADER ============ */
-        /* .main-header {
-            background: white;
-            padding: 30px 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .header-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 30px;
-        }
-
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 25px;
-        }
-
-        .logo-box {
-            width: 90px;
-            height: 90px;
-            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .logo-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        } */
-
-        /* Placeholder for logo */
-        /* .logo-text {
-            color: white;
-            font-size: 1.6rem;
-            font-weight: 600;
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        .title-section h1 {
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            font-size: 2rem;
-            font-weight: 600;
-            color: var(--primary-purple);
-            margin: 0 0 8px 0;
-            line-height: 1.2;
-        }
-
-        .title-section .subtitle {
-            font-size: 1rem;
-            color: var(--text-light);
-            font-weight: 400;
-            margin: 0 0 5px 0;
-        }
-
-        .title-section .tagline {
-            font-size: 0.95rem;
-            color: var(--secondary-purple);
-            font-style: italic;
-            font-weight: 500;
-        } */
-
-        /* ============ NAVIGATION ============ */
-        /* .main-nav {
-            background: var(--primary-purple);
-            padding: 0;
-        }
-
-        .navbar {
-            padding: 0;
-        }
-
-        .navbar-nav {
-            width: 100%;
-            justify-content: center;
-        }
-
-        .nav-item .nav-link {
-            color: white;
-            padding: 18px 24px;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .nav-item .nav-link:hover,
-        .nav-item .nav-link.active {
-            background: var(--accent-gold);
-            color: var(--primary-purple);
-        }
-
-        .navbar-toggler {
-            background: white;
-            border: none;
-            padding: 10px 15px;
-        } */
-
         /* ============ BANNER SPACE ============ */
         .banner-hero {
             background: var(--bg-light);
@@ -251,13 +144,13 @@
 
         /* ============ MAIN CONTENT ============ */
         .main-content {
-            padding: 80px 0;
+            padding: 140px 0 50px 0;
         }
 
         .page-title-section {
             text-align: center;
-            margin-bottom: 60px;
-            margin-top: 90px;
+            margin-bottom: 40px;
+            margin-top: 50px;
         }
 
         .page-title-section h1 {
@@ -265,7 +158,7 @@
             font-size: 3rem;
             font-weight: 600;
             color: var(--primary-purple);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .page-title-section .lead {
@@ -279,11 +172,11 @@
         /* Program Overview Card */
         .program-card {
             background: var(--bg-tone);
-            padding: 50px;
+            padding: 40px;
             border-radius: 10px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             background: #1D0A3F;
-            margin-bottom: 60px;
+            margin-bottom: 40px;
             border-left: 6px solid var(--accent-gold);
         }
 
@@ -292,7 +185,7 @@
             font-size: 2.2rem;
             font-weight: 600;
             color: #FFFFFF;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .program-card p {
@@ -307,13 +200,13 @@
         .stats-section {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 40px;
-            margin: 50px 0;
+            gap: 30px;
+            margin: 40px 0;
         }
 
         .stat-box {
             text-align: center;
-            padding: 40px 20px;
+            padding: 30px 20px;
             background: var(--bg-light);
             border-radius: 10px;
             transition: all 0.3s ease;
@@ -345,9 +238,9 @@
         /* Download Section */
         .download-box {
             background: var(--primary-purple);
-            padding: 60px 40px;
+            padding: 50px 40px;
             text-align: center;
-            margin: 60px 0;
+            margin: 50px 0;
         }
 
         .download-box h3 {
@@ -355,13 +248,13 @@
             font-size: 2rem;
             font-weight: 600;
             color: white;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .download-box p {
             color: rgba(255, 255, 255, 0.9);
             font-size: 1.1rem;
-            margin-bottom: 35px;
+            margin-bottom: 30px;
         }
 
         .btn-download {
@@ -388,7 +281,7 @@
 
         /* Program Details Section */
         .program-details {
-            margin: 80px 0;
+            margin: 50px 0;
         }
 
         .section-title {
@@ -396,7 +289,7 @@
             font-size: 2.5rem;
             font-weight: 600;
             color: var(--primary-purple);
-            margin-bottom: 50px;
+            margin-bottom: 30px;
             text-align: center;
         }
 
@@ -408,6 +301,10 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             border-left: 5px solid var(--accent-gold);
             transition: all 0.3s ease;
+            height: 100%;
+            /* Ensure full height for equal boxes */
+            z-index: 1;
+            position: relative;
         }
 
         .program-feature:hover {
@@ -453,7 +350,7 @@
 
         /* Schedule Table Placeholder */
         .schedule-section {
-            margin: 80px 0;
+            margin: 50px 0;
         }
 
         .schedule-placeholder {
@@ -484,109 +381,6 @@
             margin: 0;
         }
 
-        /* ============ FOOTER ============ */
-        /* .main-footer {
-            background: var(--primary-purple);
-            color: white;
-            padding: 70px 0 30px;
-            margin-top: 100px;
-        }
-
-        .footer-section {
-            margin-bottom: 40px;
-        }
-
-        .footer-section h5 {
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            font-size: 1.4rem;
-            font-weight: 600;
-            color: var(--accent-gold);
-            margin-bottom: 25px;
-        }
-
-        .footer-section p {
-            font-size: 0.95rem;
-            line-height: 1.8;
-            color: rgba(255, 255, 255, 0.85);
-            margin-bottom: 15px;
-        }
-
-        .footer-section ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .footer-section ul li {
-            margin-bottom: 12px;
-        }
-
-        .footer-section ul li a {
-            color: rgba(255, 255, 255, 0.85);
-            text-decoration: none;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-        }
-
-        .footer-section ul li a:hover {
-            color: var(--accent-gold);
-            padding-left: 8px;
-        }
-
-        .contact-info p {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-
-        .contact-info i {
-            color: var(--accent-gold);
-            font-size: 1.2rem;
-            margin-top: 3px;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-        }
-
-        .social-links a {
-            width: 45px;
-            height: 45px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-        }
-
-        .social-links a:hover {
-            background: var(--accent-gold);
-            color: var(--primary-purple);
-            transform: translateY(-5px);
-        }
-
-        .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
-            margin-top: 50px;
-            padding-top: 30px;
-            text-align: center;
-        }
-
-        .footer-bottom p {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
-            margin: 8px 0;
-        }
-
-        .footer-bottom a {
-            color: var(--accent-gold);
-            text-decoration: none;
-        } */
 
         /* ============ RESPONSIVE ============ */
         @media (max-width: 992px) {
@@ -697,7 +491,7 @@
 
         /* ============ SCHEDULE GRID ============ */
         .schedule-container-wrapper {
-            margin-top: 40px;
+            margin-top: 30px;
         }
 
         .nav-tabs .nav-link {
@@ -725,7 +519,7 @@
             border: 1px solid #e9ecef;
             background: white;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-            max-height: 800px;
+            max-height: 80vh;
             overflow-y: auto;
         }
 
@@ -744,20 +538,25 @@
             text-align: center;
             position: sticky;
             top: 0;
-            z-index: 20;
+            /* Below navbar */
+            z-index: 30;
+            /* Higher than time-slot */
             border-right: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .time-col-header {
+            position: sticky;
             left: 0;
-            z-index: 30;
+            z-index: 40 !important;
+            /* Highest priority: Corner cell */
         }
 
         .time-slot {
             background: #f8f9fa;
             position: sticky;
             left: 0;
-            z-index: 10;
+            z-index: 20;
+            /* Slides under header */
             padding: 20px 10px;
             display: flex;
             align-items: center;
@@ -823,7 +622,7 @@
         }
 
         .session-row-break {
-            grid-column: 2 / -1;
+            grid-column: 1 / -1;
             background: #f1f3f5;
             color: #6c757d;
             font-style: italic;
@@ -983,7 +782,7 @@
             <div class="program-details">
                 <h2 class="section-title">What to Expect</h2>
 
-                <div class="row">
+                <div class="row g-4">
                     <div class="col-lg-6">
                         <div class="program-feature">
                             <h3>Keynote & Featured Speakers</h3>
@@ -1194,7 +993,7 @@
             </div>
 
             <!-- Additional Info -->
-            <div class="row mt-5">
+            <div class="row g-4 mt-4">
                 <div class="col-lg-6">
                     <div class="program-feature">
                         <h3>CPD Accreditation</h3>
