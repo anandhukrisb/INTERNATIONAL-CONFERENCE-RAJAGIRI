@@ -79,21 +79,22 @@
 
         /* ================= CARD ================= */
         .hotel-card {
-            background: #1D0A3F;
-            /* Dark Purple Theme */
+            background: #FFFFFF;
+            /* White Background */
             border-radius: 12px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            /* Lighter shadow for white card */
             overflow: hidden;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             display: flex;
             flex-direction: column;
             border-left: 6px solid #C9A227;
-            /* Gold Accent */
+            /* Gold Accent Border */
         }
 
         .hotel-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
         }
 
         .hotel-image-container {
@@ -119,8 +120,8 @@
             display: flex;
             flex-direction: column;
             flex: 1;
-            color: #FFFFFF;
-            /* White Text */
+            color: #2D3436;
+            /* Dark Grey Text */
         }
 
         .hotel-price {
@@ -137,18 +138,18 @@
 
         .hotel-price span {
             font-size: 0.9rem;
-            color: #E0E0E0;
+            color: #888;
             font-weight: 400;
         }
 
         .hotel-title {
             font-size: 1.25rem;
             font-weight: 700;
-            color: #FFFFFF;
+            color: #1D0A3F;
+            /* Deep Purple Title */
             margin-bottom: 8px;
             font-family: 'Outfit', sans-serif;
             min-height: 3.2em;
-            /* Ensure uniform height for titles */
         }
 
         .hotel-rating {
@@ -157,16 +158,23 @@
             gap: 5px;
             margin-bottom: 16px;
             font-size: 0.95rem;
-            color: #FFD700;
+            color: #F39C12;
+            /* Slightly darker gold/orange for stars on white */
+        }
+
+        .hotel-rating span {
+            color: #555;
+            font-weight: 500;
         }
 
         .hotel-details {
             display: flex;
             justify-content: space-between;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-top: 1px solid #eee;
+            /* Light grey border */
             padding-top: 16px;
             margin-top: auto;
-            color: #F0F0F0;
+            color: #666;
             font-size: 0.9rem;
         }
 
@@ -180,6 +188,14 @@
             color: #C9A227;
             /* Theme Gold */
             font-size: 1rem;
+        }
+
+        /* ================= TABLET ================= */
+        @media (max-width: 1024px) {
+            .hotels-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+            }
         }
 
         /* ================= MOBILE ================= */
