@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Program - ICSWHMH 2027</title>
+    <link rel="icon" type="image/x-icon" href="assets/Favicon-192.ico?v=2">
 
     <!-- Professional Fonts -->
     <link
@@ -20,6 +21,41 @@
     <script src="navbar.js" defer></script>
     <script src="footer.js" defer></script>
 
+    <!-- View Transitions API CSS -->
+    <style>
+        /* Prevent navbar and footer from flickering during transitions */
+        floating-navbar {
+            view-transition-name: navbar;
+        }
+
+        main-footer {
+            view-transition-name: footer;
+        }
+
+        /* Smooth crossfade animation for page content */
+        ::view-transition-old(root),
+        ::view-transition-new(root) {
+            animation-duration: 0.3s;
+        }
+
+        /* Keep navbar and footer stable (no animation) */
+        ::view-transition-old(navbar),
+        ::view-transition-new(navbar),
+        ::view-transition-old(footer),
+        ::view-transition-new(footer) {
+            animation: none;
+        }
+
+        /* Respect user's motion preferences */
+        @media (prefers-reduced-motion: reduce) {
+
+            ::view-transition-old(root),
+            ::view-transition-new(root) {
+                animation: none !important;
+            }
+        }
+    </style>
+
     <style>
         :root {
             --primary-purple: #1d0a3f;
@@ -29,8 +65,8 @@
             /* Updated Text (Body) */
             --text-light: #6b6b6b;
             --bg-light: #f8f9fa;
-            --bg-base: #FDFDFF;
-            /* Secondary (Base) */
+            --bg-base: #FDFBF7;
+            /* Secondary (Base) - Matches index.html */
             --bg-tone: #F1F2F6;
             /* Support (Tone) */
         }
@@ -41,17 +77,34 @@
             box-sizing: border-box;
         }
 
+        html {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
         body {
-            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            color: var(--text-dark);
-            line-height: 1.7;
             background-color: var(--bg-base);
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100vw;
+        }
+
+        /* Main content styles - scoped to not affect navbar/footer components */
+        main,
+        main * {
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.7;
+        }
+
+        /* Keep specific text color for main content */
+        main {
+            color: var(--text-dark);
         }
 
 
 
         /* ============ HEADER ============ */
-        .main-header {
+        /* .main-header {
             background: white;
             padding: 30px 0;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
@@ -88,20 +141,20 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-        }
+        } */
 
         /* Placeholder for logo */
-        .logo-text {
+        /* .logo-text {
             color: white;
             font-size: 1.6rem;
-            font-weight: 700;
-            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         .title-section h1 {
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             font-size: 2rem;
-            font-weight: 700;
+            font-weight: 600;
             color: var(--primary-purple);
             margin: 0 0 8px 0;
             line-height: 1.2;
@@ -119,10 +172,10 @@
             color: var(--secondary-purple);
             font-style: italic;
             font-weight: 500;
-        }
+        } */
 
         /* ============ NAVIGATION ============ */
-        .main-nav {
+        /* .main-nav {
             background: var(--primary-purple);
             padding: 0;
         }
@@ -155,7 +208,7 @@
             background: white;
             border: none;
             padding: 10px 15px;
-        }
+        } */
 
         /* ============ BANNER SPACE ============ */
         .banner-hero {
@@ -208,9 +261,9 @@
         }
 
         .page-title-section h1 {
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             font-size: 3rem;
-            font-weight: 700;
+            font-weight: 600;
             color: var(--primary-purple);
             margin-bottom: 20px;
         }
@@ -227,17 +280,18 @@
         .program-card {
             background: var(--bg-tone);
             padding: 50px;
-            border-radius: 0;
-            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.08);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            background: #1D0A3F;
             margin-bottom: 60px;
             border-left: 6px solid var(--accent-gold);
         }
 
         .program-card h2 {
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             font-size: 2.2rem;
-            font-weight: 700;
-            color: var(--primary-purple);
+            font-weight: 600;
+            color: #FFFFFF;
             margin-bottom: 30px;
         }
 
@@ -245,7 +299,8 @@
             font-size: 1.05rem;
             line-height: 1.9;
             margin-bottom: 20px;
-            color: var(--text-dark);
+            color: #FFFFFF;
+            text-align: justify;
         }
 
         /* Stats Section */
@@ -260,7 +315,7 @@
             text-align: center;
             padding: 40px 20px;
             background: var(--bg-light);
-            border-radius: 0;
+            border-radius: 10px;
             transition: all 0.3s ease;
         }
 
@@ -270,9 +325,9 @@
         }
 
         .stat-box .number {
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             font-size: 3.5rem;
-            font-weight: 700;
+            font-weight: 600;
             color: var(--primary-purple);
             line-height: 1;
             margin-bottom: 15px;
@@ -282,9 +337,10 @@
             font-size: 1.05rem;
             color: var(--text-light);
             font-weight: 500;
-            text-transform: uppercase;
+            text-transform: none;
             letter-spacing: 1px;
         }
+
 
         /* Download Section */
         .download-box {
@@ -295,9 +351,9 @@
         }
 
         .download-box h3 {
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             font-size: 2rem;
-            font-weight: 700;
+            font-weight: 600;
             color: white;
             margin-bottom: 20px;
         }
@@ -319,7 +375,7 @@
             text-decoration: none;
             display: inline-block;
             transition: all 0.3s ease;
-            text-transform: uppercase;
+            text-transform: none;
             letter-spacing: 1px;
         }
 
@@ -336,54 +392,59 @@
         }
 
         .section-title {
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             font-size: 2.5rem;
-            font-weight: 700;
+            font-weight: 600;
             color: var(--primary-purple);
             margin-bottom: 50px;
             text-align: center;
         }
 
         .program-feature {
-            background: var(--bg-tone);
+            background: #1D0A3F;
             padding: 40px;
             margin-bottom: 30px;
-            border-radius: 0;
-            box-shadow: 0 3px 20px rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             border-left: 5px solid var(--accent-gold);
             transition: all 0.3s ease;
         }
 
         .program-feature:hover {
-            box-shadow: 0 8px 35px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             transform: translateX(5px);
         }
 
         .program-feature h3 {
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             font-size: 1.8rem;
             font-weight: 600;
-            color: var(--primary-purple);
+            color: #FFFFFF;
             margin-bottom: 20px;
         }
 
         .program-feature p {
             font-size: 1.05rem;
             line-height: 1.8;
-            color: var(--text-dark);
+            color: #FFFFFF;
             margin: 0;
+            text-align: justify;
         }
 
-        .program-feature ul {
+        .program-card ul {
             margin: 20px 0 0 0;
             padding-left: 25px;
         }
 
-        .program-feature ul li {
+        .program-card ul li {
             font-size: 1.05rem;
             line-height: 1.9;
             margin-bottom: 12px;
-            color: var(--text-dark);
+            color: #FFFFFF;
+        }
+
+        ul li::marker {
+            color: #d4af37;
         }
 
         .program-feature ul li strong {
@@ -411,7 +472,7 @@
         }
 
         .schedule-placeholder h3 {
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             font-size: 2rem;
             color: var(--primary-purple);
             margin-bottom: 15px;
@@ -424,7 +485,7 @@
         }
 
         /* ============ FOOTER ============ */
-        .main-footer {
+        /* .main-footer {
             background: var(--primary-purple);
             color: white;
             padding: 70px 0 30px;
@@ -436,7 +497,7 @@
         }
 
         .footer-section h5 {
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             font-size: 1.4rem;
             font-weight: 600;
             color: var(--accent-gold);
@@ -525,7 +586,7 @@
         .footer-bottom a {
             color: var(--accent-gold);
             text-decoration: none;
-        }
+        } */
 
         /* ============ RESPONSIVE ============ */
         @media (max-width: 992px) {
@@ -604,6 +665,34 @@
             .section-title {
                 font-size: 1.9rem;
             }
+
+            /* Schedule grid mobile adjustments */
+            .schedule-grid {
+                grid-template-columns: 80px repeat(2, minmax(180px, 1fr));
+                font-size: 0.85rem;
+            }
+
+            .grid-header {
+                font-size: 0.9rem;
+                padding: 10px 8px;
+            }
+
+            .time-slot {
+                padding: 15px 5px;
+                font-size: 0.85rem;
+            }
+
+            .session-card {
+                padding: 10px;
+            }
+
+            .session-card h4 {
+                font-size: 0.9rem;
+            }
+
+            .session-card p {
+                font-size: 0.8rem;
+            }
         }
 
         /* ============ SCHEDULE GRID ============ */
@@ -644,8 +733,7 @@
             display: grid;
             /* Time column + 5 Streams for demo (expandable) */
             grid-template-columns: 120px repeat(5, minmax(250px, 1fr));
-            min-width: 1370px;
-            /* Force scroll */
+            /* Removed fixed min-width for mobile responsiveness */
         }
 
         .grid-header {
@@ -674,7 +762,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
+            font-weight: 600;
             color: var(--primary-purple);
             border-bottom: 1px solid #dee2e6;
             border-right: 1px solid #dee2e6;
@@ -693,7 +781,7 @@
             border-left: 4px solid var(--accent-gold);
             padding: 15px;
             height: 100%;
-            border-radius: 4px;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -706,7 +794,7 @@
 
         .session-card h4 {
             font-size: 1rem;
-            font-weight: 700;
+            font-weight: 600;
             color: var(--secondary-purple);
             margin-bottom: 8px;
             line-height: 1.4;
@@ -749,7 +837,6 @@
         /* ============ MERGED FLOATING NAVBAR STYLES ============ */
         /* Styles removed as they are now handled by navbar.js Shadow DOM */
 
-
         /* ============ TOPICS GRID ============ */
         .topics-intro {
             text-align: center;
@@ -765,7 +852,7 @@
 
         .topic-category {
             background: var(--bg-tone);
-            border-radius: 0;
+            border-radius: 10px;
             box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05);
             margin-bottom: 40px;
             overflow: hidden;
@@ -792,7 +879,7 @@
             font-family: 'Segoe UI', serif;
             color: var(--primary-purple);
             font-size: 1.5rem;
-            font-weight: 700;
+            font-weight: 600;
         }
 
         .category-icon {

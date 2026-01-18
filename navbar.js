@@ -2,13 +2,17 @@ class FloatingNavbar extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
-        this.handleScroll = this.handleScroll.bind(this);
         this.toggleMobileMenu = this.toggleMobileMenu.bind(this);
+        this.hasRendered = false; // Prevent re-rendering during view transitions
     }
 
     connectedCallback() {
-        this.render();
-        window.addEventListener('scroll', this.handleScroll);
+        // Only render once to prevent flickering during view transitions
+        if (!this.hasRendered) {
+            this.render();
+            this.hasRendered = true;
+        }
+        // Always update active link highlighting
         this.highlightActiveLink();
     }
 
@@ -19,6 +23,7 @@ class FloatingNavbar extends HTMLElement {
         if (pageName === '' || pageName === undefined) pageName = 'index.html';
 
         const allLinks = this.shadowRoot.querySelectorAll('a');
+        allLinks.forEach(l => l.classList.remove('active'));
 
         allLinks.forEach(link => {
             const href = link.getAttribute('href');
@@ -30,7 +35,9 @@ class FloatingNavbar extends HTMLElement {
                 const parentLi = link.closest('li');
                 if (parentLi && parentLi.parentElement && parentLi.parentElement.classList.contains('navbar-links')) {
                     // It is a top level link, just mark it
-                    link.classList.add('active');
+                    if (!link.classList.contains('contact-btn')) {
+                        link.classList.add('active');
+                    }
                 } else if (link.closest('.dropdown-menu')) {
                     // It is inside a dropdown
                     const topLevelLi = link.closest('.navbar-links > li');
@@ -43,20 +50,7 @@ class FloatingNavbar extends HTMLElement {
         });
     }
 
-    disconnectedCallback() {
-        window.removeEventListener('scroll', this.handleScroll);
-    }
 
-    handleScroll() {
-        const navbar = this.shadowRoot.querySelector('.floating-navbar');
-        if (navbar) {
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        }
-    }
 
     render() {
         const logoSrc = this.getAttribute('logo-src') || 'assets/logo.png';
@@ -66,6 +60,17 @@ class FloatingNavbar extends HTMLElement {
                 :host {
                     display: block;
                 }
+                
+                .navbar-backdrop {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100px;
+                    background-color: #FDFBF7;
+                    z-index: 999;
+                }
+
                 .floating-navbar {
                     position: fixed;
                     top: 10px;
@@ -73,22 +78,13 @@ class FloatingNavbar extends HTMLElement {
                     transform: translateX(-50%);
                     width: 97%; /* User defined */
                     height: 90px; /* User defined */
-                    // background-color: #007720;
                     background: linear-gradient(to right, #F5F7F6 5%, transparent 5%), linear-gradient(135deg, #1d0a3f 0%, #4b1c9b 100%);
                     border-radius: 50px;
                     display: flex;
                     align-items: center;
                     padding: 0;
-                    // box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
                     z-index: 1000;
-                    /* overflow: hidden; Removed to allow dropdowns to show */
-                    transition: all 0.6s ease-in-out; /* Smooth slow animation */
-                }
-
-                .floating-navbar.scrolled {
-                    width: 100%;
-                    top: 0;
-                    border-radius: 0;
+                    border: none;
                 }
 
                 .navbar-logo {
@@ -109,11 +105,6 @@ class FloatingNavbar extends HTMLElement {
                     transition: border-radius 0.6s ease-in-out;
                     position: relative;
                     z-index: 1;
-                }
-
-                .floating-navbar.scrolled .logo-base {
-                    border-top-left-radius: 0;
-                    border-bottom-left-radius: 0;
                 }
                 
                 /* Overlay Logos */
@@ -146,6 +137,7 @@ class FloatingNavbar extends HTMLElement {
                     height: 100%;
                     display: flex;
                     align-items: center;
+                    flex-shrink: 0;
                 }
 
                 .navbar-links {
@@ -159,15 +151,19 @@ class FloatingNavbar extends HTMLElement {
                     flex-wrap: nowrap;
                     height: 100%;
                     align-items: center;
+                    /* Priority+ Flex Behavior */
+                    /* overflow: hidden; Removed to fix dropdown overlap */
+                    flex: 1;
+                    justify-content: flex-end;
                 }
 
-                .navbar-links a {
+                .navbar-links a, .mobile-links a {
                     color: white;
                     text-decoration: none;
                     font-size: 16px;
                     font-weight: 500;
                     transition: opacity 0.3s;
-                    font-family: 'Inter', sans-serif;
+                    font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
                     white-space: nowrap;
                     display: flex;
                     align-items: center;
@@ -179,23 +175,22 @@ class FloatingNavbar extends HTMLElement {
                     opacity: 0.8;
                 }
 
-                /* Active link styling (Desktop only) */
-                @media (min-width: 1025px) {
-                    .navbar-links a.active {
-                        color: #d4af37; /* Gold Text */
-                        position: relative;
-                    }
-                    
-                    .navbar-links a.active::after {
-                        content: '';
-                        position: absolute;
-                        bottom: 20px; /* Adjust based on valid clickable area height */
-                        left: 5px;
-                        width: calc(100% - 10px); /* Match padding */
-                        height: 3px;
-                        background-color: #d4af37;
-                        border-radius: 2px;
-                    }
+                /* Active link styling (Desktop & Tablet) */
+                 /* We don't restrict this to min-width: 1419px anymore because we want it for the "visible" links in tablet mode too */
+                .navbar-links a.active {
+                    color: #d4af37; /* Gold Text */
+                    position: relative;
+                }
+                
+                .navbar-links a.active::after {
+                    content: '';
+                    position: absolute;
+                    bottom: 20px; /* Adjust based on valid clickable area height */
+                    left: 5px;
+                    width: calc(100% - 10px); /* Match padding */
+                    height: 3px;
+                    background-color: #d4af37;
+                    border-radius: 2px;
                 }
 
                 /* Dropdown Styles */
@@ -212,36 +207,33 @@ class FloatingNavbar extends HTMLElement {
                     z-index: 100;
                 }
 
-                /* Desktop-only dropdown behaviors */
-                @media (min-width: 1025px) {
-                    .dropdown-menu {
-                        position: absolute;
-                        top: 80px;
-                        left: 50%;
-                        transform: translateX(-50%) translateY(20px);
-                        background: rgba(255, 255, 255, 0.95);
-                    }
+                /* Desktop/Tablet-Visible Dropdown behaviors */
+                 /* Applied when the item is in the .navbar-links container */
+                .navbar-links .dropdown-menu {
+                    position: absolute;
+                    top: 80px;
+                    left: 50%;
+                    transform: translateX(-50%) translateY(20px);
+                    background: rgba(255, 255, 255, 0.95);
+                }
 
-                    /* Triangle/Arrow */
-                    .dropdown-menu::before {
-                        content: '';
-                        position: absolute;
-                        top: -6px;
-                        left: 50%;
-                        transform: translateX(-50%);
-                        border-left: 6px solid transparent;
-                        border-right: 6px solid transparent;
-                        border-bottom: 6px solid rgba(255, 255, 255, 0.95);
-                    }
+                .navbar-links .dropdown-menu::before {
+                    content: '';
+                    position: absolute;
+                    top: -6px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    border-left: 6px solid transparent;
+                    border-right: 6px solid transparent;
+                    border-bottom: 6px solid rgba(255, 255, 255, 0.95);
+                }
 
-                    /* Show Dropdown on Hover or Active class */
-                    li:hover .dropdown-menu,
-                    li.active .dropdown-menu {
-                        opacity: 1;
-                        visibility: visible;
-                        transform: translateX(-50%) translateY(0);
-                        top: 60px;
-                    }
+                .navbar-links li:hover .dropdown-menu,
+                .navbar-links li.active .dropdown-menu {
+                    opacity: 1;
+                    visibility: visible;
+                    transform: translateX(-50%) translateY(0);
+                    top: 60px;
                 }
 
                 .dropdown-menu li {
@@ -291,7 +283,8 @@ class FloatingNavbar extends HTMLElement {
                     margin-left: 10px;
                 }
 
-                .navbar-links a.contact-btn {
+                /* Button Styles (Visible & Mobile) */
+                .navbar-links a.contact-btn, .mobile-links a.contact-btn {
                     background-color: white;
                     color: #1d0a3f;
                     padding: 10px 25px;
@@ -299,19 +292,20 @@ class FloatingNavbar extends HTMLElement {
                     font-weight: 600;
                     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
                     transition: all 0.3s ease;
-                    height: auto; 
+                    height: auto;
+                    line-height: normal;
                 }
 
-                .navbar-links a.contact-btn:hover {
+                .navbar-links a.contact-btn:hover, .mobile-links a.contact-btn:hover {
                     opacity: 1;
                     transform: translateY(-2px);
                     box-shadow: 0 6px 15px rgba(0,0,0,0.3);
                     background-color: #f0f0f0;
                 }
 
-                /* Mobile toggle button (hamburger) container */
+                /* Mobile toggle button (hamburger) */
                 .mobile-toggle {
-                    display: none;
+                    display: none; /* Controlled by JS */
                     flex-direction: column;
                     gap: 5px;
                     cursor: pointer;
@@ -319,6 +313,7 @@ class FloatingNavbar extends HTMLElement {
                     margin-left: auto;
                     margin-right: 20px;
                     z-index: 1001;
+                    flex-shrink: 0;
                 }
 
                 .mobile-toggle span {
@@ -330,11 +325,102 @@ class FloatingNavbar extends HTMLElement {
                     transition: all 0.3s ease;
                 }
 
+                /* Mobile Overflow Menu Container */
+                .mobile-links {
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    width: 100%;
+                    background: #1d0a3f;
+                    flex-direction: column;
+                    padding: 20px 0 40px 0;
+                    height: auto;
+                    max-height: calc(100vh - 90px);
+                    overflow-y: auto;
+                    border-radius: 0 0 20px 20px;
+                    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+                    opacity: 0;
+                    visibility: hidden;
+                    transform: translateY(-10px);
+                    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+                    display: flex;
+                    z-index: 999;
+                    list-style: none;
+                }
+
+                .mobile-links.active {
+                    opacity: 1;
+                    visibility: visible;
+                    transform: translateY(0);
+                }
+
+                .mobile-links li {
+                    width: 100%;
+                    height: auto;
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+                
+                .mobile-links > li > a {
+                    width: 100%;
+                    padding: 15px 30px;
+                    box-sizing: border-box;
+                    justify-content: flex-start;
+                }
+
+                /* Fix Contact Button in Mobile Menu */
+                .mobile-links a.contact-btn {
+                    width: fit-content !important;
+                    margin-left: 30px;
+                    margin-bottom: 20px;
+                    display: inline-flex;
+                    justify-content: center;
+                }
+
+                /* Submenus in Overflow/Mobile */
+                .mobile-links .dropdown-menu {
+                    position: static;
+                    transform: none;
+                    opacity: 1;
+                    visibility: visible;
+                    display: block;
+                    max-height: 0;
+                    overflow: hidden;
+                    width: 100%;
+                    background: transparent;
+                    box-shadow: none;
+                    border-radius: 0;
+                    padding: 0;
+                    transition: max-height 0.4s ease;
+                }
+
+                .mobile-links .dropdown-menu::before { content: none; }
+                
+                .mobile-links li.active .dropdown-menu {
+                    max-height: 500px;
+                }
+
+                .mobile-links .dropdown-menu li a {
+                    color: rgba(255, 255, 255, 0.8);
+                    padding: 12px 30px 12px 60px;
+                }
+
+                 /* Hamburger Animation */
+                .mobile-toggle.active span:nth-child(1) {
+                    transform: translateY(8px) rotate(45deg);
+                }
+                .mobile-toggle.active span:nth-child(2) {
+                    opacity: 0;
+                }
+                .mobile-toggle.active span:nth-child(3) {
+                    transform: translateY(-8px) rotate(-45deg);
+                }
+
                 /* Conference title displayed only on mobile headers */
                 .mobile-title {
                     display: none;
                     color: white;
-                    font-family: 'Lora', serif;
+                    font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
                     font-size: 20px;
                     font-weight: 500;
                     margin-left: 20px;
@@ -354,16 +440,6 @@ class FloatingNavbar extends HTMLElement {
                     position: relative;
                     z-index: 2;
                 }
-                
-                .logo-container-mobile.scrolled {
-                    border-top-left-radius: 0;
-                    border-bottom-left-radius: 0;
-                }
-
-                .floating-navbar.scrolled .logo-container-mobile {
-                    border-top-left-radius: 0;
-                    border-bottom-left-radius: 0;
-                }
 
                 .logo-container-mobile img.rajagiri-mobile {
                     height: 70%;
@@ -373,135 +449,39 @@ class FloatingNavbar extends HTMLElement {
                 .logo-container-mobile img.rcss-mobile {
                     height: 50%;
                     width: auto;
-                    margin-left: -10px;
+                    margin-left: -22px;
                     margin-top: 20px;
                 }
 
-                /* Media query for mobile and tablet devices */
-                @media (max-width: 1024px) {
-                    .floating-navbar {
-                        width: 100% !important;
-                        left: 0 !important;
-                        transform: none !important;
-                        top: 0;
-                        border-radius: 0 !important;
-                        background: #1d0a3f;
-                        transition: background 0.4s ease; /* Simple transition */
-                    }
-
-                    .navbar-links {
-                        display: flex;
-                        position: absolute;
-                        top: 100%;
-                        left: 0 !important;
-                        width: 100% !important;
-                        background: #1d0a3f;
-                        flex-direction: column;
-                        padding: 20px 0;
-                        height: auto;
-                        border-radius: 0 0 20px 20px;
-                        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-                        /* Smooth transition setup */
-                        opacity: 0;
-                        visibility: hidden;
-                        transform: translateY(-10px);
-                        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-                        pointer-events: none;
-                    }
-
-                    .navbar-links.mobile-active {
-                        opacity: 1;
-                        visibility: visible;
-                        transform: translateY(0);
-                        pointer-events: auto;
-                    }
-
-                    .navbar-links li {
-                        width: 100%;
-                        height: auto;
-                        flex-direction: column;
-                        align-items: flex-start;
-                    }
-
-                    .navbar-links a {
-                        width: 100%;
-                        padding: 15px 30px;
-                        box-sizing: border-box;
-                    }
-
-                    .mobile-toggle {
-                        display: flex;
-                    }
-
-                    .mobile-title {
-                        display: block;
-                    }
-
+                /* 
+                    STRICT Mobile Override (< 768px) 
+                   Forces everything into the overflow/hamburger 
+                */
+                @media (max-width: 768px) {
+                    .navbar-logo { display: none; }
+                    .mobile-title { display: block; }
+                    .mobile-toggle { display: flex !important; }
+                    
                     .logo-container-mobile {
                         display: flex;
                         border-radius: 0 !important;
                     }
-
-                    .navbar-logo {
-                        display: none;
-                    }
-
-                    .dropdown-menu {
-                        position: static;
-                        transform: none;
-                        opacity: 1;
-                        visibility: visible;
-                        display: block; /* Always block but height 0 for transition */
-                        max-height: 0;
-                        overflow: hidden;
-                        width: 100%;
-                        background: transparent; /* Fix: removed gray background */
-                        box-shadow: none;
-                        border-radius: 0;
-                        padding: 0;
-                        transition: max-height 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-                    }
-
-                    .dropdown-menu::before,
-                    .dropdown-menu::after {
-                        display: none !important;
-                        content: none !important;
-                    }
-
-                    li.active .dropdown-menu {
-                        max-height: 500px; /* Sufficient height for dropdown */
-                    }
-
-                    .dropdown-menu li a {
-                        color: rgba(255, 255, 255, 0.8);
-                        padding: 12px 30px 12px 60px; /* Indented for submenu feel */
-                        font-size: 13px;
-                    }
-
-                    .dropdown-menu li a:hover {
-                        color: white;
-                        background: rgba(255, 255, 255, 0.1);
-                    }
-
-                    .navbar-links a.contact-btn {
-                        margin: 10px 30px;
-                        width: auto;
-                        display: inline-block;
-                    }
-                    
-                    /* Hamburger Animation */
-                    .mobile-toggle.active span:nth-child(1) {
-                        transform: translateY(8px) rotate(45deg);
-                    }
-                    .mobile-toggle.active span:nth-child(2) {
-                        opacity: 0;
-                    }
-                    .mobile-toggle.active span:nth-child(3) {
-                        transform: translateY(-8px) rotate(-45deg);
-                    }
+                     .logo-container-mobile img.rajagiri-mobile { height: 70%; width: auto; }
+                     .logo-container-mobile img.rcss-mobile { height: 50%; width: auto; margin-left: -22px; margin-top: 20px; }
+                     
+                     .floating-navbar {
+                        width: 100% !important;
+                        border-radius: 0 !important;
+                         background: #1d0a3f;
+                        top: 0px;
+                     }
+                     .navbar-links {
+                         display: none; /* Hide visible strip entirely */
+                     }
                 }
             </style>
 
+            <div class="navbar-backdrop"></div>
             <nav class="floating-navbar">
                 <div class="logo-container-mobile">
                     <img src="assets/rajagiri_logo.png" alt="Rajagiri" class="rajagiri-mobile">
@@ -510,113 +490,203 @@ class FloatingNavbar extends HTMLElement {
 
                 <div class="mobile-title">ICSWHMH 27</div>
 
-                <div class="mobile-toggle" id="mobile-toggle">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-
                 <div class="navbar-logo">
                     <!-- Base Logo -->
                     <img src="${logoSrc}" alt="Conference Logo" class="logo-base">
-                    
                     <!-- Overlays -->
                     <img src="assets/rajagiri_logo.png" alt="Rajagiri" class="logo-overlay rajagiri">
                     <img src="assets/rcss_logo.png" alt="RCSS" class="logo-overlay rcss">
                 </div>
-                <ul class="navbar-links">
+
+                <!-- Visible Links (Priority+) -->
+                <ul class="navbar-links" id="navbar-links">
+                    <li><a href="index.html">2027 ICSWHMH</a></li>
                     <li>
-                        <a href="index.html">2027 ICSWHMH</a>
+                        <a href="#">Program</a>
                         <ul class="dropdown-menu">
-                            <li><a href="index.html">2027 ICSWHMH</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="program.html">Program</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="program.html">Program</a></li>
+                            <li><a href="program.html">Events</a></li>
                             <li><a href="topics.html">Conference topics</a></li>
                         </ul>
                     </li>
                     <li>
                         <a href="#">Speakers</a>
                         <ul class="dropdown-menu">
-                            <li><a href="speaker.html">Speakers</a></li>
+                            <li><a href="speaker.html">Speakers list</a></li>
                             <li><a href="ministerialopening.html">Ministerrial opening</a></li>
                         </ul>
                     </li>
-                    <li>
-                        <a href="#">Registration</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Registration</a></li>
-                            <li><a href="#">Student</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#">Abstracts</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Abstracts</a></li>
-                            <li><a href="#">Guidelines</a></li>
-                        </ul>
-                    </li>
+                    <li><a href="registration.html">Registration</a></li>
+                    <li><a href="#">Abstracts</a></li>
+                    <li><a href="#">Social Functions</a></li>
+                    <li><a href="#">Sponsorships & Exhibitions</a></li>
+                    <li><a href="#">Host city</a></li>
+                    <li><a href="contact-us.html" class="contact-btn">Contact Us</a></li>
+                </ul>
 
-                    <li>
-                        <a href="#">Social Functions</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Social Functions</a></li>
-                            <li><a href="#">Tours</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#">Sponsorships & Exhibitions</a>
-                         <ul class="dropdown-menu">
-                            <li><a href="#">Sponsorships & Exhibitions</a></li>
-                            <li><a href="#">Floor Plan</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#">Host city</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Host city</a></li>
-                            <li><a href="#">Travel</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="#" class="contact-btn">Contact Us</a></li>
+                <div class="mobile-toggle" id="mobile-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                <!-- Overflow Links -->
+                <ul class="mobile-links" id="mobile-links">
+                    <!-- Javascript will move items here -->
                 </ul>
             </nav>
         `;
 
-        /* Handle opening/closing of the mobile navigation menu */
-        // Mobile toggle logic
-        const mobileToggle = this.shadowRoot.getElementById('mobile-toggle');
-        const navbarLinks = this.shadowRoot.querySelector('.navbar-links');
+        this.initPriorityPlus();
+    }
 
-        if (mobileToggle) {
-            mobileToggle.addEventListener('click', () => {
-                mobileToggle.classList.toggle('active');
-                navbarLinks.classList.toggle('mobile-active');
-            });
-        }
+    initPriorityPlus() {
+        const navbar = this.shadowRoot.querySelector('.floating-navbar');
+        const visibleLinks = this.shadowRoot.getElementById('navbar-links');
+        const overflowLinks = this.shadowRoot.getElementById('mobile-links');
+        const toggle = this.shadowRoot.getElementById('mobile-toggle');
+        const logo = this.shadowRoot.querySelector('.navbar-logo');
 
-        /* Ensure sub-menus work on mobile via click events */
-        // Add click event listeners for mobile/click support
-        const navItems = this.shadowRoot.querySelectorAll('.navbar-links > li');
-        navItems.forEach(item => {
-            const link = item.querySelector('a');
-            if (link && item.querySelector('.dropdown-menu')) {
-                link.addEventListener('click', (e) => {
-                    // Only prevent default on mobile or if it's a dropdown toggle
-                    if (window.innerWidth <= 1024) {
-                        e.preventDefault();
-                        // Close others
-                        navItems.forEach(other => {
-                            if (other !== item) other.classList.remove('active');
-                        });
-                        item.classList.toggle('active');
-                    }
+        // 0. Initialize indices for strict ordering
+        Array.from(visibleLinks.children).forEach((li, index) => {
+            li.dataset.index = index;
+        });
+
+        let isToggling = false; // Debounce/Throttle flag
+
+        // 1. Toggle Button Logic
+        toggle.addEventListener('click', () => {
+            toggle.classList.toggle('active');
+            overflowLinks.classList.toggle('active');
+        });
+
+        // 2. Overflow Menu Dropdown Logic (Delegation)
+        overflowLinks.addEventListener('click', (e) => {
+            const link = e.target.closest('a');
+            if (link && link.parentElement.querySelector('.dropdown-menu')) {
+                e.preventDefault();
+                // Close other active keys in overflow
+                Array.from(overflowLinks.children).forEach(li => {
+                    if (li !== link.parentElement) li.classList.remove('active');
                 });
+                link.parentElement.classList.toggle('active');
             }
         });
+
+        // Helper: Move all items to visible and sort them
+        const resetToVisible = () => {
+            while (overflowLinks.firstElementChild) {
+                visibleLinks.appendChild(overflowLinks.firstElementChild);
+            }
+            const items = Array.from(visibleLinks.children);
+            items.sort((a, b) => parseInt(a.dataset.index) - parseInt(b.dataset.index));
+            items.forEach(item => visibleLinks.appendChild(item));
+        };
+
+        // 3. Main Priority+ Logic
+        const checkPriorityPlus = () => {
+            if (isToggling) return;
+            isToggling = true;
+
+            const width = window.innerWidth;
+
+            // --- SCENARIO A: DESKTOP (> 1418px) ---
+            // STRICTLY keep everything in visible links. No hamburger.
+            if (width > 1418) {
+                // Move everything back to visible
+                while (overflowLinks.firstElementChild) {
+                    // Prepend to maintain order if we moved from end? 
+                    // Actually, let's just move everything back and let the DOM order sort itself out if we are careful.
+                    // If we move items strictly from right-to-left into overflow, we should append them back.
+                    // But we used prepend logic in mobile. Let's be safe: 
+                    // We need to restore original order.
+                    // Simplified: Just move everything to visible.
+                    visibleLinks.appendChild(overflowLinks.firstElementChild);
+                }
+
+                // Sort by data-index if we wanted strict ordering, but simplistic append works if we empty overflow cleanly.
+                // We need to ensure we don't mess up order. 
+                // Strategy: always move from overflow -> visible, then check space.
+
+                toggle.style.display = 'none';
+                overflowLinks.classList.remove('active');
+                toggle.classList.remove('active');
+                isToggling = false;
+                return;
+            }
+
+            // --- SCENARIO B: STRICT MOBILE (<= 768px) ---
+            if (width <= 768) {
+                resetToVisible();
+                while (visibleLinks.firstElementChild) {
+                    overflowLinks.appendChild(visibleLinks.firstElementChild);
+                }
+                toggle.style.display = 'flex';
+                isToggling = false;
+                return;
+            }
+
+            // --- SCENARIO C: TABLET / SMALL DESKTOP (768px < w <= 1418px) ---
+            // Dynamic Priority+ behavior.
+
+            // 1. Reset Phase: Move everything to visible and sort
+            resetToVisible();
+
+            toggle.style.display = 'none';
+            overflowLinks.classList.remove('active');
+            toggle.classList.remove('active');
+
+            // 2. Measure and Move Phase
+            const navbarWidth = navbar.clientWidth;
+            const logoWidth = logo.getBoundingClientRect().width;
+            const toggleReservedWidth = 50; // Width of toggle button
+            const padding = 60; // Safety padding
+
+            // Available space for links
+            const availableSpace = navbarWidth - logoWidth - toggleReservedWidth - padding;
+
+            let currentUsedWidth = 0;
+            const visibleChildren = Array.from(visibleLinks.children);
+            let overflowStarted = false;
+
+            for (let i = 0; i < visibleChildren.length; i++) {
+                const item = visibleChildren[i];
+                const itemWidth = item.offsetWidth + 15; // Width + Gap
+
+                if (!overflowStarted) {
+                    currentUsedWidth += itemWidth;
+                    // If this item pushes us over the limit
+                    if (currentUsedWidth > availableSpace) {
+                        overflowStarted = true;
+                        // Move this item and all subsequent to overflow
+                        overflowLinks.appendChild(item);
+                    }
+                } else {
+                    // Already overflowing, just move it
+                    overflowLinks.appendChild(item);
+                }
+            }
+
+            // 3. Show toggle if we have items in overflow
+            if (overflowLinks.children.length > 0) {
+                toggle.style.display = 'flex';
+            }
+
+            isToggling = false;
+        };
+
+        // Resize Observer
+        const ro = new ResizeObserver(() => {
+            // Use requestAnimationFrame for smooth UI updates
+            requestAnimationFrame(checkPriorityPlus);
+        });
+        ro.observe(navbar);
+        ro.observe(document.body);
+
+        // Initial check
+        setTimeout(checkPriorityPlus, 50);
+        // Image load check
+        const logos = this.shadowRoot.querySelectorAll('img');
+        logos.forEach(img => img.onload = checkPriorityPlus);
     }
 
     toggleMobileMenu() {

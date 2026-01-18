@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us - ICSWHMH 2027</title>
+    <link rel="icon" type="image/x-icon" href="assets/Favicon-192.ico?v=2">
 
     <!-- Bootstrap 5.3 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -23,17 +24,30 @@
     <style>
         /* ================= GLOBAL ================= */
         body {
-            background-color: #FDFDFF;
+            background-color: #FDFBF7;
             color: #2D3436;
             font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             overflow-x: hidden;
         }
 
+        html {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
         /* ================= TITLE ================= */
         .contact-title-section {
-            margin-top: 180px;
-            margin-left: 60px;
+            margin-top: 150px;
             margin-bottom: 50px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 20px;
+            /* padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #FDFBF7;
+            margin-top: 100px; */
         }
 
         #pageTitle {
@@ -57,17 +71,58 @@
         }
 
         .contact-intro {
-            padding-left: 80px;
+            padding: 0 20px;
             font-size: 1.1rem;
             color: #444;
             margin-bottom: 60px;
-            max-width: 1000px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         /* ================= CONTACT INFO ================= */
         .contact-grid {
-            padding: 0 80px;
+            padding: 0 20px;
             margin-bottom: 20px;
+            max-width: 1200px;
+            margin: 0 auto 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .contact-grid>div {
+            display: flex;
+            flex: 1 1 calc(33.333% - 30px);
+            min-width: 280px;
+            max-width: 380px;
+        }
+
+        /* When only one card on last row, center it */
+        .contact-grid>div:last-child:nth-child(3n + 1) {
+            margin: 0 auto;
+        }
+
+        .contact-card {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: #1D0A3F;
+            color: #FFFFFF;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            border-left: 6px solid #C9A227;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
         }
 
         .contact-item {
@@ -76,15 +131,27 @@
             gap: 20px;
         }
 
+        /* Card style for each contact info */
+        .contact-card {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            background: #1D0A3F;
+            color: #FFFFFF;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
         .contact-icon {
             font-size: 2.5rem;
-            color: #1D0A3F;
+            color: #FFFFFF;
             line-height: 1;
         }
 
         .contact-text h4 {
             font-weight: 600;
-            color: #1D0A3F;
+            color: #FFFFFF;
             margin-bottom: 15px;
             font-size: 1.25rem;
         }
@@ -92,11 +159,11 @@
         .contact-text p {
             margin: 0;
             line-height: 1.6;
-            color: #555;
+            color: #FFFFFF;
         }
 
         .contact-text a {
-            color: #00779B;
+            color: #C9A227;
             text-decoration: none;
             font-weight: 500;
         }
@@ -128,11 +195,12 @@
         .social-icons a {
             font-size: 2.5rem;
             color: #333;
-            transition: color 0.3s ease;
+            transition: color 0.3s ease, transform 0.3s ease;
         }
 
         .social-icons a:hover {
             color: #1D0A3F;
+            transform: translateY(-5px);
         }
 
         .hashtag-text {
@@ -141,7 +209,7 @@
         }
 
         .hashtag-text span {
-            color: #C43E5D;
+            color: #C9A227;
             /* Closest to the reddish hashtag in image */
             font-weight: 600;
         }
@@ -224,48 +292,142 @@
         <p>Please contact the team at Forum Group with any questions regarding the Conference:</p>
     </div>
 
-    <div class="container-fluid">
-        <div class="row contact-grid g-4">
-            <!-- Address -->
-            <div class="col-md-4">
-                <div class="contact-item">
-                    <div class="contact-icon">
-                        <i class="bi bi-geo-alt"></i>
-                    </div>
-                    <div class="contact-text">
-                        <h4>Address</h4>
-                        <p>Suite 10/Level 1, 285a Crown St,<br>
-                            Surry Hills, NSW, 2010,<br>
-                            Australia</p>
-                    </div>
+    <div class="contact-grid">
+        <!-- Address -->
+        <div>
+            <div class="contact-item contact-card">
+                <div class="contact-icon">
+                    <i class="bi bi-geo-alt"></i>
                 </div>
+                <div class="contact-text">
+                    <h4>Address</h4>
+                    <p>Suite 10/Level 1, 285a Crown St,<br>
+                        Surry Hills, NSW, 2010,<br>
+                        Australia</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phone -->
+        <div>
+            <div class="contact-item contact-card">
+                <div class="contact-icon">
+                    <i class="bi bi-phone"></i>
+                </div>
+                <div class="contact-text">
+                    <h4>Phone</h4>
+                    <p>+ 61 2 8667 0737</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Email -->
+        <div>
+            <div class="contact-item contact-card">
+                <div class="contact-icon">
+                    <i class="bi bi-envelope"></i>
+                </div>
+                <div class="contact-text">
+                    <h4>Email</h4>
+                    <p><a href="mailto:aasw@forumgroupevents.com.au">aasw@forumgroupevents.com.au</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Office Hours Section -->
+    <div class="office-hours-section" style="text-align: center; margin: 40px auto; max-width: 800px; padding: 0 20px;">
+        <div style="background: #f9f5f0; border-left: 4px solid #C9A227; padding: 20px 30px; border-radius: 8px;">
+            <i class="bi bi-clock" style="font-size: 1.5rem; color: #1D0A3F;"></i>
+            <p style="margin: 10px 0 0; color: #555; font-size: 1rem;"><strong>Office Hours:</strong> Monday - Friday,
+                9:00 AM - 5:00 PM (AEDT)</p>
+        </div>
+    </div>
+
+    <hr class="separator">
+
+    <!-- FAQ Section -->
+    <div class="faq-section" style="max-width: 1000px; margin: 60px auto; padding: 0 20px;">
+        <h3 style="text-align: center; color: #1D0A3F; font-size: 2rem; margin-bottom: 40px; font-weight: 600;">
+            Frequently Asked Questions</h3>
+
+        <div class="faq-grid" style="display: grid; gap: 20px;">
+            <div
+                style="background: #FFFFFF; border-left: 4px solid #C9A227; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <h4 style="color: #1D0A3F; margin: 0 0 15px 0; font-size: 1.15rem;">How do I register for the
+                    conference?</h4>
+                <p style="color: #555; margin: 0; line-height: 1.6;">Visit the Registration page on our website and
+                    complete the online form. Early bird rates are available until [date]. For group registrations,
+                    please contact us directly for special pricing.</p>
             </div>
 
-            <!-- Phone -->
-            <div class="col-md-4">
-                <div class="contact-item">
-                    <div class="contact-icon">
-                        <i class="bi bi-phone"></i>
-                    </div>
-                    <div class="contact-text">
-                        <h4>Phone</h4>
-                        <p>+ 61 2 8667 0737</p>
-                    </div>
-                </div>
+            <div
+                style="background: #FFFFFF; border-left: 4px solid #C9A227; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <h4 style="color: #1D0A3F; margin: 0 0 15px 0; font-size: 1.15rem;">Can I attend virtually?</h4>
+                <p style="color: #555; margin: 0; line-height: 1.6;">Yes! The 2027 ICSWHMH is a hybrid event. Virtual
+                    attendance options include live-streamed keynotes, access to select sessions, and networking
+                    opportunities. Virtual registration is available at a reduced rate.</p>
             </div>
 
-            <!-- Email -->
-            <div class="col-md-4">
-                <div class="contact-item">
-                    <div class="contact-icon">
-                        <i class="bi bi-envelope"></i>
-                    </div>
-                    <div class="contact-text">
-                        <h4>Email</h4>
-                        <p><a href="mailto:aasw@forumgroupevents.com.au">aasw@forumgroupevents.com.au</a></p>
-                    </div>
-                </div>
+            <div
+                style="background: #FFFFFF; border-left: 4px solid #C9A227; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <h4 style="color: #1D0A3F; margin: 0 0 15px 0; font-size: 1.15rem;">When is the abstract submission
+                    deadline?</h4>
+                <p style="color: #555; margin: 0; line-height: 1.6;">Abstract submissions close on [date]. All
+                    submissions will be reviewed by our scientific committee, and you'll receive notification of
+                    acceptance by [date].</p>
             </div>
+
+            <div
+                style="background: #FFFFFF; border-left: 4px solid #C9A227; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <h4 style="color: #1D0A3F; margin: 0 0 15px 0; font-size: 1.15rem;">Are accommodation recommendations
+                    available?</h4>
+                <p style="color: #555; margin: 0; line-height: 1.6;">Yes, we have partnered with several hotels near the
+                    venue offering special conference rates. Visit our Accommodation page for details and booking codes.
+                </p>
+            </div>
+
+            <div
+                style="background: #FFFFFF; border-left: 4px solid #C9A227; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <h4 style="color: #1D0A3F; margin: 0 0 15px 0; font-size: 1.15rem;">Will I receive a certificate of
+                    attendance?</h4>
+                <p style="color: #555; margin: 0; line-height: 1.6;">All registered attendees will receive a digital
+                    certificate of attendance after the conference. CPD points may be available for eligible
+                    professionals.</p>
+            </div>
+
+            <div
+                style="background: #FFFFFF; border-left: 4px solid #C9A227; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <h4 style="color: #1D0A3F; margin: 0 0 15px 0; font-size: 1.15rem;">What is your cancellation policy?
+                </h4>
+                <p style="color: #555; margin: 0; line-height: 1.6;">Cancellations made 60+ days before receive a full
+                    refund minus admin fee. 30-59 days: 50% refund. Less than 30 days: registration can be transferred
+                    to another person.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Venue Map Section -->
+    <div class="venue-section" style="max-width: 1000px; margin: 60px auto 40px; padding: 0 20px;">
+        <h3 style="text-align: center; color: #1D0A3F; font-size: 2rem; margin-bottom: 20px; font-weight: 600;">
+            Conference Venue</h3>
+        <p style="text-align: center; color: #555; margin-bottom: 30px; font-size: 1.05rem;">Rajagiri College of Social
+            Sciences, Kalamassery, Kerala, India</p>
+        <div style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <iframe
+                src="https://maps.google.com/maps?q=Rajagiri+College+of+Social+Sciences+Kalamassery&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                width="100%" height="450" style="border:0; display: block;" allowfullscreen="" loading="lazy">
+            </iframe>
+        </div>
+    </div>
+
+    <!-- Response Time Notice -->
+    <div style="max-width: 600px; margin: 40px auto; padding: 0 20px;">
+        <div
+            style="background: #f0f7ff; border: 1px solid #C9A227; padding: 20px; border-radius: 8px; text-align: center;">
+            <i class="bi bi-info-circle" style="font-size: 1.5rem; color: #1D0A3F; margin-bottom: 10px;"></i>
+            <p style="margin: 0; color: #555; font-size: 0.95rem;">We aim to respond to all inquiries within 2-3
+                business days. For urgent matters, please call us directly during office hours.</p>
         </div>
     </div>
 

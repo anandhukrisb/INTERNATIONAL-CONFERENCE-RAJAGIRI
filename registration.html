@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration - ICSWHMH 2027</title>
+    <link rel="icon" type="image/x-icon" href="assets/Favicon-192.ico?v=2">
 
     <script src="navbar.js" defer></script>
     <script src="footer.js" defer></script>
@@ -21,7 +22,7 @@
         :root {
             --primary-purple: #1D0A3F;
             --accent-gold: #C9A227;
-            --bg-light: #FDFDFF;
+            --bg-light: #FDFBF7;
             --text-dark: #2D3436;
             --text-muted: #555;
             --white: #ffffff;
@@ -32,6 +33,11 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+        }
+
+        html {
+            overflow-x: hidden;
+            width: 100%;
         }
 
         body {
@@ -78,7 +84,7 @@
             font-size: 1.15rem;
             margin-bottom: 40px;
             color: var(--text-muted);
-            max-width: 900px;
+            max-width: 100%;
             text-align: justify;
         }
 
@@ -98,15 +104,16 @@
         }
 
         .inclusion-card {
-            background: var(--white);
+            background: #1D0A3F;
             padding: 40px;
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            border-top: 5px solid var(--accent-gold);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border-left: 6px solid var(--accent-gold);
+            border-top: none;
         }
 
         .inclusion-card h3 {
-            color: var(--primary-purple);
+            color: var(--white);
             margin-bottom: 20px;
             font-size: 1.4rem;
             font-weight: 700;
@@ -121,7 +128,7 @@
             padding-left: 25px;
             margin-bottom: 12px;
             font-size: 1rem;
-            color: var(--text-muted);
+            color: #F0F0F0;
         }
 
         .inclusion-list li::before {
@@ -144,7 +151,7 @@
             width: 100%;
             border-collapse: collapse;
             background: var(--white);
-            border-radius: 15px;
+            border-radius: 10px;
             overflow: hidden;
             box-shadow: var(--shadow);
         }
@@ -188,7 +195,7 @@
             margin-bottom: 25px;
             background: var(--white);
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 10px;
             /* Slight rounding like in image */
             overflow: hidden;
         }
@@ -296,9 +303,21 @@
 
         /* ================= MOBILE RESPONSIVENESS ================= */
         @media (max-width: 768px) {
+            * {
+                max-width: 100%;
+            }
+
+            .main-container {
+                padding: 0 15px;
+                width: 100%;
+                max-width: 100vw;
+                box-sizing: border-box;
+            }
+
             .title-section {
                 margin-top: 120px;
                 text-align: center;
+                width: 100%;
             }
 
             #pageTitle {
@@ -309,14 +328,83 @@
                 margin: 10px auto;
             }
 
+            .intro-text {
+                font-size: 1rem;
+                text-align: left;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .section-header {
+                font-size: 1.5rem;
+            }
+
             .inclusions-grid {
                 grid-template-columns: 1fr;
+                gap: 20px;
+                width: 100%;
+            }
+
+            .inclusion-card {
+                padding: 25px;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .pricing-section {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                width: 100%;
+                margin-left: -15px;
+                margin-right: -15px;
+                padding: 0 15px;
+            }
+
+            .pricing-table {
+                min-width: 600px;
             }
 
             .pricing-table th,
             .pricing-table td {
                 padding: 12px 15px;
                 font-size: 0.85rem;
+            }
+
+            .cancel-table {
+                min-width: 100%;
+                font-size: 0.85rem;
+            }
+
+            .cancel-table th,
+            .cancel-table td {
+                padding: 10px 12px;
+            }
+
+            .info-section {
+                width: 100%;
+            }
+
+            .info-strip {
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .info-header {
+                font-size: 1rem;
+                padding: 12px 20px;
+            }
+
+            .info-content {
+                padding: 0 20px;
+            }
+
+            .info-content-inner {
+                padding: 20px 0;
+            }
+
+            .btn-register {
+                padding: 14px 35px;
+                font-size: 0.9rem;
             }
         }
     </style>
