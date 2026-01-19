@@ -105,14 +105,17 @@
 
         /* ============ BANNER SPACE ============ */
         .banner-hero {
-            background: var(--bg-light);
+            /* Restored Purple/Platinum Gradient */
+            background: linear-gradient(to bottom, #f3f4f6, #eaddff);
+            /* Slight purple tint */
             min-height: 400px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-bottom: 5px solid var(--accent-gold);
             position: relative;
-            margin-top: 120px;
+            border-bottom: 5px solid var(--accent-gold);
+            /* Gold border is classic */
+            margin-top: 100px;
         }
 
         .banner-placeholder {
@@ -144,13 +147,17 @@
 
         /* ============ MAIN CONTENT ============ */
         .main-content {
-            padding: 140px 0 50px 0;
+            padding: 110px 0 50px 0;
+            /* Reduced from 140px to tight space */
         }
 
         .page-title-section {
             text-align: center;
             margin-bottom: 40px;
-            margin-top: 50px;
+            margin-top: 80px;
+            /* Increased from 30px to prevent overlap */
+            padding-top: 20px;
+            /* Added breathing room */
         }
 
         .page-title-section h1 {
@@ -515,21 +522,25 @@
         }
 
         .schedule-container {
-            overflow-x: auto;
+            /* Fix: Ensure sticky works by allowing overflow on this container */
+            overflow: auto;
             border: 1px solid #e9ecef;
             background: white;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
             max-height: 80vh;
-            overflow-y: auto;
+            position: relative;
+            /* Context for children */
         }
 
         .schedule-grid {
             display: grid;
-            /* Time column + 5 Streams for demo (expandable) */
-            grid-template-columns: 120px repeat(5, minmax(250px, 1fr));
-            /* Removed fixed min-width for mobile responsiveness */
+            grid-template-columns: 140px repeat(5, minmax(280px, 1fr));
+            /* Fixed Time column width */
+            min-width: 100%;
+            /* Force full width */
         }
 
+        /* The Sticky Header Row */
         .grid-header {
             background: var(--primary-purple);
             color: white;
@@ -538,25 +549,30 @@
             text-align: center;
             position: sticky;
             top: 0;
-            /* Below navbar */
-            z-index: 30;
-            /* Higher than time-slot */
+            z-index: 50;
+            /* High z-index for visibility */
             border-right: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        /* The Sticky Time Column (Top Left Corner) */
         .time-col-header {
             position: sticky;
             left: 0;
-            z-index: 40 !important;
-            /* Highest priority: Corner cell */
+            top: 0;
+            z-index: 60 !important;
+            /* Highest: Stays on top of everything */
+            background: var(--primary-purple);
+            /* Ensure opaque background */
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
         }
 
+        /* The Sticky Time Slots (Left Column) */
         .time-slot {
             background: #f8f9fa;
             position: sticky;
             left: 0;
-            z-index: 20;
-            /* Slides under header */
+            z-index: 40;
+            /* Higher than content, lower than header */
             padding: 20px 10px;
             display: flex;
             align-items: center;
@@ -564,7 +580,10 @@
             font-weight: 600;
             color: var(--primary-purple);
             border-bottom: 1px solid #dee2e6;
-            border-right: 1px solid #dee2e6;
+            border-right: 2px solid #dee2e6;
+            /* Stronger separation */
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+            /* Slight shadow to indicate depth */
         }
 
         .session-cell {
@@ -572,6 +591,8 @@
             border-bottom: 1px solid #dee2e6;
             border-right: 1px solid #dee2e6;
             background: white;
+            z-index: 10;
+            position: relative;
         }
 
         .session-card {
