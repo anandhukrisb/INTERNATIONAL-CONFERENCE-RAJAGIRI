@@ -62,13 +62,7 @@ class FloatingNavbar extends HTMLElement {
                 }
                 
                 .navbar-backdrop {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100px;
-                    background-color: #FDFBF7;
-                    z-index: 999;
+                    display: none; /* Hide the white backdrop to blend with hero */
                 }
 
                 .floating-navbar {
@@ -520,6 +514,7 @@ class FloatingNavbar extends HTMLElement {
                     <li><a href="#">Social Functions</a></li>
                     <li><a href="#">Sponsorships & Exhibitions</a></li>
                     <li><a href="#">Host city</a></li>
+                    <li><a href="history.html">History</a></li>
                     <li><a href="contact-us.html" class="contact-btn">Contact Us</a></li>
                 </ul>
 

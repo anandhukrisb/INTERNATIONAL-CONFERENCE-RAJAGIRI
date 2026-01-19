@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conference History - ICSWHMH 2027</title>
+    <link rel="icon" type="image/x-icon" href="assets/Favicon-192.ico?v=2">
+
+    <!-- Professional Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@400;600;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- Navbar & Footer Scripts -->
+    <script src="navbar.js" defer></script>
+    <script src="footer.js" defer></script>
+
+    <style>
+        :root {
+            --primary-purple: #1d0a3f;
+            --accent-gold: #d4af37;
+            --text-dark: #2d3436;
+            --card-height: 90vh;
+            /* Immersive Height */
+            --card-margin: 4vh;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            /* Neutral base for cards to sit on */
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+        }
+
+        /* Fixed Hero Background */
+        .history-intro {
+            height: 60vh;
+            /* Reduced from 80vh to remove wasted space */
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: #f0f2f5;
+            /* Perfectly blends with body/cards */
+            /* Light Theme */
+            color: var(--primary-purple);
+            position: relative;
+            z-index: 1;
+            padding-top: 80px;
+            /* Account for navbar */
+        }
+
+        .intro-content h1 {
+            color: var(--primary-purple);
+            font-size: 4rem;
+            /* Slightly smaller for tighter feel */
+            margin-bottom: 10px;
+            line-height: 1.1;
+        }
+
+        /* The Deck of Cards Container */
+        .cards-container {
+            position: relative;
+            padding-bottom: 5vh;
+            /* Reduced from 20vh to remove unwanted space */
+        }
+
+        /* ... existing card styles ... */
+
+        /* Global Reach (World Map Removed) */
+        .global-section {
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            /* Clean Professional Gradient */
+            padding: 40px 0 100px 0;
+            /* Reduced top padding from 100px to 40px */
+            position: relative;
+            z-index: 6;
+            overflow: hidden;
+        }
+
+        /* Individual Card Logic */
+        .history-card {
+            position: sticky;
+            top: 10vh;
+            /* Stick 10% from top */
+            height: var(--card-height);
+            margin-bottom: var(--card-margin);
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.15);
+            /* Deep Shadow looks like stacking */
+            background: white;
+            transform-origin: center top;
+            transition: transform 0.5s ease;
+        }
+
+        /* Card 1: 2016 */
+        #card-2016 {
+            background: #ffffff;
+            z-index: 2;
+        }
+
+        /* Card 2: 2019 */
+        #card-2019 {
+            background: #fdfbf7;
+            /* Slight warmth */
+            z-index: 3;
+        }
+
+        /* Card 3: 2024 */
+        #card-2024 {
+            background: #f3f0ff;
+            /* Light purple tint */
+            z-index: 4;
+        }
+
+        /* Card 4: 2027 (India) */
+        #card-2027 {
+            background: var(--primary-purple);
+            color: white;
+            z-index: 5;
+        }
+
+        /* Card Internal Layout */
+        .card-inner {
+            display: flex;
+            height: 100%;
+        }
+
+        .card-visual {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-content {
+            flex: 1;
+            padding: 80px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Typography */
+        .card-year {
+            font-size: 8rem;
+            font-weight: 800;
+            line-height: 0.8;
+            margin-bottom: 10px;
+            opacity: 0.1;
+            /* Subtle Watermark backing */
+            position: absolute;
+            top: 40px;
+            right: 40px;
+        }
+
+        .card-edition {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--accent-gold);
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 3rem;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            color: var(--primary-purple);
+        }
+
+        /* Card 4: 2027 (India) - The Highlight */
+        #card-2027 {
+            /* Full Background Image Strategy */
+            background: url('assets/kerala.png') no-repeat center center;
+            background-size: cover;
+            z-index: 5;
+            position: sticky;
+            top: 10vh;
+            color: white;
+            /* Flex layout to center the glass box */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Center initially */
+        }
+
+        /* Hide default layout */
+        #card-2027 .card-inner {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            /* Push glass box to right on desktop */
+            padding: 0 5vw;
+        }
+
+        /* Hide original visual */
+        #card-2027 .card-visual {
+            display: none;
+        }
+
+        /* Glassmorphism Box */
+        #card-2027 .card-content {
+            flex: 0 0 500px;
+            /* Fixed width */
+            background: rgba(29, 10, 63, 0.6);
+            /* Semi-transparent Purple */
+            backdrop-filter: blur(20px);
+            /* The Glass Effect */
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 60px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            margin-right: 5%;
+        }
+
+        #card-2027 .card-title {
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        #card-2027 .card-desc {
+            /* Improved readability */
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 1.15rem;
+            font-weight: 500;
+        }
+
+        #card-2027 .card-edition {
+            color: #ffd700;
+        }
+
+        /* Gold */
+
+        /* Mobile Responsive: Stacked Cards */
+        @media (max-width: 992px) {
+            .history-intro {
+                height: 60vh;
+            }
+
+            .intro-content h1 {
+                font-size: 3rem;
+            }
+
+            .history-card {
+                top: 5vh;
+                /* Stick higher on mobile */
+                height: auto;
+                min-height: 90vh;
+                /* Fill screen */
+                margin-bottom: 5vh;
+            }
+
+            .card-inner {
+                flex-direction: column;
+            }
+
+            .card-visual {
+                height: 40vh;
+                /* Image Top */
+            }
+
+            .card-content {
+                padding: 40px 30px;
+                flex: auto;
+            }
+
+            .card-title {
+                font-size: 2rem;
+            }
+
+            .card-year {
+                font-size: 5rem;
+                top: 20px;
+                right: 20px;
+            }
+
+            /* Mobile Responsive Updates for Glassmorphism */
+            #card-2027 {
+                align-items: flex-end;
+                /* Align to bottom */
+            }
+
+            #card-2027 .card-inner {
+                justify-content: center;
+                align-items: flex-end;
+                padding: 0;
+            }
+
+            #card-2027 .card-content {
+                flex: 1;
+                width: 100%;
+                margin: 0;
+                border-radius: 0;
+                border-top-left-radius: 30px;
+                border-top-right-radius: 30px;
+                background: rgba(29, 10, 63, 0.85);
+                /* Darker on mobile */
+                padding: 40px 30px;
+            }
+        }
+
+
+
+        /* Map BG Removed */
+        .global-map-bg {
+            display: none;
+        }
+
+        .global-stats-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 30px;
+            padding: 60px 40px;
+            box-shadow: 0 20px 40px rgba(29, 10, 63, 0.05);
+            /* Soft purple shadow */
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Responsive Fixes */
+        html,
+        body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        @media (max-width: 992px) {
+            .cards-container {
+                padding-bottom: 5vh;
+            }
+
+            .global-section {
+                padding: 60px 0;
+            }
+
+            /* Make images more prominent on mobile */
+            .card-visual {
+                height: 55vh;
+                /* Significantly taller to be "seen well" */
+                flex: none;
+            }
+
+            .global-stats-card {
+                padding: 40px 20px;
+                margin: 0 20px;
+            }
+
+            #card-2027 {
+                margin-bottom: 0 !important;
+                background-position: center 25% !important;
+                /* Show specific part of image */
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <floating-navbar></floating-navbar>
+
+    <!-- Intro Screen -->
+    <section class="history-intro">
+        <div class="intro-content">
+            <h4 style="letter-spacing: 3px; margin-bottom: 20px; opacity: 0.8;">OUR JOURNEY</h4>
+            <h1>A Legacy of<br>Global Impact</h1>
+        </div>
+    </section>
+
+    <!-- Stacking Cards Container -->
+    <main class="cards-container">
+
+        <!-- Card 1: 2016 -->
+        <article class="history-card" id="card-2016">
+            <div class="card-inner">
+                <div class="card-visual">
+                    <img src="assets/singapore.png" alt="Singapore" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <span class="card-year">2016</span>
+                    <span class="card-edition">08 Edition</span>
+                    <h2 class="card-title">Enhancing the<br>Human Condition</h2>
+                    <p class="card-desc">Held at the National University of Singapore, this landmark gathering brought
+                        together global experts to discuss the role of social work in rapidly changing Southeast Asian
+                        societies.</p>
+                </div>
+            </div>
+        </article>
+
+        <!-- Card 2: 2019 -->
+        <article class="history-card" id="card-2019">
+            <div class="card-inner">
+                <div class="card-visual">
+                    <img src="assets/york.png" alt="York" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <span class="card-year">2019</span>
+                    <span class="card-edition">09 Edition</span>
+                    <h2 class="card-title">Promoting Human Rights</h2>
+                    <p class="card-desc">Hosted by the University of York, UK. This edition focused on rights-based
+                        approaches, exploring how social perspectives can reshape health and mental health policies
+                        globally.</p>
+                </div>
+            </div>
+        </article>
+
+        <!-- Card 3: 2024 -->
+        <article class="history-card" id="card-2024">
+            <div class="card-inner">
+                <div class="card-visual">
+                    <img src="assets/melbourne.png" alt="Melbourne" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <span class="card-year">2024</span>
+                    <span class="card-edition">10 Edition</span>
+                    <h2 class="card-title">Navigating A<br>Changing World</h2>
+                    <p class="card-desc">Gathered over 1100 delegates at the University of Melbourne. A critical
+                        dialogue on empowering mental health communities in post-pandemic times.</p>
+                </div>
+            </div>
+        </article>
+
+        <!-- Card 4: 2027 (India) - GLASSMORPHISM REDESIGN -->
+        <article class="history-card" id="card-2027">
+            <div class="card-inner">
+                <!-- Visual is now Background -->
+                <div class="card-visual">
+                    <!-- Hidden by CSS -->
+                </div>
+                <div class="card-content">
+                    <span class="card-edition">Next Chapter</span>
+                    <h2 class="card-title">Embracing<br>Diversity</h2>
+                    <p class="card-desc">For the first time, the conference arrives in India. Join us at Rajagiri
+                        College of Social Sciences in Kerala to shape the future of global health.</p>
+                </div>
+            </div>
+        </article>
+
+    </main>
+
+    <!-- Global Stats -->
+    <section class="global-section">
+        <!-- Map Background Removed -->
+        <div class="container relative z-2">
+            <div class="global-stats-card text-center">
+                <h2 style="color: var(--primary-purple); margin-bottom: 40px;">Our Reach</h2>
+                <div class="row">
+                    <div class="col-4">
+                        <h3 style="font-size: 3.5rem; color: var(--primary-purple); font-weight: 800;">10+</h3>
+                        <p style="color: var(--text-dark); font-weight: 600;">Editions</p>
+                    </div>
+                    <div class="col-4">
+                        <h3 style="font-size: 3.5rem; color: var(--primary-purple); font-weight: 800;">50+</h3>
+                        <p style="color: var(--text-dark); font-weight: 600;">Countries</p>
+                    </div>
+                    <div class="col-4">
+                        <h3 style="font-size: 3.5rem; color: var(--primary-purple); font-weight: 800;">5k+</h3>
+                        <p style="color: var(--text-dark); font-weight: 600;">Delegates</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main-footer></main-footer>
+</body>
+
+</html>
