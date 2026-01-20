@@ -59,9 +59,6 @@ async function loadPage(url, scrollTop = true) {
                     currentContent.innerHTML = newContent.innerHTML;
                     document.title = doc.title;
 
-                    // Scroll to top if needed
-                    if (scrollTop) window.scrollTo(0, 0);
-
                     // Update Navbar Active State
                     const navbar = document.querySelector('floating-navbar');
                     if (navbar && navbar.highlightActiveLink) {
@@ -72,6 +69,8 @@ async function loadPage(url, scrollTop = true) {
                 // Optional: Handle transition completion
                 try {
                     await transition.finished;
+                    // Scroll to top after transition completes
+                    if (scrollTop) window.scrollTo(0, 0);
                 } catch (error) {
                     console.error('Transition error:', error);
                 } finally {
