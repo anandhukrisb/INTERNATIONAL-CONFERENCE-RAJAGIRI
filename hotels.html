@@ -482,18 +482,7 @@
             .slider-nav-btn {
                 display: none; /* Hide buttons on mobile */
             }
-            .slider-container {
-                /* Enable strict horizontal scrolling/swiping on mobile if structure allowed */
-                /* Assuming .slider-container is the parent of .slide */
-                /* Since existing slider uses opacity fades for .slide.active, 
-                   horizontal scroll requires layout change.
-                   User said: "in the mobile view, just make that horizontally scrollable"
-                   If we change to scroll, we lose the fade effect. 
-                   Let's support TOUCH SWIPE gestures for the existing fade slider first.
-                   Wait, "just make that horizontally scrollable" usually implies CSS scroll snap.
-                   Let's add touch event listeners to simulate swipe!
-                */
-            }
+
         }
 
         #burger {
