@@ -499,7 +499,89 @@
                 </div>
             </div>
         </div>
+
+        <!-- Scroll Down Indicator -->
+        <div class="scroll-down" onclick="smoothScroll('pageTitle', 2000)">
+            <i class="bi bi-chevron-down"></i>
+        </div>
     </div>
+
+    <style>
+        .scroll-down {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            color: #fff;
+            width: 50px;
+            height: 50px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            animation: breathe 2.5s infinite ease-in-out;
+            transition: background 0.3s, transform 0.3s;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(2px);
+        }
+
+        .scroll-down:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .scroll-down i {
+            font-size: 1.2rem;
+            margin-top: 2px;
+            /* Visual center alignment */
+        }
+
+        @keyframes breathe {
+
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            }
+
+            50% {
+                transform: translateX(-50%) translateY(10px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+        }
+    </style>
+
+    <script>
+        function smoothScroll(targetId, duration) {
+            const target = document.getElementById(targetId);
+            if (!target) return;
+
+            // Offset by 100px for navbar
+            const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - 100;
+            const startPosition = window.pageYOffset;
+            const distance = targetPosition - startPosition;
+            let startTime = null;
+
+            function animation(currentTime) {
+                if (startTime === null) startTime = currentTime;
+                const timeElapsed = currentTime - startTime;
+                const run = ease(timeElapsed, startPosition, distance, duration);
+                window.scrollTo(0, run);
+                if (timeElapsed < duration) requestAnimationFrame(animation);
+            }
+
+            function ease(t, b, c, d) {
+                t /= d / 2;
+                if (t < 1) return c / 2 * t * t + b;
+                t--;
+                return -c / 2 * (t * (t - 2) - 1) + b;
+            }
+
+            requestAnimationFrame(animation);
+        }
+    </script>
 
     <!-- Original Content Follows -->
     <div class="hotels-title-section">
