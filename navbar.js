@@ -67,8 +67,9 @@ class FloatingNavbar extends HTMLElement {
                     left: 0;
                     width: 100%;
                     height: 100px;
-                    background-color: #FDFBF7;
+                    background-color: ${this.hasAttribute('transparent') ? 'transparent' : '#FDFBF7'};
                     z-index: 999;
+                    pointer-events: none; /* Allow clicks through backdrop */
                 }
 
                 .floating-navbar {
