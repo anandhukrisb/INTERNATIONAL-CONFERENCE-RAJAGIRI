@@ -1,314 +1,384 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Committee | 2027 ICSWHMH</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Components -->
+    <script src="./navbar.js" defer></script>
+    <script src="./footer.js" defer></script>
+    <script src="./router.js" defer></script>
 
     <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@400;600;800&display=swap"
-        rel="stylesheet">
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
 
-    <!-- ================= CSS ================= -->
-       <style>
-        * { box-sizing: border-box; }
+    <style>
+      * {
+        box-sizing: border-box;
+      }
 
-        body {
-            margin: 0;
-            background-color: #FDFBF7;
-            font-family: 'Inter', system-ui, sans-serif;
-            color: #333;
-            overflow-x: hidden;
-        }
+      body {
+        margin: 0;
+        background: #fdfbf7;
+        font-family: "Inter", system-ui, sans-serif;
+        color: #333;
+      }
 
-        floating-navbar {
-            display: block;
-            position: absolute;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-        }
+      .committee-section {
+        max-width: 1200px;
+        margin: 100px auto;
+        padding: 60px 20px;
+      }
 
-        /* Section */
-        .committee-section {
-            max-width: 1200px;
-            margin: 100px auto 0;
-            padding: 60px 20px;
-        }
+      .section-title {
+        font-family: "Outfit", sans-serif;
+        font-size: 2rem;
+        color: #1d0a3f;
+        margin-bottom: 40px;
+      }
 
-        .section-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 2rem;
-            font-weight: 600;
-            color: #1D0A3F;
-            margin-bottom: 40px;
-        }
+      .section-title::after {
+        content: "";
+        width: 80px;
+        height: 4px;
+        background: #c9a227;
+        display: block;
+        margin-top: 10px;
+        border-radius: 3px;
+      }
 
-        .section-title::after {
-            content: "";
-            display: block;
-            width: 80px;
-            height: 4px;
-            background: #C9A227;
-            margin-top: 10px;
-            border-radius: 3px;
-        }
+      .committee-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin-bottom: 80px;
+      }
 
-        /* ================= GRID LAYOUT ================= */
+      .committee-card {
+        background: #1d0a3f;
+        color: #fff;
+        border-radius: 12px;
+        border-left: 6px solid #c9a227;
+        box-shadow: -1rem 0 3rem rgba(0, 0, 0, 0.4);
+        transition: transform 0.35s ease, box-shadow 0.35s ease;
+      }
+
+      .committee-card:hover {
+        transform: scale(1.08) translateY(-20px);
+        box-shadow: -1rem 0 4rem rgba(0, 0, 0, 0.7);
+      }
+
+      .card-header {
+        text-align: center;
+        padding: 30px 20px;
+      }
+
+      .card-header img {
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        margin-bottom: 15px;
+        object-fit: cover;
+      }
+
+      .card-header h3 {
+        margin: 0;
+        font-size: 1.05rem;
+      }
+
+      .card-header h4 {
+        margin-top: 6px;
+        font-size: 0.85rem;
+        color: #c9a227;
+        font-weight: 400;
+      }
+
+      .card-footer {
+        padding: 20px;
+        text-align: center;
+      }
+
+      .toggle-btn {
+        background: #c9a227;
+        color: #1d0a3f;
+        border: none;
+        padding: 8px 22px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .toggle-btn:hover {
+        background: #fdfbf7;
+      }
+
+      /* MODAL */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.75);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      }
+
+      .modal-overlay.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background: #1d0a3f;
+        color: #fff;
+        width: 90%;
+        max-width: 650px;
+        border-radius: 16px;
+        padding: 30px;
+        position: relative;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 15px;
+        right: 18px;
+        font-size: 26px;
+        background: none;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      .modal-header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .modal-header img {
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        margin-bottom: 15px;
+      }
+
+      .modal-header h3 {
+        margin: 0;
+        font-size: 1.3rem;
+      }
+
+      .modal-header h4 {
+        margin-top: 6px;
+        color: #c9a227;
+        font-weight: 400;
+      }
+
+      .modal-body {
+        font-size: 0.95rem;
+        line-height: 1.7;
+        text-align: justify;
+      }
+
+      @media (max-width: 992px) {
         .committee-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            padding: 40px 0 80px;
-            gap: 20px;
-            align-items: start;
+          grid-template-columns: repeat(2, 1fr);
         }
+      }
 
-        .committee-card {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            min-height: 380px;
-            background: #1D0A3F;
-            color: #FFFFFF;
-            border-radius: 12px;
-            border-left: 6px solid #C9A227;
-            box-shadow: -1rem 0 3rem rgba(0,0,0,0.4);
-            position: relative;
-            transition:
-                transform 0.35s ease,
-                box-shadow 0.35s ease,
-                opacity 0.35s ease;
+      @media (max-width: 768px) {
+        .committee-grid {
+          grid-template-columns: 1fr;
         }
-
-        /* ================= CORRECT FOCUS BEHAVIOUR ================= */
-
-        /* Hovered card grows */
         .committee-card:hover {
-            transform: scale(1.08) translateY(-20px);
-            z-index: 10;
-            opacity: 1;
-            box-shadow: -1rem 0 4rem rgba(0,0,0,0.7);
+          transform: none;
         }
-
-        /* Disable hover scaling when expanded */
-        .committee-card.active,
-        .committee-card.active:hover {
-            transform: scale(1) translateY(0);
-            opacity: 1;
-            z-index: 5;
-        }
-
-        /* ================= CONTENT ================= */
-        .card-header {
-            text-align: center;
-            padding: 30px 20px 15px;
-        }
-
-        .card-header img {
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 15px;
-        }
-
-        .card-header h3 {
-            margin: 0;
-            font-size: 1.05rem;
-        }
-
-        .card-header h4 {
-            margin: 6px 0 0;
-            font-size: 0.85rem;
-            font-weight: 400;
-            color: #C9A227;
-        }
-
-        /* Details */
-        .card-body {
-            display: none;
-            padding: 0 20px 20px;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            color: #F0F0F0;
-            text-align: justify;
-        }
-
-        .committee-card.active .card-body {
-            display: block;
-        }
-
-        .card-footer {
-            padding: 15px;
-            text-align: center;
-        }
-
-        .toggle-btn {
-            background: #C9A227;
-            color: #1D0A3F;
-            border: none;
-            padding: 8px 22px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .toggle-btn:hover {
-            background: #FDFBF7;
-        }
-
-        /* ================= MOBILE FALLBACK ================= */
-        @media (max-width: 992px) {
-            .committee-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .committee-grid {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-
-            .committee-card {
-                width: 100%;
-                margin-left: 0 !important;
-                transform: none !important;
-                opacity: 1 !important;
-            }
-
-            .committee-grid:hover .committee-card:not(:hover),
-            .committee-card:hover,
-            .committee-card:hover ~ .committee-card {
-                transform: none;
-            }
-        }
+      }
     </style>
+  </head>
 
-    <!-- JS -->
-    <script src="navbar.js" defer></script>
-    <script src="footer.js" defer></script>
-    <script src="router.js" defer></script>
+  <body>
+    <floating-navbar></floating-navbar>
 
-</head>
+    <main id="app-content">
+      <div class="committee-section">
+        <!-- ================= EXTERNAL ================= -->
+        <h2 class="section-title">EXTERNAL COMMITTEE MEMBERS</h2>
 
-<body>
-
-<floating-navbar></floating-navbar>
-
-<main id="app-content">
-<div class="committee-section">
-
-    <!-- ================= EXTERNAL ================= -->
-    <h2 class="section-title">EXTERNAL COMMITTEE MEMBERS</h2>
-
-    <div class="committee-grid">
-
-        <div class="committee-card">
+        <div class="committee-grid">
+          <div class="committee-card">
             <div class="card-header">
-                <img src="assets/placeholder.jpg">
-                <h3>PROF LYNETTE JOUBERT</h3>
-                <h4>University of Melbourne</h4>
-            </div>
-            <div class="card-body">
-                Professor Lynette Joubert is an internationally recognised scholar in social work
-                education and mental health practice with extensive leadership experience.
+              <img src="assets/placeholder.jpg" />
+              <h3>PROF LYNETTE JOUBERT</h3>
+              <h4>University of Melbourne</h4>
             </div>
             <div class="card-footer">
-                <button class="toggle-btn" onclick="toggleCard(this)">View Profile</button>
+              <button
+                class="toggle-btn open-profile"
+                data-img="assets/placeholder.jpg"
+                data-name="PROF LYNETTE JOUBERT"
+                data-affiliation="University of Melbourne"
+                data-details="Internationally recognised scholar in social work education and mental health practice with extensive global leadership experience."
+              >
+                View Profile
+              </button>
             </div>
-        </div>
+          </div>
 
-        <div class="committee-card">
+          <div class="committee-card">
             <div class="card-header">
-                <img src="assets/placeholder.jpg">
-                <h3>PROF VARDA SOSKOLNE</h3>
-                <h4>Bar-Ilan University</h4>
-            </div>
-            <div class="card-body">
-                Professor Varda Soskolne specialises in health, disability studies, and social policy
-                with strong international academic collaboration.
+              <img src="assets/placeholder.jpg" />
+              <h3>PROF VARDA SOSKOLNE</h3>
+              <h4>Bar-Ilan University</h4>
             </div>
             <div class="card-footer">
-                <button class="toggle-btn" onclick="toggleCard(this)">View Profile</button>
+              <button
+                class="toggle-btn open-profile"
+                data-img="assets/placeholder.jpg"
+                data-name="PROF VARDA SOSKOLNE"
+                data-affiliation="Bar-Ilan University"
+                data-details="Specialist in health, disability studies, and social policy with extensive international research collaborations."
+              >
+                View Profile
+              </button>
             </div>
-        </div>
+          </div>
 
-        <div class="committee-card">
+          <div class="committee-card">
             <div class="card-header">
-                <img src="assets/placeholder.jpg">
-                <h3>DR HADAS ROSENNE</h3>
-                <h4>Hadassah Medical Center, Israel</h4>
-            </div>
-            <div class="card-body">
-                Dr. Hadas Rosenne works in medical social work focusing on trauma-informed care and
-                interdisciplinary healthcare practice.
+              <img src="assets/placeholder.jpg" />
+              <h3>DR HADAS ROSENNE</h3>
+              <h4>Hadassah Medical Center, Israel</h4>
             </div>
             <div class="card-footer">
-                <button class="toggle-btn" onclick="toggleCard(this)">View Profile</button>
+              <button
+                class="toggle-btn open-profile"
+                data-img="assets/placeholder.jpg"
+                data-name="DR HADAS ROSENNE"
+                data-affiliation="Hadassah Medical Center, Israel"
+                data-details="Medical social work professional focusing on trauma-informed care and interdisciplinary healthcare practice."
+              >
+                View Profile
+              </button>
             </div>
-        </div>
+          </div>
 
-        <div class="committee-card">
+          <div class="committee-card">
             <div class="card-header">
-                <img src="assets/placeholder.jpg">
-                <h3>PROF. (PhD) MIRIAM SCHIFF</h3>
-                <h4>The Hebrew University of Jerusalem</h4>
-            </div>
-            <div class="card-body">
-                Professor Miriam Schiff is Dean of the Paul Baerwald School of Social Work and Social
-                Welfare with research interests in trauma, migration, and resilience.
+              <img src="assets/placeholder.jpg" />
+              <h3>PROF MIRIAM SCHIFF</h3>
+              <h4>The Hebrew University of Jerusalem</h4>
             </div>
             <div class="card-footer">
-                <button class="toggle-btn" onclick="toggleCard(this)">View Profile</button>
+              <button
+                class="toggle-btn open-profile"
+                data-img="assets/placeholder.jpg"
+                data-name="PROF MIRIAM SCHIFF"
+                data-affiliation="The Hebrew University of Jerusalem"
+                data-details="Dean of the Paul Baerwald School of Social Work with research interests in trauma, migration, and resilience."
+              >
+                View Profile
+              </button>
             </div>
+          </div>
         </div>
 
+        <!-- ================= INTERNAL ================= -->
+        <h2 class="section-title">INTERNAL COMMITTEE MEMBERS</h2>
+
+        <div class="committee-grid">
+          <!-- Repeatable internal cards -->
+          <script>
+            const members = [
+              ["PROF SAJU MD", "RCSS", "Academic leadership and curriculum development in social work education."],
+              ["DR ANISH KR", "RCSS", "Teaching and research innovation in social work."],
+              ["DR KIRAN THAMPI", "RCSS", "Research, community engagement, and professional training."],
+              ["DR SUNIROSE IP", "RCSS", "Teaching, research, and field-based social interventions."],
+              ["DR NYCIL ROMIS THOMAS", "RCSS", "Pedagogy, mentoring, and practice innovation."],
+              ["DR SHINTO JOSEPH", "RCSS", "Institutional development and academic planning."],
+              ["DR RAJEEV SP", "RCSS", "Research coordination and academic administration."],
+              ["DR ANIL JOHN", "RCSS", "Curriculum design and professional training."]
+            ];
+
+            document.currentScript.insertAdjacentHTML(
+              "beforebegin",
+              members
+                .map(
+                  (m) => `
+              <div class="committee-card">
+                <div class="card-header">
+                  <img src="assets/placeholder.jpg" />
+                  <h3>${m[0]}</h3>
+                  <h4>${m[1]}</h4>
+                </div>
+                <div class="card-footer">
+                  <button
+                    class="toggle-btn open-profile"
+                    data-img="assets/placeholder.jpg"
+                    data-name="${m[0]}"
+                    data-affiliation="${m[1]}"
+                    data-details="${m[2]}"
+                  >
+                    View Profile
+                  </button>
+                </div>
+              </div>`
+                )
+                .join("")
+            );
+          </script>
+        </div>
+      </div>
+    </main>
+
+    <main-footer></main-footer>
+
+    <!-- MODAL -->
+    <div id="profileModal" class="modal-overlay">
+      <div class="modal-content">
+        <button class="modal-close">&times;</button>
+        <div class="modal-header">
+          <img id="modalImage" />
+          <h3 id="modalName"></h3>
+          <h4 id="modalAffiliation"></h4>
+        </div>
+        <div class="modal-body" id="modalDetails"></div>
+      </div>
     </div>
 
-    <!-- ================= INTERNAL ================= -->
-    <h2 class="section-title">INTERNAL COMMITTEE MEMBERS</h2>
+    <script>
+      const modal = document.getElementById("profileModal");
+      const modalImage = document.getElementById("modalImage");
+      const modalName = document.getElementById("modalName");
+      const modalAffiliation = document.getElementById("modalAffiliation");
+      const modalDetails = document.getElementById("modalDetails");
 
-    <div class="committee-grid">
+      document.addEventListener("click", (e) => {
+        if (e.target.classList.contains("open-profile")) {
+          modalImage.src = e.target.dataset.img;
+          modalName.textContent = e.target.dataset.name;
+          modalAffiliation.textContent = e.target.dataset.affiliation;
+          modalDetails.textContent = e.target.dataset.details;
+          modal.classList.add("active");
+          document.body.style.overflow = "hidden";
+        }
 
-        <div class="committee-card"><div class="card-header"><img src="assets/placeholder.jpg"><h3>PROF SAJU MD</h3><h4>RCSS</h4></div><div class="card-body">Professor Saju MD is engaged in academic leadership and social work education at RCSS.</div><div class="card-footer"><button class="toggle-btn" onclick="toggleCard(this)">View Profile</button></div></div>
+        if (e.target.classList.contains("modal-close") || e.target === modal) {
+          modal.classList.remove("active");
+          document.body.style.overflow = "";
+        }
+      });
 
-        <div class="committee-card"><div class="card-header"><img src="assets/placeholder.jpg"><h3>DR ANISH KR</h3><h4>RCSS</h4></div><div class="card-body">Dr. Anish KR contributes to teaching and research in social work education.</div><div class="card-footer"><button class="toggle-btn" onclick="toggleCard(this)">View Profile</button></div></div>
-
-        <div class="committee-card"><div class="card-header"><img src="assets/placeholder.jpg"><h3>DR KIRAN THAMPI</h3><h4>RCSS</h4></div><div class="card-body">Dr. Kiran Thampi focuses on academic research and community practice.</div><div class="card-footer"><button class="toggle-btn" onclick="toggleCard(this)">View Profile</button></div></div>
-
-        <div class="committee-card"><div class="card-header"><img src="assets/placeholder.jpg"><h3>DR SUNIROSE IP</h3><h4>RCSS</h4></div><div class="card-body">Dr. Sunirose IP works in teaching, research, and field-based interventions.</div><div class="card-footer"><button class="toggle-btn" onclick="toggleCard(this)">View Profile</button></div></div>
-
-        <div class="committee-card"><div class="card-header"><img src="assets/placeholder.jpg"><h3>DR NYCIL ROMIS THOMAS</h3><h4>RCSS</h4></div><div class="card-body">Dr. Nycil Romis Thomas focuses on pedagogy and practice innovation.</div><div class="card-footer"><button class="toggle-btn" onclick="toggleCard(this)">View Profile</button></div></div>
-
-        <div class="committee-card"><div class="card-header"><img src="assets/placeholder.jpg"><h3>DR SHINTO JOSEPH</h3><h4>RCSS</h4></div><div class="card-body">Dr. Shinto Joseph contributes to institutional and academic development.</div><div class="card-footer"><button class="toggle-btn" onclick="toggleCard(this)">View Profile</button></div></div>
-
-        <div class="committee-card"><div class="card-header"><img src="assets/placeholder.jpg"><h3>DR RAJEEV SP</h3><h4>RCSS</h4></div><div class="card-body">Dr. Rajeev SP is involved in research coordination and academic administration.</div><div class="card-footer"><button class="toggle-btn" onclick="toggleCard(this)">View Profile</button></div></div>
-
-        <div class="committee-card"><div class="card-header"><img src="assets/placeholder.jpg"><h3>DR ANIL JOHN</h3><h4>RCSS</h4></div><div class="card-body">Dr. Anil John works in curriculum development and professional training.</div><div class="card-footer"><button class="toggle-btn" onclick="toggleCard(this)">View Profile</button></div></div>
-
-    </div>
-
-</div>
-</main>
-
-<main-footer></main-footer>
-
-<script>
-function toggleCard(btn) {
-    const card = btn.closest('.committee-card');
-    card.classList.toggle('active');
-    btn.textContent = card.classList.contains('active')
-        ? 'Hide Profile'
-        : 'View Profile';
-}
-</script>
-
-</body>
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          modal.classList.remove("active");
+          document.body.style.overflow = "";
+        }
+      });
+    </script>
+  </body>
 </html>
