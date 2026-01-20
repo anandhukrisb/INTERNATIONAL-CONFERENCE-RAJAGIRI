@@ -17,9 +17,9 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@400;600;800&display=swap"
-        rel="stylesheet">
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@400;600;800&display=swap"
+    rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         /* ================= GLOBAL ================= */
@@ -214,6 +214,166 @@
             font-weight: 600;
         }
 
+        /* ================= FAQ ACCORDION STYLES ================= */
+        .info-strip {
+            margin-bottom: 25px;
+            background: #FFFFFF;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            /* Match existing shadow */
+        }
+
+        .info-header {
+            background-color: #FFFFFF;
+            /* White header for contact page style */
+            color: #1D0A3F;
+            /* Deep Purple text */
+            padding: 20px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.15rem;
+            cursor: pointer;
+            border-left: 4px solid #C9A227;
+            /* Gold accent left border */
+            transition: background-color 0.3s ease;
+        }
+
+        .info-header:hover {
+            background-color: #f9f9fb;
+        }
+
+        .info-header .icon {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #C9A227;
+        }
+
+        .info-content {
+            padding: 0 25px;
+            color: #555;
+            font-size: 1rem;
+            line-height: 1.6;
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.3s ease-out, opacity 0.3s ease, padding 0.3s ease;
+            overflow: hidden;
+            text-align: left;
+            background-color: #FFFFFF;
+        }
+
+        .info-strip.expanded .info-content {
+            opacity: 1;
+        }
+
+        .info-content-inner {
+            padding: 0 0 25px 0;
+            /* Padding at bottom of content */
+        }
+
+        /* ================= CUSTOM SOCIAL ICONS ================= */
+        .wrapper {
+            display: inline-flex;
+            list-style: none;
+            padding: 0;
+            margin-bottom: 25px;
+        }
+
+        .wrapper .icon {
+            position: relative;
+            background: #ffffff;
+            border-radius: 50%;
+            padding: 15px;
+            margin: 10px;
+            width: 50px;
+            height: 50px;
+            font-size: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .wrapper .tooltip {
+            position: absolute;
+            top: 0;
+            font-size: 14px;
+            background: #ffffff;
+            color: #ffffff;
+            padding: 5px 8px;
+            border-radius: 5px;
+            box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .wrapper .tooltip::before {
+            position: absolute;
+            content: "";
+            height: 8px;
+            width: 8px;
+            background: #ffffff;
+            bottom: -3px;
+            left: 50%;
+            transform: translate(-50%) rotate(45deg);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .wrapper .icon:hover .tooltip {
+            top: -45px;
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .wrapper .icon:hover span,
+        .wrapper .icon:hover .tooltip {
+            text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .wrapper .facebook:hover,
+        .wrapper .facebook:hover .tooltip,
+        .wrapper .facebook:hover .tooltip::before {
+            background: #1877F2;
+            color: #ffffff;
+        }
+
+        .wrapper .twitter:hover,
+        .wrapper .twitter:hover .tooltip,
+        .wrapper .twitter:hover .tooltip::before {
+            background: #1DA1F2;
+            color: #ffffff;
+        }
+
+        .wrapper .instagram:hover,
+        .wrapper .instagram:hover .tooltip,
+        .wrapper .instagram:hover .tooltip::before {
+            background: #E4405F;
+            color: #ffffff;
+        }
+
+        .wrapper .github:hover,
+        .wrapper .github:hover .tooltip,
+        .wrapper .github:hover .tooltip::before {
+            background: #333333;
+            color: #ffffff;
+        }
+
+        .wrapper .youtube:hover,
+        .wrapper .youtube:hover .tooltip,
+        .wrapper .youtube:hover .tooltip::before {
+            background: #CD201F;
+            color: #ffffff;
+        }
+
         /* ================= SUBSCRIBE BUTTON ================= */
         .subscribe-container {
             display: flex;
@@ -351,59 +511,94 @@
         <h3 style="text-align: center; color: #1D0A3F; font-size: 2rem; margin-bottom: 40px; font-weight: 600;">
             Frequently Asked Questions</h3>
 
-        <div class="faq-grid" style="display: grid; gap: 20px;">
-            <div
-                style="background: #FFFFFF; border-left: 4px solid #C9A227; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                <h4 style="color: #1D0A3F; margin: 0 0 15px 0; font-size: 1.15rem;">How do I register for the
-                    conference?</h4>
-                <p style="color: #555; margin: 0; line-height: 1.6;">Visit the Registration page on our website and
-                    complete the online form. Early bird rates are available until [date]. For group registrations,
-                    please contact us directly for special pricing.</p>
+        <div class="faq-grid" style="display: flex; flex-direction: column; gap: 20px;">
+
+            <!-- Item 1 -->
+            <div class="info-strip">
+                <div class="info-header">
+                    <span>How do I register for the conference?</span>
+                    <span class="icon">+</span>
+                </div>
+                <div class="info-content">
+                    <div class="info-content-inner">
+                        <p>Visit the Registration page on our website and complete the online form. Early bird rates are
+                            available until [date]. For group registrations, please contact us directly for special
+                            pricing.</p>
+                    </div>
+                </div>
             </div>
 
-            <div
-                style="background: #FFFFFF; border-left: 4px solid #C9A227; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                <h4 style="color: #1D0A3F; margin: 0 0 15px 0; font-size: 1.15rem;">Can I attend virtually?</h4>
-                <p style="color: #555; margin: 0; line-height: 1.6;">Yes! The 2027 ICSWHMH is a hybrid event. Virtual
-                    attendance options include live-streamed keynotes, access to select sessions, and networking
-                    opportunities. Virtual registration is available at a reduced rate.</p>
+            <!-- Item 2 -->
+            <div class="info-strip">
+                <div class="info-header">
+                    <span>Can I attend virtually?</span>
+                    <span class="icon">+</span>
+                </div>
+                <div class="info-content">
+                    <div class="info-content-inner">
+                        <p>Yes! The 2027 ICSWHMH is a hybrid event. Virtual attendance options include live-streamed
+                            keynotes, access to select sessions, and networking opportunities. Virtual registration is
+                            available at a reduced rate.</p>
+                    </div>
+                </div>
             </div>
 
-            <div
-                style="background: #FFFFFF; border-left: 4px solid #C9A227; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                <h4 style="color: #1D0A3F; margin: 0 0 15px 0; font-size: 1.15rem;">When is the abstract submission
-                    deadline?</h4>
-                <p style="color: #555; margin: 0; line-height: 1.6;">Abstract submissions close on [date]. All
-                    submissions will be reviewed by our scientific committee, and you'll receive notification of
-                    acceptance by [date].</p>
+            <!-- Item 3 -->
+            <div class="info-strip">
+                <div class="info-header">
+                    <span>When is the abstract submission deadline?</span>
+                    <span class="icon">+</span>
+                </div>
+                <div class="info-content">
+                    <div class="info-content-inner">
+                        <p>Abstract submissions close on [date]. All submissions will be reviewed by our scientific
+                            committee, and you'll receive notification of acceptance by [date].</p>
+                    </div>
+                </div>
             </div>
 
-            <div
-                style="background: #FFFFFF; border-left: 4px solid #C9A227; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                <h4 style="color: #1D0A3F; margin: 0 0 15px 0; font-size: 1.15rem;">Are accommodation recommendations
-                    available?</h4>
-                <p style="color: #555; margin: 0; line-height: 1.6;">Yes, we have partnered with several hotels near the
-                    venue offering special conference rates. Visit our Accommodation page for details and booking codes.
-                </p>
+            <!-- Item 4 -->
+            <div class="info-strip">
+                <div class="info-header">
+                    <span>Are accommodation recommendations available?</span>
+                    <span class="icon">+</span>
+                </div>
+                <div class="info-content">
+                    <div class="info-content-inner">
+                        <p>Yes, we have partnered with several hotels near the venue offering special conference rates.
+                            Visit our Accommodation page for details and booking codes.</p>
+                    </div>
+                </div>
             </div>
 
-            <div
-                style="background: #FFFFFF; border-left: 4px solid #C9A227; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                <h4 style="color: #1D0A3F; margin: 0 0 15px 0; font-size: 1.15rem;">Will I receive a certificate of
-                    attendance?</h4>
-                <p style="color: #555; margin: 0; line-height: 1.6;">All registered attendees will receive a digital
-                    certificate of attendance after the conference. CPD points may be available for eligible
-                    professionals.</p>
+            <!-- Item 5 -->
+            <div class="info-strip">
+                <div class="info-header">
+                    <span>Will I receive a certificate of attendance?</span>
+                    <span class="icon">+</span>
+                </div>
+                <div class="info-content">
+                    <div class="info-content-inner">
+                        <p>All registered attendees will receive a digital certificate of attendance after the
+                            conference. CPD points may be available for eligible professionals.</p>
+                    </div>
+                </div>
             </div>
 
-            <div
-                style="background: #FFFFFF; border-left: 4px solid #C9A227; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                <h4 style="color: #1D0A3F; margin: 0 0 15px 0; font-size: 1.15rem;">What is your cancellation policy?
-                </h4>
-                <p style="color: #555; margin: 0; line-height: 1.6;">Cancellations made 60+ days before receive a full
-                    refund minus admin fee. 30-59 days: 50% refund. Less than 30 days: registration can be transferred
-                    to another person.</p>
+            <!-- Item 6 -->
+            <div class="info-strip">
+                <div class="info-header">
+                    <span>What is your cancellation policy?</span>
+                    <span class="icon">+</span>
+                </div>
+                <div class="info-content">
+                    <div class="info-content-inner">
+                        <p>Cancellations made 60+ days before receive a full refund minus admin fee. 30-59 days: 50%
+                            refund. Less than 30 days: registration can be transferred to another person.</p>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 
@@ -434,12 +629,28 @@
     <hr class="separator">
 
     <div class="social-section">
-        <div class="social-icons">
-            <a href="#"><i class="bi bi-linkedin"></i></a>
-            <a href="#"><i class="bi bi-facebook"></i></a>
-            <a href="#"><i class="bi bi-instagram"></i></a>
-            <a href="#"><i class="bi bi-twitter-x"></i></a>
-        </div>
+        <ul class="wrapper">
+            <li class="icon facebook">
+                <span class="tooltip">Facebook</span>
+                <span><i class="fab fa-facebook-f"></i></span>
+            </li>
+            <li class="icon twitter">
+                <span class="tooltip">Twitter</span>
+                <span><i class="fab fa-twitter"></i></span>
+            </li>
+            <li class="icon instagram">
+                <span class="tooltip">Instagram</span>
+                <span><i class="fab fa-instagram"></i></span>
+            </li>
+            <li class="icon github">
+                <span class="tooltip">Github</span>
+                <span><i class="fab fa-github"></i></span>
+            </li>
+            <li class="icon youtube">
+                <span class="tooltip">Youtube</span>
+                <span><i class="fab fa-youtube"></i></span>
+            </li>
+        </ul>
         <p class="hashtag-text">Add your voice to the global conversation <span>#ISWMHCMelb2024</span></p>
     </div>
 
@@ -451,6 +662,48 @@
 
     <main-footer></main-footer>
 
+    <script>
+        function toggleAccordion(header) {
+            const strip = header.parentElement;
+            const content = strip.querySelector('.info-content');
+            const icon = header.querySelector('.icon');
+            const isExpanded = strip.classList.contains('expanded');
+
+            if (isExpanded) {
+                // Collapse
+                content.style.maxHeight = content.scrollHeight + 'px';
+                // Force reflow
+                content.offsetHeight;
+                content.style.maxHeight = '0px';
+                strip.classList.remove('expanded');
+                icon.textContent = '+';
+            } else {
+                // Expand
+                // Optional: Collapse others when one opens (Accordion behavior)
+                // document.querySelectorAll('.info-strip.expanded').forEach(openStrip => {
+                //    if (openStrip !== strip) {
+                //        // close it...
+                //    }
+                // });
+
+                strip.classList.add('expanded');
+                content.style.maxHeight = content.scrollHeight + 'px';
+                icon.textContent = '−';
+
+                // Cleanup after transition
+                content.addEventListener('transitionend', function handler() {
+                    if (strip.classList.contains('expanded')) {
+                        content.style.maxHeight = 'none';
+                    }
+                    content.removeEventListener('transitionend', handler);
+                });
+            }
+        }
+
+        document.querySelectorAll('.info-header').forEach(header => {
+            header.addEventListener('click', () => toggleAccordion(header));
+        });
+    </script>
 </body>
 
 </html>
