@@ -601,10 +601,20 @@
         }
 
         /* ============ TOPICS GRID ============ */
+        .container-wide {
+            width: 94%;
+            max-width: 1920px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
         .topics-intro {
             text-align: center;
             max-width: 900px;
             margin: 0 auto 60px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-dark);
         }
 
         .topic-category {
@@ -656,7 +666,8 @@
         .topic-list {
             padding: 30px;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            /* Wider column for wide screen */
             gap: 15px 30px;
         }
 
@@ -677,9 +688,6 @@
             left: 0;
             top: -5px;
         }
-
-        /* ============ MERGED FLOATING NAVBAR STYLES ============ */
-        /* Styles removed as they are now handled by navbar.js Shadow DOM */
     </style>
 </head>
 
@@ -691,7 +699,7 @@
 
     <!-- ============ MAIN CONTENT ============ -->
     <main class="main-content">
-        <div class="container">
+        <div class="container-wide">
 
             <!-- Page Title -->
             <div class="page-title-section">

@@ -151,9 +151,17 @@
             /* Reduced from 140px to tight space */
         }
 
+        .container-wide {
+            width: 94%;
+            max-width: 1920px;
+            margin: 0 auto;
+            padding: 0 20px;
+            /* Add some internal padding */
+        }
+
         .page-title-section {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 60px;
             margin-top: 80px;
             /* Increased from 30px to prevent overlap */
             padding-top: 20px;
@@ -162,16 +170,16 @@
 
         .page-title-section h1 {
             font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 600;
             color: var(--primary-purple);
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .page-title-section .lead {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             color: var(--text-light);
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             line-height: 1.8;
         }
@@ -179,43 +187,45 @@
         /* Program Overview Card */
         .program-card {
             background: var(--bg-tone);
-            padding: 40px;
-            border-radius: 10px;
+            padding: 60px;
+            border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             background: #1D0A3F;
-            margin-bottom: 40px;
-            border-left: 6px solid var(--accent-gold);
+            margin-bottom: 60px;
+            border-left: 8px solid var(--accent-gold);
         }
 
         .program-card h2 {
             font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             font-weight: 600;
             color: #FFFFFF;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
 
         .program-card p {
-            font-size: 1.05rem;
+            font-size: 1.15rem;
             line-height: 1.9;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             color: #FFFFFF;
             text-align: justify;
+            max-width: 1000px;
+            /* Readability limit */
         }
 
         /* Stats Section */
         .stats-section {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 30px;
-            margin: 40px 0;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin: 60px 0;
         }
 
         .stat-box {
             text-align: center;
-            padding: 30px 20px;
+            padding: 40px 30px;
             background: var(--bg-light);
-            border-radius: 10px;
+            border-radius: 15px;
             transition: all 0.3s ease;
         }
 
@@ -226,7 +236,7 @@
 
         .stat-box .number {
             font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            font-size: 3.5rem;
+            font-size: 4rem;
             font-weight: 600;
             color: var(--primary-purple);
             line-height: 1;
@@ -234,7 +244,7 @@
         }
 
         .stat-box .label {
-            font-size: 1.05rem;
+            font-size: 1.15rem;
             color: var(--text-light);
             font-weight: 500;
             text-transform: none;
@@ -245,30 +255,32 @@
         /* Download Section */
         .download-box {
             background: var(--primary-purple);
-            padding: 50px 40px;
+            padding: 60px 40px;
             text-align: center;
-            margin: 50px 0;
+            margin: 80px auto;
+            border-radius: 20px;
+            max-width: 1000px;
         }
 
         .download-box h3 {
             font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 600;
             color: white;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .download-box p {
             color: rgba(255, 255, 255, 0.9);
-            font-size: 1.1rem;
-            margin-bottom: 30px;
+            font-size: 1.2rem;
+            margin-bottom: 40px;
         }
 
         .btn-download {
             background: var(--accent-gold);
             color: var(--primary-purple);
-            padding: 18px 50px;
-            font-size: 1.1rem;
+            padding: 20px 60px;
+            font-size: 1.2rem;
             font-weight: 600;
             border: none;
             border-radius: 0;
@@ -288,25 +300,25 @@
 
         /* Program Details Section */
         .program-details {
-            margin: 50px 0;
+            margin: 80px 0;
         }
 
         .section-title {
             font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 600;
             color: var(--primary-purple);
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             text-align: center;
         }
 
         .program-feature {
             background: #1D0A3F;
-            padding: 40px;
-            margin-bottom: 30px;
-            border-radius: 10px;
+            padding: 50px;
+            margin-bottom: 40px;
+            border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            border-left: 5px solid var(--accent-gold);
+            border-left: 6px solid var(--accent-gold);
             transition: all 0.3s ease;
             height: 100%;
             /* Ensure full height for equal boxes */
@@ -321,14 +333,14 @@
 
         .program-feature h3 {
             font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 600;
             color: #FFFFFF;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .program-feature p {
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             line-height: 1.8;
             color: #FFFFFF;
             margin: 0;
@@ -341,7 +353,7 @@
         }
 
         .program-card ul li {
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             line-height: 1.9;
             margin-bottom: 12px;
             color: #FFFFFF;
@@ -357,19 +369,19 @@
 
         /* Schedule Table Placeholder */
         .schedule-section {
-            margin: 50px 0;
+            margin: 80px 0;
         }
 
         .schedule-placeholder {
             background: var(--bg-light);
-            padding: 80px 40px;
+            padding: 100px 40px;
             text-align: center;
             border: 3px dashed var(--primary-purple);
             border-radius: 0;
         }
 
         .schedule-placeholder i {
-            font-size: 5rem;
+            font-size: 6rem;
             color: var(--primary-purple);
             opacity: 0.3;
             margin-bottom: 25px;
@@ -377,13 +389,13 @@
 
         .schedule-placeholder h3 {
             font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            font-size: 2rem;
+            font-size: 2.5rem;
             color: var(--primary-purple);
             margin-bottom: 15px;
         }
 
         .schedule-placeholder p {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: var(--text-light);
             margin: 0;
         }
@@ -498,16 +510,16 @@
 
         /* ============ SCHEDULE GRID ============ */
         .schedule-container-wrapper {
-            margin-top: 30px;
+            margin-top: 50px;
         }
 
         .nav-tabs .nav-link {
             border: none;
             color: var(--text-light);
             font-weight: 600;
-            padding: 15px 30px;
+            padding: 20px 40px;
             border-bottom: 3px solid transparent;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
         }
 
         .nav-tabs .nav-link.active {
@@ -534,8 +546,8 @@
 
         .schedule-grid {
             display: grid;
-            grid-template-columns: 140px repeat(5, minmax(280px, 1fr));
-            /* Fixed Time column width */
+            grid-template-columns: 180px repeat(5, minmax(320px, 1fr));
+            /* Wider columns for full screen */
             min-width: 100%;
             /* Force full width */
         }
@@ -544,7 +556,7 @@
         .grid-header {
             background: var(--primary-purple);
             color: white;
-            padding: 15px;
+            padding: 20px;
             font-weight: 600;
             text-align: center;
             position: sticky;
@@ -552,6 +564,7 @@
             z-index: 50;
             /* High z-index for visibility */
             border-right: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 1.1rem;
         }
 
         /* The Sticky Time Column (Top Left Corner) */
@@ -573,7 +586,7 @@
             left: 0;
             z-index: 40;
             /* Higher than content, lower than header */
-            padding: 20px 10px;
+            padding: 30px 10px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -584,6 +597,7 @@
             /* Stronger separation */
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
             /* Slight shadow to indicate depth */
+            font-size: 1.1rem;
         }
 
         .session-cell {
@@ -598,10 +612,10 @@
         .session-card {
             background: #fdfdfd;
             border: 1px solid #eee;
-            border-left: 4px solid var(--accent-gold);
-            padding: 15px;
+            border-left: 5px solid var(--accent-gold);
+            padding: 20px;
             height: 100%;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
@@ -613,25 +627,25 @@
         }
 
         .session-card h4 {
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 600;
             color: var(--secondary-purple);
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             line-height: 1.4;
         }
 
         .session-card p {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: var(--text-light);
-            margin-bottom: 10px;
-            line-height: 1.5;
+            margin-bottom: 12px;
+            line-height: 1.6;
         }
 
         .room-badge {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             background: #eee;
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 5px 10px;
+            border-radius: 6px;
             color: #555;
             font-weight: 600;
         }
@@ -651,7 +665,8 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            padding: 15px;
+            padding: 20px;
+            font-size: 1.1rem;
         }
 
         /* ============ MERGED FLOATING NAVBAR STYLES ============ */
@@ -751,7 +766,7 @@
 
     <!-- ============ MAIN CONTENT ============ -->
     <main class="main-content">
-        <div class="container">
+        <div class="container-wide">
 
             <!-- Page Title -->
             <div class="page-title-section">

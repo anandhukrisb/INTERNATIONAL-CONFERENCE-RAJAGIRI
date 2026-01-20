@@ -49,7 +49,8 @@
         }
 
         .main-container {
-            max-width: 1200px;
+            width: 94%;
+            max-width: 1920px;
             margin: 0 auto;
             padding: 0 20px;
         }
@@ -82,9 +83,10 @@
         /* ================= CONTENT SECTIONS ================= */
         .intro-text {
             font-size: 1.15rem;
-            margin-bottom: 40px;
+            margin: 0 auto 40px;
             color: var(--text-muted);
-            max-width: 100%;
+            max-width: 900px;
+            /* Constrained for readability */
             text-align: justify;
         }
 
@@ -149,6 +151,10 @@
 
         .pricing-table {
             width: 100%;
+            max-width: 1400px;
+            /* Constrained for readability */
+            margin: 0 auto;
+            /* Centered */
             border-collapse: collapse;
             background: var(--white);
             border-radius: 10px;
@@ -189,6 +195,17 @@
         /* ================= INFO SECTIONS (ACCORDION STYLE) ================= */
         .info-section {
             margin-bottom: 80px;
+            max-width: 1000px;
+            /* Constrained width */
+            margin: 0 auto;
+            /* Centered for balance */
+            /* Kept left aligned to match flow, or center? Plan said "content to max-width 1000px". 
+               Let's leave margins as is or auto? Usually section headers align left.
+               If I make the section max-width 1000px, it might look odd if the header above it is far left?
+               Wait, the header is inside .info-section? No, .info-section CONTAINS the header.
+               So if I constrain .info-section, the header also moves in. 
+               Let's stick to the plan: max-width 1000px.
+            */
         }
 
         .info-strip {

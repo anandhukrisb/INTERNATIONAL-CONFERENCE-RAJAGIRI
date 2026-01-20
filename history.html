@@ -73,9 +73,9 @@
 
         .intro-content h1 {
             color: var(--primary-purple);
-            font-size: 4rem;
-            /* Slightly smaller for tighter feel */
-            margin-bottom: 10px;
+            font-size: 5rem;
+            /* Grandiose title */
+            margin-bottom: 20px;
             line-height: 1.1;
         }
 
@@ -84,6 +84,9 @@
             position: relative;
             padding-bottom: 5vh;
             /* Reduced from 20vh to remove unwanted space */
+            width: 94%;
+            max-width: 1920px;
+            margin: 0 auto;
         }
 
         /* ... existing card styles ... */
@@ -97,6 +100,8 @@
             position: relative;
             z-index: 6;
             overflow: hidden;
+            width: 100%;
+            /* Background spans full width */
         }
 
         /* Individual Card Logic */
@@ -149,7 +154,8 @@
         }
 
         .card-visual {
-            flex: 1;
+            flex: 1.5;
+            /* Give more space to the image on wide screens */
             position: relative;
             overflow: hidden;
         }
@@ -162,15 +168,19 @@
 
         .card-content {
             flex: 1;
-            padding: 80px 60px;
+            padding: 80px 80px;
+            /* More padding */
             display: flex;
             flex-direction: column;
             justify-content: center;
+            max-width: 900px;
+            /* Restrict content width for readability */
         }
 
         /* Typography */
         .card-year {
-            font-size: 8rem;
+            font-size: 10rem;
+            /* Bigger watermark */
             font-weight: 800;
             line-height: 0.8;
             margin-bottom: 10px;
@@ -182,7 +192,7 @@
         }
 
         .card-edition {
-            font-size: 1rem;
+            font-size: 1.2rem;
             text-transform: uppercase;
             letter-spacing: 4px;
             color: var(--accent-gold);
@@ -191,7 +201,7 @@
         }
 
         .card-title {
-            font-size: 3rem;
+            font-size: 4rem;
             line-height: 1.1;
             margin-bottom: 30px;
             color: var(--primary-purple);
@@ -231,8 +241,8 @@
 
         /* Glassmorphism Box */
         #card-2027 .card-content {
-            flex: 0 0 500px;
-            /* Fixed width */
+            flex: 0 0 600px;
+            /* Wider glass box */
             background: rgba(29, 10, 63, 0.6);
             /* Semi-transparent Purple */
             backdrop-filter: blur(20px);
@@ -240,7 +250,7 @@
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 20px;
-            padding: 60px;
+            padding: 80px;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
             margin-right: 5%;
         }
@@ -253,7 +263,7 @@
         #card-2027 .card-desc {
             /* Improved readability */
             color: rgba(255, 255, 255, 0.95);
-            font-size: 1.15rem;
+            font-size: 1.25rem;
             font-weight: 500;
         }
 

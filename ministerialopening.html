@@ -51,7 +51,8 @@
         /* Ministerial Section Styles (Renamed from Speakers) */
         .ministerial-section {
             padding: 60px 20px;
-            max-width: 1200px;
+            width: 94%;
+            max-width: 1920px;
             margin: 0 auto;
             background-color: #FDFBF7;
             margin-top: 100px;
@@ -62,8 +63,8 @@
             color: #1D0A3F;
             font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             font-weight: 600;
-            font-size: 2rem;
-            margin-bottom: 50px;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
             margin-top: 50px;
             position: relative;
             display: inline-block;
@@ -73,18 +74,19 @@
         .ministerial-title::after {
             content: "";
             display: block;
-            width: 80px;
-            height: 4px;
+            width: 100px;
+            height: 6px;
             background-color: #C9A227;
-            margin-top: 10px;
+            margin-top: 15px;
             border-radius: 3px;
         }
 
         .ministerial-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-            gap: 40px;
-            margin-bottom: 60px;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            /* Wider default card */
+            gap: 50px;
+            margin-bottom: 80px;
             /* Center the single item */
             justify-content: center;
         }
@@ -92,20 +94,20 @@
         /* Card Styles */
         .ministerial-card {
             perspective: 1000px;
-            height: 350px;
-            /* Slightly taller for more content */
+            height: 400px;
+            /* Taller for more content */
             background: transparent;
             padding: 0;
             border-radius: 0;
             box-shadow: none;
             /* If we have only one card and want it centered but not stretching widely */
-            max-width: 800px;
+            max-width: 1000px;
             margin: 0 auto;
             width: 100%;
         }
 
         .ministerial-card:hover .ministerial-card-front {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
         }
 
         .ministerial-card-inner {
@@ -128,10 +130,10 @@
             height: 100%;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
             background: #1D0A3F;
-            padding: 40px;
+            padding: 50px;
             /* Increased padding */
             box-sizing: border-box;
         }
@@ -139,10 +141,10 @@
         .ministerial-card-front {
             display: flex;
             align-items: center;
-            gap: 40px;
+            gap: 50px;
             z-index: 2;
             transition: transform 0.3s ease;
-            border-left: 6px solid #C9A227;
+            border-left: 8px solid #C9A227;
         }
 
         .ministerial-card-back {
@@ -217,6 +219,7 @@
             margin-bottom: 20px;
             display: -webkit-box;
             -webkit-line-clamp: 3;
+            line-clamp: 3;
             /* Show fewer lines on front */
             -webkit-box-orient: vertical;
             overflow: hidden;

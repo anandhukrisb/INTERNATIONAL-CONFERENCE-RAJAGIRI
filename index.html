@@ -192,7 +192,9 @@
 
 
         .banner-container {
-            width: 100%;
+            width: 94%;
+            max-width: 1920px;
+            margin: 0 auto;
             margin-top: 160px;
             /* Space for fixed navbar */
             padding-bottom: 0px;
@@ -202,10 +204,11 @@
 
         .banner-container img {
             width: 100%;
-            max-width: 1200px;
             height: auto;
             display: block;
-            /* box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); */
+            border-radius: 30px;
+            /* Rounded corners for modern feel */
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
         }
 
         /* Ticker styles (if uncommented) */
@@ -214,7 +217,8 @@
             top: 90px;
             left: 50%;
             transform: translateX(-50%);
-            width: 88%;
+            width: 94%;
+            max-width: 1920px;
             height: 50px;
             color: #1d0a3f;
             padding: 10px 0;
@@ -224,8 +228,8 @@
             background-color: #FDFBF7;
             display: flex;
             align-items: center;
-            mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
-            -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+            mask-image: linear-gradient(to right, transparent, black 2%, black 98%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 2%, black 98%, transparent);
         }
 
         .title-section {
@@ -233,8 +237,9 @@
             align-items: center;
             justify-content: center;
             gap: 250px;
-            padding: 40px 20px;
-            max-width: 1200px;
+            padding: 60px 20px;
+            width: 94%;
+            max-width: 1920px;
             margin: 0 auto;
             margin-top: 180px;
             font-size: larger;
@@ -297,10 +302,10 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 50px;
-            /* Increased gap */
-            padding: 40px 20px;
-            max-width: 1200px;
+            gap: 80px;
+            padding: 60px 40px;
+            width: 94%;
+            max-width: 1920px;
             margin: 0 auto;
             /* margin-top: 100px; */
             position: relative;
@@ -311,15 +316,16 @@
             display: flex;
             justify-content: center;
             position: relative;
-            height: 400px;
-            /* Container height for absolute cards */
+            height: 480px;
+            /* Increased height for better proportions */
             align-items: center;
         }
 
         .card-img {
             position: absolute;
-            width: 240px;
-            height: 320px;
+            width: 280px;
+            /* Slightly larger cards */
+            height: 380px;
             object-fit: cover;
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
@@ -329,7 +335,7 @@
 
         /* Default State */
         .card-1 {
-            transform: translateX(-60px) rotate(-15deg);
+            transform: translateX(-70px) rotate(-15deg);
             z-index: 1;
         }
 
@@ -339,14 +345,14 @@
         }
 
         .card-3 {
-            transform: translateX(60px) rotate(15deg);
+            transform: translateX(70px) rotate(15deg);
             z-index: 3;
         }
 
         /* Hovering Front Card (Card 3) */
         /* Only pops up, others stay */
         .card-3:hover {
-            transform: translateX(60px) translateY(-50px) rotate(15deg) scale(1.05);
+            transform: translateX(70px) translateY(-50px) rotate(15deg) scale(1.05);
         }
 
 
@@ -359,28 +365,28 @@
 
         /* Front moves right & pops up */
         .about-image:has(.card-2:hover) .card-3 {
-            transform: translateX(150px) translateY(-30px) rotate(15deg);
+            transform: translateX(180px) translateY(-30px) rotate(15deg);
         }
 
         /* Back moves left & pops up */
         .about-image:has(.card-2:hover) .card-1 {
-            transform: translateX(-150px) translateY(-30px) rotate(-15deg);
+            transform: translateX(-180px) translateY(-30px) rotate(-15deg);
         }
 
         /* Hovering Back Card (Card 1) */
         /* Back pops up */
         .card-1:hover {
-            transform: translateX(-60px) translateY(-50px) rotate(-15deg) scale(1.05);
+            transform: translateX(-70px) translateY(-50px) rotate(-15deg) scale(1.05);
         }
 
         /* Middle moves right */
         .about-image:has(.card-1:hover) .card-2 {
-            transform: translateX(100px) translateY(-10px) rotate(0deg);
+            transform: translateX(120px) translateY(-10px) rotate(0deg);
         }
 
         /* Front moves right */
         .about-image:has(.card-1:hover) .card-3 {
-            transform: translateX(200px) rotate(15deg);
+            transform: translateX(240px) rotate(15deg);
         }
 
 
@@ -388,10 +394,14 @@
         .about-content {
             flex: 1;
             will-change: transform;
+            /* Limit text width for readability on wide screens */
+            max-width: 800px;
+            margin-right: auto;
+            /* Since it's flex, this helps if we want to justify left */
         }
 
         .about-content h2 {
-            font-size: 2rem;
+            font-size: 2.5rem;
             /* Bigger, bolder */
             color: #1d0a3f;
             /* Deep purple primary */
@@ -399,24 +409,24 @@
             text-transform: none;
             /* easier to read */
             font-weight: 600;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             line-height: 1.2;
             letter-spacing: -1px;
         }
 
         .about-content p {
             text-align: justify;
-            font-size: 1.1rem;
-            line-height: 1.6;
+            font-size: 1.15rem;
+            line-height: 1.7;
             color: #555;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         /* Gold accent for part of the title if we could target it, but for now underline */
         .about-content h2::after {
             content: '';
             display: block;
-            width: 80px;
+            width: 100px;
             height: 6px;
             background: #C9A227;
             margin-top: 20px;
@@ -424,8 +434,8 @@
         }
 
         .about-content p {
-            font-size: 0.95rem;
-            line-height: 1.6;
+            font-size: 1.05rem;
+            line-height: 1.7;
             color: #444;
             font-weight: 400;
             text-align: justify;
@@ -437,19 +447,20 @@
             .about-section {
                 background-color: #F0F0F0;
                 /* Dull colored container */
-                border-left: 6px solid #C9A227;
+                border-left: 10px solid #C9A227;
                 /* Secondary Yellow Border */
-                padding: 60px 40px;
+                padding: 80px 60px;
                 /* More padding for container look */
-                border-radius: 0 20px 20px 0;
+                border-radius: 0 30px 30px 0;
                 /* Soften right side */
+                margin-bottom: 50px;
             }
 
             .title-section {
                 background-color: #F0F0F0;
-                border-left: 6px solid #C9A227;
-                padding: 60px 40px;
-                border-radius: 0 20px 20px 0;
+                border-left: 10px solid #C9A227;
+                padding: 60px 60px;
+                border-radius: 0 30px 30px 0;
             }
 
             .title-section h1 {
@@ -466,7 +477,7 @@
             .about-section {
                 flex-direction: column;
                 text-align: center;
-                gap: 20px;
+                gap: 30px;
                 align-items: center;
                 width: 100%;
                 box-sizing: border-box;
@@ -474,15 +485,15 @@
 
             .title-section {
                 margin-top: 130px;
-                padding: 20px 15px;
+                padding: 40px 20px;
             }
 
             .about-section {
-                padding: 20px 15px;
+                padding: 40px 20px;
             }
 
             .about-content h2 {
-                font-size: 1.8rem;
+                font-size: 2rem;
                 /* Smaller on mobile */
             }
 
@@ -499,7 +510,7 @@
 
             .title-section h1 {
                 text-align: center;
-                font-size: 1.8rem;
+                font-size: 2rem;
                 width: 100%;
                 flex: none;
                 margin: 0;
@@ -517,7 +528,7 @@
                 gap: 0;
                 padding: 0;
                 width: 100%;
-                margin: 0 auto 40px;
+                margin: 0 auto 50px;
                 height: auto;
             }
 
@@ -529,8 +540,8 @@
             .card-img {
                 position: relative;
                 flex-shrink: 0;
-                width: 250px;
-                height: 320px;
+                width: 280px;
+                height: 360px;
                 transform: none !important;
                 z-index: 1 !important;
                 margin: 0 auto;
@@ -566,8 +577,9 @@
 
         /* Speakers Section */
         .speakers-section {
-            padding: 20px 20px 60px;
-            max-width: 1200px;
+            padding: 40px 20px 80px;
+            width: 94%;
+            max-width: 1920px;
             margin: 0 auto;
             background-color: #FDFBF7;
         }
@@ -578,8 +590,8 @@
             /* Primary Color */
             font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             font-weight: 600;
-            font-size: 2rem;
-            margin-bottom: 50px;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
             position: relative;
             display: inline-block;
             /* allows line to match text width if desired, or block for full width */
@@ -589,24 +601,26 @@
         .speakers-title::after {
             content: "";
             display: block;
-            width: 80px;
+            width: 100px;
             /* Fixed width line like other headers */
-            height: 4px;
+            height: 6px;
             background-color: #C9A227;
             /* Secondary/Gold Color */
-            margin-top: 10px;
+            margin-top: 15px;
             border-radius: 3px;
         }
 
         .speakers-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-            gap: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
+            gap: 50px;
+            /* More breathing room */
         }
 
         .speaker-card {
             perspective: 1000px;
-            height: 260px;
+            height: 300px;
+            /* Slightly taller */
             background: transparent;
             padding: 0;
             border-radius: 0;
@@ -615,7 +629,7 @@
 
         .speaker-card:hover .speaker-card-front {
             transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
         }
 
         .speaker-card-inner {
@@ -641,17 +655,17 @@
             border-radius: 10px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             background: #1D0A3F;
-            padding: 30px;
+            padding: 40px;
             box-sizing: border-box;
         }
 
         .speaker-card-front {
             display: flex;
             align-items: center;
-            gap: 30px;
+            gap: 40px;
             z-index: 2;
             transition: transform 0.3s ease;
-            border-left: 6px solid #C9A227;
+            border-left: 8px solid #C9A227;
         }
 
         .speaker-card-back {
@@ -668,20 +682,20 @@
             color: #FFFFFF;
             font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin-top: 0;
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             margin-bottom: 10px;
         }
 
         .speaker-card-back p {
             color: #F0F0F0;
-            font-size: 0.95rem;
-            line-height: 1.6;
+            font-size: 1rem;
+            line-height: 1.7;
             text-align: justify;
         }
 
         .speaker-img {
-            width: 150px;
-            height: 150px;
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
             object-fit: cover;
             flex-shrink: 0;
@@ -698,25 +712,25 @@
             color: #FFFFFF;
             font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0 0 10px 0;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
         }
 
         .speaker-info p {
             color: #F0F0F0;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 15px;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
             text-align: justify;
         }
 
         .read-more-btn {
             display: inline-block;
-            padding: 8px 20px;
+            padding: 10px 24px;
             background-color: #C9A227;
             color: #1D0A3F;
             text-decoration: none;
             border-radius: 10px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             transition: background 0.3s;
             cursor: pointer;
             font-weight: 600;
@@ -728,7 +742,7 @@
 
         .close-btn {
             display: inline-block;
-            padding: 8px 20px;
+            padding: 10px 24px;
             background-color: #C9A227;
             color: #1D0A3F;
             text-decoration: none;
@@ -738,7 +752,7 @@
             cursor: pointer;
             font-weight: 600;
             border: none;
-            margin-top: 10px;
+            margin-top: 15px;
             /* Ensure it looks good as a button element */
             font-family: inherit;
         }
@@ -753,13 +767,14 @@
             }
 
             .speaker-card {
-                height: 400px;
+                height: 480px;
                 /* Increased height for mobile column layout */
             }
 
             .speaker-card-front {
                 flex-direction: column;
                 text-align: center;
+                gap: 20px;
             }
         }
 
@@ -767,10 +782,11 @@
         .delegates-section {
             background-color: #1d0a3f;
             color: white;
-            padding: 60px 20px 80px;
+            padding: 80px 40px 100px;
             border-radius: 50px;
             text-align: center;
-            max-width: 1200px;
+            width: 94%;
+            max-width: 1920px;
             margin: 0 auto 50px;
         }
 
@@ -779,13 +795,13 @@
             color: #1D0A3F;
             font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             font-weight: 600;
-            font-size: 2rem;
-            margin-bottom: 50px;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
             position: relative;
             display: block;
             width: 100%;
-            max-width: 1200px;
-            padding: 0 20px;
+            max-width: 1920px;
+            padding: 0 40px;
             box-sizing: border-box;
             margin-left: auto;
             margin-right: auto;
@@ -794,10 +810,10 @@
         .delegates-title::after {
             content: "";
             display: block;
-            width: 80px;
-            height: 4px;
+            width: 100px;
+            height: 6px;
             background-color: #C9A227;
-            margin-top: 10px;
+            margin-top: 15px;
             border-radius: 3px;
         }
 
@@ -836,7 +852,8 @@
             justify-content: flex-start;
             align-items: flex-end;
             overflow: hidden;
-            max-width: 1200px;
+            width: 94%;
+            max-width: 1920px;
             margin: 0 auto;
             /* gap: 50px; Removed gap as image is absolute now */
         }
@@ -977,7 +994,8 @@
             justify-content: center;
             align-items: flex-end;
             overflow: hidden;
-            max-width: 1200px;
+            width: 94%;
+            max-width: 1920px;
             margin: 0 auto;
         }
 
@@ -1074,10 +1092,10 @@
 
 
         .section-separator {
-            max-width: 1200px;
+            width: 94%;
+            max-width: 1920px;
             margin: 10px auto;
             border-top: 1px solid #ddd;
-            width: 100%;
         }
 
 
@@ -1095,8 +1113,8 @@
             gap: 40px;
             justify-content: center;
             flex-wrap: wrap;
-            max-width: 1200px;
-            width: 100%;
+            width: 94%;
+            max-width: 1920px;
         }
 
         .cta-card {
