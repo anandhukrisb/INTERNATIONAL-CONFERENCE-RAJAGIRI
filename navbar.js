@@ -119,16 +119,10 @@ class FloatingNavbar extends HTMLElement {
                 }
 
                 .logo-overlay.rajagiri {
-                    left: 4px;
-                    top:45px;
-                    height: 80%;
-                    width: auto;
-                }
-
-                .logo-overlay.rcss {
-                    top: 55px;
-                    left: 80px;
-                    height: 60%;
+                    left: 25px; /* Moved right */
+                    top: 55%; /* Moved down */
+                    transform: translateY(-50%);
+                    height: 85%; /* Increased size */
                     width: auto;
                 }
 
@@ -442,15 +436,8 @@ class FloatingNavbar extends HTMLElement {
                 }
 
                 .logo-container-mobile img.rajagiri-mobile {
-                    height: 70%;
+                    height: 85%; /* Match desktop size increase */
                     width: auto;
-                }
-
-                .logo-container-mobile img.rcss-mobile {
-                    height: 50%;
-                    width: auto;
-                    margin-left: -22px;
-                    margin-top: 20px;
                 }
 
                 /* 
@@ -462,12 +449,11 @@ class FloatingNavbar extends HTMLElement {
                     .mobile-title { display: block; }
                     .mobile-toggle { display: flex !important; }
                     
-                    .logo-container-mobile {
+                     .logo-container-mobile {
                         display: flex;
                         border-radius: 0 !important;
                     }
-                     .logo-container-mobile img.rajagiri-mobile { height: 70%; width: auto; }
-                     .logo-container-mobile img.rcss-mobile { height: 50%; width: auto; margin-left: -22px; margin-top: 20px; }
+                     .logo-container-mobile img.rajagiri-mobile { height: 85%; width: auto; }
                      
                      .floating-navbar {
                         width: 100% !important;
@@ -484,8 +470,9 @@ class FloatingNavbar extends HTMLElement {
             <div class="navbar-backdrop"></div>
             <nav class="floating-navbar">
                 <div class="logo-container-mobile">
-                    <img src="assets/rajagiri_logo.png" alt="Rajagiri" class="rajagiri-mobile">
-                    <img src="assets/rcss_logo.png" alt="RCSS" class="rcss-mobile">
+                    <a href="https://rajagiri.edu/" target="_blank">
+                        <img src="assets/rajagiri_logo.png" alt="Rajagiri" class="rajagiri-mobile">
+                    </a>
                 </div>
 
                 <div class="mobile-title">ICSWHMH 27</div>
@@ -494,8 +481,9 @@ class FloatingNavbar extends HTMLElement {
                     <!-- Base Logo -->
                     <img src="${logoSrc}" alt="Conference Logo" class="logo-base">
                     <!-- Overlays -->
-                    <img src="assets/rajagiri_logo.png" alt="Rajagiri" class="logo-overlay rajagiri">
-                    <img src="assets/rcss_logo.png" alt="RCSS" class="logo-overlay rcss">
+                    <a href="https://rajagiri.edu/" target="_blank">
+                        <img src="assets/rajagiri_logo.png" alt="Rajagiri" class="logo-overlay rajagiri">
+                    </a>
                 </div>
 
                 <!-- Visible Links (Priority+) -->
