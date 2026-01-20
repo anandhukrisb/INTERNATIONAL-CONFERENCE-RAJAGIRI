@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotels - ICSWHMH 2027</title>
+    <link rel="icon" type="image/x-icon" href="assets/Favicon-192.ico?v=2">
+
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+
+    <script src="navbar.js" defer></script>
+    <script src="footer.js" defer></script>
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@400;600;800&family=Poppins:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* ================= GLOBAL ================= */
+        body {
+            background-color: #FDFBF7;
+            color: #2D3436;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        /* ================= TITLE ================= */
+        .hotels-title-section {
+            margin-top: 80px;
+            margin-bottom: 50px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 20px;
+        }
+
+        #pageTitle {
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-weight: 700;
+            color: #1D0A3F;
+            text-transform: uppercase;
+            position: relative;
+            display: inline-block;
+            padding-left: 0;
+        }
+
+        #pageTitle::after {
+            content: "";
+            display: block;
+            width: 70px;
+            height: 4px;
+            background-color: #C9A227;
+            margin-top: 10px;
+            border-radius: 3px;
+        }
+
+        /* ================= GRID ================= */
+        .hotels-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto 60px;
+            padding: 0 20px;
+        }
+
+        /* ================= CARD ================= */
+        .hotel-card {
+            background: #FFFFFF;
+            /* White Background */
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            /* Lighter shadow for white card */
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border-left: 6px solid #C9A227;
+            /* Gold Accent Border */
+        }
+
+        .hotel-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .hotel-image-container {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hotel-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .hotel-card:hover .hotel-image-container img {
+            transform: scale(1.05);
+        }
+
+        .hotel-content {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            color: #2D3436;
+            /* Dark Grey Text */
+        }
+
+        .hotel-price {
+            font-family: 'Outfit', sans-serif;
+            color: #C9A227;
+            /* Gold Price */
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: baseline;
+            gap: 5px;
+        }
+
+        .hotel-price span {
+            font-size: 0.9rem;
+            color: #888;
+            font-weight: 400;
+        }
+
+        .hotel-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1D0A3F;
+            /* Deep Purple Title */
+            margin-bottom: 8px;
+            font-family: 'Outfit', sans-serif;
+            min-height: 3.2em;
+        }
+
+        .hotel-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+            color: #F39C12;
+            /* Slightly darker gold/orange for stars on white */
+        }
+
+        .hotel-rating span {
+            color: #555;
+            font-weight: 500;
+        }
+
+        .hotel-details {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #eee;
+            /* Light grey border */
+            padding-top: 16px;
+            margin-top: auto;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .hotel-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .hotel-detail-item i {
+            color: #C9A227;
+            /* Theme Gold */
+            font-size: 1rem;
+        }
+
+        /* ================= TABLET ================= */
+        @media (max-width: 1024px) {
+            .hotels-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+            }
+        }
+
+        /* ================= MOBILE ================= */
+        @media (max-width: 768px) {
+            .hotels-title-section {
+                margin-top: 120px;
+                text-align: center;
+            }
+
+            #pageTitle::after {
+                margin: 10px auto 0;
+            }
+
+            .hotels-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        /* ================= HERO SLIDER STYLES ================= */
+        .page-wrap {
+            position: relative;
+            margin-bottom: 50px;
+            /* Space before hotels grid */
+        }
+
+        .slider-header {
+            width: 100%;
+            height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Hero Nav */
+        .hero-nav {
+            width: 100%;
+            position: absolute;
+            top: 100px;
+            /* Shifted down to avoid overlap with main navbar */
+            z-index: 10;
+            padding: 1em 5em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hero-nav h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: normal;
+            text-transform: uppercase;
+            color: #e0d4be;
+            /* --pill */
+            font-size: 1.3rem;
+            background-color: #cc033f;
+            /* --red */
+            padding: 5px 10px;
+            margin: 0;
+        }
+
+        .hero-nav ul {
+            display: flex;
+            color: #f5f5f5;
+            /* --white */
+            list-style: none;
+            margin: 0;
+            align-items: center;
+        }
+
+        .hero-nav ul li:not(#burger) {
+            visibility: hidden;
+            /* Hidden as per original design */
+            margin-right: 1.5em;
+        }
+
+        #burger {
+            width: 30px;
+            height: 28px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            cursor: pointer;
+        }
+
+        #burger span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: #cc033f;
+            /* --red */
+            border-radius: 200px;
+            transition: transform 0.3s 0.3s;
+        }
+
+        #burger.active span:nth-of-type(1) {
+            transform: translateY(9px) rotate(45deg);
+        }
+
+        #burger.active span:nth-of-type(2) {
+            opacity: 0;
+        }
+
+        #burger.active span:nth-of-type(3) {
+            transform: translateY(-9px) rotate(-45deg);
+        }
+
+        /* Hero Main Slider */
+        /* ================= HERO SLIDER STYLES ================= */
+        .page-wrap {
+            position: relative;
+            margin-bottom: 0;
+        }
+
+        .hero-slider {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+            z-index: 2;
+        }
+
+        .hero-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+        }
+
+        /* Slide text styles */
+        .hero-info {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            color: #fff;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+
+        .slide.active .hero-info {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.8s ease-out 0.5s, transform 0.8s ease-out 0.5s;
+            /* Delay to let old text fade */
+        }
+
+        .hero-info h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+            font-size: 1.5rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-info h1 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 6rem;
+            text-transform: uppercase;
+            line-height: 1;
+            margin: 0;
+            color: #fff;
+            /* Explicit white */
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-info h3 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            margin-top: 1rem;
+            color: #ddd;
+        }
+
+        /* Individual Images */
+        .hi-1 {
+            background-image: url('assets/attractions/fort-kochi-fishing-net.jpg');
+        }
+
+        .hi-2 {
+            background-image: url('assets/attractions/synagogue.jpg');
+        }
+
+        .hi-3 {
+            background-image: url('assets/attractions/Marine_Drive_Kochi_Night_View_DSW.jpg');
+        }
+
+        .hi-4 {
+            background-image: url('assets/attractions/Cherai-Beach.jpg');
+        }
+
+        .hi-5 {
+            background-image: url('assets/attractions/kathakali.jpg');
+        }
+
+        .hi-6 {
+            background-image: url('assets/attractions/jew-town.jpg');
+        }
+
+        @media screen and (max-width: 768px) {
+            .hero-info h1 {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <floating-navbar transparent></floating-navbar>
+
+    <!-- Full Screen Hero Slider -->
+    <div class="page-wrap">
+        <div class="hero-slider">
+            <!-- Slide 1: Fort Kochi -->
+            <div class="slide active">
+                <div class="hero-image hi-1"></div>
+                <div class="hero-info">
+                    <h2>Historic</h2>
+                    <h1>Fort Kochi</h1>
+                    <h3>Iconic Chinese Fishing Nets</h3>
+                </div>
+            </div>
+
+            <!-- Slide 2: Mattancherry -->
+            <div class="slide">
+                <div class="hero-image hi-2"></div>
+                <div class="hero-info">
+                    <h2>Heritage</h2>
+                    <h1>Mattancherry</h1>
+                    <h3>Dutch Palace & Synagogue</h3>
+                </div>
+            </div>
+
+            <!-- Slide 3: Marine Drive -->
+            <div class="slide">
+                <div class="hero-image hi-3"></div>
+                <div class="hero-info">
+                    <h2>Scenic</h2>
+                    <h1>Marine Drive</h1>
+                    <h3>Backwaters Walkway</h3>
+                </div>
+            </div>
+
+            <!-- Slide 4: Cherai Beach -->
+            <div class="slide">
+                <div class="hero-image hi-4"></div>
+                <div class="hero-info">
+                    <h2>Golden</h2>
+                    <h1>Cherai Beach</h1>
+                    <h3>Sunsets & Dolphins</h3>
+                </div>
+            </div>
+
+            <!-- Slide 5: Kerala Folklore -->
+            <div class="slide">
+                <div class="hero-image hi-5"></div>
+                <div class="hero-info">
+                    <h2>Cultural</h2>
+                    <h1>Kathakali</h1>
+                    <h3>Kerala Folklore Theatre</h3>
+                </div>
+            </div>
+
+            <!-- Slide 6: Jew Town -->
+            <div class="slide">
+                <div class="hero-image hi-6"></div>
+                <div class="hero-info">
+                    <h2>Shopping</h2>
+                    <h1>Jew Town</h1>
+                    <h3>Antiques & Spices</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Down Indicator -->
+        <div class="scroll-down" onclick="smoothScroll('pageTitle', 2000)">
+            <i class="bi bi-chevron-down"></i>
+        </div>
+    </div>
+
+    <style>
+        .scroll-down {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            color: #fff;
+            width: 50px;
+            height: 50px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            animation: breathe 2.5s infinite ease-in-out;
+            transition: background 0.3s, transform 0.3s;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(2px);
+        }
+
+        .scroll-down:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .scroll-down i {
+            font-size: 1.2rem;
+            margin-top: 2px;
+            /* Visual center alignment */
+        }
+
+        @keyframes breathe {
+
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            }
+
+            50% {
+                transform: translateX(-50%) translateY(10px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+        }
+    </style>
+
+    <script>
+        function smoothScroll(targetId, duration) {
+            const target = document.getElementById(targetId);
+            if (!target) return;
+
+            // Offset by 100px for navbar
+            const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - 100;
+            const startPosition = window.pageYOffset;
+            const distance = targetPosition - startPosition;
+            let startTime = null;
+
+            function animation(currentTime) {
+                if (startTime === null) startTime = currentTime;
+                const timeElapsed = currentTime - startTime;
+                const run = ease(timeElapsed, startPosition, distance, duration);
+                window.scrollTo(0, run);
+                if (timeElapsed < duration) requestAnimationFrame(animation);
+            }
+
+            function ease(t, b, c, d) {
+                t /= d / 2;
+                if (t < 1) return c / 2 * t * t + b;
+                t--;
+                return -c / 2 * (t * (t - 2) - 1) + b;
+            }
+
+            requestAnimationFrame(animation);
+        }
+    </script>
+
+    <!-- Original Content Follows -->
+    <div class="hotels-title-section">
+        <h2 id="pageTitle">STAY HERE WHILE YOU VISIT</h2>
+    </div>
+
+    <!-- Hotels Grid -->
+    <div class="hotels-grid">
+
+        <!-- Card 1: Hotel The Mountmist -->
+        <div class="hotel-card">
+            <div class="hotel-image-container">
+                <img src="assets/hotel/mountmist.webp" alt="Hotel Room">
+            </div>
+            <div class="hotel-content">
+                <div class="hotel-price">₹2,800 <span>/night</span></div>
+                <h3 class="hotel-title">Hotel The Mountmist</h3>
+                <div class="hotel-rating">
+                    <i class="bi bi-star-fill"></i>
+                    <span>9.2/10 (Excellent)</span>
+                </div>
+                <div class="hotel-details">
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-wifi"></i>
+                        <span>Free WiFi</span>
+                    </div>
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-person-workspace"></i>
+                        <span>Business</span>
+                    </div>
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <span>Kakkanad</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: The Nexus Hotel -->
+        <div class="hotel-card">
+            <div class="hotel-image-container">
+                <img src="assets/hotel/nexus.webp" alt="Hotel Room">
+            </div>
+            <div class="hotel-content">
+                <div class="hotel-price">₹3,200 <span>/night</span></div>
+                <h3 class="hotel-title">The Nexus Hotel</h3>
+                <div class="hotel-rating">
+                    <i class="bi bi-star-fill"></i>
+                    <span>9.0/10 (Superb)</span>
+                </div>
+                <div class="hotel-details">
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-hdd-stack"></i>
+                        <span>Luxury</span>
+                    </div>
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-cup-hot-fill"></i>
+                        <span>Breakfast</span>
+                    </div>
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <span>Kakkanad</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Loft Business Hotel -->
+        <div class="hotel-card">
+            <div class="hotel-image-container">
+                <img src="assets/hotel/loft.avif" alt="Hotel Room">
+            </div>
+            <div class="hotel-content">
+                <div class="hotel-price">₹4,500 <span>/night</span></div>
+                <h3 class="hotel-title">Loft Business Hotel</h3>
+                <div class="hotel-rating">
+                    <i class="bi bi-star-fill"></i>
+                    <span>9.0/10 (Superb)</span>
+                </div>
+                <div class="hotel-details">
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-briefcase-fill"></i>
+                        <span>Workspace</span>
+                    </div>
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-cup-hot-fill"></i>
+                        <span>Dining</span>
+                    </div>
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <span>Kakkanad</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: Kochi Marriott Hotel -->
+        <div class="hotel-card">
+            <div class="hotel-image-container">
+                <img src="assets/hotel/marriatt.jpg" alt="Hotel Room">
+            </div>
+            <div class="hotel-content">
+                <div class="hotel-price">₹9,500 <span>/night</span></div>
+                <h3 class="hotel-title">Kochi Marriott Hotel</h3>
+                <div class="hotel-rating">
+                    <i class="bi bi-star-fill"></i>
+                    <span>8.4/10 (Fantastic)</span>
+                </div>
+                <div class="hotel-details">
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-stars"></i>
+                        <span>5 Star</span>
+                    </div>
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-water"></i>
+                        <span>Pool</span>
+                    </div>
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <span>Edappally</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 5: Holiday Inn Cochin -->
+        <div class="hotel-card">
+            <div class="hotel-image-container">
+                <img src="assets/hotel/holiday-inn.jpg" alt="Hotel Room">
+            </div>
+            <div class="hotel-content">
+                <div class="hotel-price">₹5,200 <span>/night</span></div>
+                <h3 class="hotel-title">Holiday Inn Cochin</h3>
+                <div class="hotel-rating">
+                    <i class="bi bi-star-fill"></i>
+                    <span>8.4/10 (Very Good)</span>
+                </div>
+                <div class="hotel-details">
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-p-circle-fill"></i>
+                        <span>Parking</span>
+                    </div>
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-cup-straw"></i>
+                        <span>Bar</span>
+                    </div>
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <span>Vennala</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 6: Novotel Kochi Infopark -->
+        <div class="hotel-card">
+            <div class="hotel-image-container">
+                <img src="assets/hotel/novotel-1.webp" alt="Hotel Room">
+            </div>
+            <div class="hotel-content">
+                <div class="hotel-price">₹5,800 <span>/night</span></div>
+                <h3 class="hotel-title">Novotel Kochi Infopark</h3>
+                <div class="hotel-rating">
+                    <i class="bi bi-star-fill"></i>
+                    <span>7.2/10 (Good)</span>
+                </div>
+                <div class="hotel-details">
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-building"></i>
+                        <span>Modern</span>
+                    </div>
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-cup-hot-fill"></i>
+                        <span>Cafe</span>
+                    </div>
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <span>Infopark</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 7: The Blooms Cochin -->
+        <div class="hotel-card">
+            <div class="hotel-image-container">
+                <img src="assets/hotel/blooms.webp" alt="Hotel Room">
+            </div>
+            <div class="hotel-content">
+                <div class="hotel-price">₹3,500 <span>/night</span></div>
+                <h3 class="hotel-title">The Blooms Cochin</h3>
+                <div class="hotel-rating">
+                    <i class="bi bi-star-fill"></i>
+                    <span>8.4/10 (Excellent)</span>
+                </div>
+                <div class="hotel-details">
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-patch-check-fill"></i>
+                        <span>Clean</span>
+                    </div>
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-car-front-fill"></i>
+                        <span>Transport</span>
+                    </div>
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <span>Kakkanad</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 8: Hotel Olive Eva -->
+        <div class="hotel-card">
+            <div class="hotel-image-container">
+                <img src="assets/hotel/olive.avif" alt="Hotel Room">
+            </div>
+            <div class="hotel-content">
+                <div class="hotel-price">₹3,000 <span>/night</span></div>
+                <h3 class="hotel-title">Hotel Olive Eva</h3>
+                <div class="hotel-rating">
+                    <i class="bi bi-star-fill"></i>
+                    <span>8.5/10 (Very Good)</span>
+                </div>
+                <div class="hotel-details">
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-bell-fill"></i>
+                        <span>Concierge</span>
+                    </div>
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-heart-pulse-fill"></i>
+                        <span>Gym</span>
+                    </div>
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <span>Kakkanad</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 9: Clarion Hotel Khayal -->
+        <div class="hotel-card">
+            <div class="hotel-image-container">
+                <img src="assets/hotel/clarion.jpg" alt="Hotel Room">
+            </div>
+            <div class="hotel-content">
+                <div class="hotel-price">₹2,500 <span>/night</span></div>
+                <h3 class="hotel-title">Clarion Hotel Khayal</h3>
+                <div class="hotel-rating">
+                    <i class="bi bi-star-fill"></i>
+                    <span>7.0/10 (Good)</span>
+                </div>
+                <div class="hotel-details">
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-tag-fill"></i>
+                        <span>Discount</span>
+                    </div>
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-people-fill"></i>
+                        <span>Events</span>
+                    </div>
+                    <div class="hotel-detail-item">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <span>Infopark</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <main-footer></main-footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", (event) => {
+            const slides = document.querySelectorAll('.slide');
+            let currentSlide = 0;
+            const slideInterval = 4000; // 4 seconds per slide
+
+            // Initialize: Force Slide 1 active, others inactive
+            slides.forEach((slide, index) => {
+                if (index === 0) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+
+            function nextSlide() {
+                // Remove active class from current
+                slides[currentSlide].classList.remove('active');
+
+                // Calculate next index
+                currentSlide = (currentSlide + 1) % slides.length;
+
+                // Add active class to next
+                slides[currentSlide].classList.add('active');
+            }
+
+            // Start loop
+            setInterval(nextSlide, slideInterval);
+        });
+    </script>
+</body>
+
+</html>
