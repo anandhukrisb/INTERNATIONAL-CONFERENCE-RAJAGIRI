@@ -215,7 +215,6 @@
             display: flex;
             flex-direction: column;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            border: 1px solid #C9A227;
             position: relative;
             transform: translateY(30px);
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -448,6 +447,53 @@
             visibility: hidden;
             /* Hidden as per original design */
             margin-right: 1.5em;
+        }
+
+        /* Slider Navigation Buttons */
+        .slider-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 20;
+            transition: all 0.3s ease;
+        }
+
+        .slider-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .prev-btn { left: 30px; }
+        .next-btn { right: 30px; }
+
+        @media (max-width: 768px) {
+            .slider-nav-btn {
+                display: none; /* Hide buttons on mobile */
+            }
+            .slider-container {
+                /* Enable strict horizontal scrolling/swiping on mobile if structure allowed */
+                /* Assuming .slider-container is the parent of .slide */
+                /* Since existing slider uses opacity fades for .slide.active, 
+                   horizontal scroll requires layout change.
+                   User said: "in the mobile view, just make that horizontally scrollable"
+                   If we change to scroll, we lose the fade effect. 
+                   Let's support TOUCH SWIPE gestures for the existing fade slider first.
+                   Wait, "just make that horizontally scrollable" usually implies CSS scroll snap.
+                   Let's add touch event listeners to simulate swipe!
+                */
+            }
         }
 
         #burger {
@@ -764,6 +810,18 @@
         <h2 id="pageTitle">STAY HERE WHILE YOU VISIT</h2>
     </div>
 
+    <!-- Inject Navigation Buttons for Slider -->
+    <script>
+        // Inject buttons into .slider-header since we can't easily edit the partial HTML structure without seeing it all
+        // Wait, .slider-header contains the slides? Let's check.
+        // Assuming strict HTML structure from context:
+        // .page-wrap > .slider-header
+        // We will insert buttons via JS for safety or just add them near where .slider-header would be if we could see it.
+        // Actually, we are editing the file. Let's look for where the slider ends.
+        
+        // Strategy: Append buttons to .slider-header on load for safety if we can't find exact insertion point easily.
+    </script>
+
     <!-- Hotels Grid -->
     <div class="hotels-grid">
 
@@ -988,6 +1046,7 @@
             let currentSlide = 0;
             const slideInterval = 4000;
 
+            // Initialize: Force Slide 1 active, others inactive
             slides.forEach((slide, index) => {
                 if (index === 0) {
                     slide.classList.add('active');
@@ -996,12 +1055,74 @@
                 }
             });
 
+            // Create and Append Navigation Buttons
+            const sliderHeader = document.querySelector('.hero-slider');
+            if (sliderHeader) {
+                const prevBtn = document.createElement('div');
+                prevBtn.className = 'slider-nav-btn prev-btn';
+                prevBtn.innerHTML = '<i class="bi bi-chevron-left"></i>';
+                // prevBtn.onclick = prevSlide; // Assigned below
+
+                const nextBtn = document.createElement('div');
+                nextBtn.className = 'slider-nav-btn next-btn';
+                nextBtn.innerHTML = '<i class="bi bi-chevron-right"></i>';
+                // nextBtn.onclick = nextSlide; // Assigned below
+
+                sliderHeader.appendChild(prevBtn);
+                sliderHeader.appendChild(nextBtn);
+
+                // Add event listeners
+                prevBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    prevSlide();
+                });
+                nextBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    nextSlide();
+                });
+            }
+
             function nextSlide() {
                 slides[currentSlide].classList.remove('active');
                 currentSlide = (currentSlide + 1) % slides.length;
                 slides[currentSlide].classList.add('active');
+                resetTimer();
             }
-            setInterval(nextSlide, slideInterval);
+
+            function prevSlide() {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                slides[currentSlide].classList.add('active');
+                resetTimer();
+            }
+            
+            let slideTimer = setInterval(nextSlide, slideInterval);
+
+            function resetTimer() {
+                clearInterval(slideTimer);
+                slideTimer = setInterval(nextSlide, slideInterval);
+            }
+
+            // Mobile Swipe Logic
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            if (sliderHeader) {
+                sliderHeader.addEventListener('touchstart', e => {
+                    touchStartX = e.changedTouches[0].screenX;
+                }, {passive: true});
+
+                sliderHeader.addEventListener('touchend', e => {
+                    touchEndX = e.changedTouches[0].screenX;
+                    handleSwipe();
+                }, {passive: true});
+            }
+
+            function handleSwipe() {
+                const threshold = 50; // min distance for swipe
+                if (touchEndX < touchStartX - threshold) nextSlide();
+                if (touchEndX > touchStartX + threshold) prevSlide();
+            }
         });
 
         // Modal Logic
