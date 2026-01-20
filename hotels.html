@@ -83,27 +83,25 @@
 
         /* ================= CARD ================= */
         .hotel-card {
-            background: #FFFFFF;
-            /* White Background */
-            border-radius: 12px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
-            /* Lighter shadow for white card */
+            background: #fff;
+            border-radius: 15px;
             overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 500px;
             display: flex;
             flex-direction: column;
-            border-left: 6px solid #C9A227;
-            /* Gold Accent Border */
+            position: relative;
         }
 
         .hotel-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
         }
 
         .hotel-image-container {
             width: 100%;
-            height: 220px;
+            height: 60%;
             overflow: hidden;
             position: relative;
         }
@@ -120,78 +118,256 @@
         }
 
         .hotel-content {
-            padding: 24px;
+            padding: 20px;
+            height: 40%;
             display: flex;
             flex-direction: column;
-            flex: 1;
-            color: #2D3436;
-            /* Dark Grey Text */
+            justify-content: space-between;
         }
 
         .hotel-price {
             font-family: 'Outfit', sans-serif;
-            color: #C9A227;
-            /* Gold Price */
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: baseline;
-            gap: 5px;
+            color: #C9A227;
         }
 
         .hotel-price span {
             font-size: 0.9rem;
-            color: #888;
+            color: #666;
             font-weight: 400;
         }
 
         .hotel-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #1D0A3F;
-            /* Deep Purple Title */
-            margin-bottom: 8px;
             font-family: 'Outfit', sans-serif;
-            min-height: 3.2em;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1D0A3F;
+            margin: 5px 0;
+            line-height: 1.2;
         }
 
-        .hotel-rating {
+        .hotel-location-preview {
             display: flex;
             align-items: center;
-            gap: 5px;
-            margin-bottom: 16px;
+            gap: 8px;
+            color: #666;
             font-size: 0.95rem;
-            color: #F39C12;
-            /* Slightly darker gold/orange for stars on white */
+            margin-bottom: auto;
+            margin-top: 5px;
         }
 
-        .hotel-rating span {
-            color: #555;
-            font-weight: 500;
+        .hotel-location-preview i {
+            color: #C9A227;
         }
 
-        .hotel-details {
+        .read-more-btn {
+            background-color: #1D0A3F;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            transition: background 0.3s;
+            width: 100%;
+            margin-top: 15px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+        .read-more-btn:hover {
+            background-color: #C9A227;
+            color: #1D0A3F;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .hotel-modal {
+            background: #1D0A3F;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid #C9A227;
+            position: relative;
+            transform: translateY(30px);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-overlay.active .hotel-modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             justify-content: space-between;
-            border-top: 1px solid #eee;
-            /* Light grey border */
-            padding-top: 16px;
-            margin-top: auto;
-            color: #666;
-            font-size: 0.9rem;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
         }
 
-        .hotel-detail-item {
+        .modal-title {
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #C9A227;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            transform: scale(1.1);
+            color: #fff;
+        }
+
+        .modal-body {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 30px;
+            overflow-y: auto;
+        }
+
+        .modal-map-container {
+            width: 100%;
+            height: 350px;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid #C9A227;
+            background: #000;
+        }
+
+        .modal-map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .modal-info {
+            color: #F0F0F0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-rating {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            color: #C9A227;
+            font-weight: 600;
+        }
+
+        .modal-rating span {
+            color: #fff;
+        }
+
+        .modal-amenities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .amenity-tag {
+            background: rgba(201, 162, 39, 0.15);
+            color: #C9A227;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(201, 162, 39, 0.4);
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
-        .hotel-detail-item i {
-            color: #C9A227;
-            /* Theme Gold */
-            font-size: 1rem;
+        .book-now-btn {
+            display: inline-block;
+            width: 100%;
+            background: #C9A227;
+            color: #1D0A3F;
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s;
+            margin-top: auto;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .book-now-btn:hover {
+            background: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .modal-body {
+                grid-template-columns: 1fr;
+                padding: 20px;
+                gap: 20px;
+            }
+
+            .modal-map-container {
+                height: 200px;
+                order: 2;
+                /* Map below details on mobile if desired, or keep top */
+                order: -1;
+            }
+
+            .hotel-card {
+                height: auto;
+                min-height: 480px;
+            }
+
+            .hotel-image-container {
+                height: 250px;
+            }
+
+            .hotel-content {
+                height: auto;
+            }
         }
 
         /* ================= TABLET ================= */
@@ -592,263 +768,181 @@
     <div class="hotels-grid">
 
         <!-- Card 1: Hotel The Mountmist -->
-        <div class="hotel-card">
+        <!-- Card 1: Hotel The Mountmist -->
+        <div class="hotel-card" data-name="Hotel The Mountmist" data-price="₹2,800" data-rating="9.2/10 (Excellent)"
+            data-amenities="Free WiFi,Business Center,Kakkanad,Air Conditioning,24h Front Desk"
+            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15715.4!2d76.3!3d10.0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDAwJzAwLjAiTiA3NsKwMTgnMDAuMCJF!5e0!3m2!1sen!2sin!4v1600000000000">
             <div class="hotel-image-container">
                 <img src="assets/hotel/mountmist.webp" alt="Hotel Room">
             </div>
             <div class="hotel-content">
-                <div class="hotel-price">₹2,800 <span>/night</span></div>
-                <h3 class="hotel-title">Hotel The Mountmist</h3>
-                <div class="hotel-rating">
-                    <i class="bi bi-star-fill"></i>
-                    <span>9.2/10 (Excellent)</span>
-                </div>
-                <div class="hotel-details">
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-wifi"></i>
-                        <span>Free WiFi</span>
-                    </div>
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-person-workspace"></i>
-                        <span>Business</span>
-                    </div>
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-geo-alt-fill"></i>
-                        <span>Kakkanad</span>
+                <div>
+                    <div class="hotel-price">₹2,800 <span>/night</span></div>
+                    <h3 class="hotel-title">Hotel The Mountmist</h3>
+                    <div class="hotel-location-preview">
+                        <i class="bi bi-geo-alt-fill"></i> Kakkanad
                     </div>
                 </div>
+                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
             </div>
         </div>
 
         <!-- Card 2: The Nexus Hotel -->
-        <div class="hotel-card">
+        <!-- Card 2: The Nexus Hotel -->
+        <div class="hotel-card" data-name="The Nexus Hotel" data-price="₹3,200" data-rating="9.0/10 (Superb)"
+            data-amenities="Luxury Rooms,Breakfast Included,Kakkanad,Free Parking,Pool"
+            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15715.4!2d76.3!3d10.0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDAwJzAwLjAiTiA3NsKwMTgnMDAuMCJF!5e0!3m2!1sen!2sin!4v1600000000000">
             <div class="hotel-image-container">
                 <img src="assets/hotel/nexus.webp" alt="Hotel Room">
             </div>
             <div class="hotel-content">
-                <div class="hotel-price">₹3,200 <span>/night</span></div>
-                <h3 class="hotel-title">The Nexus Hotel</h3>
-                <div class="hotel-rating">
-                    <i class="bi bi-star-fill"></i>
-                    <span>9.0/10 (Superb)</span>
-                </div>
-                <div class="hotel-details">
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-hdd-stack"></i>
-                        <span>Luxury</span>
-                    </div>
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-cup-hot-fill"></i>
-                        <span>Breakfast</span>
-                    </div>
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-geo-alt-fill"></i>
-                        <span>Kakkanad</span>
+                <div>
+                    <div class="hotel-price">₹3,200 <span>/night</span></div>
+                    <h3 class="hotel-title">The Nexus Hotel</h3>
+                    <div class="hotel-location-preview">
+                        <i class="bi bi-geo-alt-fill"></i> Kakkanad
                     </div>
                 </div>
+                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
             </div>
         </div>
 
         <!-- Card 3: Loft Business Hotel -->
-        <div class="hotel-card">
+        <!-- Card 3: Loft Business Hotel -->
+        <div class="hotel-card" data-name="Loft Business Hotel" data-price="₹4,500" data-rating="9.0/10 (Superb)"
+            data-amenities="Workspace,Dining,Kakkanad,Gym,High Speed Internet"
+            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15715.4!2d76.3!3d10.0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDAwJzAwLjAiTiA3NsKwMTgnMDAuMCJF!5e0!3m2!1sen!2sin!4v1600000000000">
             <div class="hotel-image-container">
                 <img src="assets/hotel/loft.avif" alt="Hotel Room">
             </div>
             <div class="hotel-content">
-                <div class="hotel-price">₹4,500 <span>/night</span></div>
-                <h3 class="hotel-title">Loft Business Hotel</h3>
-                <div class="hotel-rating">
-                    <i class="bi bi-star-fill"></i>
-                    <span>9.0/10 (Superb)</span>
-                </div>
-                <div class="hotel-details">
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-briefcase-fill"></i>
-                        <span>Workspace</span>
-                    </div>
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-cup-hot-fill"></i>
-                        <span>Dining</span>
-                    </div>
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-geo-alt-fill"></i>
-                        <span>Kakkanad</span>
+                <div>
+                    <div class="hotel-price">₹4,500 <span>/night</span></div>
+                    <h3 class="hotel-title">Loft Business Hotel</h3>
+                    <div class="hotel-location-preview">
+                        <i class="bi bi-geo-alt-fill"></i> Kakkanad
                     </div>
                 </div>
+                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
             </div>
         </div>
 
         <!-- Card 4: Kochi Marriott Hotel -->
-        <div class="hotel-card">
+        <!-- Card 4: Kochi Marriott Hotel -->
+        <div class="hotel-card" data-name="Kochi Marriott Hotel" data-price="₹9,500" data-rating="8.4/10 (Fantastic)"
+            data-amenities="5 Star Luxury,Swimming Pool,Edappally,Spa,Lulu Mall Access"
+            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15715.4!2d76.3!3d10.03!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDAwJzAwLjAiTiA3NsKwMTgnMDAuMCJF!5e0!3m2!1sen!2sin!4v1600000000000">
             <div class="hotel-image-container">
                 <img src="assets/hotel/marriatt.jpg" alt="Hotel Room">
             </div>
             <div class="hotel-content">
-                <div class="hotel-price">₹9,500 <span>/night</span></div>
-                <h3 class="hotel-title">Kochi Marriott Hotel</h3>
-                <div class="hotel-rating">
-                    <i class="bi bi-star-fill"></i>
-                    <span>8.4/10 (Fantastic)</span>
-                </div>
-                <div class="hotel-details">
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-stars"></i>
-                        <span>5 Star</span>
-                    </div>
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-water"></i>
-                        <span>Pool</span>
-                    </div>
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-geo-alt-fill"></i>
-                        <span>Edappally</span>
+                <div>
+                    <div class="hotel-price">₹9,500 <span>/night</span></div>
+                    <h3 class="hotel-title">Kochi Marriott Hotel</h3>
+                    <div class="hotel-location-preview">
+                        <i class="bi bi-geo-alt-fill"></i> Edappally
                     </div>
                 </div>
+                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
             </div>
         </div>
 
         <!-- Card 5: Holiday Inn Cochin -->
-        <div class="hotel-card">
+        <!-- Card 5: Holiday Inn Cochin -->
+        <div class="hotel-card" data-name="Holiday Inn Cochin" data-price="₹5,200" data-rating="8.4/10 (Very Good)"
+            data-amenities="Free Parking,Bar & Lounge,Vennala,Pool,Fitness Center"
+            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15715.4!2d76.3!3d10.0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDAwJzAwLjAiTiA3NsKwMTgnMDAuMCJF!5e0!3m2!1sen!2sin!4v1600000000000">
             <div class="hotel-image-container">
                 <img src="assets/hotel/holiday-inn.jpg" alt="Hotel Room">
             </div>
             <div class="hotel-content">
-                <div class="hotel-price">₹5,200 <span>/night</span></div>
-                <h3 class="hotel-title">Holiday Inn Cochin</h3>
-                <div class="hotel-rating">
-                    <i class="bi bi-star-fill"></i>
-                    <span>8.4/10 (Very Good)</span>
-                </div>
-                <div class="hotel-details">
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-p-circle-fill"></i>
-                        <span>Parking</span>
-                    </div>
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-cup-straw"></i>
-                        <span>Bar</span>
-                    </div>
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-geo-alt-fill"></i>
-                        <span>Vennala</span>
+                <div>
+                    <div class="hotel-price">₹5,200 <span>/night</span></div>
+                    <h3 class="hotel-title">Holiday Inn Cochin</h3>
+                    <div class="hotel-location-preview">
+                        <i class="bi bi-geo-alt-fill"></i> Vennala
                     </div>
                 </div>
+                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
             </div>
         </div>
 
         <!-- Card 6: Novotel Kochi Infopark -->
-        <div class="hotel-card">
+        <div class="hotel-card" data-name="Novotel Kochi Infopark" data-price="₹5,800" data-rating="7.2/10 (Good)"
+            data-amenities="Swimming Pool,Kakkanad,Infopark Access,Restaurant,Bar"
+            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15715.4!2d76.3!3d10.0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDAwJzAwLjAiTiA3NsKwMTgnMDAuMCJF!5e0!3m2!1sen!2sin!4v1600000000000">
             <div class="hotel-image-container">
                 <img src="assets/hotel/novotel-1.webp" alt="Hotel Room">
             </div>
             <div class="hotel-content">
-                <div class="hotel-price">₹5,800 <span>/night</span></div>
-                <h3 class="hotel-title">Novotel Kochi Infopark</h3>
-                <div class="hotel-rating">
-                    <i class="bi bi-star-fill"></i>
-                    <span>7.2/10 (Good)</span>
-                </div>
-                <div class="hotel-details">
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-building"></i>
-                        <span>Modern</span>
-                    </div>
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-cup-hot-fill"></i>
-                        <span>Cafe</span>
-                    </div>
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-geo-alt-fill"></i>
-                        <span>Infopark</span>
+                <div>
+                    <div class="hotel-price">₹5,800 <span>/night</span></div>
+                    <h3 class="hotel-title">Novotel Kochi Infopark</h3>
+                    <div class="hotel-location-preview">
+                        <i class="bi bi-geo-alt-fill"></i> Kakkanad
                     </div>
                 </div>
+                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
             </div>
         </div>
 
         <!-- Card 7: The Blooms Cochin -->
-        <div class="hotel-card">
+        <!-- Card 7: The Blooms Cochin -->
+        <div class="hotel-card" data-name="The Blooms Cochin" data-price="₹3,500" data-rating="8.4/10 (Excellent)"
+            data-amenities="Clean Rooms,Transport Assistance,Kakkanad,Free WiFi,Breakfast"
+            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15715.4!2d76.3!3d10.0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDAwJzAwLjAiTiA3NsKwMTgnMDAuMCJF!5e0!3m2!1sen!2sin!4v1600000000000">
             <div class="hotel-image-container">
                 <img src="assets/hotel/blooms.webp" alt="Hotel Room">
             </div>
             <div class="hotel-content">
-                <div class="hotel-price">₹3,500 <span>/night</span></div>
-                <h3 class="hotel-title">The Blooms Cochin</h3>
-                <div class="hotel-rating">
-                    <i class="bi bi-star-fill"></i>
-                    <span>8.4/10 (Excellent)</span>
-                </div>
-                <div class="hotel-details">
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-patch-check-fill"></i>
-                        <span>Clean</span>
-                    </div>
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-car-front-fill"></i>
-                        <span>Transport</span>
-                    </div>
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-geo-alt-fill"></i>
-                        <span>Kakkanad</span>
+                <div>
+                    <div class="hotel-price">₹3,500 <span>/night</span></div>
+                    <h3 class="hotel-title">The Blooms Cochin</h3>
+                    <div class="hotel-location-preview">
+                        <i class="bi bi-geo-alt-fill"></i> Kakkanad
                     </div>
                 </div>
+                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
             </div>
         </div>
 
         <!-- Card 8: Hotel Olive Eva -->
-        <div class="hotel-card">
+        <!-- Card 8: Hotel Olive Eva -->
+        <div class="hotel-card" data-name="Hotel Olive Eva" data-price="₹3,000" data-rating="8.5/10 (Very Good)"
+            data-amenities="Concierge,Gym,Kakkanad,Breakfast,Free WiFi"
+            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15715.4!2d76.3!3d10.0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDAwJzAwLjAiTiA3NsKwMTgnMDAuMCJF!5e0!3m2!1sen!2sin!4v1600000000000">
             <div class="hotel-image-container">
                 <img src="assets/hotel/olive.avif" alt="Hotel Room">
             </div>
             <div class="hotel-content">
-                <div class="hotel-price">₹3,000 <span>/night</span></div>
-                <h3 class="hotel-title">Hotel Olive Eva</h3>
-                <div class="hotel-rating">
-                    <i class="bi bi-star-fill"></i>
-                    <span>8.5/10 (Very Good)</span>
-                </div>
-                <div class="hotel-details">
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-bell-fill"></i>
-                        <span>Concierge</span>
-                    </div>
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-heart-pulse-fill"></i>
-                        <span>Gym</span>
-                    </div>
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-geo-alt-fill"></i>
-                        <span>Kakkanad</span>
+                <div>
+                    <div class="hotel-price">₹3,000 <span>/night</span></div>
+                    <h3 class="hotel-title">Hotel Olive Eva</h3>
+                    <div class="hotel-location-preview">
+                        <i class="bi bi-geo-alt-fill"></i> Kakkanad
                     </div>
                 </div>
+                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
             </div>
         </div>
 
         <!-- Card 9: Clarion Hotel Khayal -->
-        <div class="hotel-card">
+        <!-- Card 9: Clarion Hotel Khayal -->
+        <div class="hotel-card" data-name="Clarion Hotel Khayal" data-price="₹2,500" data-rating="7.0/10 (Good)"
+            data-amenities="Events Hall,Infopark,Discount,Restaurant,24h Service"
+            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15715.4!2d76.3!3d10.0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDAwJzAwLjAiTiA3NsKwMTgnMDAuMCJF!5e0!3m2!1sen!2sin!4v1600000000000">
             <div class="hotel-image-container">
                 <img src="assets/hotel/clarion.jpg" alt="Hotel Room">
             </div>
             <div class="hotel-content">
-                <div class="hotel-price">₹2,500 <span>/night</span></div>
-                <h3 class="hotel-title">Clarion Hotel Khayal</h3>
-                <div class="hotel-rating">
-                    <i class="bi bi-star-fill"></i>
-                    <span>7.0/10 (Good)</span>
-                </div>
-                <div class="hotel-details">
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-tag-fill"></i>
-                        <span>Discount</span>
-                    </div>
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-people-fill"></i>
-                        <span>Events</span>
-                    </div>
-                    <div class="hotel-detail-item">
-                        <i class="bi bi-geo-alt-fill"></i>
-                        <span>Infopark</span>
+                <div>
+                    <div class="hotel-price">₹2,500 <span>/night</span></div>
+                    <h3 class="hotel-title">Clarion Hotel Khayal</h3>
+                    <div class="hotel-location-preview">
+                        <i class="bi bi-geo-alt-fill"></i> Infopark
                     </div>
                 </div>
+                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
             </div>
         </div>
 
@@ -856,13 +950,44 @@
 
     <main-footer></main-footer>
 
+    <!-- Modal Markup -->
+    <div class="modal-overlay" id="hotelModalOverlay" onclick="closeHotelModal(event)">
+        <div class="hotel-modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Hotel Name</h3>
+                <button class="modal-close" onclick="closeHotelModal(event)">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-info">
+                    <div class="modal-rating" id="modalRating">
+                        <i class="bi bi-star-fill"></i>
+                        <span>9.0/10 (Superb)</span>
+                    </div>
+
+                    <div class="modal-description">
+                        This premium hotel offers world-class amenities and comfortable stays near the conference venue.
+                        Enjoy luxury accommodation with easy access to city attractions.
+                    </div>
+
+                    <div class="modal-amenities" id="modalAmenities">
+                        <!-- Populated by JS -->
+                    </div>
+
+                    <a href="#" class="book-now-btn">Book Now</a>
+                </div>
+                <div class="modal-map-container">
+                    <iframe id="modalMap" src="" loading="lazy"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener("DOMContentLoaded", (event) => {
             const slides = document.querySelectorAll('.slide');
             let currentSlide = 0;
-            const slideInterval = 4000; // 4 seconds per slide
+            const slideInterval = 4000;
 
-            // Initialize: Force Slide 1 active, others inactive
             slides.forEach((slide, index) => {
                 if (index === 0) {
                     slide.classList.add('active');
@@ -872,19 +997,58 @@
             });
 
             function nextSlide() {
-                // Remove active class from current
                 slides[currentSlide].classList.remove('active');
-
-                // Calculate next index
                 currentSlide = (currentSlide + 1) % slides.length;
-
-                // Add active class to next
                 slides[currentSlide].classList.add('active');
             }
-
-            // Start loop
             setInterval(nextSlide, slideInterval);
         });
+
+        // Modal Logic
+        function openHotelModal(card) {
+            const modal = document.getElementById('hotelModalOverlay');
+            const title = document.getElementById('modalTitle');
+            const rating = document.querySelector('#modalRating span');
+            const amenitiesContainer = document.getElementById('modalAmenities');
+            const mapFrame = document.getElementById('modalMap');
+
+            // Populate Data
+            title.innerText = card.dataset.name;
+            rating.innerText = card.dataset.rating;
+            mapFrame.src = card.dataset.mapSrc;
+
+            // Amenities
+            amenitiesContainer.innerHTML = '';
+            if (card.dataset.amenities) {
+                const amenities = card.dataset.amenities.split(',');
+                amenities.forEach(am => {
+                    const tag = document.createElement('div');
+                    tag.className = 'amenity-tag';
+                    tag.innerHTML = `<i class="bi bi-check-circle-fill"></i> ${am.trim()}`;
+                    amenitiesContainer.appendChild(tag);
+                });
+            }
+
+            // Show Modal
+            modal.style.display = 'flex';
+            // Small timeout for transition
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeHotelModal(e) {
+            if (e.target.classList.contains('modal-overlay') || e.target.classList.contains('modal-close') || e.target.closest('.modal-close')) {
+                const modal = document.getElementById('hotelModalOverlay');
+                modal.classList.remove('active');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                    document.getElementById('modalMap').src = ''; // Stop map loading
+                }, 300);
+            }
+        }
     </script>
 </body>
 
