@@ -57,9 +57,10 @@
       .committee-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 20px;
+        column-gap: 20px;   /* space between columns */
+        row-gap: 50px;      /* space between rows */
         margin-bottom: 80px;
-      }
+    }
 
       .committee-card {
         background: #1d0a3f;
@@ -67,12 +68,15 @@
         border-radius: 12px;
         border-left: 6px solid #c9a227;
         box-shadow: -1rem 0 3rem rgba(0, 0, 0, 0.4);
+        display: flex;
+        flex-direction: column;      /* REQUIRED */
+        justify-content: space-between;
         transition: transform 0.35s ease, box-shadow 0.35s ease;
       }
 
       .committee-card:hover {
-        transform: scale(1.08) translateY(-20px);
-        box-shadow: -1rem 0 4rem rgba(0, 0, 0, 0.7);
+        transform: scale(1.05) translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
       }
 
       .card-header {
@@ -213,7 +217,7 @@
         <div class="committee-grid">
           <div class="committee-card">
             <div class="card-header">
-              <img src="assets/placeholder.jpg" />
+              <img src="assets/ext1.jpg" />
               <h3>PROF LYNETTE JOUBERT</h3>
               <h4>University of Melbourne</h4>
             </div>
@@ -232,7 +236,7 @@
 
           <div class="committee-card">
             <div class="card-header">
-              <img src="assets/placeholder.jpg" />
+              <img src="assets/ext2.jpg" />
               <h3>PROF VARDA SOSKOLNE</h3>
               <h4>Bar-Ilan University</h4>
             </div>
@@ -270,7 +274,7 @@
 
           <div class="committee-card">
             <div class="card-header">
-              <img src="assets/placeholder.jpg" />
+              <img src="assets/ext4.jpg" />
               <h3>PROF MIRIAM SCHIFF</h3>
               <h4>The Hebrew University of Jerusalem</h4>
             </div>
@@ -295,14 +299,14 @@
           <!-- Repeatable internal cards -->
           <script>
             const members = [
-              ["PROF SAJU MD", "RCSS", "Academic leadership and curriculum development in social work education."],
-              ["DR ANISH KR", "RCSS", "Teaching and research innovation in social work."],
-              ["DR KIRAN THAMPI", "RCSS", "Research, community engagement, and professional training."],
-              ["DR SUNIROSE IP", "RCSS", "Teaching, research, and field-based social interventions."],
-              ["DR NYCIL ROMIS THOMAS", "RCSS", "Pedagogy, mentoring, and practice innovation."],
-              ["DR SHINTO JOSEPH", "RCSS", "Institutional development and academic planning."],
-              ["DR RAJEEV SP", "RCSS", "Research coordination and academic administration."],
-              ["DR ANIL JOHN", "RCSS", "Curriculum design and professional training."]
+              ["PROF SAJU MD", "RCSS", "Academic leadership and curriculum development in social work education.","assets/int1.jpg"],
+              ["DR ANISH KR", "RCSS", "Teaching and research innovation in social work.","assets/int2.jpg"],
+              ["DR KIRAN THAMPI", "RCSS", "Research, community engagement, and professional training.","assets/i.jpg"],
+              ["DR SUNIROSE IP", "RCSS", "Teaching, research, and field-based social interventions.","assets/i.jpg"],
+              ["DR NYCIL ROMIS THOMAS", "RCSS", "Pedagogy, mentoring, and practice innovation.","assets/i.jpg"],
+              ["DR SHINTO JOSEPH", "RCSS", "Institutional development and academic planning.","assets/i.jpg"],
+              ["DR RAJEEV SP", "RCSS", "Research coordination and academic administration.","assets/i.jpg"],
+              ["DR ANIL JOHN", "RCSS", "Curriculum design and professional training.","assets/i.jpg"]
             ];
 
             document.currentScript.insertAdjacentHTML(
