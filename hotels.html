@@ -43,7 +43,7 @@
 
         /* ================= TITLE ================= */
         .hotels-title-section {
-            margin-top: 150px;
+            margin-top: 80px;
             margin-bottom: 50px;
             max-width: 1200px;
             margin-left: auto;
@@ -237,7 +237,8 @@
         .hero-nav {
             width: 100%;
             position: absolute;
-            top: 0;
+            top: 100px;
+            /* Shifted down to avoid overlap with main navbar */
             z-index: 10;
             padding: 1em 5em;
             display: flex;
@@ -305,340 +306,199 @@
         }
 
         /* Hero Main Slider */
-        .hero-main {
+        /* ================= HERO SLIDER STYLES ================= */
+        .page-wrap {
+            position: relative;
+            margin-bottom: 0;
+        }
+
+        .hero-slider {
             width: 100%;
             height: 100vh;
             position: relative;
             overflow: hidden;
+            background: #000;
         }
 
-        .hero-article {
-            width: 100%;
-            height: 100%;
+        .slide {
             position: absolute;
             top: 0;
             left: 0;
-            z-index: var(--i);
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .hero-info {
-            position: absolute;
-            top: 50%;
-            left: 5%;
-            transform: translateY(-50%);
-            z-index: 8;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .hero-info h2 {
-            font-size: clamp(2rem, 9vw, 5rem);
-            line-height: clamp(2rem, 9vw, 5rem);
-            text-transform: uppercase;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            margin: 0;
-        }
-
-        .hero-info h1 {
-            color: #f5f5f5;
-            /* --white */
-            font-size: clamp(3.2rem, 10vw, 7rem);
-            line-height: clamp(3.2rem, 10vw, 7rem);
-            text-transform: uppercase;
-            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5);
-            margin: 0;
-        }
-
-        .hero-info h3 {
-            color: #f5f5f5;
-            /* --white */
-            font-size: 1.6rem;
-            font-weight: normal;
-            margin-top: 1em;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
-        }
-
-        @supports (-webkit-text-stroke: 3px #e0d4be) {
-            .hero-info h2 {
-                color: transparent;
-                -webkit-text-stroke: 2px #e0d4be;
-                /* --pill */
-                text-shadow: none;
-            }
+        .slide.active {
+            opacity: 1;
+            z-index: 2;
         }
 
         .hero-image {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
-            clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+            z-index: 1;
         }
 
-        /* Images */
+        /* Slide text styles */
+        .hero-info {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            color: #fff;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+
+        .slide.active .hero-info {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.8s ease-out 0.5s, transform 0.8s ease-out 0.5s;
+            /* Delay to let old text fade */
+        }
+
+        .hero-info h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+            font-size: 1.5rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-info h1 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 6rem;
+            text-transform: uppercase;
+            line-height: 1;
+            margin: 0;
+            color: #fff;
+            /* Explicit white */
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-info h3 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            margin-top: 1rem;
+            color: #ddd;
+        }
+
+        /* Individual Images */
         .hi-1 {
-            background-image: url("https://images.unsplash.com/photo-1590050752117-238cb0fb32b6?q=80&w=2070&auto=format&fit=crop");
+            background-image: url('assets/attractions/fort-kochi-fishing-net.jpg');
         }
 
-        /* Fort Kochi / Fishing Nets */
         .hi-2 {
-            background-image: url("https://images.unsplash.com/photo-1629017684617-43c3d5513511?q=80&w=2070&auto=format&fit=crop");
+            background-image: url('assets/attractions/synagogue.jpg');
         }
 
-        /* Mattancherry / Culture */
         .hi-3 {
-            background-image: url("https://images.unsplash.com/photo-1598424225333-827d05779774?q=80&w=2070&auto=format&fit=crop");
+            background-image: url('assets/attractions/Marine_Drive_Kochi_Night_View_DSW.jpg');
         }
 
-        /* Marine Drive / Backwaters */
         .hi-4 {
-            background-image: url("https://images.unsplash.com/photo-1599136067362-e1c4476cb587?q=80&w=2070&auto=format&fit=crop");
+            background-image: url('assets/attractions/Cherai-Beach.jpg');
         }
 
-        /* Cherai Beach */
         .hi-5 {
-            background-image: url("https://images.unsplash.com/photo-1516483638261-f4dbaf036963?q=80&w=2066&auto=format&fit=crop");
+            background-image: url('assets/attractions/kathakali.jpg');
         }
 
-        /* Kathakali / Folklore */
-
-        /* Overlay Menu */
-        .overlay-section {
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 9;
-            min-height: 100vh;
-            width: 100%;
-            padding: 8em 5em 2em 5em;
-            background-color: #f5f5f5;
-            /* --white */
-            background-image: url("https://www.transparenttextures.com/patterns/church.png");
-            clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
-            display: none;
-            /* JS toggles this */
-        }
-
-        .level-1 {
-            display: grid;
-            grid-template-columns: 65% 1fr;
-            grid-auto-rows: min-content;
-            grid-gap: 2em;
-            list-style: none;
-            padding: 0;
-        }
-
-        .level-1 h3 {
-            font-weight: 600;
-            font-size: 1.8rem;
-            text-transform: uppercase;
-            color: #242424;
-            margin-bottom: 15px;
-        }
-
-        .level-2 {
-            padding: 0.3em 1em;
-            list-style: none;
-        }
-
-        .level-2 li p {
-            color: #cc033f;
-            /* --red */
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin: 1em 0;
-            text-transform: uppercase;
-            border-bottom: 1px solid #fde0ac;
-        }
-
-        .level-3 {
-            display: flex;
-            flex-wrap: wrap;
-            list-style: none;
-            padding: 0;
-        }
-
-        .level-3 li {
-            padding: 0.5em 1em;
-            background-color: #e0d4be;
-            /* --pill */
-            border-radius: 500px;
-            margin-right: 10px;
-            margin-bottom: 10px;
-            font-size: 1rem;
-            cursor: pointer;
-            color: #242424;
-            /* --black */
+        .hi-6 {
+            background-image: url('assets/attractions/jew-town.jpg');
         }
 
         @media screen and (max-width: 768px) {
-            .hero-nav {
-                padding: 1em 2em;
-            }
-
-            .overlay-section {
-                padding: 8em 2em 2em 2em;
-            }
-
-            .level-1 {
-                grid-template-columns: 1fr;
-            }
-
-            .level-1 li:nth-of-type(1) {
-                grid-column: 1/2;
-                grid-row: 1/2;
-            }
-
-            .level-1 li:nth-of-type(2) {
-                grid-column: 1/2;
-                grid-row: 2/3;
+            .hero-info h1 {
+                font-size: 3rem;
             }
         }
     </style>
 </head>
 
 <body>
-    <floating-navbar></floating-navbar>
+    <floating-navbar transparent></floating-navbar>
 
     <!-- Full Screen Hero Slider -->
     <div class="page-wrap">
-        <header class="slider-header">
-            <nav class="hero-nav">
-                <h1>KOCHI | Attractions</h1>
-                <ul>
-                    <li>About Us</li>
-                    <li>Contact Us</li>
-                    <li id="burger">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </li>
-                </ul>
-            </nav>
+        <div class="hero-slider">
+            <!-- Slide 1: Fort Kochi -->
+            <div class="slide active">
+                <div class="hero-image hi-1"></div>
+                <div class="hero-info">
+                    <h2>Historic</h2>
+                    <h1>Fort Kochi</h1>
+                    <h3>Iconic Chinese Fishing Nets</h3>
+                </div>
+            </div>
 
-            <main class="hero-main">
-                <!-- Slide 1: Fort Kochi -->
-                <article id="hero-1" class="hero-article" style="--i: 5">
-                    <div class="hero-info">
-                        <h2>Historic</h2>
-                        <h1>Fort Kochi</h1>
-                        <h3>Iconic Chinese Fishing Nets</h3>
-                    </div>
-                    <div class="hero-image hi-1"></div>
-                </article>
+            <!-- Slide 2: Mattancherry -->
+            <div class="slide">
+                <div class="hero-image hi-2"></div>
+                <div class="hero-info">
+                    <h2>Heritage</h2>
+                    <h1>Mattancherry</h1>
+                    <h3>Dutch Palace & Synagogue</h3>
+                </div>
+            </div>
 
-                <!-- Slide 2: Mattancherry -->
-                <article id="hero-2" class="hero-article" style="--i: 4">
-                    <div class="hero-info">
-                        <h2>Heritage</h2>
-                        <h1>Mattancherry</h1>
-                        <h3>Dutch Palace & Synagogue</h3>
-                    </div>
-                    <div class="hero-image hi-2"></div>
-                </article>
+            <!-- Slide 3: Marine Drive -->
+            <div class="slide">
+                <div class="hero-image hi-3"></div>
+                <div class="hero-info">
+                    <h2>Scenic</h2>
+                    <h1>Marine Drive</h1>
+                    <h3>Backwaters Walkway</h3>
+                </div>
+            </div>
 
-                <!-- Slide 3: Marine Drive -->
-                <article id="hero-3" class="hero-article" style="--i: 3">
-                    <div class="hero-info">
-                        <h2>Scenic</h2>
-                        <h1>Marine Drive</h1>
-                        <h3>Backwaters Walkway</h3>
-                    </div>
-                    <div class="hero-image hi-3"></div>
-                </article>
+            <!-- Slide 4: Cherai Beach -->
+            <div class="slide">
+                <div class="hero-image hi-4"></div>
+                <div class="hero-info">
+                    <h2>Golden</h2>
+                    <h1>Cherai Beach</h1>
+                    <h3>Sunsets & Dolphins</h3>
+                </div>
+            </div>
 
-                <!-- Slide 4: Cherai Beach -->
-                <article id="hero-4" class="hero-article" style="--i: 2">
-                    <div class="hero-info">
-                        <h2>Golden</h2>
-                        <h1>Cherai Beach</h1>
-                        <h3>Sunsets & Dolphins</h3>
-                    </div>
-                    <div class="hero-image hi-4"></div>
-                </article>
+            <!-- Slide 5: Kerala Folklore -->
+            <div class="slide">
+                <div class="hero-image hi-5"></div>
+                <div class="hero-info">
+                    <h2>Cultural</h2>
+                    <h1>Kathakali</h1>
+                    <h3>Kerala Folklore Theatre</h3>
+                </div>
+            </div>
 
-                <!-- Slide 5: Kerala Folklore -->
-                <article id="hero-5" class="hero-article" style="--i: 1">
-                    <div class="hero-info">
-                        <h2>Cultural</h2>
-                        <h1>Kathakali</h1>
-                        <h3>Kerala Folklore Theatre</h3>
-                    </div>
-                    <div class="hero-image hi-5"></div>
-                </article>
-            </main>
-        </header>
-
-        <section class="overlay-section">
-            <ul class="level-1">
-                <li>
-                    <h3>Attractions</h3>
-                    <ul class="level-2">
-                        <li>
-                            <p>Heritage</p>
-                            <ul class="level-3">
-                                <li>Fort Kochi</li>
-                                <li>Mattancherry</li>
-                                <li>Hill Palace</li>
-                                <li>Dutch Cemetery</li>
-                            </ul>
-                        </li>
-                        <li>
-                            <p>Nature</p>
-                            <ul class="level-3">
-                                <li>Marine Drive</li>
-                                <li>Cherai Beach</li>
-                                <li>Mangalavanam</li>
-                                <li>Vypeen Island</li>
-                            </ul>
-                        </li>
-                        <li>
-                            <p>Devotional</p>
-                            <ul class="level-3">
-                                <li>St. Francis Church</li>
-                                <li>Paradesi Synagogue</li>
-                                <li>Santa Cruz Basilica</li>
-                                <li>Chottanikkara</li>
-                            </ul>
-                        </li>
-                        <li>
-                            <p>Shopping</p>
-                            <ul class="level-3">
-                                <li>LuLu Mall</li>
-                                <li>Jew Town</li>
-                                <li>Broadway</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <h3>Travel Tips</h3>
-                    <ul>
-                        <li>Best Time to Visit</li>
-                        <li>Local Transport</li>
-                        <li>Cuisine Guide</li>
-                        <li>Safety Tips</li>
-                    </ul>
-                </li>
-                <li>
-                    <h3>Resources</h3>
-                    <ul>
-                        <li>Events Calendar</li>
-                        <li>Map Download</li>
-                        <li>Taxi Services</li>
-                    </ul>
-                </li>
-                <li>
-                    <h3>About Kochi</h3>
-                    <ul>
-                        <li>History</li>
-                        <li>Culture</li>
-                        <li>Economy</li>
-                    </ul>
-                </li>
-            </ul>
-        </section>
+            <!-- Slide 6: Jew Town -->
+            <div class="slide">
+                <div class="hero-image hi-6"></div>
+                <div class="hero-info">
+                    <h2>Shopping</h2>
+                    <h1>Jew Town</h1>
+                    <h3>Antiques & Spices</h3>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Original Content Follows -->
@@ -916,93 +776,32 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", (event) => {
-            gsap.registerPlugin(ScrollTrigger);
+            const slides = document.querySelectorAll('.slide');
+            let currentSlide = 0;
+            const slideInterval = 4000; // 4 seconds per slide
 
-            let burger = document.getElementById("burger");
-            let overlay = document.querySelector(".overlay-section");
-            let showMenu = false;
-            let del = 3;
-            let i = 1;
-
-            let tl = gsap.timeline({
-                repeat: -1,
-                yoyo: true,
-                ease: "expo.out"
-            });
-
-            // Set Initial States
-            overlay.style.display = "none";
-
-            burger.addEventListener("click", (e) => {
-                showMenu = !showMenu;
-                if (showMenu) {
-                    burger.classList.add("active");
-                    overlay.style.display = "block";
-                    gsap.to(overlay, {
-                        duration: 1,
-                        clipPath: "polygon(0% 0%, 100% 0, 100% 100%, 0% 100%)",
-                        ease: "expo.in"
-                    });
+            // Initialize: Force Slide 1 active, others inactive
+            slides.forEach((slide, index) => {
+                if (index === 0) {
+                    slide.classList.add('active');
                 } else {
-                    burger.classList.remove("active");
-                    gsap.to(overlay, {
-                        duration: 1,
-                        clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
-                        ease: "expo.out",
-                        onComplete: () => (overlay.style.display = "none")
-                    });
+                    slide.classList.remove('active');
                 }
             });
 
-            gsap.set(["#hero-1 h2, #hero-1 h1, #hero-1 h3"], {
-                clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"
-            });
+            function nextSlide() {
+                // Remove active class from current
+                slides[currentSlide].classList.remove('active');
 
-            gsap.set(
-                [
-                    `#hero-2 h2, #hero-3 h2, #hero-4 h2, #hero-5 h2,
-                     #hero-2 h1, #hero-3 h1, #hero-4 h1, #hero-5 h1,
-                     #hero-2 h3, #hero-3 h3, #hero-4 h3, #hero-5 h3`
-                ],
-                {
-                    clipPath: "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)"
-                }
-            );
+                // Calculate next index
+                currentSlide = (currentSlide + 1) % slides.length;
 
-            // Animation Loop
-            while (i < 5) {
-                tl.to(`#hero-${i} h2`, {
-                    duration: 0.9,
-                    clipPath: "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)",
-                    delay: del
-                })
-                    .to(`#hero-${i} h1`, {
-                        duration: 0.9,
-                        clipPath: "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)"
-                    }, "-=0.3")
-                    .to(`#hero-${i} h3`, {
-                        duration: 0.9,
-                        clipPath: "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)"
-                    }, "-=0.3")
-                    .to(`#hero-${i} .hi-${i}`, {
-                        duration: 0.7,
-                        clipPath: "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)"
-                    }, "-=1")
-                    .to(`#hero-${i + 1} h2`, {
-                        duration: 0.9,
-                        clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"
-                    })
-                    .to(`#hero-${i + 1} h1`, {
-                        duration: 0.9,
-                        clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"
-                    }, "-=0.3")
-                    .to(`#hero-${i + 1} h3`, {
-                        duration: 0.9,
-                        clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)"
-                    }, "-=0.3");
-
-                i++;
+                // Add active class to next
+                slides[currentSlide].classList.add('active');
             }
+
+            // Start loop
+            setInterval(nextSlide, slideInterval);
         });
     </script>
 </body>
