@@ -22,6 +22,11 @@ class MainFooter extends HTMLElement {
                     font-family: 'Outfit', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 }
 
+                * {
+                    box-sizing: border-box;
+                }
+
+
                 ul {
                     list-style: none;
                     padding: 0;
@@ -229,7 +234,8 @@ class MainFooter extends HTMLElement {
                         grid-template-columns: 1fr 1fr;
                         gap: 15px;
                         padding: 35px 30px 20px;
-                        margin-left: 420px;
+                        margin-left: 40%; /* Dynamic margin instead of fixed px */
+                        width: 60%; /* Ensure it fits */
                         font-size: 0.9rem;
                     }
                     
@@ -238,12 +244,12 @@ class MainFooter extends HTMLElement {
                     }
 
                     .logo-section {
-                        width: 400px;
+                        width: 40%; /* Dynamic width */
                         height: 140px;
                     }
 
                     .copyright-section {
-                        width: 500px;
+                        width: 50%; /* Dynamic width */
                     }
                 }
 
@@ -254,6 +260,8 @@ class MainFooter extends HTMLElement {
                 @media (max-width: 950px) {
                     .footer-container {
                         min-height: auto;
+                        width: 100%;
+                        overflow-x: hidden;
                     }
 
                     .logo-section {
@@ -273,6 +281,7 @@ class MainFooter extends HTMLElement {
                         grid-template-columns: 1fr 1fr;
                         gap: 30px 20px;
                         text-align: center;
+                        width: 100%;
                     }
                     
                     /* Reorder columns: Quick Links and Resources on top, Contact Us below */
@@ -298,6 +307,7 @@ class MainFooter extends HTMLElement {
                         bottom: auto;
                         justify-content: center;
                         margin-top: 20px;
+                        width: 100%;
                     }
 
                     .copyright-section {
