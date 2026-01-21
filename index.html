@@ -195,8 +195,9 @@
         .hero-section {
             position: relative;
             width: 100%;
+            max-width: 95%;
+            margin: 120px auto 0 auto;
             height: 80vh;
-            margin-top: 120px;
             /* Space for fixed navbar/ticker */
             display: flex;
             align-items: center;
@@ -1888,7 +1889,7 @@
 
         /* Timeline Section */
         .timeline-section {
-            padding: 80px 20px;
+            /* padding: 80px 20px; */
             background-color: #FDFBF7;
             max-width: 95%;
             margin: 0 auto;
@@ -1923,7 +1924,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 40px 0;
+            /* padding: 40px 0 0 0; */
             margin-top: 20px;
             /* Reduced from 50px */
             min-height: 400px;
@@ -2143,6 +2144,361 @@
                 transform: translateX(10px) !important;
             }
         }
+
+        /* Your Host Slider Section */
+        .host-slider-section {
+            /* padding: 30px 0 80px 0; */
+            background-color: #FDFBF7;
+            max-width: 95%;
+            margin: 0 auto;
+        }
+
+        .host-slider-section .section-title {
+            text-align: left;
+            margin-bottom: 0px;
+            color: #1D0A3F;
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 600;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .host-slider-section .section-title::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: #C9A227;
+            margin-top: 10px;
+            margin-bottom: 40px;
+            border-radius: 3px;
+        }
+
+        .host-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 30px;
+            margin: 0 20px;
+        }
+
+        .host-slider {
+            display: flex;
+            width: 400%;
+            height: 550px;
+            transition: all 0.25s ease-in;
+            transform: translateX(0);
+        }
+
+        .host-slider .host-box {
+            height: 100%;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .host-slider .host-box .host-bg {
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.2);
+            width: 55%;
+            transform: skew(7deg);
+            position: absolute;
+            height: 100%;
+            left: -10%;
+            padding-left: 200px;
+            transform-origin: 0 100%;
+        }
+
+        .host-slider .host-box .host-bg::before {
+            content: "";
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: inherit;
+            pointer-events: none;
+            transform: skew(10deg);
+        }
+
+        .host-slider .host-box .host-details {
+            padding: 50px;
+            padding-left: 100px;
+            z-index: 100;
+            grid-column: 1 / span 1;
+            grid-row: 1 / -1;
+        }
+
+        .host-slider .host-box .host-details h1 {
+            font-size: 2.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: white;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .host-slider .host-box .host-details p {
+            display: inline-block;
+            font-size: 1.2rem;
+            color: #B5B4B4;
+            margin-bottom: 20px;
+            margin-right: 50px;
+            line-height: 1.6;
+        }
+
+        .host-slider .host-box .host-details button {
+            padding: 12px 30px;
+            color: white;
+            border-radius: 25px;
+            outline: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .host-slider .host-box .host-details button:hover {
+            opacity: 0.8;
+        }
+
+        .host-slider .host-illustration {
+            grid-column: 2 / -1;
+            grid-row: 1 / -1;
+            justify-self: center;
+        }
+
+        .host-slider .host-illustration .host-inner {
+            height: 350px;
+            width: 250px;
+            border-radius: 30px;
+            position: relative;
+            transform: skew(-10deg);
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Removed overlapping containers */
+        /* .host-slider .host-illustration .host-inner::after,
+        .host-slider .host-illustration .host-inner::before {
+            content: "";
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            border-radius: 30px;
+            top: 0;
+            left: 0;
+        }
+
+        .host-slider .host-illustration .host-inner::after {
+            transform: translate(40px, -10px);
+        }
+
+        .host-slider .host-illustration .host-inner::before {
+            transform: translate(20px, -20px);
+        } */
+
+        /* Color schemes for different slides */
+        .host-slider .host-box1 {
+            background-color: #500033;
+        }
+
+        /* .host-slider .host-box1 .host-illustration .host-inner {
+            background-color: #FF0077;
+        }
+
+        .host-slider .host-box1 .host-illustration .host-inner::after,
+        .host-slider .host-box1 .host-illustration .host-inner::before {
+            background-color: rgba(255, 0, 119, 0.4);
+        } */
+
+        .host-slider .host-box1 .host-details button {
+            background-color: #FF0077;
+        }
+
+        .host-slider .host-box2 {
+            background-color: #000050;
+        }
+
+        /* .host-slider .host-box2 .host-illustration .host-inner {
+            background-color: #0033FF;
+        }
+
+        .host-slider .host-box2 .host-illustration .host-inner::after,
+        .host-slider .host-box2 .host-illustration .host-inner::before {
+            background-color: rgba(0, 51, 255, 0.4);
+        } */
+
+        .host-slider .host-box2 .host-details button {
+            background-color: #0033FF;
+        }
+
+        .host-slider .host-box3 {
+            background-color: #00501D;
+        }
+
+        /* .host-slider .host-box3 .host-illustration .host-inner {
+            background-color: #00FF44;
+        }
+
+        .host-slider .host-box3 .host-illustration .host-inner::after,
+        .host-slider .host-box3 .host-illustration .host-inner::before {
+            background-color: rgba(0, 255, 68, 0.4);
+        } */
+
+        .host-slider .host-box3 .host-details button {
+            background-color: #00FF44;
+        }
+
+        .host-slider .host-box4 {
+            background-color: #554D00;
+        }
+
+        /* .host-slider .host-box4 .host-illustration .host-inner {
+            background-color: #FF4E00;
+        }
+
+        .host-slider .host-box4 .host-illustration .host-inner::after,
+        .host-slider .host-box4 .host-illustration .host-inner::before {
+            background-color: rgba(255, 78, 0, 0.4);
+        } */
+
+        .host-slider .host-box4 .host-details button {
+            background-color: #FF4E00;
+        }
+
+        .host-prev,
+        .host-next {
+            z-index: 10000;
+            position: absolute;
+            width: 40px;
+            cursor: pointer;
+            opacity: 0.2;
+            transition: all 0.3s ease;
+            top: 50%;
+        }
+
+        .host-prev:hover,
+        .host-next:hover {
+            opacity: 1;
+        }
+
+        .host-prev {
+            left: 2%;
+            transform: translateY(-50%);
+        }
+
+        .host-next {
+            right: 2%;
+            transform: translateY(-50%);
+        }
+
+        .host-trail {
+            z-index: 10000;
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        .host-trail div {
+            padding: 15px;
+            border-top: 3px solid #fff;
+            cursor: pointer;
+            opacity: 0.3;
+            transition: all 0.3s ease;
+            color: white;
+            font-weight: 500;
+        }
+
+        .host-trail div:hover {
+            opacity: 0.6;
+        }
+
+        .host-trail .active {
+            opacity: 1 !important;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 900px) {
+            .host-slider {
+                height: 100vh;
+            }
+
+            .host-slider .host-box {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(2, 1fr);
+            }
+
+            .host-slider .host-box .host-bg {
+                width: 100%;
+                left: 0;
+                bottom: 0;
+                height: 54%;
+                transform: skew(0deg);
+            }
+
+            .host-slider .host-box .host-bg::before {
+                width: 120%;
+                bottom: 0;
+                transform: skew(0deg);
+            }
+
+            .host-slider .host-box .host-details {
+                grid-row: 2 / span 1;
+                grid-column: 1 / -1;
+                text-align: center;
+                padding: 20px;
+                transform: translateY(-90px);
+            }
+
+            .host-slider .host-box .host-details h1 {
+                font-size: 2.2rem;
+            }
+
+            .host-slider .host-box .host-details p {
+                margin-right: 0;
+                font-size: 1.1rem;
+            }
+
+            .host-slider .host-illustration {
+                grid-row: 1 / span 1;
+                grid-column: 1 / -1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .host-slider .host-illustration .host-inner {
+                height: 280px;
+                width: 200px;
+            }
+
+            .host-prev,
+            .host-next {
+                display: none;
+            }
+
+            .host-trail {
+                width: 90%;
+                bottom: 13%;
+            }
+
+            .host-trail div {
+                padding: 10px;
+            }
+        }
     </style>
 </head>
 
@@ -2287,6 +2643,99 @@
                         <span class="timeline-date">Jan 5-8, 2027</span>
                         <span class="timeline-title">Conference Dates</span>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Your Host Section -->
+        <section class="host-slider-section">
+            <h2 class="section-title">Your Host</h2>
+            <div class="host-container">
+                <div class="host-slider">
+                    <!-- Slide 1 -->
+                    <div class="host-box1 host-box">
+                        <div class="host-bg"></div>
+                        <div class="host-details">
+                            <h1>Nationally Ranked Excellence</h1>
+                            <p>
+                                Ranked 12th Best College in India (NIRF 2025, Ministry of Education, Govt. of India,
+                                College category).
+                            </p>
+                            <button>Learn More</button>
+                        </div>
+                        <div class="host-illustration">
+                            <div class="host-inner"
+                                style="width: 530px; background-image: url('assets/awards_ceremony.jpg'); background-size: cover; background-position: center;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2 -->
+                    <div class="host-box2 host-box">
+                        <div class="host-bg"></div>
+                        <div class="host-details">
+                            <h1>Highest Accreditation</h1>
+                            <p>
+                                Highest National Accreditation: Reaccredited by NAAC with A++ Grade (CGPA 3.83).
+                            </p>
+                            <button>Learn More</button>
+                        </div>
+                        <div class="host-illustration">
+                            <div class="host-inner" style="background-image: url('assets/about_nets.jpg');"></div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3 -->
+                    <div class="host-box3 host-box">
+                        <div class="host-bg"></div>
+                        <div class="host-details">
+                            <h1>Academic Pioneers</h1>
+                            <p>
+                                Academic Firsts: Launched the first Masters of Social Work (MSW) and Bachelor of Social
+                                Work (BSW) programs in the state of Kerala.
+                            </p>
+                            <button>Learn More</button>
+                        </div>
+                        <div class="host-illustration">
+                            <div class="host-inner" style="background-image: url('assets/about_image.jpg');"></div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 4 -->
+                    <div class="host-box4 host-box">
+                        <div class="host-bg"></div>
+                        <div class="host-details">
+                            <h1>Community Engagement</h1>
+                            <p>
+                                Community Impact: 'Live Labs' provide direct outreach and service to the community.
+                            </p>
+                            <button>Learn More</button>
+                        </div>
+                        <div class="host-illustration">
+                            <div class="host-inner" style="background-image: url('assets/conference_attendees.jpg');">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Arrows -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="host-prev" width="56.898" height="91"
+                    viewBox="0 0 56.898 91">
+                    <path d="M45.5,0,91,56.9,48.452,24.068,0,56.9Z" transform="translate(0 91) rotate(-90)"
+                        fill="#fff" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="host-next" width="56.898" height="91"
+                    viewBox="0 0 56.898 91">
+                    <path d="M45.5,0,91,56.9,48.452,24.068,0,56.9Z" transform="translate(56.898) rotate(90)"
+                        fill="#fff" />
+                </svg>
+
+                <!-- Trail Navigation -->
+                <div class="host-trail">
+                    <div class="host-box1 active">1</div>
+                    <div class="host-box2">2</div>
+                    <div class="host-box3">3</div>
+                    <div class="host-box4">4</div>
                 </div>
             </div>
         </section>
@@ -2721,6 +3170,117 @@
 
         document.querySelectorAll('.reveal-on-scroll').forEach(el => {
             revealObserver.observe(el);
+        });
+    </script>
+
+    <!-- GSAP Library for animations - Load before slider code -->
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/gsap-latest-beta.min.js"></script>
+
+    <script>
+        // Host Slider Functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const slider = document.querySelector(".host-slider");
+            if (!slider) return; // Exit if slider doesn't exist
+
+            const trail = document.querySelector(".host-trail").querySelectorAll("div");
+            let value = 0;
+            let trailValue = 0;
+            let interval = 4000;
+
+            const slide = (condition) => {
+                clearInterval(start);
+                condition === "increase" ? initiateINC() : initiateDEC();
+                move(value, trailValue);
+                if (typeof gsap !== 'undefined') {
+                    animate();
+                }
+                start = setInterval(() => slide("increase"), interval);
+            }
+
+            const initiateINC = () => {
+                trail.forEach(cur => cur.classList.remove("active"));
+                value === 75 ? value = 0 : value += 25; // 4 slides = 25% each
+                trailUpdate();
+            }
+
+            const initiateDEC = () => {
+                trail.forEach(cur => cur.classList.remove("active"));
+                value === 0 ? value = 75 : value -= 25;
+                trailUpdate();
+            }
+
+            const move = (S, T) => {
+                slider.style.transform = `translateX(-${S}%)`;
+                trail[T].classList.add("active");
+            }
+
+            const tl = typeof gsap !== 'undefined' ? gsap.timeline({ defaults: { duration: 0.6, ease: "power2.inOut" } }) : null;
+            if (tl) {
+                tl.from(".host-bg", { x: "-100%", opacity: 0 })
+                    .from(".host-details p", { opacity: 0 }, "-=0.3")
+                    .from(".host-details h1", { opacity: 0, y: "30px" }, "-=0.3")
+                    .from(".host-details button", { opacity: 0, y: "-40px" }, "-=0.8");
+            }
+
+            const animate = () => {
+                if (tl) tl.restart();
+            }
+
+            const trailUpdate = () => {
+                if (value === 0) trailValue = 0;
+                else if (value === 25) trailValue = 1;
+                else if (value === 50) trailValue = 2;
+                else trailValue = 3;
+            }
+
+            let start = setInterval(() => slide("increase"), interval);
+
+            document.querySelectorAll(".host-prev, .host-next").forEach(cur => {
+                cur.addEventListener("click", () => cur.classList.contains("host-next") ? slide("increase") : slide("decrease"));
+            });
+
+            const clickCheck = (e) => {
+                clearInterval(start);
+                trail.forEach(cur => cur.classList.remove("active"));
+                const check = e.target;
+                check.classList.add("active");
+
+                if (check.classList.contains("host-box1")) value = 0;
+                else if (check.classList.contains("host-box2")) value = 25;
+                else if (check.classList.contains("host-box3")) value = 50;
+                else value = 75;
+
+                trailUpdate();
+                move(value, trailValue);
+                if (typeof gsap !== 'undefined') {
+                    animate();
+                }
+                start = setInterval(() => slide("increase"), interval);
+            }
+
+            trail.forEach(cur => cur.addEventListener("click", (ev) => clickCheck(ev)));
+
+            // Mobile touch slide
+            let touchStart, touchMove, touchChange, sliderWidth;
+
+            slider.addEventListener("touchstart", (e) => {
+                touchStart = e.touches[0].clientX;
+                sliderWidth = slider.clientWidth / 4; // 4 slides
+            });
+
+            slider.addEventListener("touchmove", (e) => {
+                e.preventDefault();
+                touchMove = e.touches[0].clientX;
+                touchChange = touchStart - touchMove;
+            });
+
+            const mobileSlide = (e) => {
+                touchChange > (sliderWidth / 4) ? slide("increase") : null;
+                (touchChange * -1) > (sliderWidth / 4) ? slide("decrease") : null;
+                touchStart = touchMove = touchChange = sliderWidth = 0;
+            }
+
+            slider.addEventListener("touchend", mobileSlide);
         });
     </script>
 </body>
