@@ -460,7 +460,11 @@ class FloatingNavbar extends HTMLElement {
                 */
                 @media (max-width: 768px) {
                     .navbar-logo { display: none; }
-                    .mobile-title { display: block; }
+                    .mobile-title { 
+                        display: block;
+                        margin-left: auto; /* Push to right */
+                        padding-right: 70px; /* Space for absolute toggle */
+                    }
                     .mobile-toggle { 
                         display: flex !important; 
                         /* Keep absolute positioning via base class */
