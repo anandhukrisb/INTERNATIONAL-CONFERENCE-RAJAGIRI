@@ -523,7 +523,7 @@ class FloatingNavbar extends HTMLElement {
                         <a href="#">Speakers</a>
                         <ul class="dropdown-menu">
                             <li><a href="speaker.html">Speakers list</a></li>
-                            <li><a href="ministerialopening.html">Ministerrial opening</a></li>
+                            <li><a href="ministerialopening.html">Ministerial opening</a></li>
                         </ul>
                     </li>
                     <li><a href="registration.html">Registration</a></li>

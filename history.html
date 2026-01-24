@@ -82,8 +82,7 @@
         /* The Deck of Cards Container */
         .cards-container {
             position: relative;
-            padding-bottom: 5vh;
-            /* Reduced from 20vh to remove unwanted space */
+            padding-bottom: 0;
         }
 
         /* ... existing card styles ... */
@@ -92,8 +91,7 @@
         .global-section {
             background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
             /* Clean Professional Gradient */
-            padding: 40px 0 100px 0;
-            /* Reduced top padding from 100px to 40px */
+            padding: 20px 0 100px 0;
             position: relative;
             z-index: 6;
             overflow: hidden;
@@ -119,6 +117,7 @@
         #card-2016 {
             background: #ffffff;
             z-index: 2;
+            top: 10vh;
         }
 
         /* Card 2: 2019 */
@@ -126,6 +125,8 @@
             background: #fdfbf7;
             /* Slight warmth */
             z-index: 3;
+            top: 12vh;
+            /* Slight offset for stacking effect */
         }
 
         /* Card 3: 2024 */
@@ -133,6 +134,7 @@
             background: #f3f0ff;
             /* Light purple tint */
             z-index: 4;
+            top: 14vh;
         }
 
         /* Card 4: 2027 (India) */
@@ -140,6 +142,7 @@
             background: var(--primary-purple);
             color: white;
             z-index: 5;
+            top: 16vh;
         }
 
         /* Card Internal Layout */
@@ -202,15 +205,11 @@
             /* Full Background Image Strategy */
             background: url('assets/kerala.png') no-repeat center center;
             background-size: cover;
-            z-index: 5;
-            position: sticky;
-            top: 10vh;
-            color: white;
             /* Flex layout to center the glass box */
             display: flex;
             align-items: center;
             justify-content: center;
-            /* Center initially */
+            margin-bottom: 0 !important;
         }
 
         /* Hide default layout */
@@ -261,78 +260,6 @@
             color: #ffd700;
         }
 
-        /* Gold */
-
-        /* Mobile Responsive: Stacked Cards */
-        @media (max-width: 992px) {
-            .history-intro {
-                height: 60vh;
-            }
-
-            .intro-content h1 {
-                font-size: 3rem;
-            }
-
-            .history-card {
-                top: 5vh;
-                /* Stick higher on mobile */
-                height: auto;
-                min-height: 90vh;
-                /* Fill screen */
-                margin-bottom: 5vh;
-            }
-
-            .card-inner {
-                flex-direction: column;
-            }
-
-            .card-visual {
-                height: 40vh;
-                /* Image Top */
-            }
-
-            .card-content {
-                padding: 40px 30px;
-                flex: auto;
-            }
-
-            .card-title {
-                font-size: 2rem;
-            }
-
-            .card-year {
-                font-size: 5rem;
-                top: 20px;
-                right: 20px;
-            }
-
-            /* Mobile Responsive Updates for Glassmorphism */
-            #card-2027 {
-                align-items: flex-end;
-                /* Align to bottom */
-            }
-
-            #card-2027 .card-inner {
-                justify-content: center;
-                align-items: flex-end;
-                padding: 0;
-            }
-
-            #card-2027 .card-content {
-                flex: 1;
-                width: 100%;
-                margin: 0;
-                border-radius: 0;
-                border-top-left-radius: 30px;
-                border-top-right-radius: 30px;
-                background: rgba(29, 10, 63, 0.85);
-                /* Darker on mobile */
-                padding: 40px 30px;
-            }
-        }
-
-
-
         /* Map BG Removed */
         .global-map-bg {
             display: none;
@@ -353,6 +280,14 @@
             margin: 0 auto;
         }
 
+        /* Stat Numbers */
+        .stat-number {
+            font-size: 3.5rem;
+            color: var(--primary-purple);
+            font-weight: 800;
+            line-height: 1;
+        }
+
         /* Responsive Fixes */
         html,
         body {
@@ -360,31 +295,130 @@
             overflow-x: hidden;
         }
 
-        @media (max-width: 992px) {
+        /* --- SCENARIO C: TABLET / SMALL DESKTOP (768px < w <= 1418px) --- */
+        @media (min-width: 769px) and (max-width: 1418px) {
+            .history-card {
+                height: 55vh;
+                /* Change this from 80vh */
+                min-height: 500px;
+            }
+
+            .history-intro {
+                height: 40vh;
+                /* Change this from 50vh */
+            }
+
+
+            .card-content {
+                padding: 40px;
+            }
+
+            .card-title {
+                font-size: 2.5rem;
+            }
+
+            .stat-number {
+                font-size: 2.8rem;
+                /* Smaller stats to prevent overlap */
+            }
+        }
+
+        /* --- SCENARIO B: STRICT MOBILE (<= 768px) --- */
+        @media (max-width: 768px) {
+            .history-intro {
+                height: auto;
+                min-height: auto;
+                padding-top: 120px;
+                padding-bottom: 60px;
+            }
+
+            .intro-content h1 {
+                font-size: 2.5rem;
+            }
+
             .cards-container {
-                padding-bottom: 5vh;
+                padding-bottom: 0;
+            }
+
+            .history-card {
+                position: relative;
+                /* Remove sticky to avoid large gaps on mobile */
+                top: 0 !important;
+                height: auto !important;
+                min-height: auto !important;
+                margin-bottom: 40px;
+                /* Standard spacing */
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            }
+
+            .card-inner {
+                flex-direction: column;
+            }
+
+            .card-visual {
+                height: 300px;
+                /* Fixed reasonable height for images */
+                flex: none;
+            }
+
+            .card-content {
+                padding: 40px 25px;
+                flex: auto;
+            }
+
+            .card-title {
+                font-size: 2rem;
+            }
+
+            .card-year {
+                font-size: 4rem;
+                top: 20px;
+                right: 20px;
+            }
+
+            /* Mobile Updates for Glassmorphism Card (2027) */
+            #card-2027 {
+                align-items: flex-end;
+                margin-bottom: 0;
+                /* Ensure background image is visible and positioned */
+                background-position: center bottom !important;
+                background-size: cover !important;
+                min-height: 500px !important;
+                /* Force height so image shows */
+            }
+
+            #card-2027 .card-inner {
+                justify-content: center;
+                align-items: flex-end;
+                padding: 0;
+            }
+
+            #card-2027 .card-content {
+                flex: none;
+                /* Do not stretch */
+                width: 100%;
+                margin: 0;
+                border-radius: 0;
+                border-top-left-radius: 30px;
+                border-top-right-radius: 30px;
+                background: rgba(29, 10, 63, 0.9);
+                /* Increased opacity for readability */
+                padding: 30px 20px;
             }
 
             .global-section {
                 padding: 60px 0;
             }
 
-            /* Make images more prominent on mobile */
-            .card-visual {
-                height: 55vh;
-                /* Significantly taller to be "seen well" */
-                flex: none;
-            }
-
             .global-stats-card {
-                padding: 40px 20px;
-                margin: 0 20px;
+                padding: 40px 10px;
+                /* Tighter padding */
+                margin: 0 15px;
             }
 
-            #card-2027 {
-                margin-bottom: 0 !important;
-                background-position: center 25% !important;
-                /* Show specific part of image */
+            .stat-number {
+                font-size: 1.8rem;
+                /* Significantly reduced for horizontal text */
             }
         }
     </style>
@@ -481,15 +515,15 @@
                 <h2 style="color: var(--primary-purple); margin-bottom: 40px;">Our Reach</h2>
                 <div class="row">
                     <div class="col-4">
-                        <h3 style="font-size: 3.5rem; color: var(--primary-purple); font-weight: 800;">10+</h3>
+                        <h3 class="stat-number">10+</h3>
                         <p style="color: var(--text-dark); font-weight: 600;">Editions</p>
                     </div>
                     <div class="col-4">
-                        <h3 style="font-size: 3.5rem; color: var(--primary-purple); font-weight: 800;">50+</h3>
+                        <h3 class="stat-number">50+</h3>
                         <p style="color: var(--text-dark); font-weight: 600;">Countries</p>
                     </div>
                     <div class="col-4">
-                        <h3 style="font-size: 3.5rem; color: var(--primary-purple); font-weight: 800;">5k+</h3>
+                        <h3 class="stat-number">5k+</h3>
                         <p style="color: var(--text-dark); font-weight: 600;">Delegates</p>
                     </div>
                 </div>
