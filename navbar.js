@@ -62,7 +62,14 @@ class FloatingNavbar extends HTMLElement {
                 }
                 
                 .navbar-backdrop {
-                    display: none; /* Hide the white backdrop to blend with hero */
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100px;
+                    background-color: #FDFBF7;
+                    z-index: 999;
+                    pointer-events: none; /* Allow clicks through backdrop */
                 }
 
                 .floating-navbar {
@@ -113,16 +120,10 @@ class FloatingNavbar extends HTMLElement {
                 }
 
                 .logo-overlay.rajagiri {
-                    left: 4px;
-                    top:45px;
-                    height: 80%;
-                    width: auto;
-                }
-
-                .logo-overlay.rcss {
-                    top: 55px;
-                    left: 80px;
-                    height: 60%;
+                    left: 25px; /* Moved right */
+                    top: 55%; /* Moved down */
+                    transform: translateY(-50%);
+                    height: 85%; /* Increased size */
                     width: auto;
                 }
 
@@ -138,7 +139,7 @@ class FloatingNavbar extends HTMLElement {
                     margin-left: auto;
                     display: flex;
                     gap: 15px;
-                    padding-right: 60px;
+                    padding-right: 80px; /* Increased to avoid overlap with absolute toggle */
                     list-style: none;
                     margin-top: 0;
                     margin-bottom: 0;
@@ -304,10 +305,15 @@ class FloatingNavbar extends HTMLElement {
                     gap: 5px;
                     cursor: pointer;
                     padding: 10px;
-                    margin-left: auto;
-                    margin-right: 20px;
+                    /* Fixed Positioning Logic */
+                    position: absolute;
+                    right: 20px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    /* margin-left: auto; REMOVED */
+                    /* margin-right: 20px; REMOVED */
                     z-index: 1001;
-                    flex-shrink: 0;
+                    /* flex-shrink: 0; REMOVED (not needed for absolute) */
                 }
 
                 .mobile-toggle span {
@@ -425,26 +431,27 @@ class FloatingNavbar extends HTMLElement {
                 .logo-container-mobile {
                     display: none;
                     height: 100%;
-                    background: url('${logoSrc}') no-repeat center center;
-                    background-size: cover;
-                    border-top-left-radius: 50px;
-                    border-bottom-left-radius: 50px;
-                    padding: 0 20px 0 10px;
+                    /* background removed */
+                    padding: 0;
                     align-items: center;
                     position: relative;
                     z-index: 2;
                 }
 
-                .logo-container-mobile img.rajagiri-mobile {
-                    height: 70%;
+                .logo-mobile-base {
+                    height: 100%;
                     width: auto;
+                    object-fit: cover;
                 }
 
-                .logo-container-mobile img.rcss-mobile {
-                    height: 50%;
+                .logo-mobile-overlay {
+                    position: absolute;
+                    z-index: 10;
+                    height: 85%;
                     width: auto;
-                    margin-left: -22px;
-                    margin-top: 20px;
+                    left: 25px;
+                    top: 55%;
+                    transform: translateY(-50%);
                 }
 
                 /* 
@@ -453,15 +460,20 @@ class FloatingNavbar extends HTMLElement {
                 */
                 @media (max-width: 768px) {
                     .navbar-logo { display: none; }
-                    .mobile-title { display: block; }
-                    .mobile-toggle { display: flex !important; }
-                    
-                    .logo-container-mobile {
-                        display: flex;
-                        border-radius: 0 !important;
+                    .mobile-title { 
+                        display: block;
+                        margin-left: auto; /* Push to right */
+                        padding-right: 70px; /* Space for absolute toggle */
                     }
-                     .logo-container-mobile img.rajagiri-mobile { height: 70%; width: auto; }
-                     .logo-container-mobile img.rcss-mobile { height: 50%; width: auto; margin-left: -22px; margin-top: 20px; }
+                    .mobile-toggle { 
+                        display: flex !important; 
+                        /* Keep absolute positioning via base class */
+                    }
+                    
+                     .logo-container-mobile {
+                        display: flex;
+                    }
+                     /* .logo-container-mobile img.rajagiri-mobile REMOVED - styles are now in base class */
                      
                      .floating-navbar {
                         width: 100% !important;
@@ -478,8 +490,12 @@ class FloatingNavbar extends HTMLElement {
             <div class="navbar-backdrop"></div>
             <nav class="floating-navbar">
                 <div class="logo-container-mobile">
-                    <img src="assets/rajagiri_logo.png" alt="Rajagiri" class="rajagiri-mobile">
-                    <img src="assets/rcss_logo.png" alt="RCSS" class="rcss-mobile">
+                    <!-- Mobile View: Replicated Desktop Logo Structure -->
+                    <img src="${logoSrc}" alt="Conference Logo" class="logo-mobile-base">
+                    <a href="https://rajagiri.edu/" target="_blank">
+                        <!-- Use class logo-mobile-overlay instead of rajagiri-mobile -->
+                        <img src="assets/rajagiri_logo.png" alt="Rajagiri" class="logo-mobile-overlay">
+                    </a>
                 </div>
 
                 <div class="mobile-title">ICSWHMH 27</div>
@@ -488,8 +504,9 @@ class FloatingNavbar extends HTMLElement {
                     <!-- Base Logo -->
                     <img src="${logoSrc}" alt="Conference Logo" class="logo-base">
                     <!-- Overlays -->
-                    <img src="assets/rajagiri_logo.png" alt="Rajagiri" class="logo-overlay rajagiri">
-                    <img src="assets/rcss_logo.png" alt="RCSS" class="logo-overlay rcss">
+                    <a href="https://rajagiri.edu/" target="_blank">
+                        <img src="assets/rajagiri_logo.png" alt="Rajagiri" class="logo-overlay rajagiri">
+                    </a>
                 </div>
 
                 <!-- Visible Links (Priority+) -->
