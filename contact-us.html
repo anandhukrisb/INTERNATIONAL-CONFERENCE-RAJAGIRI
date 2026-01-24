@@ -214,65 +214,68 @@
             font-weight: 600;
         }
 
-        /* ================= FAQ ACCORDION STYLES ================= */
-        .info-strip {
-            margin-bottom: 25px;
-            background: #FFFFFF;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            /* Match existing shadow */
-        }
+       
+        /* ================= FAQ ACCORDION STYLES (MATCH REGISTRATION PAGE) ================= */
 
-        .info-header {
-            background-color: #FFFFFF;
-            /* White header for contact page style */
-            color: #1D0A3F;
-            /* Deep Purple text */
-            padding: 20px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 600;
-            font-size: 1.15rem;
-            cursor: pointer;
-            border-left: 4px solid #C9A227;
-            /* Gold accent left border */
-            transition: background-color 0.3s ease;
-        }
+            .info-strip {
+                margin-bottom: 25px;
+                background: #FFFFFF;
+                border: 1px solid #ddd;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            }
 
-        .info-header:hover {
-            background-color: #f9f9fb;
-        }
+            /* HEADER */
+            .info-header {
+                background-color: #1D0A3F;        /* SAME PURPLE */
+                color: #FFFFFF;                   /* WHITE TEXT */
+                padding: 18px 25px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-weight: 600;
+                font-size: 1.1rem;
+                cursor: pointer;
+                border-left: none  /* GOLD ACCENT IF NEEDED */
+            }
 
-        .info-header .icon {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #C9A227;
-        }
+            /* REMOVE HOVER GREY */
+            .info-header:hover {
+                background-color: #1D0A3F;
+            }
 
-        .info-content {
-            padding: 0 25px;
-            color: #555;
-            font-size: 1rem;
-            line-height: 1.6;
-            max-height: 0;
-            opacity: 0;
-            transition: max-height 0.3s ease-out, opacity 0.3s ease, padding 0.3s ease;
-            overflow: hidden;
-            text-align: left;
-            background-color: #FFFFFF;
-        }
+            /* ICON */
+            .info-header .icon {
+                font-size: 1.4rem;
+                font-weight: bold;
+                color: #FFFFFF;                   /* WHITE ICON */
+                cursor: pointer;
+            }
 
-        .info-strip.expanded .info-content {
-            opacity: 1;
-        }
+            /* CONTENT */
+            .info-content {
+                padding: 0 25px;
+                color: #555;
+                font-size: 1rem;
+                line-height: 1.6;
+                max-height: 0;
+                opacity: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease, opacity 0.3s ease;
+                background-color: #FFFFFF;
+            }
 
-        .info-content-inner {
-            padding: 0 0 25px 0;
-            /* Padding at bottom of content */
-        }
+            /* OPEN STATE */
+            .info-strip.expanded .info-content {
+                opacity: 1;
+            }
+
+            /* INNER CONTENT */
+            .info-content-inner {
+                padding: 25px 0;
+            }
+
 
         /* ================= CUSTOM SOCIAL ICONS ================= */
         .wrapper {
@@ -461,9 +464,9 @@
                 </div>
                 <div class="contact-text">
                     <h4>Address</h4>
-                    <p>Suite 10/Level 1, 285a Crown St,<br>
-                        Surry Hills, NSW, 2010,<br>
-                        Australia</p>
+                    <p>Rajagiri College of Social Sciences (Autonomous),<br>
+                         Rajagiri P.O, Kalamassery, Cochin,<br>
+                         Kerala, India</p>
                 </div>
             </div>
         </div>
@@ -476,7 +479,7 @@
                 </div>
                 <div class="contact-text">
                     <h4>Phone</h4>
-                    <p>+ 61 2 8667 0737</p>
+                    <p>+91 484 - 2911111 </p>
                 </div>
             </div>
         </div>
@@ -489,7 +492,7 @@
                 </div>
                 <div class="contact-text">
                     <h4>Email</h4>
-                    <p><a href="mailto:aasw@forumgroupevents.com.au">aasw@forumgroupevents.com.au</a></p>
+                    <p><a href="mailto:admin@rajagiri.edu">admin@rajagiri.edu</a></p>
                 </div>
             </div>
         </div>
