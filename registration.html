@@ -511,10 +511,10 @@
             <h2 class="section-header">MORE INFORMATION:</h2>
 
             <!-- Registration Confirmation -->
-            <div class="info-strip expanded">
+            <div class="info-strip ">
                 <div class="info-header">
                     <span>Registration Confirmation</span>
-                    <span class="icon">−</span>
+                    <span class="icon"onclick="toggleAccordion(this)">+</span>
                 </div>
                 <div class="info-content">
                     <div class="info-content-inner">
@@ -525,10 +525,10 @@
             </div>
 
             <!-- Payment Options -->
-            <div class="info-strip expanded">
+            <div class="info-strip ">
                 <div class="info-header">
                     <span>Payment Options</span>
-                    <span class="icon">−</span>
+                    <span class="icon"onclick="toggleAccordion(this)">+</span>
                 </div>
                 <div class="info-content">
                     <div class="info-content-inner">
@@ -541,10 +541,10 @@
             </div>
 
             <!-- Cancellation/Postponement -->
-            <div class="info-strip expanded">
+            <div class="info-strip ">
                 <div class="info-header">
                     <span>Cancellation/Postponement</span>
-                    <span class="icon">−</span>
+                    <span class="icon"onclick="toggleAccordion(this)">+</span>
                 </div>
                 <div class="info-content">
                     <div class="info-content-inner">
@@ -596,48 +596,34 @@
     <main-footer></main-footer>
 
     <script>
-        function toggleAccordion(header) {
-            const strip = header.parentElement;
+        function toggleAccordion(icon) {
+            const strip = icon.closest('.info-strip');
             const content = strip.querySelector('.info-content');
-            const icon = header.querySelector('.icon');
             const isExpanded = strip.classList.contains('expanded');
 
             if (isExpanded) {
-                // Collapse
-                content.style.maxHeight = content.scrollHeight + 'px';
-                // Force reflow
-                content.offsetHeight;
-                content.style.maxHeight = '0px';
+                // Close
+                content.style.maxHeight = content.scrollHeight + "px";
+                content.offsetHeight; // force reflow
+                content.style.maxHeight = "0";
                 strip.classList.remove('expanded');
-                icon.textContent = '+';
+                icon.textContent = "+";
             } else {
-                // Expand
+                // Open
                 strip.classList.add('expanded');
-                content.style.maxHeight = content.scrollHeight + 'px';
-                icon.textContent = '−';
+                content.style.maxHeight = content.scrollHeight + "px";
+                icon.textContent = "−";
 
-                // Cleanup after transition
-                content.addEventListener('transitionend', function handler() {
-                    if (strip.classList.contains('expanded')) {
-                        content.style.maxHeight = 'none';
+                content.addEventListener("transitionend", function handler() {
+                    if (strip.classList.contains("expanded")) {
+                        content.style.maxHeight = "none";
                     }
-                    content.removeEventListener('transitionend', handler);
+                    content.removeEventListener("transitionend", handler);
                 });
             }
         }
+</script>
 
-        document.querySelectorAll('.info-header').forEach(header => {
-            header.addEventListener('click', () => toggleAccordion(header));
-
-            // Set initial state for expanded sections
-            const strip = header.parentElement;
-            if (strip.classList.contains('expanded')) {
-                const content = strip.querySelector('.info-content');
-                content.style.maxHeight = 'none';
-                content.style.opacity = '1';
-            }
-        });
-    </script>
 </body>
 
 </html>
