@@ -191,21 +191,386 @@
         }
 
 
-        .banner-container {
+        /* Hero Section */
+        .hero-section {
+            position: relative;
             width: 100%;
-            margin-top: 160px;
-            /* Space for fixed navbar */
-            padding-bottom: 0px;
+            max-width: 95%;
+            margin: 120px auto 0 auto;
+            height: 80vh;
+            /* Space for fixed navbar/ticker */
             display: flex;
+            align-items: center;
             justify-content: center;
+            overflow: hidden;
+            padding: 80px 20px;
+            background-color: #FDFBF7;
+            border-top-right-radius: 40px;
+            border-top-left-radius: 40px;
+            border-bottom-left-radius: 40px;
         }
 
-        .banner-container img {
+        /* Diagonal Stripes Background */
+        .hero-stripes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 55%;
+            height: 100%;
+            background: #1D0A3F;
+            transform: skewX(15deg) translateX(-15%);
+            z-index: 1;
+            /* Intro Animation */
+            clip-path: circle(0% at 0% 50%);
+            animation: expandStripe 1.2s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+
+        @keyframes expandStripe {
+            from {
+                clip-path: circle(0% at 0% 50%);
+            }
+
+            to {
+                clip-path: circle(150% at 0% 50%);
+            }
+        }
+
+        .hero-stripes::before {
+            content: '';
+            position: absolute;
+            right: -40px;
+            top: 0;
+            width: 20px;
+            height: 100%;
+            background: #C9A227;
+            /* Gold Accent Stripe */
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
             width: 100%;
-            max-width: 1200px;
+            max-width: 95%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 60px;
+        }
+
+        .hero-text {
+            flex: 1;
+            max-width: 600px;
+            text-align: left;
+        }
+
+        .hero-visual {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-visual img {
+            max-width: 80%;
             height: auto;
+            margin-left: 50px;
+            /* box-shadow: 0 20px 50px rgba(0,0,0,0.3); */
+            /* border-radius: 20px; */
+            /* User asked for logo, usually logos don't have box shadow or border radius unless card style. keeping it clean for now. */
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+            opacity: 0;
+            animation: fadeInLogo 1s ease forwards;
+            animation-delay: 1.2s;
+        }
+
+        @keyframes fadeInLogo {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .hero-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            /* White text on dark background */
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .hero-date {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #C9A227;
+            margin-bottom: 20px;
             display: block;
-            /* box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); */
+            opacity: 0;
+            animation: slideInDate 0.8s ease forwards;
+            animation-delay: 0.3s;
+        }
+
+        @keyframes slideInDate {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            /* White text on dark background */
+            line-height: 1.2;
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: typeTitle 1.2s ease forwards;
+            animation-delay: 0.8s;
+        }
+
+        @keyframes typeTitle {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+
+
+        /* Hero Buttons (Wave Animation) */
+        .hero-btn-group {
+            display: flex;
+            gap: 20px;
+            opacity: 0;
+            animation: slideInButtons 0.8s ease forwards;
+            animation-delay: 2.3s;
+        }
+
+        @keyframes slideInButtons {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Hero Buttons - Primary (Registration) */
+        .hero-btn-primary {
+            display: inline-block;
+            padding: 15px 35px;
+            background-color: #C9A227;
+            /* Gold highlight */
+            color: #1D0A3F;
+            /* Dark text */
+            text-decoration: none;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 50px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .hero-btn-primary::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #FFFFFF;
+            /* White wave fill */
+            z-index: -1;
+            transition: clip-path 0.4s ease-out;
+            clip-path: circle(0% at 0 50%);
+        }
+
+        .hero-btn-primary:hover::before {
+            clip-path: circle(150% at 0 50%);
+        }
+
+        .hero-btn-primary:hover {
+            transform: translateY(-3px);
+            color: #1D0A3F;
+        }
+
+        /* Hero Buttons - Outline (Host City) */
+        .hero-btn-outline {
+            display: inline-block;
+            padding: 15px 35px;
+            background-color: transparent;
+            color: #FFFFFF;
+            /* White text */
+            text-decoration: none;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 50px;
+            border: 2px solid #FFFFFF;
+            /* White border */
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .hero-btn-outline::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.15);
+            /* Subtle white fill */
+            z-index: -1;
+            transition: clip-path 0.4s ease-out;
+            clip-path: circle(0% at 0 50%);
+        }
+
+        .hero-btn-outline:hover::before {
+            clip-path: circle(150% at 0 50%);
+        }
+
+        .hero-btn-outline:hover {
+            transform: translateY(-3px);
+            border-color: #C9A227;
+            /* Gold border on hover */
+            color: #C9A227;
+            /* Gold text on hover */
+        }
+
+        /* Scroll Button */
+        .scroll-button {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 2px solid #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+            animation: scrollBounce 2s ease-in-out infinite;
+        }
+
+        .scroll-button::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid #C9A227;
+            opacity: 0;
+            animation: rippleWave 2s ease-out infinite;
+        }
+
+        .scroll-button::after {
+            content: '↓';
+            font-size: 24px;
+            color: #FFFFFF;
+            font-weight: bold;
+        }
+
+        .scroll-button:hover {
+            background-color: rgba(201, 162, 39, 0.2);
+            border-color: #C9A227;
+            transform: translateX(-50%) scale(1.1);
+        }
+
+        @keyframes scrollBounce {
+
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            50% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+        }
+
+        @keyframes rippleWave {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 968px) {
+            .hero-stripes {
+                width: 100%;
+                height: 40%;
+                top: auto;
+                bottom: 0;
+                transform: skewY(-5deg) translateY(20%);
+                right: 0;
+                left: 0;
+            }
+
+            .hero-stripes::before {
+                width: 100%;
+                height: 20px;
+                top: -20px;
+                left: 0;
+            }
+
+            .hero-content {
+                flex-direction: column-reverse;
+                text-align: center;
+                margin-top: 100px;
+                /* Ticker space */
+            }
+
+            .hero-text {
+                text-align: center;
+            }
+
+            .hero-btn-group {
+                justify-content: center;
+            }
+
+            .hero-visual img {
+                max-width: 60%;
+                margin-left: 0;
+            }
         }
 
         /* Ticker styles (if uncommented) */
@@ -234,9 +599,10 @@
             justify-content: center;
             gap: 250px;
             padding: 40px 20px;
-            max-width: 1200px;
+            max-width: 95%;
             margin: 0 auto;
-            margin-top: 180px;
+            margin-top: 0;
+            /* margin-top: 180px; Removed for Hero */
             font-size: larger;
             color: #1D0A3F;
         }
@@ -300,87 +666,32 @@
             gap: 50px;
             /* Increased gap */
             padding: 40px 20px;
-            max-width: 1200px;
+            max-width: 95%;
             margin: 0 auto;
             /* margin-top: 100px; */
             position: relative;
+            min-height: 500px;
+            /* Fit to image height */
         }
 
         .about-image {
             flex: 1;
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             position: relative;
-            height: 400px;
-            /* Container height for absolute cards */
             align-items: center;
+            overflow: hidden;
         }
 
-        .card-img {
-            position: absolute;
-            width: 240px;
-            height: 320px;
+        .about-single-img {
+            width: 100%;
+            max-width: 600px;
+            height: 500px;
             object-fit: cover;
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform-origin: center center;
-        }
-
-        /* Default State */
-        .card-1 {
-            transform: translateX(-60px) rotate(-15deg);
-            z-index: 1;
-        }
-
-        .card-2 {
-            transform: translateY(-10px) rotate(0deg);
-            z-index: 2;
-        }
-
-        .card-3 {
-            transform: translateX(60px) rotate(15deg);
-            z-index: 3;
-        }
-
-        /* Hovering Front Card (Card 3) */
-        /* Only pops up, others stay */
-        .card-3:hover {
-            transform: translateX(60px) translateY(-50px) rotate(15deg) scale(1.05);
-        }
-
-
-
-        /* Hovering Middle Card (Card 2) */
-        /* Middle pops up */
-        .card-2:hover {
-            transform: translateY(-50px) rotate(0deg) scale(1.05);
-        }
-
-        /* Front moves right & pops up */
-        .about-image:has(.card-2:hover) .card-3 {
-            transform: translateX(150px) translateY(-30px) rotate(15deg);
-        }
-
-        /* Back moves left & pops up */
-        .about-image:has(.card-2:hover) .card-1 {
-            transform: translateX(-150px) translateY(-30px) rotate(-15deg);
-        }
-
-        /* Hovering Back Card (Card 1) */
-        /* Back pops up */
-        .card-1:hover {
-            transform: translateX(-60px) translateY(-50px) rotate(-15deg) scale(1.05);
-        }
-
-        /* Middle moves right */
-        .about-image:has(.card-1:hover) .card-2 {
-            transform: translateX(100px) translateY(-10px) rotate(0deg);
-        }
-
-        /* Front moves right */
-        .about-image:has(.card-1:hover) .card-3 {
-            transform: translateX(200px) rotate(15deg);
+            mask-image: linear-gradient(to right, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
+            -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
         }
 
 
@@ -424,7 +735,7 @@
         }
 
         .about-content p {
-            font-size: 0.95rem;
+            font-size: 1.05rem;
             line-height: 1.6;
             color: #444;
             font-weight: 400;
@@ -437,12 +748,12 @@
             .about-section {
                 background-color: #F0F0F0;
                 /* Dull colored container */
-                border-left: 6px solid #C9A227;
+                /* border-left: 6px solid #C9A227; REMOVED */
                 /* Secondary Yellow Border */
                 padding: 60px 40px;
                 /* More padding for container look */
-                border-radius: 0 20px 20px 0;
-                /* Soften right side */
+                border-radius: 20px;
+                /* Soften all sides */
             }
 
             .title-section {
@@ -512,30 +823,20 @@
 
             .about-image {
                 display: flex;
-                flex-direction: column;
+                justify-content: center;
                 align-items: center;
-                gap: 0;
-                padding: 0;
                 width: 100%;
                 margin: 0 auto 40px;
-                height: auto;
             }
 
-            .card-1,
-            .card-2 {
-                display: none !important;
-            }
-
-            .card-img {
-                position: relative;
-                flex-shrink: 0;
-                width: 250px;
-                height: 320px;
-                transform: none !important;
-                z-index: 1 !important;
-                margin: 0 auto;
+            .about-single-img {
+                width: 100%;
+                max-width: 100%;
+                height: 350px;
                 border-radius: 20px;
                 box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+                mask-image: none;
+                -webkit-mask-image: none;
             }
 
             /* Mobile Ticker - Edge to Edge */
@@ -567,7 +868,7 @@
         /* Speakers Section */
         .speakers-section {
             padding: 20px 20px 60px;
-            max-width: 1200px;
+            max-width: 95%;
             margin: 0 auto;
             background-color: #FDFBF7;
         }
@@ -770,7 +1071,7 @@
             padding: 60px 20px 80px;
             border-radius: 50px;
             text-align: center;
-            max-width: 1200px;
+            max-width: 95%;
             margin: 0 auto 50px;
         }
 
@@ -784,7 +1085,7 @@
             position: relative;
             display: block;
             width: 100%;
-            max-width: 1200px;
+            max-width: 95%;
             padding: 0 20px;
             box-sizing: border-box;
             margin-left: auto;
@@ -836,7 +1137,7 @@
             justify-content: flex-start;
             align-items: flex-end;
             overflow: hidden;
-            max-width: 1200px;
+            max-width: 95%;
             margin: 0 auto;
             /* gap: 50px; Removed gap as image is absolute now */
         }
@@ -977,7 +1278,7 @@
             justify-content: center;
             align-items: flex-end;
             overflow: hidden;
-            max-width: 1200px;
+            max-width: 95%;
             margin: 0 auto;
         }
 
@@ -1074,7 +1375,7 @@
 
 
         .section-separator {
-            max-width: 1200px;
+            max-width: 95%;
             margin: 10px auto;
             border-top: 1px solid #ddd;
             width: 100%;
@@ -1095,7 +1396,7 @@
             gap: 40px;
             justify-content: center;
             flex-wrap: wrap;
-            max-width: 1200px;
+            max-width: 95%;
             width: 100%;
         }
 
@@ -1417,13 +1718,822 @@
                 margin-bottom: 10px;
             }
         }
+
+        /* Sticky Sidebar Buttons */
+        .sticky-sidebar-buttons {
+            position: fixed;
+            top: 140px;
+            right: 0;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .sidebar-btn {
+            display: block;
+            background-color: #C9A227;
+            color: #1D0A3F;
+            padding: 12px 20px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 8px 0 0 8px;
+            box-shadow: -2px 2px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            min-width: 140px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .sidebar-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1D0A3F;
+            z-index: -1;
+            transition: clip-path 0.3s ease-out;
+            clip-path: circle(0% at 0 50%);
+        }
+
+        .sidebar-btn:hover::before {
+            clip-path: circle(150% at 0 50%);
+        }
+
+        .sidebar-btn:hover {
+            transform: translateX(-5px);
+            color: #FFFFFF;
+        }
+
+        /* Newsletter Dropdown */
+        .newsletter-wrapper {
+            position: relative;
+        }
+
+        .newsletter-dropdown {
+            position: absolute;
+            top: 0;
+            right: 100%;
+            /* margin-right: 15px; */
+            width: 300px;
+            background-color: #1D0A3F;
+            color: white;
+            padding: 30px;
+            border-radius: 20px 0 20px 20px;
+
+            /* Clip-path animation starting from top-right */
+            clip-path: circle(0% at 100% 0%);
+            transition: clip-path 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+
+            pointer-events: none;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            z-index: 10000;
+        }
+
+        .newsletter-dropdown.active {
+            clip-path: circle(150% at 100% 0%);
+            pointer-events: auto;
+        }
+
+        .newsletter-dropdown h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #C9A227;
+            /* Gold */
+        }
+
+        .newsletter-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .newsletter-list li {
+            margin-bottom: 15px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s ease;
+        }
+
+        .newsletter-dropdown.active .newsletter-list li {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Staggered delays for list items */
+        .newsletter-dropdown.active .newsletter-list li:nth-child(1) {
+            transition-delay: 0.2s;
+        }
+
+        .newsletter-dropdown.active .newsletter-list li:nth-child(2) {
+            transition-delay: 0.3s;
+        }
+
+        .newsletter-dropdown.active .newsletter-list li:nth-child(3) {
+            transition-delay: 0.4s;
+        }
+
+        .newsletter-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .newsletter-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #C9A227;
+        }
+
+        .newsletter-link i {
+            /* Placeholder for icon if fontawesome existed, used text arrow for now */
+            font-style: normal;
+        }
+
+        @media (max-width: 768px) {
+            .newsletter-dropdown {
+                width: 250px;
+                right: 60px;
+                /* Adjust for mobile positioning if needed, or keep 100% */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sticky-sidebar-buttons {
+                display: none;
+                /* Often better to hide on mobile or reposition, but user didn't specify. I'll hide to be safe or show? User said "stick to the screen". I'll show it but perhaps scale it down. */
+                /* Actually let's just make them smaller */
+                display: flex;
+                top: 200px;
+            }
+
+            .sidebar-btn {
+                padding: 10px 15px;
+                font-size: 0.85rem;
+                min-width: 120px;
+            }
+        }
+
+        /* Timeline Section */
+        .timeline-section {
+            /* padding: 80px 20px; */
+            background-color: #FDFBF7;
+            max-width: 95%;
+            margin: 0 auto;
+            overflow: visible;
+        }
+
+        .timeline-header {
+            text-align: left;
+            margin-bottom: 0px;
+            /* Reduced from 80px */
+            color: #1D0A3F;
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 600;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .timeline-header::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: #C9A227;
+            margin-top: 10px;
+            border-radius: 3px;
+        }
+
+        .timeline-container {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            /* padding: 40px 0 0 0; */
+            margin-top: 20px;
+            /* Reduced from 50px */
+            min-height: 400px;
+            /* Ensure space for absolute items */
+        }
+
+        /* Central Line */
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #C9A227;
+            transform: translateY(-50%);
+            z-index: 0;
+            border-radius: 2px;
+        }
+
+        /* Progress Line - shows completed milestones */
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 28%;
+            /* Progress through first 2 items (2/7 = ~28%) */
+            height: 4px;
+            background: linear-gradient(to right, #1D0A3F, #2E1A5F);
+            transform: translateY(-50%);
+            z-index: 1;
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(29, 10, 63, 0.5);
+        }
+
+        .timeline-item {
+            position: relative;
+            width: 14%;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            height: 100%;
+            /* Take container height */
+            perspective: 1000px;
+            /* Enable 3D perspective for children */
+        }
+
+        .timeline-dot {
+            width: 20px;
+            height: 20px;
+            background: #1D0A3F;
+            border: 4px solid #C9A227;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            background-color: #FDFBF7;
+            transition: all 0.3s ease;
+        }
+
+        /* Completed milestone dots */
+        .timeline-item.completed .timeline-dot {
+            background-color: #1D0A3F;
+            border-color: #2E1A5F;
+            box-shadow: 0 0 15px rgba(29, 10, 63, 0.6);
+        }
+
+        .timeline-content {
+            background: #1D0A3F;
+            color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            width: 100%;
+            min-width: 120px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            /* Absolute positioning relative to item wrapper */
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            /* Smooth bounce effect */
+            transform-style: preserve-3d;
+            /* Enable 3D transforms */
+        }
+
+        .timeline-content:hover {
+            z-index: 10;
+        }
+
+        .timeline-date {
+            color: #C9A227;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .timeline-title {
+            font-size: 0.85rem;
+            line-height: 1.3;
+        }
+
+        /* Zig-Zag Positioning */
+        /* Odd items go UP */
+        .timeline-item:nth-child(odd) .timeline-content {
+            bottom: 50%;
+            margin-bottom: 40px;
+            /* Space from center line */
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content::after {
+            content: '';
+            position: absolute;
+            bottom: -40px;
+            /* Connect from bottom of card to center line */
+            left: 50%;
+            width: 2px;
+            height: 40px;
+            background: repeating-linear-gradient(to bottom, #C9A227 0, #C9A227 5px, transparent 5px, transparent 10px);
+            transform: translateX(-50%);
+            z-index: -1;
+        }
+
+        /* Even items go DOWN */
+        .timeline-item:nth-child(even) .timeline-content {
+            top: 50%;
+            margin-top: 40px;
+            /* Space from center line */
+        }
+
+        .timeline-item:nth-child(even) .timeline-content::after {
+            content: '';
+            position: absolute;
+            top: -40px;
+            /* Connect from top of card to center line */
+            left: 50%;
+            width: 2px;
+            height: 40px;
+            background: repeating-linear-gradient(to bottom, #C9A227 0, #C9A227 5px, transparent 5px, transparent 10px);
+            transform: translateX(-50%);
+            z-index: -1;
+        }
+
+        /* Hover effects correction for margin/transform */
+        .timeline-item:nth-child(odd):hover .timeline-content {
+            transform: translateY(-10px) scale(1.08) rotateX(8deg) rotateY(-5deg);
+            /* Slight lift with 3D diagonal tilt */
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        .timeline-item:nth-child(even):hover .timeline-content {
+            transform: translateY(10px) scale(1.08) rotateX(-8deg) rotateY(5deg);
+            /* Slight drop with 3D diagonal tilt */
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+        }
+
+
+        /* Mobile Responsiveness */
+        @media (max-width: 900px) {
+            .timeline-container {
+                flex-direction: column;
+                padding-left: 30px;
+                gap: 30px;
+                border-left: 4px solid #C9A227;
+                height: auto;
+                /* Reset fixed height */
+                min-height: auto;
+            }
+
+            .timeline-container::before {
+                display: none;
+            }
+
+            .timeline-item {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: 20px;
+                height: auto;
+                position: relative;
+            }
+
+            .timeline-dot {
+                position: absolute;
+                left: -42px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            .timeline-content {
+                position: relative;
+                /* Back to relative flow */
+                width: 100%;
+                text-align: left;
+                margin: 0 !important;
+                transform: none !important;
+                bottom: auto;
+                top: auto;
+            }
+
+            .timeline-content::after {
+                display: none;
+            }
+
+            .timeline-item:nth-child(odd) .timeline-content,
+            .timeline-item:nth-child(even) .timeline-content {
+                transform: none !important;
+                margin: 0;
+                bottom: auto;
+                top: auto;
+            }
+
+            .timeline-item:hover .timeline-content {
+                transform: translateX(10px) !important;
+            }
+        }
+
+        /* Your Host Slider Section */
+        .host-slider-section {
+            padding: 0px 0 80px 0;
+            background-color: #FDFBF7;
+            max-width: 95%;
+            margin: 0 auto;
+        }
+
+        .host-slider-section .section-title {
+            text-align: left;
+            margin-bottom: 0px;
+            color: #1D0A3F;
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 600;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .host-slider-section .section-title::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: #C9A227;
+            margin-top: 10px;
+            margin-bottom: 40px;
+            border-radius: 3px;
+        }
+
+        .host-subtitle {
+            padding: 0 20px;
+            margin-bottom: 30px;
+            max-width: 900px;
+        }
+
+        .host-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #555;
+            margin: 0 0 10px 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .host-location {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .host-location strong {
+            color: #1D0A3F;
+            font-weight: 600;
+        }
+
+
+        .host-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 30px;
+            margin: 0 20px;
+        }
+
+        .host-slider {
+            display: flex;
+            width: 400%;
+            height: 550px;
+            transition: all 0.25s ease-in;
+            transform: translateX(0);
+        }
+
+        .host-slider .host-box {
+            height: 100%;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .host-slider .host-box .host-bg {
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.2);
+            width: 55%;
+            transform: skew(7deg);
+            position: absolute;
+            height: 100%;
+            left: -10%;
+            padding-left: 200px;
+            transform-origin: 0 100%;
+        }
+
+        .host-slider .host-box .host-bg::before {
+            content: "";
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: inherit;
+            pointer-events: none;
+            transform: skew(10deg);
+        }
+
+        .host-slider .host-box .host-details {
+            padding: 50px;
+            padding-left: 100px;
+            z-index: 100;
+            grid-column: 1 / span 1;
+            grid-row: 1 / -1;
+        }
+
+        .host-slider .host-box .host-details h1 {
+            font-size: 2.8rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: white;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .host-slider .host-box .host-details p {
+            display: inline-block;
+            font-size: 1.2rem;
+            color: #B5B4B4;
+            margin-bottom: 20px;
+            margin-right: 50px;
+            line-height: 1.6;
+        }
+
+        .host-slider .host-box .host-details button {
+            padding: 12px 30px;
+            color: white;
+            border-radius: 25px;
+            outline: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .host-slider .host-box .host-details button:hover {
+            opacity: 0.8;
+        }
+
+        .host-slider .host-illustration {
+            grid-column: 2 / -1;
+            grid-row: 1 / -1;
+            justify-self: center;
+        }
+
+        .host-slider .host-illustration .host-inner {
+            height: 350px;
+            width: 250px;
+            border-radius: 30px;
+            position: relative;
+            transform: skew(-10deg);
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Removed overlapping containers */
+        /* .host-slider .host-illustration .host-inner::after,
+        .host-slider .host-illustration .host-inner::before {
+            content: "";
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            border-radius: 30px;
+            top: 0;
+            left: 0;
+        }
+
+        .host-slider .host-illustration .host-inner::after {
+            transform: translate(40px, -10px);
+        }
+
+        .host-slider .host-illustration .host-inner::before {
+            transform: translate(20px, -20px);
+        } */
+
+        /* Color schemes for different slides */
+        .host-slider .host-box1 {
+            background-color: #500033;
+        }
+
+        /* .host-slider .host-box1 .host-illustration .host-inner {
+            background-color: #FF0077;
+        }
+
+        .host-slider .host-box1 .host-illustration .host-inner::after,
+        .host-slider .host-box1 .host-illustration .host-inner::before {
+            background-color: rgba(255, 0, 119, 0.4);
+        } */
+
+        .host-slider .host-box1 .host-details button {
+            background-color: #FF0077;
+        }
+
+        .host-slider .host-box2 {
+            background-color: #000050;
+        }
+
+        /* .host-slider .host-box2 .host-illustration .host-inner {
+            background-color: #0033FF;
+        }
+
+        .host-slider .host-box2 .host-illustration .host-inner::after,
+        .host-slider .host-box2 .host-illustration .host-inner::before {
+            background-color: rgba(0, 51, 255, 0.4);
+        } */
+
+        .host-slider .host-box2 .host-details button {
+            background-color: #0033FF;
+        }
+
+        .host-slider .host-box3 {
+            background-color: #00501D;
+        }
+
+        /* .host-slider .host-box3 .host-illustration .host-inner {
+            background-color: #00FF44;
+        }
+
+        .host-slider .host-box3 .host-illustration .host-inner::after,
+        .host-slider .host-box3 .host-illustration .host-inner::before {
+            background-color: rgba(0, 255, 68, 0.4);
+        } */
+
+        .host-slider .host-box3 .host-details button {
+            background-color: #00FF44;
+        }
+
+        .host-slider .host-box4 {
+            background-color: #554D00;
+        }
+
+        /* .host-slider .host-box4 .host-illustration .host-inner {
+            background-color: #FF4E00;
+        }
+
+        .host-slider .host-box4 .host-illustration .host-inner::after,
+        .host-slider .host-box4 .host-illustration .host-inner::before {
+            background-color: rgba(255, 78, 0, 0.4);
+        } */
+
+        .host-slider .host-box4 .host-details button {
+            background-color: #FF4E00;
+        }
+
+        .host-prev,
+        .host-next {
+            z-index: 500;
+            position: absolute;
+            width: 40px;
+            cursor: pointer;
+            opacity: 0.2;
+            transition: all 0.3s ease;
+            top: 50%;
+        }
+
+        .host-prev:hover,
+        .host-next:hover {
+            opacity: 1;
+        }
+
+        .host-prev {
+            left: 2%;
+            transform: translateY(-50%);
+        }
+
+        .host-next {
+            right: 2%;
+            transform: translateY(-50%);
+        }
+
+        .host-trail {
+            z-index: 500;
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        .host-trail div {
+            padding: 15px;
+            border-top: 3px solid #fff;
+            cursor: pointer;
+            opacity: 0.3;
+            transition: all 0.3s ease;
+            color: white;
+            font-weight: 500;
+        }
+
+        .host-trail div:hover {
+            opacity: 0.6;
+        }
+
+        .host-trail .active {
+            opacity: 1 !important;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 900px) {
+            .host-slider {
+                height: 100vh;
+            }
+
+            .host-slider .host-box {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(2, 1fr);
+            }
+
+            .host-slider .host-box .host-bg {
+                width: 100%;
+                left: 0;
+                bottom: 0;
+                height: 54%;
+                transform: skew(0deg);
+            }
+
+            .host-slider .host-box .host-bg::before {
+                width: 120%;
+                bottom: 0;
+                transform: skew(0deg);
+            }
+
+            .host-slider .host-box .host-details {
+                grid-row: 2 / span 1;
+                grid-column: 1 / -1;
+                text-align: center;
+                padding: 20px;
+                transform: translateY(-90px);
+            }
+
+            .host-slider .host-box .host-details h1 {
+                font-size: 2.2rem;
+            }
+
+            .host-slider .host-box .host-details p {
+                margin-right: 0;
+                font-size: 1.1rem;
+            }
+
+            .host-slider .host-illustration {
+                grid-row: 1 / span 1;
+                grid-column: 1 / -1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .host-slider .host-illustration .host-inner {
+                height: 280px;
+                width: 200px;
+            }
+
+            .host-prev,
+            .host-next {
+                display: none;
+            }
+
+            .host-trail {
+                width: 90%;
+                bottom: 13%;
+            }
+
+            .host-trail div {
+                padding: 10px;
+            }
+        }
     </style>
 </head>
 
 <body>
 
     <!-- Loading Screen -->
-    <div id="page-loader">
+    <!-- <div id="page-loader">
         <div class="loader-content">
             <div class="ball-wrapper">
                 <div class="ball"></div>
@@ -1431,49 +2541,237 @@
             </div>
             <div class="loader-text">Loading...</div>
         </div>
-    </div>
+    </div> -->
 
     <floating-navbar></floating-navbar>
-    <main id="app-content">
-        <div class="news-ticker-container" id="tickerContainer">
-            <div class="ticker-wrapper" id="tickerTrack">
-                <span class="ticker-item">Lorem ipsum dolor sit amet, consectetur adipiscing
-                    elit, sed do eiusmod tempor
-                    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veni</span>
+
+    <!-- Sticky Sidebar Buttons -->
+    <div class="sticky-sidebar-buttons">
+        <a href="#" class="sidebar-btn">Submit Abstract</a>
+
+        <div class="newsletter-wrapper">
+            <a href="#" class="sidebar-btn" id="newsletterBtn" onclick="toggleNewsletter(event)">Newsletters</a>
+            <div class="newsletter-dropdown" id="newsletterDropdown">
+                <h3>Latest Newsletters</h3>
+                <ul class="newsletter-list">
+                    <li><a href="#" class="newsletter-link">January 2027 <span>&rarr;</span></a></li>
+                    <li><a href="#" class="newsletter-link">December 2026 <span>&rarr;</span></a></li>
+                    <li><a href="#" class="newsletter-link">November 2026 <span>&rarr;</span></a></li>
+                </ul>
             </div>
         </div>
-        <div class="banner-container">
-            <img src="assets/banner_combined.png" alt="Conference Banner">
-        </div>
+    </div>
+    <main id="app-content">
+
+
+        <!-- NEW Hero Section -->
+        <section class="hero-section">
+            <div class="hero-stripes"></div>
+            <div class="hero-content">
+                <div class="hero-text">
+                    <span class="hero-date">5th - 8th January 2027</span>
+                    <h1 class="hero-title">11th International Conference on Social Work in Health and Mental Health</h1>
+
+                    <div class="hero-btn-group">
+                        <a href="registration.html" class="hero-btn-primary">Registration</a>
+                        <a href="#" class="hero-btn-outline">Host City</a>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <img src="assets/conf_logo_10th.png" alt="Conference Logo">
+                </div>
+            </div>
+            <!-- Scroll Button -->
+            <div class="scroll-button" onclick="scrollToNext()"></div>
+        </section>
+
+        <!-- <div class="banner-container"> ... Removed ... </div> -->
 
         <div class="section-separator"></div>
 
         <!-- About Section -->
         <div class="about-section">
             <div class="about-image">
-                <img src="assets/about_munnar.jpg" alt="Munnar Hills" class="card-img card-1">
-                <img src="assets/about_nets.jpg" alt="Chinese Fishing Nets" class="card-img card-2">
-                <img src="assets/about_image.jpg" alt="Kerala Houseboat" class="card-img card-3">
+                <img src="assets/conference_attendees.jpg" alt="Conference Attendees" class="about-single-img">
             </div>
             <div class="about-content">
-                <h2>Navigating a Changing World: Empowering Minds and Transforming Lives</h2>
+                <h2>MANAGING CHANGE AND EMBRACING DIVERSITY IN HEALTH AND MENTAL HEALTH</h2>
                 <p>
-                    The 10th International Conference on Social Work in Health and Mental Health (ICSWHMH)
-                    was
-                    held from
-                    Tuesday 19, November to Friday, 22 November in vibrant Melbourne. This hybrid event
-                    gathered
-                    over 1100+
-                    delegates from Australia and around the world, offering an unparalleled opportunity to
-                    connect, learn
-                    and innovate in the field of social work.
+                    Building on the momentum and global collaborations fostered during the 10th ICSWHMH in Melbourne,
+                    the 11th International Conference on Social Work in Health and Mental Health will be hosted in
+                    India, marking a significant expansion of the conference’s global footprint.
+                    The 11th ICSWHMH will offer a distinctive platform to engage with Global perspectives,
+                    community-based practices, and culturally grounded approaches to health and mental health social
+                    work.
+                    The conference will focus on cultural diversity, complex health systems, and innovative grassroots
+                    interventions, fostering critical reflection, cross-national learning, and the strengthening of
+                    international partnerships.
+
                 </p>
             </div>
         </div>
 
+        <!-- Key Dates Section -->
+        <div class="section-separator"></div>
+        <section class="timeline-section">
+            <h2 class="timeline-header">Key Conference Dates</h2>
+            <div class="timeline-container">
+                <!-- Item 1 -->
+                <div class="timeline-item completed">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">Jan 1, 2026</span>
+                        <span class="timeline-title">Abstracts Open</span>
+                    </div>
+                </div>
+                <!-- Item 2 -->
+                <div class="timeline-item completed">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">Jan 5, 2026</span>
+                        <span class="timeline-title">Registrations Open</span>
+                    </div>
+                </div>
+                <!-- Item 3 -->
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">May 31, 2026</span>
+                        <span class="timeline-title">Abstracts Close</span>
+                    </div>
+                </div>
+                <!-- Item 4 -->
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">Jun 30, 2026</span>
+                        <span class="timeline-title">Author Notifications</span>
+                    </div>
+                </div>
+                <!-- Item 5 -->
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">Oct 30, 2026</span>
+                        <span class="timeline-title">Early Bird Registration Closes</span>
+                    </div>
+                </div>
+                <!-- Item 6 -->
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">Dec 28, 2026</span>
+                        <span class="timeline-title">In-Person Registration Closes</span>
+                    </div>
+                </div>
+                <!-- Item 7 -->
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-date">Jan 5-8, 2027</span>
+                        <span class="timeline-title">Conference Dates</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Your Host Section -->
+        <section class="host-slider-section">
+            <h2 class="section-title">Your Host: Rajagiri College of Social Sciences (Autonomous)</h2>
+            <div class="host-subtitle">
+                <p class="host-location"><strong>Conference Venue:</strong> RBS, Rajagiri Valley Campus Kakkanad, Kochi,
+                    Kerala, IN</p>
+            </div>
+            <div class="host-container">
+                <div class="host-slider">
+                    <!-- Slide 1 -->
+                    <div class="host-box1 host-box">
+                        <div class="host-bg"></div>
+                        <div class="host-details">
+                            <h1>Nationally Ranked Excellence</h1>
+                            <p>
+                                Ranked 12th Best College in India (NIRF 2025, Ministry of Education, Govt. of India,
+                                College category).
+                            </p>
+                        </div>
+                        <div class="host-illustration">
+                            <div class="host-inner"
+                                style="width: 530px; background-image: url('assets/awards_ceremony.jpg'); background-size: cover; background-position: center;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2 -->
+                    <div class="host-box2 host-box">
+                        <div class="host-bg"></div>
+                        <div class="host-details">
+                            <h1>Highest Accreditation</h1>
+                            <p>
+                                Highest National Accreditation: Reaccredited by NAAC with A++ Grade (CGPA 3.83).
+                            </p>
+                        </div>
+                        <div class="host-illustration">
+                            <div class="host-inner" style="background-image: url('assets/about_nets.jpg');"></div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3 -->
+                    <div class="host-box3 host-box">
+                        <div class="host-bg"></div>
+                        <div class="host-details">
+                            <h1>Academic Pioneers</h1>
+                            <p>
+                                Academic Firsts: Launched the first Masters of Social Work (MSW) and Bachelor of Social
+                                Work (BSW) programs in the state of Kerala.
+                            </p>
+                        </div>
+                        <div class="host-illustration">
+                            <div class="host-inner" style="background-image: url('assets/about_image.jpg');"></div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 4 -->
+                    <div class="host-box4 host-box">
+                        <div class="host-bg"></div>
+                        <div class="host-details">
+                            <h1>Community Engagement</h1>
+                            <p>
+                                Community Impact: 'Live Labs' provide direct outreach and service to the community.
+                            </p>
+                        </div>
+                        <div class="host-illustration">
+                            <div class="host-inner" style="background-image: url('assets/conference_attendees.jpg');">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Arrows -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="host-prev" width="56.898" height="91"
+                    viewBox="0 0 56.898 91">
+                    <path d="M45.5,0,91,56.9,48.452,24.068,0,56.9Z" transform="translate(0 91) rotate(-90)"
+                        fill="#fff" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="host-next" width="56.898" height="91"
+                    viewBox="0 0 56.898 91">
+                    <path d="M45.5,0,91,56.9,48.452,24.068,0,56.9Z" transform="translate(56.898) rotate(90)"
+                        fill="#fff" />
+                </svg>
+
+                <!-- Trail Navigation -->
+                <div class="host-trail">
+                    <div class="host-box1 active">1</div>
+                    <div class="host-box2">2</div>
+                    <div class="host-box3">3</div>
+                    <div class="host-box4">4</div>
+                </div>
+            </div>
+        </section>
 
 
-        <!-- Welcome Section -->
+
+        <!-- COMMENTED OUT: Welcome Section to CTA Cards
+
         <section class="welcome-section">
             <div class="welcome-container">
                 <h3 class="welcome-header reveal-on-scroll">Welcome from the AASW CEO</h3>
@@ -1515,13 +2813,13 @@
             </div>
         </section>
 
-        <!-- Keynote Speakers Section -->
+
+
         <div class="section-separator"></div>
         <section class="speakers-section">
             <h4 class="speakers-title">Keynote Speakers Announced</h4>
 
             <div class="speakers-grid">
-                <!-- Speaker 1 -->
                 <div class="speaker-card">
                     <div class="speaker-card-inner">
                         <div class="speaker-card-front">
@@ -1552,7 +2850,6 @@
                     </div>
                 </div>
 
-                <!-- Speaker 2 -->
                 <div class="speaker-card">
                     <div class="speaker-card-inner">
                         <div class="speaker-card-front">
@@ -1583,7 +2880,6 @@
                     </div>
                 </div>
 
-                <!-- Speaker 3 -->
                 <div class="speaker-card">
                     <div class="speaker-card-inner">
                         <div class="speaker-card-front">
@@ -1610,7 +2906,6 @@
                     </div>
                 </div>
 
-                <!-- Speaker 4 -->
                 <div class="speaker-card">
                     <div class="speaker-card-inner">
                         <div class="speaker-card-front">
@@ -1641,7 +2936,6 @@
         </section>
 
 
-        <!-- Delegates & Map Section -->
         <h2 class="delegates-title">1000+ Delegates registered</h2>
         <section class="delegates-section">
             <div class="map-container">
@@ -1651,10 +2945,8 @@
             </div>
         </section>
 
-        <!-- CTA Cards Section -->
         <section class="cta-cards-section">
             <div class="cta-cards-grid">
-                <!-- Card 1: Registration -->
                 <div class="cta-card">
                     <div class="cta-card-inner">
                         <div class="cta-card-front">
@@ -1667,7 +2959,6 @@
                     </div>
                 </div>
 
-                <!-- Card 2: Abstract/Program -->
                 <div class="cta-card">
                     <div class="cta-card-inner">
                         <div class="cta-card-front">
@@ -1682,7 +2973,6 @@
                     </div>
                 </div>
 
-                <!-- Card 3: Visit Host City -->
                 <div class="cta-card">
                     <div class="cta-card-inner">
                         <div class="cta-card-front">
@@ -1698,6 +2988,7 @@
                 </div>
             </div>
         </section>
+        END COMMENTED OUT SECTION -->
     </main>
     <main-footer></main-footer>
 
@@ -1774,6 +3065,35 @@
 
         // Start animation
         requestAnimationFrame(animate);
+
+        // Newsletter Toggle Logic
+        function toggleNewsletter(event) {
+            event.preventDefault();
+            const dropdown = document.getElementById('newsletterDropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (event) {
+            const dropdown = document.getElementById('newsletterDropdown');
+            const btn = document.getElementById('newsletterBtn');
+
+            if (dropdown && dropdown.classList.contains('active')) {
+                if (!dropdown.contains(event.target) && !btn.contains(event.target)) {
+                    dropdown.classList.remove('active');
+                }
+            }
+        });
+
+        // Scroll Button Function
+        function scrollToNext() {
+            const aboutSection = document.querySelector('.about-section');
+            if (aboutSection) {
+                const offset = 150; // Adjust this value to control scroll distance
+                const targetPosition = aboutSection.getBoundingClientRect().top + window.pageYOffset - offset;
+                window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+            }
+        }
 
         // Parallax Effect
         const aboutSection = document.querySelector('.about-section');
@@ -1878,6 +3198,117 @@
 
         document.querySelectorAll('.reveal-on-scroll').forEach(el => {
             revealObserver.observe(el);
+        });
+    </script>
+
+    <!-- GSAP Library for animations - Load before slider code -->
+    <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/gsap-latest-beta.min.js"></script>
+
+    <script>
+        // Host Slider Functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const slider = document.querySelector(".host-slider");
+            if (!slider) return; // Exit if slider doesn't exist
+
+            const trail = document.querySelector(".host-trail").querySelectorAll("div");
+            let value = 0;
+            let trailValue = 0;
+            let interval = 4000;
+
+            const slide = (condition) => {
+                clearInterval(start);
+                condition === "increase" ? initiateINC() : initiateDEC();
+                move(value, trailValue);
+                if (typeof gsap !== 'undefined') {
+                    animate();
+                }
+                start = setInterval(() => slide("increase"), interval);
+            }
+
+            const initiateINC = () => {
+                trail.forEach(cur => cur.classList.remove("active"));
+                value === 75 ? value = 0 : value += 25; // 4 slides = 25% each
+                trailUpdate();
+            }
+
+            const initiateDEC = () => {
+                trail.forEach(cur => cur.classList.remove("active"));
+                value === 0 ? value = 75 : value -= 25;
+                trailUpdate();
+            }
+
+            const move = (S, T) => {
+                slider.style.transform = `translateX(-${S}%)`;
+                trail[T].classList.add("active");
+            }
+
+            const tl = typeof gsap !== 'undefined' ? gsap.timeline({ defaults: { duration: 0.6, ease: "power2.inOut" } }) : null;
+            if (tl) {
+                tl.from(".host-bg", { x: "-100%", opacity: 0 })
+                    .from(".host-details p", { opacity: 0 }, "-=0.3")
+                    .from(".host-details h1", { opacity: 0, y: "30px" }, "-=0.3")
+                    .from(".host-details button", { opacity: 0, y: "-40px" }, "-=0.8");
+            }
+
+            const animate = () => {
+                if (tl) tl.restart();
+            }
+
+            const trailUpdate = () => {
+                if (value === 0) trailValue = 0;
+                else if (value === 25) trailValue = 1;
+                else if (value === 50) trailValue = 2;
+                else trailValue = 3;
+            }
+
+            let start = setInterval(() => slide("increase"), interval);
+
+            document.querySelectorAll(".host-prev, .host-next").forEach(cur => {
+                cur.addEventListener("click", () => cur.classList.contains("host-next") ? slide("increase") : slide("decrease"));
+            });
+
+            const clickCheck = (e) => {
+                clearInterval(start);
+                trail.forEach(cur => cur.classList.remove("active"));
+                const check = e.target;
+                check.classList.add("active");
+
+                if (check.classList.contains("host-box1")) value = 0;
+                else if (check.classList.contains("host-box2")) value = 25;
+                else if (check.classList.contains("host-box3")) value = 50;
+                else value = 75;
+
+                trailUpdate();
+                move(value, trailValue);
+                if (typeof gsap !== 'undefined') {
+                    animate();
+                }
+                start = setInterval(() => slide("increase"), interval);
+            }
+
+            trail.forEach(cur => cur.addEventListener("click", (ev) => clickCheck(ev)));
+
+            // Mobile touch slide
+            let touchStart, touchMove, touchChange, sliderWidth;
+
+            slider.addEventListener("touchstart", (e) => {
+                touchStart = e.touches[0].clientX;
+                sliderWidth = slider.clientWidth / 4; // 4 slides
+            });
+
+            slider.addEventListener("touchmove", (e) => {
+                e.preventDefault();
+                touchMove = e.touches[0].clientX;
+                touchChange = touchStart - touchMove;
+            });
+
+            const mobileSlide = (e) => {
+                touchChange > (sliderWidth / 4) ? slide("increase") : null;
+                (touchChange * -1) > (sliderWidth / 4) ? slide("decrease") : null;
+                touchStart = touchMove = touchChange = sliderWidth = 0;
+            }
+
+            slider.addEventListener("touchend", mobileSlide);
         });
     </script>
 </body>

@@ -2,680 +2,348 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Speakers | 2027 ICSWHMH</title>
-    <link rel="icon" type="image/x-icon" href="assets/Favicon-192.ico?v=2">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="navbar.js" defer></script>
-    <script src="footer.js" defer></script>
-    <script src="router.js" defer></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Speakers | 2027 ICSWHMH</title>
+  <link rel="icon" type="image/x-icon" href="assets/Favicon-192.ico?v=2">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@400;600;800&display=swap"
-        rel="stylesheet">
+  <script src="navbar.js" defer></script>
+  <script src="footer.js" defer></script>
+  <script src="router.js" defer></script>
 
-    <!-- View Transitions API CSS -->
-    <style>
-        /* Prevent navbar and footer from flickering during transitions */
-        floating-navbar {
-            view-transition-name: navbar;
-        }
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@400;600;800&display=swap"
+    rel="stylesheet">
 
-        main-footer {
-            view-transition-name: footer;
-        }
+  <style>
+    * { box-sizing: border-box; }
 
-        /* Smooth crossfade animation for page content */
-        ::view-transition-old(root),
-        ::view-transition-new(root) {
-            animation-duration: 0.3s;
-        }
+    body {
+      margin: 0;
+      background: #FDFBF7;
+      font-family: "Inter", system-ui, sans-serif;
+      color: #333;
+    }
 
-        /* Keep navbar and footer stable (no animation) */
-        ::view-transition-old(navbar),
-        ::view-transition-new(navbar),
-        ::view-transition-old(footer),
-        ::view-transition-new(footer) {
-            animation: none;
-        }
+    .speakers-section {
+      max-width: 1200px;
+      margin: 100px auto;
+      padding: 40px 20px;
+    }
 
-        /* Respect user's motion preferences */
-        @media (prefers-reduced-motion: reduce) {
+    .section-title {
+      font-family: "Outfit", sans-serif;
+      font-size: 2rem;
+      color: #1D0A3F;
+      margin-bottom: 40px;
+      font-weight: 600;
+    }
 
-            ::view-transition-old(root),
-            ::view-transition-new(root) {
-                animation: none !important;
-            }
-        }
-    </style>
+    .section-title::after {
+      content: "";
+      width: 80px;
+      height: 4px;
+      background: #C9A227;
+      display: block;
+      margin-top: 10px;
+      border-radius: 3px;
+    }
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+    .speakers-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
+      margin-bottom: 80px;
+    }
 
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #FDFBF7;
-            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            color: #333;
-            overflow-x: hidden;
-        }
+    .speaker-card {
+      background: #1D0A3F;
+      color: #fff;
+      border-radius: 12px;
+      border-left: 6px solid #C9A227;
+      box-shadow: 0 10px 25px rgba(0,0,0,.25);
+      padding: 30px;
+      display: flex;
+      gap: 25px;
+      transition: transform .4s ease, box-shadow .4s ease;
+    }
 
-        /* Floating Navbar Component Styles (if not loaded by js/css)*/
-        html {
-            overflow-x: hidden;
-            width: 100%;
-        }
+    .speaker-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 25px 50px rgba(0,0,0,.35);
+    }
 
-        /* Floating Navbar Component Styles (if not loaded by js/css) */
-        floating-navbar {
-            display: block;
-            width: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-        }
+    .speaker-card img {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
 
-        /* Speakers Section Styles from Index */
-        .speakers-section {
-            padding: 60px 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-            background-color: #FDFBF7;
-            margin-top: 100px;
-            /* Space for navbar */
-        }
+    .speaker-info h3 {
+      margin: 0;
+      font-family: "Outfit";
+      font-size: 1.3rem;
+    }
 
-        .speakers-title {
-            text-align: left;
-            color: #1D0A3F;
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            font-weight: 600;
-            font-size: 2rem;
-            margin-bottom: 50px;
-            margin-top: 50px;
-            position: relative;
-            display: inline-block;
-            width: 100%;
-        }
+    .speaker-info h6 {
+      margin: 8px 0;
+      font-size: .85rem;
+      color: #C9A227;
+      font-weight: 400;
+    }
 
-        .speakers-title::after {
-            content: "";
-            display: block;
-            width: 80px;
-            height: 4px;
-            background-color: #C9A227;
-            margin-top: 10px;
-            border-radius: 3px;
-        }
+    .speaker-info p {
+      font-size: .9rem;
+      line-height: 1.5;
+      margin-bottom: 15px;
+      text-align: justify;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
 
-        .speakers-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-bottom: 60px;
-        }
+    .read-more-btn {
+      background: #C9A227;
+      color: #1D0A3F;
+      border: none;
+      padding: 8px 22px;
+      border-radius: 20px;
+      font-size: .85rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
 
-        .speaker-card {
-            perspective: 1000px;
-            height: 300px;
-            /* Adjusted height for content */
-            background: transparent;
-            padding: 0;
-            border-radius: 0;
-            box-shadow: none;
-        }
+    .read-more-btn:hover {
+      background: #FDFBF7;
+    }
 
-        .speaker-card:hover .speaker-card-front {
-            transform: translateY(-5px);
-        }
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .35s ease;
+      z-index: 9999;
+    }
 
-        .speaker-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: left;
-            transition: transform 0.8s;
-            transform-style: preserve-3d;
-        }
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
 
-        .speaker-card.flipped .speaker-card-inner {
-            transform: rotateY(-180deg);
-        }
+    .modal-content {
+      background: #1D0A3F;
+      color: #fff;
+      width: 90%;
+      max-width: 700px;
+      border-radius: 16px;
+      padding: 30px;
+      position: relative;
+      transform: translateY(30px) scale(.96);
+      opacity: 0;
+      transition: transform .45s cubic-bezier(.22,1,.36,1), opacity .45s ease;
+    }
 
-        .speaker-card-front,
-        .speaker-card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            background: #1D0A3F;
-            padding: 30px;
-            box-sizing: border-box;
-        }
+    .modal-overlay.active .modal-content {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
 
-        .speaker-card-front {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            z-index: 2;
-            transition: transform 0.3s ease;
-            border-left: 6px solid #C9A227;
-        }
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 18px;
+      font-size: 26px;
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      transition: transform .4s ease, color .4s ease;
+    }
 
-        .speaker-card-back {
-            transform: rotateY(180deg);
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: flex-start;
-            overflow-y: auto;
-            color: #F0F0F0;
-        }
+    .modal-close:hover {
+      transform: rotate(90deg);
+      color: #C9A227;
+    }
 
-        .speaker-card-back::-webkit-scrollbar {
-            width: 6px;
-        }
+    .modal-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
 
-        .speaker-card-back::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-        }
+    .modal-header img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      margin-bottom: 15px;
+      object-fit: cover;
+      object-position: center;
+    }
 
-        .speaker-card-back::-webkit-scrollbar-thumb {
-            background-color: #C9A227;
-            border-radius: 3px;
-        }
+    .modal-header h3 {
+      margin: 0;
+      font-family: "Outfit";
+    }
 
-        .speaker-img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            flex-shrink: 0;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+    .modal-header h4 {
+      margin-top: 6px;
+      color: #C9A227;
+      font-weight: 400;
+      font-size: .9rem;
+    }
 
-        .speaker-card:hover .speaker-img {
-            transform: scale(1.1);
-            border-radius: 20px;
-        }
+    .modal-body {
+      font-size: .95rem;
+      line-height: 1.7;
+      text-align: justify;
+    }
 
-        .speaker-info {
-            flex: 1;
-        }
-
-        .speaker-info h3 {
-            color: #FFFFFF;
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            margin: 0 0 5px 0;
-            font-size: 1.4rem;
-            font-weight: 600;
-        }
-
-        .speaker-info h6 {
-            color: #C9A227;
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            margin: 0 0 10px 0;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            font-weight: 400;
-            letter-spacing: 0.5px;
-        }
-
-        .speaker-info p {
-            color: #F0F0F0;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            margin-bottom: 15px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-align: justify;
-        }
-
-        .speaker-card-back h3 {
-            color: #FFFFFF;
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            margin-top: 0;
-            font-size: 1.3rem;
-            margin-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            padding-bottom: 10px;
-            width: 100%;
-        }
-
-        .speaker-card-back p {
-            color: #F0F0F0;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            margin-bottom: 15px;
-            text-align: justify;
-        }
-
-        .read-more-btn {
-            display: inline-block;
-            padding: 8px 20px;
-            background-color: #C9A227;
-            color: #1D0A3F;
-            text-decoration: none;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            transition: background 0.3s;
-            cursor: pointer;
-            font-weight: 600;
-            border: none;
-        }
-
-        .read-more-btn:hover {
-            background-color: #FDFBF7;
-        }
-
-        .close-btn {
-            background: #C9A227;
-            border: none;
-            color: #1D0A3F;
-            cursor: pointer;
-            margin-top: auto;
-            padding: 8px 20px;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            align-self: flex-end;
-        }
-
-        .close-btn:hover {
-            background-color: #FDFBF7;
-        }
-
-        @media (max-width: 768px) {
-            body {
-                overflow-x: hidden !important;
-            }
-
-            .speakers-section {
-                padding: 40px 15px;
-                margin: 0;
-                max-width: 100%;
-                width: 100%;
-                overflow-x: hidden;
-            }
-
-            .speakers-grid {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-
-            .speaker-card {
-                height: auto;
-                min-height: 450px;
-                max-width: 100%;
-            }
-
-            .speaker-card-front {
-                flex-direction: column;
-                text-align: center;
-                gap: 20px;
-                padding: 25px;
-            }
-
-            .speaker-info h3,
-            .speaker-info h6,
-            .speaker-info p {
-                text-align: center;
-            }
-
-            .speaker-card-back {
-                padding: 20px;
-            }
-
-            .speaker-img {
-                width: 120px;
-                height: 120px;
-            }
-        }
-    </style>
+    @media (max-width: 768px) {
+      .speakers-grid { grid-template-columns: 1fr; }
+      .speaker-card { flex-direction: column; text-align: center; }
+      .speaker-info p { text-align: center; }
+    }
+  </style>
 </head>
 
 <body>
-    <floating-navbar></floating-navbar>
-    <main id="app-content">
 
-        <div class="speakers-section">
+  <floating-navbar></floating-navbar>
 
-            <!-- Section 1 -->
-            <h2 class="speakers-title">INTERNATIONAL KEYNOTE SPEAKERS</h2>
-            <div class="speakers-grid">
+  <div class="speakers-section">
 
-                <!-- Speaker 1: Dr Cindy Blackstock -->
-                <div class="speaker-card">
-                    <div class="speaker-card-inner">
-                        <div class="speaker-card-front">
-                            <img src="assets/speaker1.jpg" class="speaker-img" alt="Dr Cindy Blackstock">
-                            <div class="speaker-info">
-                                <h3>DR CINDY BLACKSTOCK</h3>
-                                <h6>Executive Director, First Nations Child and Family Caring
-                                    Society, Canada</h6>
-                                <p>
-                                    A member of the Gitxsan First Nation, Cindy is
-                                    honoured to serve as the Executive Director of the First
-                                    Nations Child and Family Caring Society and a professor at
-                                    McGill University’s School of Social Work. She has over 30
-                                    years of experience working in child welfare and Indigenous
-                                    children’s rights and has published on topics relating to
-                                    reconciliation, Indigenous theory, First Nations child
-                                    welfare and human rights. A recipient of the SSHRC Gold
-                                    Medal, Cindy was honoured to work with First Nations
-                                    colleagues on a successful human rights challenge to
-                                    Canada’s inequitable provision of child and family services
-                                    and failure to implement Jordan’s Principle.
-                                </p>
-                                <button class="read-more-btn" onclick="flipCard(this)">Read
-                                    More</button>
-                            </div>
-                        </div>
-                        <div class="speaker-card-back">
-                            <h3>DR CINDY BLACKSTOCK</h3>
-                            <p>
-                                A member of the Gitxsan First Nation, Cindy is honoured to serve as
-                                the Executive Director of
-                                the First Nations Child and Family Caring Society and a professor at
-                                McGill University’s School
-                                of Social Work. She has over 30 years of experience working in child
-                                welfare and Indigenous
-                                children’s rights and has published on topics relating to
-                                reconciliation, Indigenous theory,
-                                First Nations child welfare and human rights. A recipient of the
-                                SSHRC Gold Medal, Cindy was
-                                honoured to work with First Nations colleagues on a successful human
-                                rights challenge to
-                                Canada’s inequitable provision of child and family services and
-                                failure to implement Jordan’s
-                                Principle.
-                            </p>
-                            <p>
-                                This hard-fought litigation has resulted in hundreds of thousands of
-                                services being provided to
-                                First Nations children, youth, and families.
-                            </p>
-                            <button class="close-btn" onclick="unflipCard(this)">Close</button>
-                        </div>
-                    </div>
-                </div>
+    <h2 class="section-title">INTERNATIONAL KEYNOTE SPEAKERS</h2>
+    <div class="speakers-grid" id="internationalGrid"></div>
 
-                <!-- Speaker 2: Dr Michael Ungar -->
-                <div class="speaker-card">
-                    <div class="speaker-card-inner">
-                        <div class="speaker-card-front">
-                            <img src="assets/speaker2.jpg" class="speaker-img" alt="Dr Michael Ungar">
-                            <div class="speaker-info">
-                                <h3>DR MICHAEL UNGAR</h3>
-                                <h6>Director, Resilience Research Centre, Canada</h6>
-                                <p>
-                                    Michael Ungar, Ph.D., is a Family Therapist and Professor of
-                                    Social Work at Dalhousie
-                                    University where he holds the Canada Research Chair in Child,
-                                    Family and Community
-                                    Resilience. His research on resilience around the world and
-                                    across cultures...
-                                </p>
-                                <button class="read-more-btn" onclick="flipCard(this)">Read
-                                    More</button>
-                            </div>
-                        </div>
-                        <div class="speaker-card-back">
-                            <h3>DR MICHAEL UNGAR</h3>
-                            <h6>Canada Research Chair in Child, Family and Community Resilience</h6>
-                            <p>
-                                Michael Ungar, Ph.D., is a Family Therapist and Professor of Social
-                                Work at Dalhousie University
-                                where he holds the Canada Research Chair in Child, Family and
-                                Community Resilience. His research
-                                on resilience around the world and across cultures has made him the
-                                number one ranked Social
-                                Work scholar in the world, with numerous educational institutions,
-                                government agencies, and
-                                not-for-profits relying on his research and clinical work to guide
-                                their approaches to nurturing
-                                child, family, organizational and community wellbeing under stress.
-                                He the author of 18 books
-                                for mental health professionals, educators, caregivers and
-                                employers.
-                            </p>
-                            <button class="close-btn" onclick="unflipCard(this)">Close</button>
-                        </div>
-                    </div>
-                </div>
+    <h2 class="section-title">KEYNOTE SPEAKERS</h2>
+    <div class="speakers-grid" id="keynoteGrid"></div>
 
-            </div>
+    <h2 class="section-title">NORMA PARKER ADDRESS</h2>
+    <div class="speakers-grid" id="normaGrid"></div>
 
-            <!-- Section 2 -->
-            <h2 class="speakers-title">KEYNOTE SPEAKERS</h2>
-            <div class="speakers-grid">
+  </div>
 
-                <!-- Speaker 3: Heather Boetto -->
-                <div class="speaker-card">
-                    <div class="speaker-card-inner">
-                        <div class="speaker-card-front">
-                            <img src="assets/speaker3.png" class="speaker-img" alt="A/Professor Heather Boetto">
-                            <div class="speaker-info">
-                                <h3>A/PROFESSOR HEATHER BOETTO</h3>
-                                <h6>Associate Professor, Charles Sturt
-                                    University, Australia</h6>
-                                <p>
-                                    Heather is an Associate Professor in
-                                    social work at Charles Sturt University,
-                                    Australia.
-                                    Heather’s research and teaching
-                                    interests are focused on environmental
-                                    social work and
-                                    disaster practice.
-                                </p>
-                                <button class="read-more-btn" onclick="flipCard(this)">Read
-                                    More</button>
-                            </div>
-                        </div>
-                        <div class="speaker-card-back">
-                            <h3>A/PROFESSOR HEATHER BOETTO</h3>
-                            <p>
-                                Heather Boetto is a distinguished expert in
-                                the field of Environmental Social Work, also
-                                known
-                                as EcoSocial Work and Green Social Work. Her
-                                extensive knowledge of this area centres
-                                around
-                                helping people establish and maintain a
-                                balanced and diverse ecosystem. Heather
-                                understands the
-                                intrinsic connection between environmental
-                                well-being and human welfare and actively
-                                works to
-                                address and rectify injustices that arise
-                                from the unequal distribution of
-                                environmental risks.
-                            </p>
-                            <p>
-                                Heather's academic journey has been marked
-                                by significant accomplishments. She obtained
-                                her
-                                Doctoral degree, culminating in a PhD with
-                                the prestigious Higher Degree by Research
-                                Medal in
-                                2017 from Charles Sturt University.
-                            </p>
-                            <button class="close-btn" onclick="unflipCard(this)">Close</button>
-                        </div>
-                    </div>
-                </div>
+  <!-- MODAL -->
+  <div id="profileModal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close">&times;</button>
+      <div class="modal-header">
+        <img id="modalImage">
+        <h3 id="modalName"></h3>
+        <h4 id="modalAffiliation"></h4>
+      </div>
+      <div class="modal-body" id="modalDetails"></div>
+    </div>
+  </div>
 
-                <!-- Speaker 4: Tom Calma -->
-                <div class="speaker-card">
-                    <div class="speaker-card-inner">
-                        <div class="speaker-card-front">
-                            <img src="assets/speaker4.jpg" class="speaker-img" alt="Professor Tom Calma">
-                            <div class="speaker-info">
-                                <h3>PROFESSOR TOM CALMA</h3>
-                                <h6>AO FAA FASSA FAHA FANZSOG, Australia
-                                </h6>
-                                <p>
-                                    Professor Tom Calma AO FAA FASSA FAHA
-                                    FANZSOG is an Aboriginal Elder from the
-                                    Kungarakan
-                                    tribal group and a member of the Iwaidja
-                                    and Woolwonga tribal groups in the NT
-                                    and he
-                                    lives on Ngunnawal country in Canberra.
-                                </p>
-                                <button class="read-more-btn" onclick="flipCard(this)">Read
-                                    More</button>
-                            </div>
-                        </div>
-                        <div class="speaker-card-back">
-                            <h3>PROFESSOR TOM CALMA</h3>
-                            <p>
-                                Professor Tom Calma AO FAA FASSA FAHA
-                                FANZSOG is an Aboriginal Elder from the
-                                Kungarakan
-                                tribal group and a member of the Iwaidja and
-                                Woolwonga tribal groups in the NT and he
-                                lives on Ngunnawal country in Canberra.
-                                Graduating in social work and community
-                                development in 1978 he has a long and
-                                distinguished career in academia, public
-                                service
-                                bureaucracy, social justice and community
-                                development.
-                            </p>
-                            <p>
-                                He is the National Coordinator Tackling
-                                Indigenous Smoking (2010-present), a
-                                Professor
-                                at the University of Sydney (2015-present)
-                                and Patron of the five national Poche
-                                Centres
-                                for Indigenous Health (2010 to present).
-                            </p>
-                            <button class="close-btn" onclick="unflipCard(this)">Close</button>
-                        </div>
-                    </div>
-                </div>
+  <main-footer></main-footer>
 
-            </div>
+  <script>
+    const international = [
+      {
+        name: "DR CINDY BLACKSTOCK",
+        affiliation: "Executive Director, First Nations Child and Family Caring Society, Canada",
+        short: "Over 30 years of experience in child welfare and Indigenous rights.",
+        full: "Dr Cindy Blackstock is a member of the Gitxsan First Nation and serves as Executive Director of the First Nations Child and Family Caring Society. She is a professor at McGill University and led the landmark human rights case implementing Jordan’s Principle.",
+        img: "assets/speakers/speaker1.jpg"
+      },
+      {
+        name: "DR MICHAEL UNGAR",
+        affiliation: "Director, Resilience Research Centre, Canada",
+        short: "Canada Research Chair in Child, Family and Community Resilience.",
+        full: "Michael Ungar is a Professor of Social Work at Dalhousie University and the world’s top-ranked social work scholar. He has authored 18 books and advises governments and institutions globally.",
+        img: "assets/speakers/speaker2.jpg"
+      }
+    ];
 
-            <!-- Section 3 -->
-            <h2 class="speakers-title">NORMA PARKER ADDRESS</h2>
-            <div class="speakers-grid">
+    const keynote = [
+      {
+        name: "A/PROFESSOR HEATHER BOETTO",
+        affiliation: "Associate Professor, Charles Sturt University, Australia",
+        short: "Expert in Environmental and EcoSocial Work.",
+        full: "Heather Boetto is a leading scholar in Environmental Social Work. Her research focuses on environmental justice, disaster practice, and ecosocial frameworks. She received the Higher Degree by Research Medal in 2017.",
+        img: "assets/speakers/speaker3.png"
+      },
+      {
+        name: "PROFESSOR TOM CALMA",
+        affiliation: "AO FAA FASSA FAHA FANZSOG, Australia",
+        short: "Aboriginal Elder and leader in Indigenous health and social justice.",
+        full: "Professor Tom Calma is an Aboriginal Elder from the Kungarakan people. He has held senior roles in academia and public service and is National Coordinator for Tackling Indigenous Smoking.",
+        img: "assets/speakers/speaker4.jpg"
+      }
+    ];
 
-                <!-- Speaker: Heather Boetto (Again/Different context) -->
-                <div class="speaker-card">
-                    <div class="speaker-card-inner">
-                        <div class="speaker-card-front">
-                            <img src="assets/speaker3.png" class="speaker-img" alt="A/Professor Heather Boetto">
-                            <div class="speaker-info">
-                                <h3>A/PROFESSOR
-                                    HEATHER BOETTO
-                                </h3>
-                                <h6>Associate
-                                    Professor,
-                                    Charles Sturt
-                                    University,
-                                    Australia</h6>
-                                <p>
-                                    Heather is an
-                                    Associate
-                                    Professor in
-                                    social work at
-                                    Charles Sturt
-                                    University,
-                                    Australia.
-                                    Heather’s
-                                    research and
-                                    teaching
-                                    interests are
-                                    focused on
-                                    environmental
-                                    social work and
-                                    disaster
-                                    practice.
-                                </p>
-                                <button class="read-more-btn" onclick="flipCard(this)">Read
-                                    More</button>
-                            </div>
-                        </div>
-                        <div class="speaker-card-back">
-                            <h3>A/PROFESSOR HEATHER
-                                BOETTO</h3>
-                            <p>
-                                Heather Boetto is a
-                                distinguished expert
-                                in the field of
-                                Environmental Social
-                                Work, also known
-                                as EcoSocial Work
-                                and Green Social
-                                Work. Her extensive
-                                knowledge of this
-                                area centres around
-                                helping people
-                                establish and
-                                maintain a balanced
-                                and diverse
-                                ecosystem. Heather
-                                understands the
-                                intrinsic connection
-                                between
-                                environmental
-                                well-being and human
-                                welfare and actively
-                                works to
-                                address and rectify
-                                injustices that
-                                arise from the
-                                unequal distribution
-                                of environmental
-                                risks.
-                            </p>
-                            <button class="close-btn" onclick="unflipCard(this)">Close</button>
-                        </div>
-                    </div>
-                </div>
+    const norma = [
+      {
+        name: "A/PROFESSOR HEATHER BOETTO",
+        affiliation: "Norma Parker Address Speaker",
+        short: "Address on environmental justice and social wellbeing.",
+        full: "In the Norma Parker Address, Heather Boetto explores the intersection of environmental justice, disaster response, and social wellbeing, highlighting the role of social work in climate action.",
+        img: "assets/speakers/speaker3.png"
+      }
+    ];
 
-            </div>
-
+    function renderSpeakers(data, containerId) {
+      document.getElementById(containerId).innerHTML = data.map(s => `
+        <div class="speaker-card">
+          <img src="${s.img}">
+          <div class="speaker-info">
+            <h3>${s.name}</h3>
+            <h6>${s.affiliation}</h6>
+            <p>${s.short}</p>
+            <button class="read-more-btn open-profile"
+              data-img="${s.img}"
+              data-name="${s.name}"
+              data-affiliation="${s.affiliation}"
+              data-details="${s.full}">
+              Read More
+            </button>
+          </div>
         </div>
+      `).join("");
+    }
 
-    </main>
-    <main-footer></main-footer>
+    renderSpeakers(international, "internationalGrid");
+    renderSpeakers(keynote, "keynoteGrid");
+    renderSpeakers(norma, "normaGrid");
 
-    <script>
-        function flipCard(btn) {
-            const card = btn.closest('.speaker-card');
-            if (card) {
-                card.classList.add('flipped');
-            }
-        }
+    const modal = document.getElementById("profileModal");
 
-        function unflipCard(btn) {
-            const card = btn.closest('.speaker-card');
-            if (card) {
-                card.classList.remove('flipped');
-            }
-        }
-    </script>
+    document.addEventListener("click", e => {
+      if (e.target.classList.contains("open-profile")) {
+        modal.classList.add("active");
+        document.body.style.overflow = "hidden";
+
+        modal.querySelector("#modalImage").src = e.target.dataset.img;
+        modal.querySelector("#modalName").textContent = e.target.dataset.name;
+        modal.querySelector("#modalAffiliation").textContent = e.target.dataset.affiliation;
+        modal.querySelector("#modalDetails").textContent = e.target.dataset.details;
+      }
+
+      if (e.target.classList.contains("modal-close") || e.target === modal) {
+        modal.classList.remove("active");
+        document.body.style.overflow = "";
+      }
+    });
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") {
+        modal.classList.remove("active");
+        document.body.style.overflow = "";
+      }
+    });
+  </script>
 
 </body>
-
 </html>
