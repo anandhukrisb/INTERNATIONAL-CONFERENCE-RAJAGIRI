@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotels - ICSWHMH 2027</title>
+    <title>Attractions - ICSWHMH 2027</title>
     <link rel="icon" type="image/x-icon" href="assets/Favicon-192.ico?v=2">
 
     <!-- Bootstrap 5.3 -->
@@ -43,7 +43,7 @@
 
         /* ================= TITLE ================= */
         .hotels-title-section {
-            margin-top: 150px;
+            margin-top: 80px;
             margin-bottom: 50px;
             max-width: 1200px;
             margin-left: auto;
@@ -653,295 +653,240 @@
 <body>
     <floating-navbar></floating-navbar>
 
-    <!-- Hotels Title Section -->
-    <div class="hotels-title-section">
-        <h2 id="pageTitle">STAY HERE WHILE YOU VISIT</h2>
+    <!-- Full Screen Hero Slider -->
+    <div class="page-wrap">
+        <div class="hero-slider">
+            <!-- Slide 1: Fort Kochi -->
+            <div class="slide active">
+                <div class="hero-image hi-1"></div>
+                <div class="hero-info">
+                    <h2>Historic</h2>
+                    <h1>Fort Kochi</h1>
+                    <h3>Iconic Chinese Fishing Nets</h3>
+                </div>
+            </div>
+
+            <!-- Slide 2: Mattancherry -->
+            <div class="slide">
+                <div class="hero-image hi-2"></div>
+                <div class="hero-info">
+                    <h2>Heritage</h2>
+                    <h1>Mattancherry</h1>
+                    <h3>Dutch Palace & Synagogue</h3>
+                </div>
+            </div>
+
+            <!-- Slide 3: Marine Drive -->
+            <div class="slide">
+                <div class="hero-image hi-3"></div>
+                <div class="hero-info">
+                    <h2>Scenic</h2>
+                    <h1>Marine Drive</h1>
+                    <h3>Backwaters Walkway</h3>
+                </div>
+            </div>
+
+            <!-- Slide 4: Cherai Beach -->
+            <div class="slide">
+                <div class="hero-image hi-4"></div>
+                <div class="hero-info">
+                    <h2>Golden</h2>
+                    <h1>Cherai Beach</h1>
+                    <h3>Sunsets & Dolphins</h3>
+                </div>
+            </div>
+
+            <!-- Slide 5: Kerala Folklore -->
+            <div class="slide">
+                <div class="hero-image hi-5"></div>
+                <div class="hero-info">
+                    <h2>Cultural</h2>
+                    <h1>Kathakali</h1>
+                    <h3>Kerala Folklore Theatre</h3>
+                </div>
+            </div>
+
+            <!-- Slide 6: Jew Town -->
+            <div class="slide">
+                <div class="hero-image hi-6"></div>
+                <div class="hero-info">
+                    <h2>Shopping</h2>
+                    <h1>Jew Town</h1>
+                    <h3>Antiques & Spices</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll Down Indicator -->
+        <div class="scroll-down" onclick="smoothScroll('pageTitle', 2000)">
+            <i class="bi bi-chevron-down"></i>
+        </div>
     </div>
 
-    <!-- Hotels Grid -->
-    <div class="hotels-grid">
+    <style>
+        .scroll-down {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            color: #fff;
+            width: 50px;
+            height: 50px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            animation: breathe 2.5s infinite ease-in-out;
+            transition: background 0.3s, transform 0.3s;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(2px);
+        }
 
-        <!-- Card 1: Hotel The Mountmist -->
-        <!-- Card 1: Hotel The Mountmist -->
-        <div class="hotel-card" data-name="Hotel The Mountmist" data-price="₹2,800" data-rating="9.2/10 (Excellent)"
-            data-book-url="https://www.themountmist.com/"
-            data-amenities="Free WiFi,Business Center,Kakkanad,Air Conditioning,24h Front Desk"
-            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4236.050848077297!2d76.33583461091672!3d10.009371490055178!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080d85d29fc803%3A0x1bb64bc4a848f60f!2sTHE%20MOUNTMIST%20APARTMENT!5e1!3m2!1sen!2sin!4v1769013344391!5m2!1sen!2sin">
-            <div class="hotel-image-container">
-                <img src="assets/hotel/mountmist.webp" alt="Hotel Room">
-            </div>
-            <div class="hotel-content">
-                <div>
-                    <div class="hotel-price">₹2,800 <span>/night</span></div>
-                    <h3 class="hotel-title">Hotel The Mountmist</h3>
-                    <div class="hotel-location-preview">
-                        <i class="bi bi-geo-alt-fill"></i> Kakkanad
-                    </div>
-                </div>
-                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
-            </div>
-        </div>
+        .scroll-down:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
 
-        <!-- Card 2: The Nexus Hotel -->
-        <!-- Card 2: The Nexus Hotel -->
-        <div class="hotel-card" data-name="The Nexus Hotel" data-price="₹3,200" data-rating="9.0/10 (Superb)"
-            data-book-url="https://www.booking.com/hotel/in/the-nexus-kakkanad.html"
-            data-amenities="Luxury Rooms,Breakfast Included,Kakkanad,Free Parking,Pool"
-            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4236.030316712271!2d76.33598171091667!3d10.010944790053745!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080d004b030361%3A0x69a0d1444f784f5f!2sThe%20Nexus%20hotel!5e1!3m2!1sen!2sin!4v1769013366065!5m2!1sen!2sin">
-            <div class="hotel-image-container">
-                <img src="assets/hotel/nexus.webp" alt="Hotel Room">
-            </div>
-            <div class="hotel-content">
-                <div>
-                    <div class="hotel-price">₹3,200 <span>/night</span></div>
-                    <h3 class="hotel-title">The Nexus Hotel</h3>
-                    <div class="hotel-location-preview">
-                        <i class="bi bi-geo-alt-fill"></i> Kakkanad
-                    </div>
-                </div>
-                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
-            </div>
-        </div>
+        .scroll-down i {
+            font-size: 1.2rem;
+            margin-top: 2px;
+            /* Visual center alignment */
+        }
 
-        <!-- Card 3: Loft Business Hotel -->
-        <!-- Card 3: Loft Business Hotel -->
-        <div class="hotel-card" data-name="Loft Business Hotel" data-price="₹4,500" data-rating="9.0/10 (Superb)"
-            data-book-url="https://loftbusinesshotel.com/"
-            data-amenities="Workspace,Dining,Kakkanad,Gym,High Speed Internet"
-            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4236.020968030188!2d76.35521231091671!3d10.011661090053046!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080d82043a6b3d%3A0xb0b2a8ff2e1110cb!2sLoft%20Business%20hotel!5e1!3m2!1sen!2sin!4v1769013381822!5m2!1sen!2sin">
-            <div class="hotel-image-container">
-                <img src="assets/hotel/loft.avif" alt="Hotel Room">
-            </div>
-            <div class="hotel-content">
-                <div>
-                    <div class="hotel-price">₹4,500 <span>/night</span></div>
-                    <h3 class="hotel-title">Loft Business Hotel</h3>
-                    <div class="hotel-location-preview">
-                        <i class="bi bi-geo-alt-fill"></i> Kakkanad
-                    </div>
-                </div>
-                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
-            </div>
-        </div>
+        @keyframes breathe {
 
-        <!-- Card 4: Kochi Marriott Hotel -->
-        <!-- Card 4: Kochi Marriott Hotel -->
-        <div class="hotel-card" data-name="Kochi Marriott Hotel" data-price="₹9,500" data-rating="8.4/10 (Fantastic)"
-            data-book-url="https://www.marriott.com/en-us/hotels/cokmc-kochi-marriott-hotel/overview/"
-            data-amenities="5 Star Luxury,Swimming Pool,Edappally,Spa,Lulu Mall Access"
-            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4235.789279446806!2d76.30506461091697!3d10.029396990036103!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080db023f15cf9%3A0x26dfb0588126f48c!2sKochi%20Marriott%20Hotel!5e1!3m2!1sen!2sin!4v1769013401191!5m2!1sen!2sin">
-            <div class="hotel-image-container">
-                <img src="assets/hotel/marriatt.jpg" alt="Hotel Room">
-            </div>
-            <div class="hotel-content">
-                <div>
-                    <div class="hotel-price">₹9,500 <span>/night</span></div>
-                    <h3 class="hotel-title">Kochi Marriott Hotel</h3>
-                    <div class="hotel-location-preview">
-                        <i class="bi bi-geo-alt-fill"></i> Edappally
-                    </div>
-                </div>
-                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
-            </div>
-        </div>
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            }
 
-        <!-- Card 5: Holiday Inn Cochin -->
-        <!-- Card 5: Holiday Inn Cochin -->
-        <div class="hotel-card" data-name="Holiday Inn Cochin" data-price="₹5,200" data-rating="8.4/10 (Very Good)"
-            data-book-url="https://www.ihg.com/holidayinn/hotels/us/en/cochin/coker/hoteldetail"
-            data-amenities="Free Parking,Bar & Lounge,Vennala,Pool,Fitness Center"
-            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4236.301148300907!2d76.31321241091652!3d9.990171490073458!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080d21acb3edbb%3A0xb279fc9797cc341e!2sHoliday%20Inn%20Cochin%2C%20an%20IHG%20Hotel!5e1!3m2!1sen!2sin!4v1769013421882!5m2!1sen!2sin">
-            <div class="hotel-image-container">
-                <img src="assets/hotel/holiday-inn.jpg" alt="Hotel Room">
-            </div>
-            <div class="hotel-content">
-                <div>
-                    <div class="hotel-price">₹5,200 <span>/night</span></div>
-                    <h3 class="hotel-title">Holiday Inn Cochin</h3>
-                    <div class="hotel-location-preview">
-                        <i class="bi bi-geo-alt-fill"></i> Vennala
-                    </div>
-                </div>
-                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
-            </div>
-        </div>
+            50% {
+                transform: translateX(-50%) translateY(10px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+        }
+    </style>
 
-        <!-- Card 6: Novotel Kochi Infopark -->
-        <div class="hotel-card" data-name="Novotel Kochi Infopark" data-price="₹5,800" data-rating="7.2/10 (Good)"
-            data-book-url="https://www.booking.com/hotel/in/novotel-kochi-infopark.html"
-            data-amenities="Swimming Pool,Kakkanad,Infopark Access,Restaurant,Bar"
-            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4235.972009438724!2d76.36013661091675!3d10.01541149004946!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080b7c2ae9d69d%3A0xa8af3a18d451aca7!2sNovotel%20Kochi%20Infopark!5e1!3m2!1sen!2sin!4v1769013443510!5m2!1sen!2sin">
-            <div class="hotel-image-container">
-                <img src="assets/hotel/novotel-1.webp" alt="Hotel Room">
-            </div>
-            <div class="hotel-content">
-                <div>
-                    <div class="hotel-price">₹5,800 <span>/night</span></div>
-                    <h3 class="hotel-title">Novotel Kochi Infopark</h3>
-                    <div class="hotel-location-preview">
-                        <i class="bi bi-geo-alt-fill"></i> Kakkanad
-                    </div>
-                </div>
-                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
-            </div>
-        </div>
+    <script>
+        function smoothScroll(targetId, duration) {
+            const target = document.getElementById(targetId);
+            if (!target) return;
 
-        <!-- Card 7: The Blooms Cochin -->
-        <!-- Card 7: The Blooms Cochin -->
-        <div class="hotel-card" data-name="The Blooms Cochin" data-price="₹3,500" data-rating="8.4/10 (Excellent)"
-            data-book-url="https://bloomscochin.in/"
-            data-amenities="Clean Rooms,Transport Assistance,Kakkanad,Free WiFi,Breakfast"
-            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4235.958514700155!2d76.35764271091679!3d10.016444990048452!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080c810e5d3109%3A0xa97cb4694e32ca33!2sThe%20Blooms%20Cochin!5e1!3m2!1sen!2sin!4v1769013464025!5m2!1sen!2sin">
-            <div class="hotel-image-container">
-                <img src="assets/hotel/blooms.webp" alt="Hotel Room">
-            </div>
-            <div class="hotel-content">
-                <div>
-                    <div class="hotel-price">₹3,500 <span>/night</span></div>
-                    <h3 class="hotel-title">The Blooms Cochin</h3>
-                    <div class="hotel-location-preview">
-                        <i class="bi bi-geo-alt-fill"></i> Kakkanad
-                    </div>
-                </div>
-                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
-            </div>
-        </div>
+            // Offset by 100px for navbar
+            const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - 100;
+            const startPosition = window.pageYOffset;
+            const distance = targetPosition - startPosition;
+            let startTime = null;
 
-        <!-- Card 8: Hotel Olive Eva -->
-        <!-- Card 8: Hotel Olive Eva -->
-        <div class="hotel-card" data-name="Hotel Olive Eva" data-price="₹3,000" data-rating="8.5/10 (Very Good)"
-            data-book-url="https://www.olivehotels.com/eva.php"
-            data-amenities="Concierge,Gym,Kakkanad,Breakfast,Free WiFi"
-            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4235.967352049004!2d76.36206221091678!3d10.015768190049132!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b086d7aa98fd713%3A0xc78ef1d4e33caf4c!2sHotel%20Olive%20Eva!5e1!3m2!1sen!2sin!4v1769013486469!5m2!1sen!2sin">
-            <div class="hotel-image-container">
-                <img src="assets/hotel/olive.avif" alt="Hotel Room">
-            </div>
-            <div class="hotel-content">
-                <div>
-                    <div class="hotel-price">₹3,000 <span>/night</span></div>
-                    <h3 class="hotel-title">Hotel Olive Eva</h3>
-                    <div class="hotel-location-preview">
-                        <i class="bi bi-geo-alt-fill"></i> Kakkanad
-                    </div>
-                </div>
-                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
-            </div>
-        </div>
+            function animation(currentTime) {
+                if (startTime === null) startTime = currentTime;
+                const timeElapsed = currentTime - startTime;
+                const run = ease(timeElapsed, startPosition, distance, duration);
+                window.scrollTo(0, run);
+                if (timeElapsed < duration) requestAnimationFrame(animation);
+            }
 
-        <!-- Card 9: Clarion Hotel Khayal -->
-        <!-- Card 9: Clarion Hotel Khayal -->
-        <div class="hotel-card" data-name="Clarion Hotel Khayal" data-price="₹2,500" data-rating="7.0/10 (Good)"
-            data-book-url="https://www.subahotels.com/clarion-hotel-khayal-kochi/overview"
-            data-amenities="Events Hall,Infopark,Discount,Restaurant,24h Service"
-            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4236.132844965841!2d76.3621024!3d10.0030857!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080d001f1094a5%3A0x236fae12ace82c16!2sClarion%20Hotel%20Khayal%20Kochi%2C%20Infopark!5e1!3m2!1sen!2sin!4v1769013269772!5m2!1sen!2sin">
-            <div class="hotel-image-container">
-                <img src="assets/hotel/clarion.jpg" alt="Hotel Room">
-            </div>
-            <div class="hotel-content">
-                <div>
-                    <div class="hotel-price">₹2,500 <span>/night</span></div>
-                    <h3 class="hotel-title">Clarion Hotel Khayal</h3>
-                    <div class="hotel-location-preview">
-                        <i class="bi bi-geo-alt-fill"></i> Infopark
-                    </div>
-                </div>
-                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
-            </div>
-        </div>
+            function ease(t, b, c, d) {
+                t /= d / 2;
+                if (t < 1) return c / 2 * t * t + b;
+                t--;
+                return -c / 2 * (t * (t - 2) - 1) + b;
+            }
 
-    </div>
+            requestAnimationFrame(animation);
+        }
+    </script>
+
 
     <main-footer></main-footer>
 
-    <!-- Modal Markup -->
-    <div class="modal-overlay" id="hotelModalOverlay" onclick="closeHotelModal(event)">
-        <div class="hotel-modal">
-            <div class="modal-header">
-                <h3 class="modal-title" id="modalTitle">Hotel Name</h3>
-                <button class="modal-close" onclick="closeHotelModal(event)">×</button>
-            </div>
-            <div class="modal-body">
-                <div class="modal-info">
-                    <div class="modal-rating" id="modalRating">
-                        <i class="bi bi-star-fill"></i>
-                        <span>9.0/10 (Superb)</span>
-                    </div>
-
-                    <div class="modal-description">
-                        This premium hotel offers world-class amenities and comfortable stays near the conference venue.
-                        Enjoy luxury accommodation with easy access to city attractions.
-                    </div>
-
-                    <div class="modal-amenities" id="modalAmenities">
-                        <!-- Populated by JS -->
-                    </div>
-
-                    <a href="#" class="book-now-btn">Book Now</a>
-                </div>
-                <div class="modal-map-container">
-                    <iframe id="modalMap" src="" loading="lazy"></iframe>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // Modal Logic
-        function openHotelModal(card) {
-            const modal = document.getElementById('hotelModalOverlay');
-            const title = document.getElementById('modalTitle');
-            const rating = document.querySelector('#modalRating span');
-            const amenitiesContainer = document.getElementById('modalAmenities');
-            const mapFrame = document.getElementById('modalMap');
-            const bookBtn = document.querySelector('.modal-info .book-now-btn');
+        document.addEventListener("DOMContentLoaded", (event) => {
+            const slides = document.querySelectorAll('.slide');
+            let currentSlide = 0;
+            const slideInterval = 4000;
 
-            // Populate Data
-            title.innerText = card.dataset.name;
-            rating.innerText = card.dataset.rating;
-            mapFrame.src = card.dataset.mapSrc;
+            // Initialize: Force Slide 1 active, others inactive
+            slides.forEach((slide, index) => {
+                if (index === 0) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
 
-            // Update Book Now Button
-            if (card.dataset.bookUrl) {
-                bookBtn.href = card.dataset.bookUrl;
-                bookBtn.target = "_blank"; // Open in new tab
-                bookBtn.style.display = 'inline-block';
-            } else {
-                bookBtn.href = "#";
-                bookBtn.style.display = 'none';
-            }
+            // Create and Append Navigation Buttons
+            const sliderHeader = document.querySelector('.hero-slider');
+            if (sliderHeader) {
+                const prevBtn = document.createElement('div');
+                prevBtn.className = 'slider-nav-btn prev-btn';
+                prevBtn.innerHTML = '<i class="bi bi-chevron-left"></i>';
+                // prevBtn.onclick = prevSlide; // Assigned below
 
-            // Amenities
-            amenitiesContainer.innerHTML = '';
-            if (card.dataset.amenities) {
-                const amenities = card.dataset.amenities.split(',');
-                amenities.forEach(am => {
-                    const tag = document.createElement('div');
-                    tag.className = 'amenity-tag';
-                    tag.innerHTML = `<i class="bi bi-check-circle-fill"></i> ${am.trim()}`;
-                    amenitiesContainer.appendChild(tag);
+                const nextBtn = document.createElement('div');
+                nextBtn.className = 'slider-nav-btn next-btn';
+                nextBtn.innerHTML = '<i class="bi bi-chevron-right"></i>';
+                // nextBtn.onclick = nextSlide; // Assigned below
+
+                sliderHeader.appendChild(prevBtn);
+                sliderHeader.appendChild(nextBtn);
+
+                // Add event listeners
+                prevBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    prevSlide();
+                });
+                nextBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    nextSlide();
                 });
             }
 
-            // Show Modal
-            modal.style.display = 'flex';
-            // Small timeout for transition
-            setTimeout(() => {
-                modal.classList.add('active');
-            }, 10);
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeHotelModal(e) {
-            if (e.target.classList.contains('modal-overlay') || e.target.classList.contains('modal-close') || e.target.closest('.modal-close')) {
-                const modal = document.getElementById('hotelModalOverlay');
-                modal.classList.remove('active');
-                setTimeout(() => {
-                    modal.style.display = 'none';
-                    document.body.style.overflow = '';
-                    document.getElementById('modalMap').src = ''; // Stop map loading
-                }, 300);
+            function nextSlide() {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active');
+                resetTimer();
             }
-        }
+
+            function prevSlide() {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                slides[currentSlide].classList.add('active');
+                resetTimer();
+            }
+
+            let slideTimer = setInterval(nextSlide, slideInterval);
+
+            function resetTimer() {
+                clearInterval(slideTimer);
+                slideTimer = setInterval(nextSlide, slideInterval);
+            }
+
+            // Mobile Swipe Logic
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            if (sliderHeader) {
+                sliderHeader.addEventListener('touchstart', e => {
+                    touchStartX = e.changedTouches[0].screenX;
+                }, { passive: true });
+
+                sliderHeader.addEventListener('touchend', e => {
+                    touchEndX = e.changedTouches[0].screenX;
+                    handleSwipe();
+                }, { passive: true });
+            }
+
+            function handleSwipe() {
+                const threshold = 50; // min distance for swipe
+                if (touchEndX < touchStartX - threshold) nextSlide();
+                if (touchEndX > touchStartX + threshold) prevSlide();
+            }
+        });
     </script>
 </body>
 
