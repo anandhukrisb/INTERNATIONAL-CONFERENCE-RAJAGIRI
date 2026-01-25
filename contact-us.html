@@ -282,6 +282,11 @@
             margin-bottom: 25px;
         }
 
+        .wrapper a {
+            color: inherit;
+            text-decoration: none;
+        }
+
         .wrapper .icon {
             position: relative;
             background: #ffffff;
@@ -346,10 +351,10 @@
             color: #ffffff;
         }
 
-        .wrapper .twitter:hover,
-        .wrapper .twitter:hover .tooltip,
-        .wrapper .twitter:hover .tooltip::before {
-            background: #1DA1F2;
+        .wrapper .x:hover,
+        .wrapper .x:hover .tooltip,
+        .wrapper .x:hover .tooltip::before {
+            background: #000000;
             color: #ffffff;
         }
 
@@ -360,10 +365,10 @@
             color: #ffffff;
         }
 
-        .wrapper .github:hover,
-        .wrapper .github:hover .tooltip,
-        .wrapper .github:hover .tooltip::before {
-            background: #333333;
+        .wrapper .linkedin:hover,
+        .wrapper .linkedin:hover .tooltip,
+        .wrapper .linkedin:hover .tooltip::before {
+            background: #0A66C2;
             color: #ffffff;
         }
 
@@ -495,12 +500,28 @@
         </div>
     </div>
 
-    <!-- Office Hours Section -->
-    <div class="office-hours-section" style="text-align: center; margin: 40px auto; max-width: 800px; padding: 0 20px;">
-        <div style="background: #f9f5f0; border-left: 4px solid #C9A227; padding: 20px 30px; border-radius: 8px;">
-            <i class="bi bi-clock" style="font-size: 1.5rem; color: #1D0A3F;"></i>
-            <p style="margin: 10px 0 0; color: #555; font-size: 1rem;"><strong>Office Hours:</strong> Monday - Friday,
-                9:00 AM - 5:00 PM (AEDT)</p>
+    <!-- Office Hours & Response Time Section -->
+    <div class="info-row"
+        style="display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; max-width: 1200px; margin: 40px auto; padding: 0 20px;">
+        <!-- Office Hours Card -->
+        <div style="flex: 1 1 calc(50% - 15px); min-width: 280px; max-width: 580px;">
+            <div
+                style="background: #f9f5f0; border-left: 4px solid #C9A227; padding: 20px 30px; border-radius: 8px; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+                <i class="bi bi-clock" style="font-size: 1.5rem; color: #1D0A3F;"></i>
+                <p style="margin: 10px 0 0; color: #555; font-size: 1rem;"><strong>Office Hours:</strong> Monday -
+                    Friday,
+                    9:00 AM - 5:00 PM (AEDT)</p>
+            </div>
+        </div>
+        <!-- Response Time Notice -->
+        <div style="flex: 1 1 calc(50% - 15px); min-width: 280px; max-width: 580px;">
+            <div
+                style="background: #f0f7ff; border: 1px solid #C9A227; padding: 20px 30px; border-radius: 8px; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+                <i class="bi bi-info-circle" style="font-size: 1.5rem; color: #1D0A3F;"></i>
+                <p style="margin: 10px 0 0; color: #555; font-size: 0.95rem;">We aim to respond to all inquiries within
+                    2-3
+                    business days. For urgent matters, please call us directly during office hours.</p>
+            </div>
         </div>
     </div>
 
@@ -616,49 +637,53 @@
         </div>
     </div>
 
-    <!-- Response Time Notice -->
-    <div style="max-width: 600px; margin: 40px auto; padding: 0 20px;">
-        <div
-            style="background: #f0f7ff; border: 1px solid #C9A227; padding: 20px; border-radius: 8px; text-align: center;">
-            <i class="bi bi-info-circle" style="font-size: 1.5rem; color: #1D0A3F; margin-bottom: 10px;"></i>
-            <p style="margin: 0; color: #555; font-size: 0.95rem;">We aim to respond to all inquiries within 2-3
-                business days. For urgent matters, please call us directly during office hours.</p>
-        </div>
-    </div>
+
 
     <hr class="separator">
 
     <div class="social-section">
         <ul class="wrapper">
-            <li class="icon facebook">
-                <span class="tooltip">Facebook</span>
-                <span><i class="fab fa-facebook-f"></i></span>
-            </li>
-            <li class="icon twitter">
-                <span class="tooltip">Twitter</span>
-                <span><i class="fab fa-twitter"></i></span>
-            </li>
-            <li class="icon instagram">
-                <span class="tooltip">Instagram</span>
-                <span><i class="fab fa-instagram"></i></span>
-            </li>
-            <li class="icon github">
-                <span class="tooltip">Github</span>
-                <span><i class="fab fa-github"></i></span>
-            </li>
-            <li class="icon youtube">
-                <span class="tooltip">Youtube</span>
-                <span><i class="fab fa-youtube"></i></span>
-            </li>
+            <a href="https://www.facebook.com/Rajagiri-College-of-Social-Sciences-Autonomous-1376623805998150/?fref=ts"
+                target="_blank" rel="noopener noreferrer">
+                <li class="icon facebook">
+                    <span class="tooltip">Facebook</span>
+                    <span><i class="fab fa-facebook-f"></i></span>
+                </li>
+            </a>
+            <a href="https://x.com/hashtag/rajagiri" target="_blank" rel="noopener noreferrer">
+                <li class="icon x">
+                    <span class="tooltip">X</span>
+                    <span><i class="fab fa-x-twitter"></i></span>
+                </li>
+            </a>
+            <a href="https://www.instagram.com/rajagiri.official/" target="_blank" rel="noopener noreferrer">
+                <li class="icon instagram">
+                    <span class="tooltip">Instagram</span>
+                    <span><i class="fab fa-instagram"></i></span>
+                </li>
+            </a>
+            <a href="https://www.linkedin.com/school/rajagiri-college-of-social-sciences-autonomous/posts/?feedView=all"
+                target="_blank" rel="noopener noreferrer">
+                <li class="icon linkedin">
+                    <span class="tooltip">LinkedIn</span>
+                    <span><i class="fab fa-linkedin-in"></i></span>
+                </li>
+            </a>
+            <a href="https://www.youtube.com/@rajagiricollegeofsocialsci9476" target="_blank" rel="noopener noreferrer">
+                <li class="icon youtube">
+                    <span class="tooltip">Youtube</span>
+                    <span><i class="fab fa-youtube"></i></span>
+                </li>
+            </a>
         </ul>
-        <p class="hashtag-text">Add your voice to the global conversation <span>#ISWMHCMelb2024</span></p>
+
     </div>
 
     <hr class="separator">
 
-    <div class="subscribe-container">
+    <!-- <div class="subscribe-container">
         <button class="btn btn-subscribe">Subscribe to News</button>
-    </div>
+    </div> -->
 
     <main-footer></main-footer>
 
