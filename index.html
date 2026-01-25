@@ -1609,7 +1609,7 @@
         }
 
         /* Tablet - CEO name above image */
-        @media (max-width: 949px) {
+        @media (max-width: 1111px) {
             .ceo-wrapper {
                 flex-direction: column;
                 align-items: center;
@@ -1732,7 +1732,7 @@
 
             .ceo-name {
                 position: static;
-                margin-top: 15px;
+                margin-top: 35px;
                 margin-bottom: 15px;
                 text-align: center;
             }
@@ -2325,6 +2325,8 @@
             height: 550px;
             transition: all 0.25s ease-in;
             transform: translateX(0);
+            touch-action: pan-y !important;
+            /* Allow vertical scroll, block horizontal (handled by JS) */
         }
 
         .host-slider .host-box {
@@ -2640,6 +2642,28 @@
 
             .host-trail div {
                 padding: 10px;
+            }
+
+            .sidebar-btn {
+                border-radius: 8px !important;
+            }
+
+            .newsletter-dropdown {
+                top: auto !important;
+                bottom: 100% !important;
+                right: 15px;
+                width: 300px;
+                max-width: 90vw;
+                border-radius: 20px 20px 0 20px;
+                clip-path: circle(0% at 100% 100%);
+                margin-bottom: 15px;
+                transform: none !important;
+                /* Reset any transforms */
+            }
+
+
+            .newsletter-dropdown.active {
+                clip-path: circle(150% at 100% 100%);
             }
         }
     </style>
@@ -3408,23 +3432,34 @@
             trail.forEach(cur => cur.addEventListener("click", (ev) => clickCheck(ev)));
 
             // Mobile touch slide
-            let touchStart, touchMove, touchChange, sliderWidth;
+            let touchStartX, touchStartY, touchMoveX, touchMoveY, touchChangeX, touchChangeY, sliderWidth;
 
             slider.addEventListener("touchstart", (e) => {
-                touchStart = e.touches[0].clientX;
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
                 sliderWidth = slider.clientWidth / 4; // 4 slides
             });
 
             slider.addEventListener("touchmove", (e) => {
-                e.preventDefault();
-                touchMove = e.touches[0].clientX;
-                touchChange = touchStart - touchMove;
-            });
+                touchMoveX = e.touches[0].clientX;
+                touchMoveY = e.touches[0].clientY;
+
+                touchChangeX = touchStartX - touchMoveX;
+                touchChangeY = touchStartY - touchMoveY;
+
+                // If horizontal movement is greater than vertical movement, it's a swipe -> prevent scroll
+                if (Math.abs(touchChangeX) > Math.abs(touchChangeY)) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
 
             const mobileSlide = (e) => {
-                touchChange > (sliderWidth / 4) ? slide("increase") : null;
-                (touchChange * -1) > (sliderWidth / 4) ? slide("decrease") : null;
-                touchStart = touchMove = touchChange = sliderWidth = 0;
+                if (!touchChangeX) return; // No movement
+
+                touchChangeX > (sliderWidth / 4) ? slide("increase") : null;
+                (touchChangeX * -1) > (sliderWidth / 4) ? slide("decrease") : null;
+
+                touchStartX = touchStartY = touchMoveX = touchMoveY = touchChangeX = touchChangeY = sliderWidth = 0;
             }
 
             slider.addEventListener("touchend", mobileSlide);
