@@ -467,22 +467,40 @@
 
         /* Scroll Button */
         .scroll-button {
-            position: absolute;
+            position: fixed;
             bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
+            right: 40px;
+            /* Moved to bottom right corner */
+            left: auto;
+            transform: none;
             width: 60px;
             height: 60px;
             border-radius: 50%;
             background-color: rgba(255, 255, 255, 0.1);
-            border: 2px solid #FFFFFF;
+            border: 2px solid #1D0A3F;
+            /* Changed to dark for visibility on light bg */
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            z-index: 10;
+            z-index: 9999;
+            /* High z-index */
             transition: all 0.3s ease;
             animation: scrollBounce 2s ease-in-out infinite;
+        }
+
+        .scroll-button::after {
+            content: '↓';
+            font-size: 24px;
+            color: #1D0A3F;
+            /* Dark arrow */
+            font-weight: bold;
+        }
+
+        .scroll-button:hover {
+            background-color: rgba(201, 162, 39, 0.2);
+            border-color: #C9A227;
+            transform: scale(1.1);
         }
 
         .scroll-button::before {
@@ -496,28 +514,15 @@
             animation: rippleWave 2s ease-out infinite;
         }
 
-        .scroll-button::after {
-            content: '↓';
-            font-size: 24px;
-            color: #FFFFFF;
-            font-weight: bold;
-        }
-
-        .scroll-button:hover {
-            background-color: rgba(201, 162, 39, 0.2);
-            border-color: #C9A227;
-            transform: translateX(-50%) scale(1.1);
-        }
-
         @keyframes scrollBounce {
 
             0%,
             100% {
-                transform: translateX(-50%) translateY(0);
+                transform: translateY(0);
             }
 
             50% {
-                transform: translateX(-50%) translateY(-10px);
+                transform: translateY(-10px);
             }
         }
 
@@ -665,12 +670,12 @@
             justify-content: space-between;
             gap: 50px;
             /* Increased gap */
-            padding: 40px 20px;
+            padding: 40px 20px 40px 0;
             max-width: 95%;
             margin: 0 auto;
             /* margin-top: 100px; */
             position: relative;
-            min-height: 500px;
+            min-height: 400px;
             /* Fit to image height */
         }
 
@@ -686,7 +691,7 @@
         .about-single-img {
             width: 100%;
             max-width: 600px;
-            height: 500px;
+            height: 400px;
             object-fit: cover;
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
@@ -746,14 +751,9 @@
         /* Desktop Container Styles */
         @media (min-width: 769px) {
             .about-section {
-                background-color: #F0F0F0;
-                /* Dull colored container */
-                /* border-left: 6px solid #C9A227; REMOVED */
-                /* Secondary Yellow Border */
-                padding: 60px 40px;
-                /* More padding for container look */
-                border-radius: 20px;
-                /* Soften all sides */
+                /* background-color: #F0F0F0; Removed */
+                padding: 40px 20px 40px 0;
+                /* Standard padding */
             }
 
             .title-section {
@@ -1945,21 +1945,7 @@
             border-radius: 2px;
         }
 
-        /* Progress Line - shows completed milestones */
-        .timeline-container::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: 28%;
-            /* Progress through first 2 items (2/7 = ~28%) */
-            height: 4px;
-            background: linear-gradient(to right, #1D0A3F, #2E1A5F);
-            transform: translateY(-50%);
-            z-index: 1;
-            border-radius: 2px;
-            box-shadow: 0 0 10px rgba(29, 10, 63, 0.5);
-        }
+
 
         .timeline-item {
             position: relative;
@@ -2209,7 +2195,7 @@
             position: relative;
             overflow: hidden;
             border-radius: 30px;
-            margin: 0 20px;
+            margin: 0 auto;
         }
 
         .host-slider {
@@ -2545,6 +2531,7 @@
 
     <floating-navbar></floating-navbar>
 
+    <div class="scroll-button" onclick="scrollToNext()"></div>
     <!-- Sticky Sidebar Buttons -->
     <div class="sticky-sidebar-buttons">
         <a href="#" class="sidebar-btn">Submit Abstract</a>
@@ -2581,8 +2568,7 @@
                     <img src="assets/conf_logo_10th.png" alt="Conference Logo">
                 </div>
             </div>
-            <!-- Scroll Button -->
-            <div class="scroll-button" onclick="scrollToNext()"></div>
+
         </section>
 
         <!-- <div class="banner-container"> ... Removed ... </div> -->
@@ -2674,6 +2660,49 @@
                 </div>
             </div>
         </section>
+
+        <div class="section-separator"></div>
+        <section class="welcome-section">
+            <div class="welcome-container">
+                <h3 class="welcome-header reveal-on-scroll">Welcome from the AASW CEO</h3>
+                <div class="watermark-text">#2027 ICSWHMH</div>
+
+                <div class="welcome-content reveal-on-scroll delay-1">
+                    <p>Dear Colleagues,<br>I am delighted to welcome each of you as we embark on the 10th
+                        International
+                        Conference on Social Work in Health and Mental Health (10th ICSWHMH). This event
+                        takes
+                        advantage
+                        of
+                        being a hybrid experience, wherever you are and in the vibrant city of Melbourne.
+                    </p>
+                    <p>Hosting over 600 national and international delegates, this Conference provides a
+                        unique
+                        platform
+                        to
+                        exchange insights on the current challenges and trends in the social work sector. I
+                        look
+                        forward
+                        to
+                        forging new connections, learning from leading experts, and exploring the latest
+                        ideas
+                        available.
+                    </p>
+                </div>
+
+                <div class="ceo-wrapper reveal-on-scroll delay-2">
+                    <div class="ceo-title-bg">
+                        CEO<br>AASW
+                    </div>
+                    <img src="assets/ceo_image.png" alt="AASW CEO" class="ceo-image">
+                    <div class="ceo-name">
+                        <h3>Dr. Emma Richardson</h3>
+                        <p>Chief Executive Officer</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="section-separator"></div>
 
         <!-- Your Host Section -->
         <section class="host-slider-section">
@@ -2770,48 +2799,7 @@
 
 
 
-        <!-- COMMENTED OUT: Welcome Section to CTA Cards
-
-        <section class="welcome-section">
-            <div class="welcome-container">
-                <h3 class="welcome-header reveal-on-scroll">Welcome from the AASW CEO</h3>
-                <div class="watermark-text">#2027 ICSWHMH</div>
-
-                <div class="welcome-content reveal-on-scroll delay-1">
-                    <p>Dear Colleagues,<br>I am delighted to welcome each of you as we embark on the 10th
-                        International
-                        Conference on Social Work in Health and Mental Health (10th ICSWHMH). This event
-                        takes
-                        advantage
-                        of
-                        being a hybrid experience, wherever you are and in the vibrant city of Melbourne.
-                    </p>
-                    <p>Hosting over 600 national and international delegates, this Conference provides a
-                        unique
-                        platform
-                        to
-                        exchange insights on the current challenges and trends in the social work sector. I
-                        look
-                        forward
-                        to
-                        forging new connections, learning from leading experts, and exploring the latest
-                        ideas
-                        available.
-                    </p>
-                </div>
-
-                <div class="ceo-wrapper reveal-on-scroll delay-2">
-                    <div class="ceo-title-bg">
-                        CEO<br>AASW
-                    </div>
-                    <img src="assets/ceo_image.png" alt="AASW CEO" class="ceo-image">
-                    <div class="ceo-name">
-                        <h3>Dr. Emma Richardson</h3>
-                        <p>Chief Executive Officer</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <!-- COMMENTED OUT: Speaker, Map and CTA Sections
 
 
 
@@ -3009,62 +2997,65 @@
 
         const track = document.getElementById('tickerTrack');
         const container = document.getElementById('tickerContainer');
-        const item = track.querySelector('.ticker-item');
+        const item = track ? track.querySelector('.ticker-item') : null;
 
-        // Duplicate content to ensure it fills screen + buffer
-        const content = item.innerHTML;
-        // Create enough duplicates to ensure we can loop seamlessly
-        // We'll add 4 copies just to be safe for wide screens
-        for (let i = 0; i < 4; i++) {
-            const span = document.createElement('span');
-            span.className = 'ticker-item';
-            span.innerHTML = content;
-            track.appendChild(span);
-        }
-
-        let position = 0;
-        let speed = 0.5; // Reduced speed for better readability
-        let currentSpeed = speed;
-        let direction = -1; // -1 for Left (scrolling down), 1 for Right (scrolling up)
-        let lastScrollTop = 0;
-        let isHovered = false;
-
-        // Animation Loop
-        function animate() {
-            if (!isHovered) {
-                position += currentSpeed * direction;
-
-                // Reset logic for seamless loop
-                // Assuming the first item width is the "chunk" size
-                const itemWidth = item.offsetWidth;
-
-                // If moved too far left
-                if (position <= -itemWidth) {
-                    position += itemWidth;
-                }
-
-                // If moved too far right (positive)
-                if (position > 0) {
-                    position -= itemWidth;
-                }
-
-                track.style.transform = `translateX(${position}px)`;
+        // Only run ticker logic if elements exist
+        if (track && container && item) {
+            // Duplicate content to ensure it fills screen + buffer
+            const content = item.innerHTML;
+            // Create enough duplicates to ensure we can loop seamlessly
+            // We'll add 4 copies just to be safe for wide screens
+            for (let i = 0; i < 4; i++) {
+                const span = document.createElement('span');
+                span.className = 'ticker-item';
+                span.innerHTML = content;
+                track.appendChild(span);
             }
+
+            let position = 0;
+            let speed = 0.5; // Reduced speed for better readability
+            let currentSpeed = speed;
+            let direction = -1; // -1 for Left (scrolling down), 1 for Right (scrolling up)
+            let lastScrollTop = 0;
+            let isHovered = false;
+
+            // Animation Loop
+            function animate() {
+                if (!isHovered) {
+                    position += currentSpeed * direction;
+
+                    // Reset logic for seamless loop
+                    // Assuming the first item width is the "chunk" size
+                    const itemWidth = item.offsetWidth;
+
+                    // If moved too far left
+                    if (position <= -itemWidth) {
+                        position += itemWidth;
+                    }
+
+                    // If moved too far right (positive)
+                    if (position > 0) {
+                        position -= itemWidth;
+                    }
+
+                    track.style.transform = `translateX(${position}px)`;
+                }
+                requestAnimationFrame(animate);
+            }
+
+
+            // Hover Handlers
+            container.addEventListener('mouseenter', () => {
+                isHovered = true;
+            });
+
+            container.addEventListener('mouseleave', () => {
+                isHovered = false;
+            });
+
+            // Start animation
             requestAnimationFrame(animate);
         }
-
-
-        // Hover Handlers
-        container.addEventListener('mouseenter', () => {
-            isHovered = true;
-        });
-
-        container.addEventListener('mouseleave', () => {
-            isHovered = false;
-        });
-
-        // Start animation
-        requestAnimationFrame(animate);
 
         // Newsletter Toggle Logic
         function toggleNewsletter(event) {
@@ -3086,13 +3077,12 @@
         });
 
         // Scroll Button Function
+        // Scroll Button Function
         function scrollToNext() {
-            const aboutSection = document.querySelector('.about-section');
-            if (aboutSection) {
-                const offset = 150; // Adjust this value to control scroll distance
-                const targetPosition = aboutSection.getBoundingClientRect().top + window.pageYOffset - offset;
-                window.scrollTo({ top: targetPosition, behavior: 'smooth' });
-            }
+            window.scrollBy({
+                top: 600,
+                behavior: 'smooth'
+            });
         }
 
         // Parallax Effect
