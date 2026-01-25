@@ -2566,7 +2566,7 @@
         }
 
         /* Mobile Responsive */
-        @media (max-width: 900px) {
+        @media (max-width: 1111px) {
             .host-slider {
                 height: 100vh;
             }
@@ -2574,6 +2574,8 @@
             .host-slider .host-box {
                 grid-template-columns: 1fr;
                 grid-template-rows: repeat(2, 1fr);
+                width: 100%;
+                display: grid;
             }
 
             .host-slider .host-box .host-bg {
@@ -2613,11 +2615,17 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                width: 100%;
             }
 
             .host-slider .host-illustration .host-inner {
                 height: 280px;
-                width: 200px;
+                width: 100% !important;
+                max-width: 350px;
+                background-size: cover !important;
+                background-position: center !important;
+                border-radius: 20px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             }
 
             .host-prev,
