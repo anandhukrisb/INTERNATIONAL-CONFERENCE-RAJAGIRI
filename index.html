@@ -2641,6 +2641,27 @@
             .host-trail div {
                 padding: 10px;
             }
+
+            .sidebar-btn {
+                border-radius: 8px !important;
+            }
+
+            .newsletter-dropdown {
+                top: auto !important;
+                bottom: 100% !important;
+                right: 15px;
+                width: 300px;
+                max-width: 90vw;
+                border-radius: 20px 20px 0 20px;
+                clip-path: circle(0% at 100% 100%);
+                margin-bottom: 15px;
+                transform: none !important;
+                /* Reset any transforms */
+            }
+
+            .newsletter-dropdown.active {
+                clip-path: circle(150% at 100% 100%);
+            }
         }
     </style>
 </head>
