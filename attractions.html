@@ -647,6 +647,234 @@
                 font-size: 3rem;
             }
         }
+
+        /* ================= ATTRACTIONS SECTION ================= */
+        .attractions-section {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 2.5rem;
+            color: #1D0A3F;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 5px;
+            background-color: #C9A227;
+            margin-top: 12px;
+            border-radius: 3px;
+        }
+
+        .section-intro {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 50px;
+            max-width: 800px;
+            line-height: 1.7;
+        }
+
+        .attractions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .attraction-card {
+            background: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .attraction-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .attraction-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .attraction-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .attraction-card-content {
+            padding: 25px;
+        }
+
+        .attraction-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1D0A3F;
+            margin-bottom: 10px;
+        }
+
+        .attraction-card .distance-badge {
+            display: inline-block;
+            background: rgba(29, 10, 63, 0.1);
+            color: #1D0A3F;
+            font-size: 0.9rem;
+            padding: 6px 15px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+        }
+
+        .attraction-card p {
+            color: #666;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        .attraction-card .directions-link {
+            color: #C9A227;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.3s;
+        }
+
+        .attraction-card .directions-link:hover {
+            color: #1D0A3F;
+        }
+
+        /* ================= CULINARY SECTION ================= */
+        .culinary-section {
+            padding: 80px 20px;
+            background: linear-gradient(180deg, #FDFBF7 0%, #fff 100%);
+        }
+
+        .culinary-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .restaurant-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .restaurant-card {
+            background: #1D0A3F;
+            border: 1px solid rgba(201, 162, 39, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+        }
+
+        .restaurant-card:hover {
+            border-color: #C9A227;
+            box-shadow: 0 15px 40px rgba(29, 10, 63, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .restaurant-card h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .restaurant-card .cuisine-type {
+            color: #C9A227;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .restaurant-card .location-tag {
+            display: inline-block;
+            background: #C9A227;
+            color: #1D0A3F;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 5px 14px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .restaurant-card p {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .restaurant-card .must-try {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+        }
+
+        .restaurant-card .must-try strong {
+            color: #C9A227;
+        }
+
+        .restaurant-card .map-btn {
+            display: inline-block;
+            margin-top: 18px;
+            padding: 12px 25px;
+            border: 2px solid #C9A227;
+            border-radius: 8px;
+            color: #C9A227;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .restaurant-card .map-btn:hover {
+            background: #C9A227;
+            color: #1D0A3F;
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 1024px) {
+            .attractions-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            .attractions-grid,
+            .restaurant-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .attractions-section,
+            .culinary-section {
+                padding: 60px 20px;
+            }
+
+            .section-title {
+                font-size: 1.6rem;
+            }
+        }
     </style>
 </head>
 
@@ -799,6 +1027,177 @@
             requestAnimationFrame(animation);
         }
     </script>
+
+
+    <!-- ================= ATTRACTIONS NEARBY SECTION ================= -->
+    <section class="attractions-section">
+        <h2 class="section-title">Attractions Nearby</h2>
+        <p class="section-intro">
+            Explore Kochi's rich heritage and natural beauty during your visit. From the historic Fort Kochi to modern
+            shopping destinations, there's something for everyone just a short drive away.
+        </p>
+
+        <div class="attractions-grid">
+            <!-- Museum of Kerala History -->
+            <div class="attraction-card">
+                <img src="assets/attractions/Museum_of_Kerala_History_1_l_506_900.avif" alt="Museum of Kerala History">
+                <div class="attraction-card-content">
+                    <h3>Museum of Kerala History</h3>
+                    <span class="distance-badge">7 km • ~20 min drive</span>
+                    <p>Features a light and sound show depicting Kerala's history and a gallery of modern art. A perfect
+                        quick cultural dive.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Museum+of+Kerala+History+Edappally"
+                        target="_blank" class="directions-link">
+                        Get Directions <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Hill Palace Museum -->
+            <div class="attraction-card">
+                <img src="assets/attractions/hill_palace_museum_thripunithura20131031104553_182_1.jpg"
+                    alt="Hill Palace Museum">
+                <div class="attraction-card-content">
+                    <h3>Hill Palace Museum</h3>
+                    <span class="distance-badge">9 km • ~25 min drive</span>
+                    <p>The largest archaeological museum in Kerala, featuring royal jewelry, palanquins, and beautiful
+                        gardens.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Hill+Palace+Museum+Tripunithura"
+                        target="_blank" class="directions-link">
+                        Get Directions <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Fort Kochi -->
+            <div class="attraction-card">
+                <img src="assets/attractions/fort-kochi-fishing-net.jpg" alt="Fort Kochi Heritage Zone">
+                <div class="attraction-card-content">
+                    <h3>Fort Kochi Heritage Zone</h3>
+                    <span class="distance-badge">23 km • ~60-90 min drive</span>
+                    <p>The historic heart of Kochi. See the Chinese Fishing Nets, St. Francis Church, and colonial
+                        bungalows.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Fort+Kochi" target="_blank"
+                        class="directions-link">
+                        Get Directions <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Marine Drive -->
+            <div class="attraction-card">
+                <img src="assets/attractions/Marine_Drive_Kochi_Night_View_DSW.jpg" alt="Marine Drive">
+                <div class="attraction-card-content">
+                    <h3>Marine Drive & Boating</h3>
+                    <span class="distance-badge">13 km • ~40 min drive</span>
+                    <p>A picturesque promenade facing the backwaters. Popular for sunset boat rides with a stunning
+                        skyline view.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Marine+Drive+Kochi" target="_blank"
+                        class="directions-link">
+                        Get Directions <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Wonderla -->
+            <div class="attraction-card">
+                <img src="assets/attractions/wonderla.jpg" alt="Wonderla Amusement Park">
+                <div class="attraction-card-content">
+                    <h3>Wonderla Amusement Park</h3>
+                    <span class="distance-badge">6 km • ~15 min drive</span>
+                    <p>One of India's top amusement parks, located very close to Kakkanad. Clean, safe, and thrilling!
+                    </p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Wonderla+Kochi" target="_blank"
+                        class="directions-link">
+                        Get Directions <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Lulu Mall -->
+            <div class="attraction-card">
+                <img src="assets/attractions/lulu-mall.webp" alt="Lulu Mall">
+                <div class="attraction-card-content">
+                    <h3>Lulu Mall</h3>
+                    <span class="distance-badge">8 km • ~25 min drive</span>
+                    <p>One of the largest shopping malls in India. Excellent for buying spices, souvenirs, or enjoying
+                        global cuisine.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Lulu+Mall+Kochi" target="_blank"
+                        class="directions-link">
+                        Get Directions <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ================= TASTE OF KERALA SECTION ================= -->
+    <section class="culinary-section">
+        <div class="culinary-container">
+            <h2 class="section-title">Taste of Kerala</h2>
+            <p class="section-intro">
+                Kerala cuisine is a symphony of coconut, curry leaves, mustard seeds, and spices. We recommend these
+                hygienic, high-quality establishments that offer authentic flavors.
+            </p>
+
+            <div class="restaurant-grid">
+                <!-- Paragon Restaurant -->
+                <div class="restaurant-card">
+                    <h4>Paragon Restaurant</h4>
+                    <div class="cuisine-type">Malabar / Seafood</div>
+                    <span class="location-tag">Lulu Mall / Edappally</span>
+                    <p>Legendary status in Kerala. Known for consistent quality and authentic Malabar flavors.</p>
+                    <div class="must-try"><strong>Must Try:</strong> Fish Mango Curry, Malabar Biryani, Elaneer Payasam
+                    </div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Paragon+Restaurant+Lulu+Mall"
+                        target="_blank" class="map-btn">
+                        View on Map
+                    </a>
+                </div>
+
+                <!-- Dhe Puttu -->
+                <div class="restaurant-card">
+                    <h4>Dhe Puttu</h4>
+                    <div class="cuisine-type">Specialty Puttu</div>
+                    <span class="location-tag">Edappally</span>
+                    <p>A unique concept restaurant dedicated to Kerala's favorite breakfast dish 'Puttu'.</p>
+                    <div class="must-try"><strong>Must Try:</strong> Puttu varieties with Kadala Curry or Beef Roast
+                    </div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Dhe+Puttu+Edappally" target="_blank"
+                        class="map-btn">
+                        View on Map
+                    </a>
+                </div>
+
+                <!-- Grand Pavilion -->
+                <div class="restaurant-card">
+                    <h4>Grand Pavilion</h4>
+                    <div class="cuisine-type">Traditional Kerala Syrian Christian</div>
+                    <span class="location-tag">MG Road</span>
+                    <p>An old-school favorite offering refined dining experience with authentic traditional recipes.</p>
+                    <div class="must-try"><strong>Must Try:</strong> Karimeen Pollichathu, Appam and Stew</div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Grand+Pavilion+Kochi" target="_blank"
+                        class="map-btn">
+                        View on Map
+                    </a>
+                </div>
+
+                <!-- Palaaram -->
+                <div class="restaurant-card">
+                    <h4>Palaaram</h4>
+                    <div class="cuisine-type">Local Snacks & Meals</div>
+                    <span class="location-tag">Kakkanad</span>
+                    <p>Located right in Kakkanad, accessible for a quick but authentic lunch experience.</p>
+                    <div class="must-try"><strong>Must Try:</strong> Chatti Choru, Kappa & Fish Curry</div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Palaaram+Kakkanad" target="_blank"
+                        class="map-btn">
+                        View on Map
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
 
 
     <main-footer></main-footer>
