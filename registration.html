@@ -435,6 +435,93 @@
                 font-size: 0.9rem;
             }
         }
+
+        /* ================= FORM STYLES ================= */
+        .registration-form-section {
+            margin-bottom: 80px;
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border-top: 5px solid var(--accent-gold);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary-purple);
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            background-color: #f9f9fb;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 3px rgba(29, 10, 63, 0.1);
+            background-color: #fff;
+        }
+
+        select.form-control {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%231D0A3F' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 12px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--primary-purple);
+        }
+
+        .checkbox-label {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .registration-form-section {
+                padding: 25px;
+            }
+        }
     </style>
 </head>
 
@@ -460,79 +547,98 @@
             </p>
         </section>
 
-        <section class="inclusions-section">
-            <h2 class="section-header">REGISTRATION INCLUSIONS</h2>
-            <div class="inclusions-grid">
-                <!-- In-Person -->
-                <div class="inclusion-card">
-                    <h3>In-Person Registration</h3>
-                    <ul class="inclusion-list">
-                        <li>Access to all Keynote and Concurrent Sessions</li>
-                        <li>Access to Workshops (included on the main program)</li>
-                        <li>Access to Exhibition Hall</li>
-                        <li>Lunch & Morning & Afternoon Tea</li>
-                        <li>One ticket to the Welcome Reception</li>
-                        <li>Access to on-demand session recordings (3 months)</li>
-                        <li>Certificate of Attendance & CPD Hours</li>
-                    </ul>
+        <section class="registration-form-section">
+            <h2 class="section-header">REGISTRATION FORM</h2>
+            <form action="#" method="POST">
+                <!-- Personal Details -->
+                <div class="form-row">
+                    <div class="form-group" style="flex: 0.2;">
+                        <label for="title" class="form-label">Title</label>
+                        <select id="title" name="title" class="form-control" required>
+                            <option value="" disabled selected>Select</option>
+                            <option value="Mr">Mr</option>
+                            <option value="Ms">Ms</option>
+                            <option value="Mrs">Mrs</option>
+                            <option value="Dr">Dr</option>
+                            <option value="Prof">Prof</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="firstName" class="form-label">First Name</label>
+                        <input type="text" id="firstName" name="firstName" class="form-control" placeholder="Alan"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName" class="form-label">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Wake"
+                            required>
+                    </div>
                 </div>
 
-                <!-- Online -->
-                <div class="inclusion-card" style="border-top-color: var(--primary-purple);">
-                    <h3>Online Registration</h3>
-                    <ul class="inclusion-list">
-                        <li>Live stream of sessions held in the Plenary Room</li>
-                        <li>Access to on-demand recordings for 3 months</li>
-                        <li>Access to virtual exhibition components</li>
-                        <li>Certificate of Attendance</li>
-                        <li>CPD Hours available</li>
-                        <li>Interactive Q&A for live sessions</li>
-                    </ul>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="organization" class="form-label">Organization / Institution</label>
+                        <input type="text" id="organization" name="organization" class="form-control"
+                            placeholder="University / Company Name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="country" class="form-label">Country</label>
+                        <select id="country" name="country" class="form-control" required>
+                            <option value="" disabled selected>Select Country</option>
+                            <option value="Australia">Australia</option>
+                            <option value="India">India</option>
+                            <option value="USA">USA</option>
+                            <option value="UK">UK</option>
+                            <option value="Canada">Canada</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
-        </section>
 
-        <section class="pricing-section">
-            <h2 class="section-header">REGISTRATION FEES</h2>
-            <table class="pricing-table">
-                <thead>
-                    <tr>
-                        <th>Registration Type</th>
-                        <th>Early Bird (Until Aug 31)</th>
-                        <th>Standard Rate</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Full In-Person Delegate</td>
-                        <td class="price-tag">$850.00</td>
-                        <td class="price-tag">$995.00</td>
-                    </tr>
-                    <tr>
-                        <td>AASW Member Rate</td>
-                        <td class="price-tag">$720.00</td>
-                        <td class="price-tag">$850.00</td>
-                    </tr>
-                    <tr>
-                        <td>Student Registration</td>
-                        <td class="price-tag">$350.00</td>
-                        <td class="price-tag">$450.00</td>
-                    </tr>
-                    <tr>
-                        <td>Low Resource Country (LRC)</td>
-                        <td class="price-tag">$200.00</td>
-                        <td class="price-tag">$250.00</td>
-                    </tr>
-                    <tr>
-                        <td>Full Online Registration</td>
-                        <td class="price-tag">$400.00</td>
-                        <td class="price-tag">$500.00</td>
-                    </tr>
-                </tbody>
-            </table>
-            <div style="text-align: center;">
-                <a href="#" class="btn-register">Proceed to Registration</a>
-            </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-control"
+                            placeholder="alan.wake.2@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" class="form-control" placeholder="+971 55 555 5555">
+                    </div>
+                </div>
+
+                <!-- Registration Details -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="registrationType" class="form-label">Registration Type</label>
+                        <select id="registrationType" name="registrationType" class="form-control" required>
+                            <option value="" disabled selected>Select Registration Category</option>
+                            <option value="full-in-person">Full In-Person Delegate ($995)</option>
+                            <option value="member">AASW Member Rate ($850)</option>
+                            <option value="student">Student Registration ($450)</option>
+                            <option value="lrc">Low Resource Country ($250)</option>
+                            <option value="online">Full Online Registration ($500)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 25px;">
+                    <label for="dietary" class="form-label">Dietary Requirements / Special Needs</label>
+                    <textarea id="dietary" name="dietary" class="form-control" rows="3"
+                        placeholder="Please specify any dietary requirements or accessibility needs..."></textarea>
+                </div>
+
+                <div class="checkbox-group" style="margin-bottom: 30px;">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms" class="checkbox-label">I agree to the <a href="#"
+                            style="color: var(--primary-purple); font-weight: 600;">Terms & Conditions</a> and Privacy
+                        Policy.</label>
+                </div>
+
+                <div style="text-align: center;">
+                    <button type="submit" class="btn-register">Submit Registration</button>
+                </div>
+            </form>
         </section>
 
         <section class="info-section">
