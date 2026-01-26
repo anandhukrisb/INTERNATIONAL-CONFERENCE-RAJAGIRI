@@ -250,17 +250,12 @@
             flex-direction: column;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
             position: relative;
-            /* Curvy Animation Setup */
-            clip-path: circle(0% at 100% 100%);
-            transition: clip-path 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            opacity: 1;
-            /* Always opaque, clip-path handles visibility */
-            transform: none;
-            /* Remove translation */
+            transform: translateY(100vh);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .modal-overlay.active .hotel-modal {
-            clip-path: circle(150% at 100% 100%);
+            transform: translateY(0);
         }
 
         .modal-header {
@@ -978,7 +973,7 @@
                     modal.style.display = 'none';
                     document.body.style.overflow = '';
                     document.getElementById('modalMap').src = ''; // Stop map loading
-                }, 300);
+                }, 500);
             }
         }
     </script>

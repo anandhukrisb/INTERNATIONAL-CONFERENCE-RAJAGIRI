@@ -176,15 +176,14 @@
       border-radius: 16px;
       padding: 30px;
       position: relative;
-      /* Curvy Animation Setup */
-      clip-path: circle(0% at 100% 100%);
-      transition: clip-path 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-      opacity: 1;
-      transform: none;
+      transform: translateY(100vh);
+      opacity: 0;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
     }
 
     .modal-overlay.active .modal-content {
-      clip-path: circle(150% at 100% 100%);
+      transform: translateY(0);
+      opacity: 1;
     }
 
     .modal-close {
@@ -367,9 +366,11 @@
         modal.querySelector("#modalDetails").textContent = e.target.dataset.details;
       }
 
-      if (e.target.classList.contains("modal-close") || e.target === modal) {
+      if (e.target.classList.contains("modal-overlay") || e.target.classList.contains("modal-close") || e.target.closest('.modal-close')) {
         modal.classList.remove("active");
-        document.body.style.overflow = "";
+        setTimeout(() => {
+          document.body.style.overflow = "";
+        }, 500);
       }
     });
 

@@ -50,7 +50,7 @@ class MainFooter extends HTMLElement {
                     right: 0;
                     width: 60%;
                     height: 100%;
-                    background-image: url('assets/about_image.jpg');
+                    /* background-image: url('assets/about_image.jpg'); Removed as per request */
                     background-size: cover;
                     background-position: center;
                     opacity: 0.15;

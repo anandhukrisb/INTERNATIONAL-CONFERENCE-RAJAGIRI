@@ -293,27 +293,9 @@ class FloatingNavbar extends HTMLElement {
                     line-height: normal;
                     text-transform: capitalize;
                     letter-spacing: normal;
-                    position: relative;
-                    overflow: hidden;
-                    z-index: 1;
                 }
 
-                .navbar-links a.contact-btn::before, .mobile-links a.contact-btn::before {
-                    content: "";
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background-color: #C9A227;
-                    z-index: -1;
-                    transition: clip-path 0.4s ease-out;
-                    clip-path: circle(0% at 0 50%);
-                }
 
-                .navbar-links a.contact-btn:hover::before, .mobile-links a.contact-btn:hover::before {
-                    clip-path: circle(150% at 0 50%);
-                }
 
                 .navbar-links a.contact-btn:hover, .mobile-links a.contact-btn:hover {
                     opacity: 1;
