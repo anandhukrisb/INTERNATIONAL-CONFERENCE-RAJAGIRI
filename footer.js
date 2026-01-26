@@ -227,40 +227,13 @@ class MainFooter extends HTMLElement {
                     text-decoration: none;
                 }
 
-                /* Tablet - Keep all 3 columns horizontal with tighter spacing */
-                @media (max-width: 1100px) and (min-width: 951px) {
-                    .footer-container {
-                        min-height: auto; /* Remove min-height to prevent white space */
-                    }
 
-                    .content-section {
-                        grid-template-columns: 1.3fr 0.7fr 1fr;
-                        gap: 15px;
-                        padding: 35px 30px 20px;
-                        margin-left: 40%; /* Dynamic margin instead of fixed px */
-                        width: 60%; /* Ensure it fits */
-                        font-size: 0.9rem;
-                    }
-                    
-                    .footer-col h3 {
-                        font-size: 1.1rem;
-                    }
-
-                    .logo-section {
-                        width: 40%; /* Dynamic width */
-                        height: 140px;
-                    }
-
-                    .copyright-section {
-                        width: 50%; /* Dynamic width */
-                    }
-                }
 
                 /* Smaller Tablet - 2 columns with Resources spanning (optional intermediate step) */
                 /* This breakpoint can be removed if direct jump to mobile is preferred */
 
 
-                @media (max-width: 950px) {
+                @media (max-width: 1307px) {
                     .footer-container {
                         min-height: auto;
                         width: 100%;
