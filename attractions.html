@@ -162,25 +162,45 @@
         }
 
         .read-more-btn {
-            background-color: #1D0A3F;
-            color: #fff;
+            background-color: #C9A227;
+            color: #1D0A3F;
             border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
+            padding: 15px 35px;
+            border-radius: 50px;
             cursor: pointer;
             font-family: 'Outfit', sans-serif;
             font-weight: 600;
-            transition: background 0.3s;
+            transition: transform 0.3s ease;
             width: 100%;
             margin-top: 15px;
-            text-transform: uppercase;
+            text-transform: capitalize;
             font-size: 0.9rem;
-            letter-spacing: 0.5px;
+            letter-spacing: normal;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .read-more-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1D0A3F;
+            z-index: -1;
+            transition: clip-path 0.4s ease-out;
+            clip-path: circle(0% at 0 50%);
+        }
+
+        .read-more-btn:hover::before {
+            clip-path: circle(150% at 0 50%);
         }
 
         .read-more-btn:hover {
-            background-color: #C9A227;
-            color: #1D0A3F;
+            transform: translateY(-3px);
+            color: #C9A227;
         }
 
         /* Modal Styles */
@@ -651,7 +671,7 @@
         /* ================= ATTRACTIONS SECTION ================= */
         .attractions-section {
             padding: 80px 20px;
-            max-width: 1200px;
+            max-width: 95%;
             margin: 0 auto;
         }
 
@@ -765,7 +785,7 @@
         }
 
         .culinary-container {
-            max-width: 1200px;
+            max-width: 95%;
             margin: 0 auto;
         }
 

@@ -40,7 +40,7 @@
         .contact-title-section {
             margin-top: 150px;
             margin-bottom: 50px;
-            max-width: 1200px;
+            max-width: 95%;
             margin-left: auto;
             margin-right: auto;
             padding: 0 20px;
@@ -76,7 +76,7 @@
             font-size: 1.1rem;
             color: #444;
             margin-bottom: 60px;
-            max-width: 1200px;
+            max-width: 95%;
             margin-left: auto;
             margin-right: auto;
         }
@@ -85,7 +85,7 @@
         .contact-grid {
             padding: 0 20px;
             margin-bottom: 20px;
-            max-width: 1200px;
+            max-width: 95%;
             margin: 0 auto 40px;
             display: flex;
             flex-wrap: wrap;
@@ -386,23 +386,41 @@
 
         .btn-subscribe {
             background-color: #C9A227;
-            /* Matching project gold color */
-            color: white;
-            padding: 15px 50px;
+            color: #1D0A3F;
+            padding: 15px 35px;
             border-radius: 50px;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
+            text-transform: capitalize;
+            letter-spacing: normal;
             border: none;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease;
             box-shadow: 0 4px 15px rgba(201, 162, 39, 0.2);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-subscribe::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1D0A3F;
+            z-index: -1;
+            transition: clip-path 0.4s ease-out;
+            clip-path: circle(0% at 0 50%);
+        }
+
+        .btn-subscribe:hover::before {
+            clip-path: circle(150% at 0 50%);
         }
 
         .btn-subscribe:hover {
-            background-color: #b08d20;
             transform: translateY(-3px);
+            color: #C9A227;
             box-shadow: 0 6px 20px rgba(201, 162, 39, 0.3);
-            color: white;
         }
 
         /* ================= MOBILE ================= */
@@ -500,7 +518,7 @@
 
     <!-- Office Hours & Response Time Section -->
     <div class="info-row"
-        style="display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; max-width: 1200px; margin: 40px auto; padding: 0 20px;">
+        style="display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; max-width: 95%; margin: 40px auto; padding: 0 20px;">
         <!-- Office Hours Card -->
         <div style="flex: 1 1 calc(50% - 15px); min-width: 280px; max-width: 580px;">
             <div
@@ -526,7 +544,7 @@
     <hr class="separator">
 
     <!-- FAQ Section -->
-    <div class="faq-section" style="max-width: 1000px; margin: 60px auto; padding: 0 20px;">
+    <div class="faq-section" style="max-width: 95%; margin: 60px auto; padding: 0 20px;">
         <h3 style="text-align: center; color: #1D0A3F; font-size: 2rem; margin-bottom: 40px; font-weight: 600;">
             Frequently Asked Questions</h3>
 
@@ -622,7 +640,7 @@
     </div>
 
     <!-- Venue Map Section -->
-    <div class="venue-section" style="max-width: 1000px; margin: 60px auto 40px; padding: 0 20px;">
+    <div class="venue-section" style="max-width: 95%; margin: 60px auto 40px; padding: 0 20px;">
         <h3 style="text-align: center; color: #1D0A3F; font-size: 2rem; margin-bottom: 20px; font-weight: 600;">
             Conference Venue</h3>
         <p style="text-align: center; color: #555; margin-bottom: 30px; font-size: 1.05rem;">Rajagiri College of Social

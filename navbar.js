@@ -284,20 +284,41 @@ class FloatingNavbar extends HTMLElement {
                 .navbar-links a.contact-btn, .mobile-links a.contact-btn {
                     background-color: white;
                     color: #1d0a3f;
-                    padding: 10px 25px;
-                    border-radius: 25px;
+                    padding: 12px 30px;
+                    border-radius: 50px;
                     font-weight: 600;
                     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-                    transition: all 0.3s ease;
+                    transition: transform 0.3s ease;
                     height: auto;
                     line-height: normal;
+                    text-transform: capitalize;
+                    letter-spacing: normal;
+                    position: relative;
+                    overflow: hidden;
+                    z-index: 1;
+                }
+
+                .navbar-links a.contact-btn::before, .mobile-links a.contact-btn::before {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: #C9A227;
+                    z-index: -1;
+                    transition: clip-path 0.4s ease-out;
+                    clip-path: circle(0% at 0 50%);
+                }
+
+                .navbar-links a.contact-btn:hover::before, .mobile-links a.contact-btn:hover::before {
+                    clip-path: circle(150% at 0 50%);
                 }
 
                 .navbar-links a.contact-btn:hover, .mobile-links a.contact-btn:hover {
                     opacity: 1;
                     transform: translateY(-2px);
                     box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-                    background-color: #f0f0f0;
                 }
 
                 /* Mobile toggle button (hamburger) */
