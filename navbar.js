@@ -533,6 +533,7 @@ class FloatingNavbar extends HTMLElement {
                         <a href="#">Host city</a>
                         <ul class="dropdown-menu">
                             <li><a href="hotels.html">Hotels</a></li>
+                            <li><a href="attractions.html">Attractions</a></li>
                         </ul>
                     </li>
                     <li><a href="contact-us.html" class="contact-btn">Contact Us</a></li>
