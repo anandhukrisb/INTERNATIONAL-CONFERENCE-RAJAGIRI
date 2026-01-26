@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abstract Submission - ICSWHMH 2027</title>
+    <link rel="icon" type="image/x-icon" href="assets/Favicon-192.ico?v=2">
+
+    <!-- Professional Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+
+    <!-- Custom Navbar & Footer Scripts -->
+    <script src="navbar.js" defer></script>
+    <script src="footer.js" defer></script>
+
+    <style>
+        :root {
+            --primary-purple: #1d0a3f;
+            --secondary-purple: #3d2066;
+            --accent-gold: #C9A227;
+            --text-dark: #2c2c2c;
+            --text-light: #555;
+            --bg-light: #FDFBF7;
+            --white: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        /* Floating Navbar Placeholder */
+        floating-navbar {
+            display: block;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        /* Hero / Title Section */
+        .page-header {
+            padding-top: 160px;
+            padding-bottom: 60px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(239, 230, 222, 0.4) 0%, rgba(253, 251, 247, 0) 100%);
+        }
+
+        .page-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-purple);
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .page-title::after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 5px;
+            background-color: var(--accent-gold);
+            margin: 15px auto 0;
+            border-radius: 3px;
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Guidelines Section */
+        .guidelines-section {
+            max-width: 1000px;
+            margin: 0 auto 50px;
+            padding: 40px;
+            background: var(--primary-purple);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(29, 10, 63, 0.2);
+            border-left: 5px solid var(--accent-gold);
+            color: var(--white);
+        }
+
+        .guidelines-title {
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            color: var(--white);
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .guidelines-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .guidelines-list li {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 15px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .guidelines-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--accent-gold);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Form Container */
+        .submission-container {
+            max-width: 900px;
+            margin: 0 auto 100px;
+            padding: 20px;
+        }
+
+        .submission-card {
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(29, 10, 63, 0.08);
+            padding: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Top Accent line */
+        .submission-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, var(--primary-purple) 0%, var(--secondary-purple) 50%, var(--accent-gold) 100%);
+        }
+
+        .form-section-title {
+            color: var(--primary-purple);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--primary-purple);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .form-control,
+        .form-select {
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: #fcfcfc;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary-purple);
+            box-shadow: 0 0 0 4px rgba(29, 10, 63, 0.1);
+            background-color: var(--white);
+        }
+
+        .form-text {
+            color: #888;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        .required-asterisk {
+            color: #e74c3c;
+            margin-left: 3px;
+        }
+
+        .btn-submit {
+            background-color: var(--accent-gold);
+            color: var(--white);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 20px rgba(201, 162, 39, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-submit:hover {
+            background-color: #b08d20;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(201, 162, 39, 0.4);
+        }
+
+        /* File Upload Styling */
+        .file-upload-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .file-upload-input {
+            width: 100%;
+            height: 100px;
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #fafafa;
+            color: #777;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .file-upload-input:hover {
+            border-color: var(--accent-gold);
+            background: #fffcf5;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2.2rem;
+            }
+
+            .submission-card {
+                padding: 30px 20px;
+            }
+
+            .page-header {
+                padding-top: 120px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <floating-navbar></floating-navbar>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="container">
+            <h1 class="page-title">ABSTRACT SUBMISSION</h1>
+            <p class="page-subtitle">Submit your research and contribute to the global dialogue on social work and
+                health.</p>
+        </div>
+    </header>
+
+    <!-- Guidelines -->
+    <div class="container">
+        <div class="guidelines-section">
+            <div class="guidelines-title">
+                <i class="bi bi-info-circle-fill" style="color: var(--accent-gold);"></i> Submission Guidelines
+            </div>
+            <ul class="guidelines-list">
+                <li>Abstracts must be submitted in English.</li>
+                <li>The maximum word limit for the abstract text is 300 words.</li>
+                <li>Please ensure your abstract includes specific objectives, methods, results, and conclusions.</li>
+                <li>All accepted abstracts will be published in the conference proceedings.</li>
+                <li>Submission Deadline: <strong>July 15, 2027</strong>.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Form -->
+    <div class="submission-container">
+        <form class="submission-card" action="#" method="POST" enctype="multipart/form-data">
+
+            <!-- Author Information -->
+            <div class="mb-5">
+                <h3 class="form-section-title"><i class="bi bi-person-badge me-2"></i>Primary Author Details</h3>
+                <div class="row g-3">
+                    <div class="col-md-2">
+                        <label for="titlePrefix" class="form-label">Title</label>
+                        <select class="form-select" id="titlePrefix" required>
+                            <option value="" selected disabled>Select</option>
+                            <option value="Dr">Dr.</option>
+                            <option value="Prof">Prof.</option>
+                            <option value="Mr">Mr.</option>
+                            <option value="Ms">Ms.</option>
+                            <option value="Mrs">Mrs.</option>
+                            <option value="Mx">Mx.</option>
+                            <option value="Rev">Rev.</option>
+                        </select>
+                    </div>
+                    <div class="col-md-5">
+                        <label for="firstName" class="form-label">First Name <span
+                                class="required-asterisk">*</span></label>
+                        <input type="text" class="form-control" id="firstName" placeholder="First Name" required>
+                    </div>
+                    <div class="col-md-5">
+                        <label for="lastName" class="form-label">Last Name <span
+                                class="required-asterisk">*</span></label>
+                        <input type="text" class="form-control" id="lastName" placeholder="Last Name" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="email" class="form-label">Email Address <span
+                                class="required-asterisk">*</span></label>
+                        <input type="email" class="form-control" id="email" placeholder="name@example.com" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" id="phone" placeholder="+123 456 7890">
+                    </div>
+
+                    <div class="col-12">
+                        <label for="affiliation" class="form-label">Affiliation / Institution <span
+                                class="required-asterisk">*</span></label>
+                        <input type="text" class="form-control" id="affiliation"
+                            placeholder="University, Organization, or Hospital Name" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="country" class="form-label">Country <span class="required-asterisk">*</span></label>
+                        <select class="form-select" id="country" required>
+                            <option value="" selected disabled>Select Country</option>
+                            <!-- Shortened List -->
+                            <option value="India">India</option>
+                            <option value="Australia">Australia</option>
+                            <option value="USA">USA</option>
+                            <option value="UK">UK</option>
+                            <option value="Canada">Canada</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Abstract Details -->
+            <div class="mb-5">
+                <h3 class="form-section-title"><i class="bi bi-file-text me-2"></i>Abstract Details</h3>
+
+                <div class="mb-3">
+                    <label for="abstractTitle" class="form-label">Abstract Title <span
+                            class="required-asterisk">*</span></label>
+                    <input type="text" class="form-control" id="abstractTitle"
+                        placeholder="Enter the full title of your paper" required>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label for="category" class="form-label">Conference Sub-Theme <span
+                                class="required-asterisk">*</span></label>
+                        <select class="form-select" id="category" required>
+                            <option value="" selected disabled>Select a Topic</option>
+
+                            <optgroup label="Practice Domains">
+                                <option value="Mental health social work">Mental health social work</option>
+                                <option value="Child Protection">Child Protection</option>
+                                <option value="Disability">Disability</option>
+                                <option value="Older persons">Older persons health</option>
+                                <option value="Addiction">Addiction / Substance Use</option>
+                                <option value="Family violence">Family violence</option>
+                                <option value="Palliative care">End of life / Palliative care</option>
+                            </optgroup>
+
+                            <optgroup label="Global Challenges">
+                                <option value="Climate">Changing climate and environments</option>
+                                <option value="Migration">Migration and displacement</option>
+                                <option value="Housing">Housing & homelessness</option>
+                                <option value="Trauma">Trauma</option>
+                            </optgroup>
+
+                            <optgroup label="Social Determinants">
+                                <option value="Inequalities">Health and Income inequalities</option>
+                                <option value="LGBTIQA+">LGBTIQA+ health and wellbeing</option>
+                                <option value="Rural Health">Rural and Remote health</option>
+                            </optgroup>
+
+                            <optgroup label="Intervention & Knowledge">
+                                <option value="Advocacy">Advocacy and activism</option>
+                                <option value="AI">Artificial intelligence in practice</option>
+                                <option value="Education">Social work education</option>
+                                <option value="Ethics">Ethics and ethical dilemmas</option>
+                            </optgroup>
+
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="presentationType" class="form-label">Preferred Presentation Type <span
+                                class="required-asterisk">*</span></label>
+                        <select class="form-select" id="presentationType" required>
+                            <option value="" selected disabled>Select Type</option>
+                            <option value="Oral">Oral Presentation</option>
+                            <option value="Poster">Poster Presentation</option>
+                            <option value="Workshop">Workshop</option>
+                            <option value="Symposium">Symposium</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="abstractBody" class="form-label">Abstract Body <span
+                            class="required-asterisk">*</span></label>
+                    <textarea class="form-control" id="abstractBody" rows="8" maxlength="2500"
+                        placeholder="Type or paste your abstract here (Max 300 words)..." required></textarea>
+                    <div class="form-text text-end" id="wordCount">0 / 300 words</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="keywords" class="form-label">Keywords <span class="required-asterisk">*</span></label>
+                    <input type="text" class="form-control" id="keywords"
+                        placeholder="E.g., Mental Health, Policy, Community (Max 5 separated by commas)" required>
+                </div>
+            </div>
+
+            <!-- Co-Authors -->
+            <div class="mb-5">
+                <h3 class="form-section-title"><i class="bi bi-people me-2"></i>Co-Authors</h3>
+                <div class="mb-3">
+                    <label for="coAuthors" class="form-label">List Co-Authors (Name, Affiliation)</label>
+                    <textarea class="form-control" id="coAuthors" rows="3"
+                        placeholder="Dr. John Doe (University of X), Jane Smith (Hospital Y)"></textarea>
+                    <div class="form-text">Leave blank if single author.</div>
+                </div>
+            </div>
+
+            <!-- File Upload -->
+            <!-- <div class="mb-5">
+                <h3 class="form-section-title"><i class="bi bi-cloud-upload me-2"></i>Full Paper (Optional)</h3>
+                <label class="form-label">Upload Document (PDF/Word)</label>
+                <input class="form-control" type="file" id="formFile">
+                <div class="form-text">Max file size: 5MB.</div>
+            </div> -->
+
+            <!-- Declaration -->
+            <div class="mb-4">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+                    <label class="form-check-label" for="invalidCheck">
+                        I confirm that this work is original and has not been published elsewhere.
+                    </label>
+                    <div class="invalid-feedback">
+                        You must agree before submitting.
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-submit">
+                Submit Abstract <i class="bi bi-arrow-right-short" style="font-size: 1.5rem;"></i>
+            </button>
+
+        </form>
+    </div>
+
+    <main-footer></main-footer>
+
+    <script>
+        // Simple Word Counter
+        const textarea = document.getElementById('abstractBody');
+        const countDisplay = document.getElementById('wordCount');
+
+        textarea.addEventListener('input', function () {
+            const text = this.value.trim();
+            const words = text ? text.split(/\s+/).length : 0;
+            countDisplay.textContent = `${words} / 300 words`;
+
+            if (words > 300) {
+                countDisplay.style.color = 'red';
+            } else {
+                countDisplay.style.color = '#888';
+            }
+        });
+
+        // Form Submission visual feedback (Prevent actual submit for demo)
+        document.querySelector('form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            // Basic validation check could go here
+            const btn = this.querySelector('.btn-submit');
+            const originalText = btn.innerHTML;
+
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Submitting...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                alert('Abstract submitted successfully! (This is a demo)');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                this.reset();
+                document.getElementById('wordCount').textContent = '0 / 300 words';
+            }, 1500);
+        });
+    </script>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
