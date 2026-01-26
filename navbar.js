@@ -64,17 +64,18 @@ class FloatingNavbar extends HTMLElement {
                 .navbar-backdrop {
                     position: fixed;
                     top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100px;
-                    background-color: #FDFBF7;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 97%;
+                    height: 45px;
+                    background-color: white;
                     z-index: 999;
                     pointer-events: none; /* Allow clicks through backdrop */
                 }
 
                 .floating-navbar {
                     position: fixed;
-                    top: 10px;
+                    top: 20px;
                     left: 50%;
                     transform: translateX(-50%);
                     width: 97%; /* User defined */
@@ -86,6 +87,7 @@ class FloatingNavbar extends HTMLElement {
                     padding: 0;
                     z-index: 1000;
                     border: none;
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
                 }
 
                 .navbar-logo {
@@ -512,7 +514,6 @@ class FloatingNavbar extends HTMLElement {
                 <!-- Visible Links (Priority+) -->
                 <ul class="navbar-links" id="navbar-links">
                     <li><a href="index.html">2027 ICSWHMH</a></li>
-                    <li><a href="rajagiri.html">Rajagiri</a></li>
                     <li>
                         <a href="program.html">Program</a>
                         <ul class="dropdown-menu">
