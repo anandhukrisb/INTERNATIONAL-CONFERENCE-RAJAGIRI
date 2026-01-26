@@ -17,8 +17,9 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@400;600;800&display=swap"
-    rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@400;600;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
@@ -26,7 +27,7 @@
         body {
             background-color: #FDFBF7;
             color: #2D3436;
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             overflow-x: hidden;
         }
 
@@ -39,7 +40,7 @@
         .contact-title-section {
             margin-top: 150px;
             margin-bottom: 50px;
-            max-width: 1200px;
+            max-width: 95%;
             margin-left: auto;
             margin-right: auto;
             padding: 0 20px;
@@ -75,7 +76,7 @@
             font-size: 1.1rem;
             color: #444;
             margin-bottom: 60px;
-            max-width: 1200px;
+            max-width: 95%;
             margin-left: auto;
             margin-right: auto;
         }
@@ -84,7 +85,7 @@
         .contact-grid {
             padding: 0 20px;
             margin-bottom: 20px;
-            max-width: 1200px;
+            max-width: 95%;
             margin: 0 auto 40px;
             display: flex;
             flex-wrap: wrap;
@@ -150,6 +151,7 @@
         }
 
         .contact-text h4 {
+            font-family: 'Outfit', sans-serif;
             font-weight: 600;
             color: #FFFFFF;
             margin-bottom: 15px;
@@ -216,7 +218,7 @@
 
         /* ================= FAQ ACCORDION STYLES ================= */
         .info-strip {
-            margin-bottom: 25px;
+            margin-bottom: 10px;
             background: #FFFFFF;
             border: 1px solid #ddd;
             border-radius: 10px;
@@ -226,30 +228,26 @@
         }
 
         .info-header {
-            background-color: #FFFFFF;
-            /* White header for contact page style */
-            color: #1D0A3F;
-            /* Deep Purple text */
-            padding: 20px 25px;
+            background-color: #1D0A3F;
+            color: #FFFFFF;
+            padding: 15px 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-weight: 600;
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             cursor: pointer;
-            border-left: 4px solid #C9A227;
-            /* Gold accent left border */
             transition: background-color 0.3s ease;
         }
 
         .info-header:hover {
-            background-color: #f9f9fb;
+            background-color: #2a1056;
         }
 
         .info-header .icon {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: bold;
-            color: #C9A227;
+            color: #FFFFFF;
         }
 
         .info-content {
@@ -280,6 +278,11 @@
             list-style: none;
             padding: 0;
             margin-bottom: 25px;
+        }
+
+        .wrapper a {
+            color: inherit;
+            text-decoration: none;
         }
 
         .wrapper .icon {
@@ -346,10 +349,10 @@
             color: #ffffff;
         }
 
-        .wrapper .twitter:hover,
-        .wrapper .twitter:hover .tooltip,
-        .wrapper .twitter:hover .tooltip::before {
-            background: #1DA1F2;
+        .wrapper .x:hover,
+        .wrapper .x:hover .tooltip,
+        .wrapper .x:hover .tooltip::before {
+            background: #000000;
             color: #ffffff;
         }
 
@@ -360,10 +363,10 @@
             color: #ffffff;
         }
 
-        .wrapper .github:hover,
-        .wrapper .github:hover .tooltip,
-        .wrapper .github:hover .tooltip::before {
-            background: #333333;
+        .wrapper .linkedin:hover,
+        .wrapper .linkedin:hover .tooltip,
+        .wrapper .linkedin:hover .tooltip::before {
+            background: #0A66C2;
             color: #ffffff;
         }
 
@@ -383,29 +386,47 @@
 
         .btn-subscribe {
             background-color: #C9A227;
-            /* Matching project gold color */
-            color: white;
-            padding: 15px 50px;
+            color: #1D0A3F;
+            padding: 15px 35px;
             border-radius: 50px;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
+            text-transform: capitalize;
+            letter-spacing: normal;
             border: none;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease;
             box-shadow: 0 4px 15px rgba(201, 162, 39, 0.2);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-subscribe::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1D0A3F;
+            z-index: -1;
+            transition: clip-path 0.4s ease-out;
+            clip-path: circle(0% at 0 50%);
+        }
+
+        .btn-subscribe:hover::before {
+            clip-path: circle(150% at 0 50%);
         }
 
         .btn-subscribe:hover {
-            background-color: #b08d20;
             transform: translateY(-3px);
+            color: #C9A227;
             box-shadow: 0 6px 20px rgba(201, 162, 39, 0.3);
-            color: white;
         }
 
         /* ================= MOBILE ================= */
         @media (max-width: 768px) {
             .contact-title-section {
-                margin-top: 120px;
+                margin-top: 60px;
                 margin-left: 0;
                 text-align: center;
             }
@@ -431,7 +452,7 @@
                 flex-direction: column;
                 align-items: center;
                 text-align: center;
-                margin-bottom: 40px;
+                margin-bottom: 20px;
             }
 
             .separator {
@@ -461,9 +482,9 @@
                 </div>
                 <div class="contact-text">
                     <h4>Address</h4>
-                    <p>Suite 10/Level 1, 285a Crown St,<br>
-                        Surry Hills, NSW, 2010,<br>
-                        Australia</p>
+                    <p>Rajagiri College of Social Sciences (Autonomous),<br>
+                        Rajagiri P.O, Kalamassery,<br>
+                        Cochin - 683104, Kerala, India.</p>
                 </div>
             </div>
         </div>
@@ -476,7 +497,7 @@
                 </div>
                 <div class="contact-text">
                     <h4>Phone</h4>
-                    <p>+ 61 2 8667 0737</p>
+                    <p>+91 484 - 2911111 / 2911507</p>
                 </div>
             </div>
         </div>
@@ -489,25 +510,41 @@
                 </div>
                 <div class="contact-text">
                     <h4>Email</h4>
-                    <p><a href="mailto:aasw@forumgroupevents.com.au">aasw@forumgroupevents.com.au</a></p>
+                    <p><a href="mailto:icswhmh2027@rajagiri.edu">icswhmh2027@rajagiri.edu</a></p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Office Hours Section -->
-    <div class="office-hours-section" style="text-align: center; margin: 40px auto; max-width: 800px; padding: 0 20px;">
-        <div style="background: #f9f5f0; border-left: 4px solid #C9A227; padding: 20px 30px; border-radius: 8px;">
-            <i class="bi bi-clock" style="font-size: 1.5rem; color: #1D0A3F;"></i>
-            <p style="margin: 10px 0 0; color: #555; font-size: 1rem;"><strong>Office Hours:</strong> Monday - Friday,
-                9:00 AM - 5:00 PM (AEDT)</p>
+    <!-- Office Hours & Response Time Section -->
+    <div class="info-row"
+        style="display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; max-width: 95%; margin: 40px auto; padding: 0 20px;">
+        <!-- Office Hours Card -->
+        <div style="flex: 1 1 calc(50% - 15px); min-width: 280px; max-width: 580px;">
+            <div
+                style="background: #f9f5f0; border-left: 4px solid #C9A227; padding: 20px 30px; border-radius: 8px; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+                <i class="bi bi-clock" style="font-size: 1.5rem; color: #1D0A3F;"></i>
+                <p style="margin: 10px 0 0; color: #555; font-size: 1rem;"><strong>Office Hours:</strong> Monday -
+                    Friday,
+                    9:00 AM - 5:00 PM (AEDT)</p>
+            </div>
+        </div>
+        <!-- Response Time Notice -->
+        <div style="flex: 1 1 calc(50% - 15px); min-width: 280px; max-width: 580px;">
+            <div
+                style="background: #f0f7ff; border: 1px solid #C9A227; padding: 20px 30px; border-radius: 8px; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+                <i class="bi bi-info-circle" style="font-size: 1.5rem; color: #1D0A3F;"></i>
+                <p style="margin: 10px 0 0; color: #555; font-size: 0.95rem;">We aim to respond to all inquiries within
+                    2-3
+                    business days. For urgent matters, please call us directly during office hours.</p>
+            </div>
         </div>
     </div>
 
     <hr class="separator">
 
     <!-- FAQ Section -->
-    <div class="faq-section" style="max-width: 1000px; margin: 60px auto; padding: 0 20px;">
+    <div class="faq-section" style="max-width: 95%; margin: 60px auto; padding: 0 20px;">
         <h3 style="text-align: center; color: #1D0A3F; font-size: 2rem; margin-bottom: 40px; font-weight: 600;">
             Frequently Asked Questions</h3>
 
@@ -603,7 +640,7 @@
     </div>
 
     <!-- Venue Map Section -->
-    <div class="venue-section" style="max-width: 1000px; margin: 60px auto 40px; padding: 0 20px;">
+    <div class="venue-section" style="max-width: 95%; margin: 60px auto 40px; padding: 0 20px;">
         <h3 style="text-align: center; color: #1D0A3F; font-size: 2rem; margin-bottom: 20px; font-weight: 600;">
             Conference Venue</h3>
         <p style="text-align: center; color: #555; margin-bottom: 30px; font-size: 1.05rem;">Rajagiri College of Social
@@ -616,49 +653,53 @@
         </div>
     </div>
 
-    <!-- Response Time Notice -->
-    <div style="max-width: 600px; margin: 40px auto; padding: 0 20px;">
-        <div
-            style="background: #f0f7ff; border: 1px solid #C9A227; padding: 20px; border-radius: 8px; text-align: center;">
-            <i class="bi bi-info-circle" style="font-size: 1.5rem; color: #1D0A3F; margin-bottom: 10px;"></i>
-            <p style="margin: 0; color: #555; font-size: 0.95rem;">We aim to respond to all inquiries within 2-3
-                business days. For urgent matters, please call us directly during office hours.</p>
-        </div>
-    </div>
+
 
     <hr class="separator">
 
     <div class="social-section">
         <ul class="wrapper">
-            <li class="icon facebook">
-                <span class="tooltip">Facebook</span>
-                <span><i class="fab fa-facebook-f"></i></span>
-            </li>
-            <li class="icon twitter">
-                <span class="tooltip">Twitter</span>
-                <span><i class="fab fa-twitter"></i></span>
-            </li>
-            <li class="icon instagram">
-                <span class="tooltip">Instagram</span>
-                <span><i class="fab fa-instagram"></i></span>
-            </li>
-            <li class="icon github">
-                <span class="tooltip">Github</span>
-                <span><i class="fab fa-github"></i></span>
-            </li>
-            <li class="icon youtube">
-                <span class="tooltip">Youtube</span>
-                <span><i class="fab fa-youtube"></i></span>
-            </li>
+            <a href="https://www.facebook.com/Rajagiri-College-of-Social-Sciences-Autonomous-1376623805998150/?fref=ts"
+                target="_blank" rel="noopener noreferrer">
+                <li class="icon facebook">
+                    <span class="tooltip">Facebook</span>
+                    <span><i class="fab fa-facebook-f"></i></span>
+                </li>
+            </a>
+            <a href="https://x.com/hashtag/rajagiri" target="_blank" rel="noopener noreferrer">
+                <li class="icon x">
+                    <span class="tooltip">X</span>
+                    <span><i class="fab fa-x-twitter"></i></span>
+                </li>
+            </a>
+            <a href="https://www.instagram.com/rajagiri.official/" target="_blank" rel="noopener noreferrer">
+                <li class="icon instagram">
+                    <span class="tooltip">Instagram</span>
+                    <span><i class="fab fa-instagram"></i></span>
+                </li>
+            </a>
+            <a href="https://www.linkedin.com/school/rajagiri-college-of-social-sciences-autonomous/posts/?feedView=all"
+                target="_blank" rel="noopener noreferrer">
+                <li class="icon linkedin">
+                    <span class="tooltip">LinkedIn</span>
+                    <span><i class="fab fa-linkedin-in"></i></span>
+                </li>
+            </a>
+            <a href="https://www.youtube.com/@rajagiricollegeofsocialsci9476" target="_blank" rel="noopener noreferrer">
+                <li class="icon youtube">
+                    <span class="tooltip">Youtube</span>
+                    <span><i class="fab fa-youtube"></i></span>
+                </li>
+            </a>
         </ul>
-        <p class="hashtag-text">Add your voice to the global conversation <span>#ISWMHCMelb2024</span></p>
+
     </div>
 
     <hr class="separator">
 
-    <div class="subscribe-container">
+    <!-- <div class="subscribe-container">
         <button class="btn btn-subscribe">Subscribe to News</button>
-    </div>
+    </div> -->
 
     <main-footer></main-footer>
 
