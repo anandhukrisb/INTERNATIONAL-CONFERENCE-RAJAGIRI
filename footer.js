@@ -19,7 +19,7 @@ class MainFooter extends HTMLElement {
                 :host {
                     display: block;
                     width: 100%;
-                    font-family: 'Outfit', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 }
 
                 * {
@@ -177,6 +177,7 @@ class MainFooter extends HTMLElement {
                 }
 
                 .footer-col h3 {
+                    font-family: 'Outfit', sans-serif;
                     font-size: 1.2rem;
                     margin-bottom: 20px;
                     color: #C9A227; /* Gold color for headers */
