@@ -65,7 +65,7 @@
 
         .scrollDist {
             width: 100%;
-            height: 200vh;
+            height: 150vh;
             position: relative;
             z-index: 0;
         }
@@ -96,7 +96,7 @@
 
         .welcome-section {
             background-color: #FDFBF7;
-            padding-top: 100px;
+            padding-top: 0;
             /* Added padding to separate from potential overlap */
             padding-bottom: 100px;
         }
@@ -385,7 +385,6 @@
     -->
     <div style="position: relative; z-index: 20; background: #fff;">
         <!-- Placeholder for 'images and content later' -->
-        <div class="section-separator"></div>
         <section class="welcome-section">
             <div class="welcome-container">
                 <h3 class="welcome-header reveal-on-scroll">Welcome from the AASW CEO</h3>
@@ -443,13 +442,13 @@
                 scrub: 1
             }
         })
-            .fromTo('.sky', { y: 0 }, { y: -200 }, 0)
-            .fromTo('.cloud1', { y: 100 }, { y: -800 }, 0)
-            .fromTo('.cloud2', { y: -150 }, { y: -500 }, 0)
-            .fromTo('.cloud3', { y: -50 }, { y: -650 }, 0)
-            .fromTo('.mountBg', { y: -10 }, { y: -100 }, 0)
-            .fromTo('.mountMg', { y: -30 }, { y: -250 }, 0)
-            .fromTo('.mountFg', { y: -50 }, { y: -600 }, 0);
+            .fromTo('.sky', { y: 0 }, { y: -100 }, 0)
+            .fromTo('.cloud1', { y: 100 }, { y: -400 }, 0)
+            .fromTo('.cloud2', { y: -150 }, { y: -250 }, 0)
+            .fromTo('.cloud3', { y: -50 }, { y: -325 }, 0)
+            .fromTo('.mountBg', { y: -10 }, { y: -50 }, 0)
+            .fromTo('.mountMg', { y: -30 }, { y: -125 }, 0)
+            .fromTo('.mountFg', { y: -50 }, { y: -300 }, 0);
 
         // Arrow Interaction
         const arrowBtn = document.querySelector('#arrow-btn');
