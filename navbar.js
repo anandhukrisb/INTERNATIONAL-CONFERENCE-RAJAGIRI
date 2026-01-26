@@ -70,7 +70,6 @@ class FloatingNavbar extends HTMLElement {
                     background-color: #FDFBF7;
                     z-index: 999;
                     pointer-events: none; /* Allow clicks through backdrop */
-                    display: ${this.hasAttribute('transparent') ? 'none' : 'block'};
                 }
 
                 .floating-navbar {
@@ -513,6 +512,7 @@ class FloatingNavbar extends HTMLElement {
                 <!-- Visible Links (Priority+) -->
                 <ul class="navbar-links" id="navbar-links">
                     <li><a href="index.html">2027 ICSWHMH</a></li>
+                    <li><a href="rajagiri.html">Rajagiri</a></li>
                     <li>
                         <a href="program.html">Program</a>
                         <ul class="dropdown-menu">
