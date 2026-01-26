@@ -2412,19 +2412,22 @@
 
         .host-slider .host-illustration .host-inner {
             height: 350px;
-            width: 250px;
+            width: auto;
+            max-width: 650px;
             border-radius: 30px;
             position: relative;
             transform: skew(-10deg);
             overflow: hidden;
+            display: inline-block;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
         .host-slider .host-illustration .host-inner .host-img {
-            width: 100%;
+            width: auto;
             height: 100%;
             transform: skew(10deg) scale(1.2);
-            background-size: cover;
-            background-position: center;
+            object-fit: cover;
+            display: block;
         }
 
         /* Removed overlapping containers */
@@ -2884,9 +2887,8 @@
                             </p>
                         </div>
                         <div class="host-illustration">
-                            <div class="host-inner" style="width: 530px;">
-                                <div class="host-img" style="background-image: url('assets/awards_ceremony.jpg');">
-                                </div>
+                            <div class="host-inner">
+                                <img class="host-img" src="assets/awards_ceremony.jpg" alt="Awards Ceremony">
                             </div>
                         </div>
                     </div>
@@ -2902,7 +2904,7 @@
                         </div>
                         <div class="host-illustration">
                             <div class="host-inner">
-                                <div class="host-img" style="background-image: url('assets/host_slide_2.jpg');"></div>
+                                <img class="host-img" src="assets/host_slide_2.jpg" alt="Host Slide 2">
                             </div>
                         </div>
                     </div>
@@ -2919,7 +2921,7 @@
                         </div>
                         <div class="host-illustration">
                             <div class="host-inner">
-                                <div class="host-img" style="background-image: url('assets/host_slide_3.png');"></div>
+                                <img class="host-img" src="assets/host_slide_3.png" alt="Host Slide 3">
                             </div>
                         </div>
                     </div>
@@ -2935,8 +2937,7 @@
                         </div>
                         <div class="host-illustration">
                             <div class="host-inner">
-                                <div class="host-img" style="background-image: url('assets/conference_attendees.jpg');">
-                                </div>
+                                <img class="host-img" src="assets/conference_attendees.jpg" alt="Conference Attendees">
                             </div>
                         </div>
                     </div>
