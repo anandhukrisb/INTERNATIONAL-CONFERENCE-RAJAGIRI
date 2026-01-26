@@ -171,7 +171,7 @@ class MainFooter extends HTMLElement {
                     position: relative;
                     z-index: 5;
                     display: grid;
-                    grid-template-columns: 1fr 1fr; /* Contact, Resources */
+                    grid-template-columns: 1.3fr 0.7fr 1fr; /* Contact, Quick Links, Resources */
                     gap: 20px;
                     align-items: start;
                 }
@@ -189,7 +189,7 @@ class MainFooter extends HTMLElement {
                 }
 
                 .footer-col ul li a {
-                    color: rgba(255, 255, 255, 0.85);
+                    color: #ffffff;
                     text-decoration: none;
                     font-size: 0.95rem;
                     transition: color 0.3s;
@@ -231,7 +231,7 @@ class MainFooter extends HTMLElement {
                     }
 
                     .content-section {
-                        grid-template-columns: 1fr 1fr;
+                        grid-template-columns: 1.3fr 0.7fr 1fr;
                         gap: 15px;
                         padding: 35px 30px 20px;
                         margin-left: 40%; /* Dynamic margin instead of fixed px */
@@ -278,8 +278,9 @@ class MainFooter extends HTMLElement {
                     .content-section {
                         margin-left: 0;
                         padding: 40px 20px;
-                        grid-template-columns: 1fr 1fr;
-                        gap: 30px 20px;
+                        grid-template-columns: auto auto;
+                        justify-content: center;
+                        gap: 30px 60px;
                         text-align: center;
                         width: 100%;
                     }
@@ -292,9 +293,18 @@ class MainFooter extends HTMLElement {
                     
 
                     
-                    .col-resources {
-                        grid-column: 1 / -1;
+                    .col-quick-links {
+                        grid-column: 1;
                         grid-row: 1;
+                        text-align: left;
+                        padding-left: 10px;
+                    }
+
+                    .col-resources {
+                        grid-column: 2;
+                        grid-row: 1;
+                        text-align: left;
+                        padding-left: 10px;
                     }
                     
                     .footer-col h3 {
@@ -355,18 +365,28 @@ class MainFooter extends HTMLElement {
                     <div class="footer-col col-contact">
                         <h3>Contact Us</h3>
                         <div class="contact-info">
-                            <p><strong>Forum Group Events & Marketing</strong></p>
-
-                            
+                            <p>Rajagiri College of Social Sciences (Autonomous),<br>
+                                Rajagiri P.O, Kalamassery,<br>
+                                Cochin - 683104, Kerala, India.</p>
                             
                             <p>
-                                Phone: <a href="tel:+6123523423" class="contact-link">+61 23523423</a><br>
-                                Email: <a href="mailto:example@gmail.com.au" class="contact-link">example@gmail.com.au</a>
+                                Phone: <a href="tel:+914842911111" class="contact-link">+91 484 - 2911111</a> / <a href="tel:+914842911507" class="contact-link">2911507</a><br>
+                                Email: <a href="mailto:icswhmh2027@rajagiri.edu" class="contact-link">icswhmh2027@rajagiri.edu</a>
                             </p>
                         </div>
                     </div>
 
-
+                    <!-- Col 2: Quick Links -->
+                    <div class="footer-col col-quick-links">
+                        <h3>Quick Links</h3>
+                        <ul>
+                            <li><a href="#">Submit Abstract</a></li>
+                            <li><a href="program.html">Program</a></li>
+                            <li><a href="speaker.html">Speakers</a></li>
+                            <li><a href="registration.html">Registration</a></li>
+                            <li><a href="hotels.html">Host City</a></li>
+                        </ul>
+                    </div>
 
                     <!-- Col 3: Resources -->
                     <div class="footer-col col-resources">

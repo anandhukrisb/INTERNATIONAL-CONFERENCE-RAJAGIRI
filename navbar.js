@@ -427,6 +427,7 @@ class FloatingNavbar extends HTMLElement {
                     font-weight: 500;
                     margin-left: 20px;
                     white-space: nowrap;
+                    text-decoration: none;
                 }
 
                 /* Logo container specifically for mobile view */
@@ -500,7 +501,7 @@ class FloatingNavbar extends HTMLElement {
                     </a>
                 </div>
 
-                <div class="mobile-title">ICSWHMH 27</div>
+                <a href="index.html" class="mobile-title">2027 ICSWHMH</a>
 
                 <div class="navbar-logo">
                     <!-- Base Logo -->
@@ -534,6 +535,7 @@ class FloatingNavbar extends HTMLElement {
                         <a href="#">Host city</a>
                         <ul class="dropdown-menu">
                             <li><a href="hotels.html">Hotels</a></li>
+                            <li><a href="attractions.html">Attractions</a></li>
                         </ul>
                     </li>
                     <li><a href="contact-us.html" class="contact-btn">Contact Us</a></li>
