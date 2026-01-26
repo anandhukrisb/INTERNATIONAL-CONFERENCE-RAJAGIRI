@@ -30,7 +30,7 @@
         body {
             background-color: #FDFBF7;
             color: #2D3436;
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             overflow-x: hidden;
             margin: 0;
             padding: 0;
@@ -43,9 +43,9 @@
 
         /* ================= TITLE ================= */
         .hotels-title-section {
-            margin-top: 80px;
+            margin-top: 150px;
             margin-bottom: 50px;
-            max-width: 1200px;
+            max-width: 95%;
             margin-left: auto;
             margin-right: auto;
             padding: 0 20px;
@@ -76,7 +76,7 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 30px;
-            max-width: 1200px;
+            max-width: 95%;
             margin: 0 auto 60px;
             padding: 0 20px;
         }
@@ -162,24 +162,58 @@
         }
 
         .read-more-btn {
-            background-color: #1D0A3F;
-            color: #fff;
+            background-color: transparent;
+            color: #FFFFFF;
             border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
+            padding: 15px 35px;
+            border-radius: 50px;
             cursor: pointer;
             font-family: 'Outfit', sans-serif;
             font-weight: 600;
-            transition: background 0.3s;
+            transition: transform 0.3s ease;
             width: 100%;
             margin-top: 15px;
-            text-transform: uppercase;
+            text-transform: capitalize;
             font-size: 0.9rem;
-            letter-spacing: 0.5px;
+            letter-spacing: normal;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        /* Static Background */
+        .read-more-btn::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1D0A3F;
+            z-index: -2;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Hover Wave */
+        .read-more-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #C9A227;
+            z-index: -1;
+            transition: clip-path 0.4s ease-out;
+            clip-path: circle(0% at 0 50%);
+        }
+
+        .read-more-btn:hover::before {
+            clip-path: circle(150% at 0 50%);
         }
 
         .read-more-btn:hover {
-            background-color: #C9A227;
+            transform: translateY(-3px);
             color: #1D0A3F;
         }
 
@@ -216,12 +250,17 @@
             flex-direction: column;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
             position: relative;
-            transform: translateY(30px);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            /* Curvy Animation Setup */
+            clip-path: circle(0% at 100% 100%);
+            transition: clip-path 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+            /* Always opaque, clip-path handles visibility */
+            transform: none;
+            /* Remove translation */
         }
 
         .modal-overlay.active .hotel-modal {
-            transform: translateY(0);
+            clip-path: circle(150% at 100% 100%);
         }
 
         .modal-header {
@@ -326,13 +365,13 @@
             color: #1D0A3F;
             text-align: center;
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 50px;
             font-weight: 700;
             text-decoration: none;
             transition: all 0.3s;
             margin-top: auto;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            text-transform: capitalize;
+            letter-spacing: normal;
         }
 
         .book-now-btn:hover {
@@ -475,12 +514,18 @@
             transform: translateY(-50%) scale(1.1);
         }
 
-        .prev-btn { left: 30px; }
-        .next-btn { right: 30px; }
+        .prev-btn {
+            left: 30px;
+        }
+
+        .next-btn {
+            right: 30px;
+        }
 
         @media (max-width: 768px) {
             .slider-nav-btn {
-                display: none; /* Hide buttons on mobile */
+                display: none;
+                /* Hide buttons on mobile */
             }
 
         }
@@ -647,169 +692,10 @@
 <body>
     <floating-navbar></floating-navbar>
 
-    <!-- Full Screen Hero Slider -->
-    <div class="page-wrap">
-        <div class="hero-slider">
-            <!-- Slide 1: Fort Kochi -->
-            <div class="slide active">
-                <div class="hero-image hi-1"></div>
-                <div class="hero-info">
-                    <h2>Historic</h2>
-                    <h1>Fort Kochi</h1>
-                    <h3>Iconic Chinese Fishing Nets</h3>
-                </div>
-            </div>
-
-            <!-- Slide 2: Mattancherry -->
-            <div class="slide">
-                <div class="hero-image hi-2"></div>
-                <div class="hero-info">
-                    <h2>Heritage</h2>
-                    <h1>Mattancherry</h1>
-                    <h3>Dutch Palace & Synagogue</h3>
-                </div>
-            </div>
-
-            <!-- Slide 3: Marine Drive -->
-            <div class="slide">
-                <div class="hero-image hi-3"></div>
-                <div class="hero-info">
-                    <h2>Scenic</h2>
-                    <h1>Marine Drive</h1>
-                    <h3>Backwaters Walkway</h3>
-                </div>
-            </div>
-
-            <!-- Slide 4: Cherai Beach -->
-            <div class="slide">
-                <div class="hero-image hi-4"></div>
-                <div class="hero-info">
-                    <h2>Golden</h2>
-                    <h1>Cherai Beach</h1>
-                    <h3>Sunsets & Dolphins</h3>
-                </div>
-            </div>
-
-            <!-- Slide 5: Kerala Folklore -->
-            <div class="slide">
-                <div class="hero-image hi-5"></div>
-                <div class="hero-info">
-                    <h2>Cultural</h2>
-                    <h1>Kathakali</h1>
-                    <h3>Kerala Folklore Theatre</h3>
-                </div>
-            </div>
-
-            <!-- Slide 6: Jew Town -->
-            <div class="slide">
-                <div class="hero-image hi-6"></div>
-                <div class="hero-info">
-                    <h2>Shopping</h2>
-                    <h1>Jew Town</h1>
-                    <h3>Antiques & Spices</h3>
-                </div>
-            </div>
-        </div>
-
-        <!-- Scroll Down Indicator -->
-        <div class="scroll-down" onclick="smoothScroll('pageTitle', 2000)">
-            <i class="bi bi-chevron-down"></i>
-        </div>
-    </div>
-
-    <style>
-        .scroll-down {
-            position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-            color: #fff;
-            width: 50px;
-            height: 50px;
-            border: 2px solid #fff;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            animation: breathe 2.5s infinite ease-in-out;
-            transition: background 0.3s, transform 0.3s;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(2px);
-        }
-
-        .scroll-down:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .scroll-down i {
-            font-size: 1.2rem;
-            margin-top: 2px;
-            /* Visual center alignment */
-        }
-
-        @keyframes breathe {
-
-            0%,
-            100% {
-                transform: translateX(-50%) translateY(0);
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            }
-
-            50% {
-                transform: translateX(-50%) translateY(10px);
-                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            }
-        }
-    </style>
-
-    <script>
-        function smoothScroll(targetId, duration) {
-            const target = document.getElementById(targetId);
-            if (!target) return;
-
-            // Offset by 100px for navbar
-            const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - 100;
-            const startPosition = window.pageYOffset;
-            const distance = targetPosition - startPosition;
-            let startTime = null;
-
-            function animation(currentTime) {
-                if (startTime === null) startTime = currentTime;
-                const timeElapsed = currentTime - startTime;
-                const run = ease(timeElapsed, startPosition, distance, duration);
-                window.scrollTo(0, run);
-                if (timeElapsed < duration) requestAnimationFrame(animation);
-            }
-
-            function ease(t, b, c, d) {
-                t /= d / 2;
-                if (t < 1) return c / 2 * t * t + b;
-                t--;
-                return -c / 2 * (t * (t - 2) - 1) + b;
-            }
-
-            requestAnimationFrame(animation);
-        }
-    </script>
-
-    <!-- Original Content Follows -->
+    <!-- Hotels Title Section -->
     <div class="hotels-title-section">
         <h2 id="pageTitle">STAY HERE WHILE YOU VISIT</h2>
     </div>
-
-    <!-- Inject Navigation Buttons for Slider -->
-    <script>
-        // Inject buttons into .slider-header since we can't easily edit the partial HTML structure without seeing it all
-        // Wait, .slider-header contains the slides? Let's check.
-        // Assuming strict HTML structure from context:
-        // .page-wrap > .slider-header
-        // We will insert buttons via JS for safety or just add them near where .slider-header would be if we could see it.
-        // Actually, we are editing the file. Let's look for where the slider ends.
-        
-        // Strategy: Append buttons to .slider-header on load for safety if we can't find exact insertion point easily.
-    </script>
 
     <!-- Hotels Grid -->
     <div class="hotels-grid">
@@ -825,7 +711,7 @@
             </div>
             <div class="hotel-content">
                 <div>
-                    <div class="hotel-price">₹2,800 <span>/night</span></div>
+
                     <h3 class="hotel-title">Hotel The Mountmist</h3>
                     <div class="hotel-location-preview">
                         <i class="bi bi-geo-alt-fill"></i> Kakkanad
@@ -846,7 +732,7 @@
             </div>
             <div class="hotel-content">
                 <div>
-                    <div class="hotel-price">₹3,200 <span>/night</span></div>
+
                     <h3 class="hotel-title">The Nexus Hotel</h3>
                     <div class="hotel-location-preview">
                         <i class="bi bi-geo-alt-fill"></i> Kakkanad
@@ -867,7 +753,7 @@
             </div>
             <div class="hotel-content">
                 <div>
-                    <div class="hotel-price">₹4,500 <span>/night</span></div>
+
                     <h3 class="hotel-title">Loft Business Hotel</h3>
                     <div class="hotel-location-preview">
                         <i class="bi bi-geo-alt-fill"></i> Kakkanad
@@ -888,7 +774,7 @@
             </div>
             <div class="hotel-content">
                 <div>
-                    <div class="hotel-price">₹9,500 <span>/night</span></div>
+
                     <h3 class="hotel-title">Kochi Marriott Hotel</h3>
                     <div class="hotel-location-preview">
                         <i class="bi bi-geo-alt-fill"></i> Edappally
@@ -909,7 +795,7 @@
             </div>
             <div class="hotel-content">
                 <div>
-                    <div class="hotel-price">₹5,200 <span>/night</span></div>
+
                     <h3 class="hotel-title">Holiday Inn Cochin</h3>
                     <div class="hotel-location-preview">
                         <i class="bi bi-geo-alt-fill"></i> Vennala
@@ -929,7 +815,7 @@
             </div>
             <div class="hotel-content">
                 <div>
-                    <div class="hotel-price">₹5,800 <span>/night</span></div>
+
                     <h3 class="hotel-title">Novotel Kochi Infopark</h3>
                     <div class="hotel-location-preview">
                         <i class="bi bi-geo-alt-fill"></i> Kakkanad
@@ -950,7 +836,7 @@
             </div>
             <div class="hotel-content">
                 <div>
-                    <div class="hotel-price">₹3,500 <span>/night</span></div>
+
                     <h3 class="hotel-title">The Blooms Cochin</h3>
                     <div class="hotel-location-preview">
                         <i class="bi bi-geo-alt-fill"></i> Kakkanad
@@ -971,7 +857,7 @@
             </div>
             <div class="hotel-content">
                 <div>
-                    <div class="hotel-price">₹3,000 <span>/night</span></div>
+
                     <h3 class="hotel-title">Hotel Olive Eva</h3>
                     <div class="hotel-location-preview">
                         <i class="bi bi-geo-alt-fill"></i> Kakkanad
@@ -992,7 +878,7 @@
             </div>
             <div class="hotel-content">
                 <div>
-                    <div class="hotel-price">₹2,500 <span>/night</span></div>
+
                     <h3 class="hotel-title">Clarion Hotel Khayal</h3>
                     <div class="hotel-location-preview">
                         <i class="bi bi-geo-alt-fill"></i> Infopark
@@ -1039,90 +925,6 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", (event) => {
-            const slides = document.querySelectorAll('.slide');
-            let currentSlide = 0;
-            const slideInterval = 4000;
-
-            // Initialize: Force Slide 1 active, others inactive
-            slides.forEach((slide, index) => {
-                if (index === 0) {
-                    slide.classList.add('active');
-                } else {
-                    slide.classList.remove('active');
-                }
-            });
-
-            // Create and Append Navigation Buttons
-            const sliderHeader = document.querySelector('.hero-slider');
-            if (sliderHeader) {
-                const prevBtn = document.createElement('div');
-                prevBtn.className = 'slider-nav-btn prev-btn';
-                prevBtn.innerHTML = '<i class="bi bi-chevron-left"></i>';
-                // prevBtn.onclick = prevSlide; // Assigned below
-
-                const nextBtn = document.createElement('div');
-                nextBtn.className = 'slider-nav-btn next-btn';
-                nextBtn.innerHTML = '<i class="bi bi-chevron-right"></i>';
-                // nextBtn.onclick = nextSlide; // Assigned below
-
-                sliderHeader.appendChild(prevBtn);
-                sliderHeader.appendChild(nextBtn);
-
-                // Add event listeners
-                prevBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    prevSlide();
-                });
-                nextBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    nextSlide();
-                });
-            }
-
-            function nextSlide() {
-                slides[currentSlide].classList.remove('active');
-                currentSlide = (currentSlide + 1) % slides.length;
-                slides[currentSlide].classList.add('active');
-                resetTimer();
-            }
-
-            function prevSlide() {
-                slides[currentSlide].classList.remove('active');
-                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-                slides[currentSlide].classList.add('active');
-                resetTimer();
-            }
-            
-            let slideTimer = setInterval(nextSlide, slideInterval);
-
-            function resetTimer() {
-                clearInterval(slideTimer);
-                slideTimer = setInterval(nextSlide, slideInterval);
-            }
-
-            // Mobile Swipe Logic
-            let touchStartX = 0;
-            let touchEndX = 0;
-            
-            if (sliderHeader) {
-                sliderHeader.addEventListener('touchstart', e => {
-                    touchStartX = e.changedTouches[0].screenX;
-                }, {passive: true});
-
-                sliderHeader.addEventListener('touchend', e => {
-                    touchEndX = e.changedTouches[0].screenX;
-                    handleSwipe();
-                }, {passive: true});
-            }
-
-            function handleSwipe() {
-                const threshold = 50; // min distance for swipe
-                if (touchEndX < touchStartX - threshold) nextSlide();
-                if (touchEndX > touchStartX + threshold) prevSlide();
-            }
-        });
-
         // Modal Logic
         function openHotelModal(card) {
             const modal = document.getElementById('hotelModalOverlay');

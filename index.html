@@ -160,7 +160,7 @@
     <style>
         * {
             box-sizing: border-box;
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         html {
@@ -171,7 +171,7 @@
             margin: 0;
             padding: 0;
             background-color: #FDFBF7;
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             color: #333;
             /* Make page tall enough to scroll */
             overflow-x: hidden;
@@ -467,22 +467,40 @@
 
         /* Scroll Button */
         .scroll-button {
-            position: absolute;
+            position: fixed;
             bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
+            right: 40px;
+            /* Moved to bottom right corner */
+            left: auto;
+            transform: none;
             width: 60px;
             height: 60px;
             border-radius: 50%;
             background-color: rgba(255, 255, 255, 0.1);
-            border: 2px solid #FFFFFF;
+            border: 2px solid #1D0A3F;
+            /* Changed to dark for visibility on light bg */
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            z-index: 10;
+            z-index: 9999;
+            /* High z-index */
             transition: all 0.3s ease;
             animation: scrollBounce 2s ease-in-out infinite;
+        }
+
+        .scroll-button::after {
+            content: '↓';
+            font-size: 24px;
+            color: #1D0A3F;
+            /* Dark arrow */
+            font-weight: bold;
+        }
+
+        .scroll-button:hover {
+            background-color: rgba(201, 162, 39, 0.2);
+            border-color: #C9A227;
+            transform: scale(1.1);
         }
 
         .scroll-button::before {
@@ -496,28 +514,15 @@
             animation: rippleWave 2s ease-out infinite;
         }
 
-        .scroll-button::after {
-            content: '↓';
-            font-size: 24px;
-            color: #FFFFFF;
-            font-weight: bold;
-        }
-
-        .scroll-button:hover {
-            background-color: rgba(201, 162, 39, 0.2);
-            border-color: #C9A227;
-            transform: translateX(-50%) scale(1.1);
-        }
-
         @keyframes scrollBounce {
 
             0%,
             100% {
-                transform: translateX(-50%) translateY(0);
+                transform: translateY(0);
             }
 
             50% {
-                transform: translateX(-50%) translateY(-10px);
+                transform: translateY(-10px);
             }
         }
 
@@ -533,43 +538,147 @@
             }
         }
 
-        /* Mobile Responsiveness */
-        @media (max-width: 968px) {
+        /* Mobile Responsiveness - Switches to mobile layout at 1111px and below */
+        @media (max-width: 1111px) {
+            .hero-section {
+                height: auto;
+                min-height: auto;
+                padding: 15px 15px 0;
+                margin: 80px auto 0 auto;
+                border-radius: 25px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                overflow: visible;
+            }
+
             .hero-stripes {
-                width: 100%;
-                height: 40%;
-                top: auto;
-                bottom: 0;
-                transform: skewY(-5deg) translateY(20%);
-                right: 0;
-                left: 0;
+                display: none;
             }
 
             .hero-stripes::before {
-                width: 100%;
-                height: 20px;
-                top: -20px;
-                left: 0;
+                display: none;
             }
 
             .hero-content {
-                flex-direction: column-reverse;
+                flex-direction: column;
                 text-align: center;
-                margin-top: 100px;
-                /* Ticker space */
+                margin-top: 0;
+                gap: 0;
+                width: 100%;
+            }
+
+            .hero-visual {
+                order: -1;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                padding: 5px 15px;
+            }
+
+            .hero-visual img {
+                max-width: 100%;
+                width: 100%;
+                padding: 0 10px;
+                margin-left: 0;
+                filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.12));
+                animation: none;
+                opacity: 1;
             }
 
             .hero-text {
                 text-align: center;
+                max-width: 100%;
+                position: relative;
+                z-index: 10;
+                background: #1D0A3F;
+                padding: 40px 25px 40px;
+                margin: 15px -15px 0;
+                border-radius: 25px;
+            }
+
+            .hero-date {
+                font-size: 1.15rem;
+                margin-bottom: 15px;
+                color: #C9A227;
+                animation: none;
+                opacity: 1;
+            }
+
+            .hero-title {
+                font-size: 1.5rem;
+                line-height: 1.35;
+                margin-bottom: 30px;
+                color: #FFFFFF;
+                animation: none;
+                opacity: 1;
             }
 
             .hero-btn-group {
                 justify-content: center;
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+                animation: none;
+                opacity: 1;
             }
 
-            .hero-visual img {
-                max-width: 60%;
-                margin-left: 0;
+            .hero-btn-primary,
+            .hero-btn-outline {
+                padding: 14px 40px;
+                font-size: 1rem;
+                width: 80%;
+                text-align: center;
+            }
+
+            .hero-btn-outline {
+                border-color: rgba(255, 255, 255, 0.5);
+            }
+
+            /* Hide scroll button on mobile */
+            .scroll-button {
+                display: none;
+            }
+
+            /* Mobile sidebar buttons - Fixed at bottom as horizontal bar */
+            .sticky-sidebar-buttons {
+                position: fixed !important;
+                display: flex !important;
+                flex-direction: row !important;
+                top: auto !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 15px;
+                background: rgba(253, 251, 247, 0.98);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+                z-index: 9999;
+            }
+
+            .newsletter-wrapper {
+                position: static !important;
+            }
+
+            .sidebar-btn {
+                border-radius: 8px;
+                padding: 10px 18px;
+                font-size: 0.8rem;
+                min-width: auto;
+                flex: 1;
+                max-width: 160px;
+                text-align: center;
+            }
+
+            .newsletter-dropdown {
+                bottom: 100%;
+                top: auto;
+                right: 0;
+                margin-bottom: 10px;
             }
         }
 
@@ -665,12 +774,12 @@
             justify-content: space-between;
             gap: 50px;
             /* Increased gap */
-            padding: 40px 20px;
+            padding: 40px 20px 40px 0;
             max-width: 95%;
             margin: 0 auto;
             /* margin-top: 100px; */
             position: relative;
-            min-height: 500px;
+            min-height: 400px;
             /* Fit to image height */
         }
 
@@ -686,7 +795,7 @@
         .about-single-img {
             width: 100%;
             max-width: 600px;
-            height: 500px;
+            height: 400px;
             object-fit: cover;
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
@@ -746,14 +855,9 @@
         /* Desktop Container Styles */
         @media (min-width: 769px) {
             .about-section {
-                background-color: #F0F0F0;
-                /* Dull colored container */
-                /* border-left: 6px solid #C9A227; REMOVED */
-                /* Secondary Yellow Border */
-                padding: 60px 40px;
-                /* More padding for container look */
-                border-radius: 20px;
-                /* Soften all sides */
+                /* background-color: #F0F0F0; Removed */
+                padding: 40px 20px 40px 0;
+                /* Standard padding */
             }
 
             .title-section {
@@ -771,13 +875,13 @@
             }
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 1111px) {
 
             .title-section,
             .about-section {
                 flex-direction: column;
                 text-align: center;
-                gap: 20px;
+                gap: 10px;
                 align-items: center;
                 width: 100%;
                 box-sizing: border-box;
@@ -804,8 +908,8 @@
             }
 
             .about-content p {
-                text-align: center;
-                /* Center text on mobile */
+                text-align: justify;
+                /* Keep justified text on mobile */
             }
 
             .title-section h1 {
@@ -1505,7 +1609,7 @@
         }
 
         /* Tablet - CEO name above image */
-        @media (max-width: 949px) {
+        @media (max-width: 1111px) {
             .ceo-wrapper {
                 flex-direction: column;
                 align-items: center;
@@ -1534,7 +1638,7 @@
             }
         }
 
-        @media (max-width: 950px) {
+        @media (max-width: 1111px) {
             .welcome-container {
                 flex-direction: column;
                 padding: 0 30px 0;
@@ -1606,7 +1710,7 @@
                 width: 100%;
                 display: flex;
                 justify-content: center;
-                margin-top: 20px;
+                margin-top: 5px;
                 z-index: 6;
             }
 
@@ -1618,33 +1722,51 @@
                 margin-right: auto;
                 /* Enable parallax transforms */
                 will-change: transform;
-                padding-bottom: 20px;
+                padding-bottom: 0;
             }
 
             .ceo-title-bg {
-                font-size: 3.5rem;
-                bottom: 50px;
-                right: auto;
-                left: 50%;
-                transform: translateX(-50%);
-                /* Allow parallax but center it for mobile */
-                opacity: 0.08;
+                display: none;
+                /* Hide glass text on mobile to prevent overlap */
             }
 
             .ceo-name {
                 position: static;
-                margin-top: 20px;
+                margin-top: 35px;
+                margin-bottom: 15px;
                 text-align: center;
             }
 
             .ceo-name h3 {
                 font-size: 1.7rem;
+                margin: 0 0 2px 0;
+                margin-left: 0;
             }
 
             .ceo-name p {
                 font-size: 0.9rem;
+                margin: 0;
+                margin-left: 0;
+                margin-bottom: 5px;
+            }
+        }
+
+        /* Extra small devices (450px and below) */
+        @media (max-width: 450px) {
+            .ceo-image {
+                height: 300px;
             }
 
+            .ceo-wrapper {
+                margin-top: 10px;
+            }
+
+            .welcome-container {
+                padding: 0 15px 0;
+            }
+        }
+
+        @media (max-width: 1111px) {
             .speakers-section {
                 padding: 30px 15px;
             }
@@ -1652,71 +1774,71 @@
             .speakers-title {
                 margin-bottom: 30px;
             }
+        }
 
-            /* CTA Cards Mobile Refinement */
-            .cta-card {
-                height: auto;
-                min-height: 450px;
-                perspective: none;
-                width: 100%;
-                max-width: 350px;
-            }
+        /* CTA Cards Mobile Refinement */
+        .cta-card {
+            height: auto;
+            min-height: 450px;
+            perspective: none;
+            width: 100%;
+            max-width: 350px;
+        }
 
-            .cta-card:hover .cta-card-inner {
-                transform: none !important;
-            }
+        .cta-card:hover .cta-card-inner {
+            transform: none !important;
+        }
 
-            .cta-card-inner {
-                transform: none !important;
-                transition: none !important;
-            }
+        .cta-card-inner {
+            transform: none !important;
+            transition: none !important;
+        }
 
-            .cta-card-front {
-                position: relative !important;
-                transform: none !important;
-                backface-visibility: visible !important;
-                height: auto;
-                padding: 15px 15px 35px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 15px;
-                width: 100%;
-                opacity: 1 !important;
-                z-index: 5;
-            }
+        .cta-card-front {
+            position: relative !important;
+            transform: none !important;
+            backface-visibility: visible !important;
+            height: auto;
+            padding: 15px 15px 35px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            opacity: 1 !important;
+            z-index: 5;
+        }
 
-            .cta-card-back {
-                display: none !important;
-            }
+        .cta-card-back {
+            display: none !important;
+        }
 
-            .cta-title {
-                margin-top: 10px;
-                margin-bottom: 3px;
-                font-size: 1.2rem;
-            }
+        .cta-title {
+            margin-top: 10px;
+            margin-bottom: 3px;
+            font-size: 1.2rem;
+        }
 
-            .cta-desc {
-                display: block;
-                color: #FFFFFF;
-                font-size: 0.95rem;
-                text-align: center;
-                line-height: 1.5;
-                margin: 0;
-                max-width: 90%;
-            }
+        .cta-desc {
+            display: block;
+            color: #FFFFFF;
+            font-size: 0.95rem;
+            text-align: center;
+            line-height: 1.5;
+            margin: 0;
+            max-width: 90%;
+        }
 
-            .cta-front-btn {
-                display: inline-block;
-                width: 90%;
-                padding: 12px 0;
-                font-size: 1.1rem;
-            }
+        .cta-front-btn {
+            display: inline-block;
+            width: 90%;
+            padding: 12px 0;
+            font-size: 1.1rem;
+        }
 
-            .cta-image-wrapper {
-                height: 220px;
-                margin-bottom: 10px;
-            }
+        .cta-image-wrapper {
+            height: 220px;
+            margin-bottom: 10px;
         }
 
         /* Sticky Sidebar Buttons */
@@ -1871,22 +1993,6 @@
             }
         }
 
-        @media (max-width: 768px) {
-            .sticky-sidebar-buttons {
-                display: none;
-                /* Often better to hide on mobile or reposition, but user didn't specify. I'll hide to be safe or show? User said "stick to the screen". I'll show it but perhaps scale it down. */
-                /* Actually let's just make them smaller */
-                display: flex;
-                top: 200px;
-            }
-
-            .sidebar-btn {
-                padding: 10px 15px;
-                font-size: 0.85rem;
-                min-width: 120px;
-            }
-        }
-
         /* Timeline Section */
         .timeline-section {
             /* padding: 80px 20px; */
@@ -1945,21 +2051,7 @@
             border-radius: 2px;
         }
 
-        /* Progress Line - shows completed milestones */
-        .timeline-container::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            width: 28%;
-            /* Progress through first 2 items (2/7 = ~28%) */
-            height: 4px;
-            background: linear-gradient(to right, #1D0A3F, #2E1A5F);
-            transform: translateY(-50%);
-            z-index: 1;
-            border-radius: 2px;
-            box-shadow: 0 0 10px rgba(29, 10, 63, 0.5);
-        }
+
 
         .timeline-item {
             position: relative;
@@ -2084,8 +2176,23 @@
         }
 
 
-        /* Mobile Responsiveness */
-        @media (max-width: 900px) {
+        /* Mobile Responsiveness for Timeline */
+        @media (max-width: 1111px) {
+            .timeline-section {
+                padding: 0 15px;
+                margin-top: 40px;
+            }
+
+            .timeline-header {
+                text-align: center;
+                font-size: 1.8rem;
+            }
+
+            .timeline-header::after {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
             .timeline-container {
                 flex-direction: column;
                 padding-left: 30px;
@@ -2209,7 +2316,7 @@
             position: relative;
             overflow: hidden;
             border-radius: 30px;
-            margin: 0 20px;
+            margin: 0 auto;
         }
 
         .host-slider {
@@ -2218,6 +2325,8 @@
             height: 550px;
             transition: all 0.25s ease-in;
             transform: translateX(0);
+            touch-action: pan-y !important;
+            /* Allow vertical scroll, block horizontal (handled by JS) */
         }
 
         .host-slider .host-box {
@@ -2303,12 +2412,22 @@
 
         .host-slider .host-illustration .host-inner {
             height: 350px;
-            width: 250px;
+            width: auto;
+            max-width: 650px;
             border-radius: 30px;
             position: relative;
             transform: skew(-10deg);
-            background-size: cover;
-            background-position: center;
+            overflow: hidden;
+            display: inline-block;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .host-slider .host-illustration .host-inner .host-img {
+            width: auto;
+            height: 100%;
+            transform: skew(10deg) scale(1.2);
+            object-fit: cover;
+            display: block;
         }
 
         /* Removed overlapping containers */
@@ -2459,7 +2578,7 @@
         }
 
         /* Mobile Responsive */
-        @media (max-width: 900px) {
+        @media (max-width: 1111px) {
             .host-slider {
                 height: 100vh;
             }
@@ -2467,6 +2586,8 @@
             .host-slider .host-box {
                 grid-template-columns: 1fr;
                 grid-template-rows: repeat(2, 1fr);
+                width: 100%;
+                display: grid;
             }
 
             .host-slider .host-box .host-bg {
@@ -2506,11 +2627,17 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                width: 100%;
             }
 
             .host-slider .host-illustration .host-inner {
                 height: 280px;
-                width: 200px;
+                width: 100% !important;
+                max-width: 350px;
+                background-size: cover !important;
+                background-position: center !important;
+                border-radius: 20px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             }
 
             .host-prev,
@@ -2525,6 +2652,28 @@
 
             .host-trail div {
                 padding: 10px;
+            }
+
+            .sidebar-btn {
+                border-radius: 8px !important;
+            }
+
+            .newsletter-dropdown {
+                top: auto !important;
+                bottom: 100% !important;
+                right: 15px;
+                width: 300px;
+                max-width: 90vw;
+                border-radius: 20px 20px 0 20px;
+                clip-path: circle(0% at 100% 100%);
+                margin-bottom: 15px;
+                transform: none !important;
+                /* Reset any transforms */
+            }
+
+
+            .newsletter-dropdown.active {
+                clip-path: circle(150% at 100% 100%);
             }
         }
     </style>
@@ -2545,9 +2694,10 @@
 
     <floating-navbar></floating-navbar>
 
+    <div class="scroll-button" onclick="scrollToNext()"></div>
     <!-- Sticky Sidebar Buttons -->
     <div class="sticky-sidebar-buttons">
-        <a href="#" class="sidebar-btn">Submit Abstract</a>
+        <a href="abstract.html" class="sidebar-btn">Submit Abstract</a>
 
         <div class="newsletter-wrapper">
             <a href="#" class="sidebar-btn" id="newsletterBtn" onclick="toggleNewsletter(event)">Newsletters</a>
@@ -2581,8 +2731,7 @@
                     <img src="assets/conf_logo_10th.png" alt="Conference Logo">
                 </div>
             </div>
-            <!-- Scroll Button -->
-            <div class="scroll-button" onclick="scrollToNext()"></div>
+
         </section>
 
         <!-- <div class="banner-container"> ... Removed ... </div> -->
@@ -2675,103 +2824,7 @@
             </div>
         </section>
 
-        <!-- Your Host Section -->
-        <section class="host-slider-section">
-            <h2 class="section-title">Your Host: Rajagiri College of Social Sciences (Autonomous)</h2>
-            <div class="host-subtitle">
-                <p class="host-location"><strong>Conference Venue:</strong> RBS, Rajagiri Valley Campus Kakkanad, Kochi,
-                    Kerala, IN</p>
-            </div>
-            <div class="host-container">
-                <div class="host-slider">
-                    <!-- Slide 1 -->
-                    <div class="host-box1 host-box">
-                        <div class="host-bg"></div>
-                        <div class="host-details">
-                            <h1>Nationally Ranked Excellence</h1>
-                            <p>
-                                Ranked 12th Best College in India (NIRF 2025, Ministry of Education, Govt. of India,
-                                College category).
-                            </p>
-                        </div>
-                        <div class="host-illustration">
-                            <div class="host-inner"
-                                style="width: 530px; background-image: url('assets/awards_ceremony.jpg'); background-size: cover; background-position: center;">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Slide 2 -->
-                    <div class="host-box2 host-box">
-                        <div class="host-bg"></div>
-                        <div class="host-details">
-                            <h1>Highest Accreditation</h1>
-                            <p>
-                                Highest National Accreditation: Reaccredited by NAAC with A++ Grade (CGPA 3.83).
-                            </p>
-                        </div>
-                        <div class="host-illustration">
-                            <div class="host-inner" style="background-image: url('assets/about_nets.jpg');"></div>
-                        </div>
-                    </div>
-
-                    <!-- Slide 3 -->
-                    <div class="host-box3 host-box">
-                        <div class="host-bg"></div>
-                        <div class="host-details">
-                            <h1>Academic Pioneers</h1>
-                            <p>
-                                Academic Firsts: Launched the first Masters of Social Work (MSW) and Bachelor of Social
-                                Work (BSW) programs in the state of Kerala.
-                            </p>
-                        </div>
-                        <div class="host-illustration">
-                            <div class="host-inner" style="background-image: url('assets/about_image.jpg');"></div>
-                        </div>
-                    </div>
-
-                    <!-- Slide 4 -->
-                    <div class="host-box4 host-box">
-                        <div class="host-bg"></div>
-                        <div class="host-details">
-                            <h1>Community Engagement</h1>
-                            <p>
-                                Community Impact: 'Live Labs' provide direct outreach and service to the community.
-                            </p>
-                        </div>
-                        <div class="host-illustration">
-                            <div class="host-inner" style="background-image: url('assets/conference_attendees.jpg');">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Navigation Arrows -->
-                <svg xmlns="http://www.w3.org/2000/svg" class="host-prev" width="56.898" height="91"
-                    viewBox="0 0 56.898 91">
-                    <path d="M45.5,0,91,56.9,48.452,24.068,0,56.9Z" transform="translate(0 91) rotate(-90)"
-                        fill="#fff" />
-                </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" class="host-next" width="56.898" height="91"
-                    viewBox="0 0 56.898 91">
-                    <path d="M45.5,0,91,56.9,48.452,24.068,0,56.9Z" transform="translate(56.898) rotate(90)"
-                        fill="#fff" />
-                </svg>
-
-                <!-- Trail Navigation -->
-                <div class="host-trail">
-                    <div class="host-box1 active">1</div>
-                    <div class="host-box2">2</div>
-                    <div class="host-box3">3</div>
-                    <div class="host-box4">4</div>
-                </div>
-            </div>
-        </section>
-
-
-
-        <!-- COMMENTED OUT: Welcome Section to CTA Cards
-
+        <div class="section-separator"></div>
         <section class="welcome-section">
             <div class="welcome-container">
                 <h3 class="welcome-header reveal-on-scroll">Welcome from the AASW CEO</h3>
@@ -2812,6 +2865,109 @@
                 </div>
             </div>
         </section>
+        <div class="section-separator"></div>
+
+        <!-- Your Host Section -->
+        <section class="host-slider-section">
+            <h2 class="section-title">Your Host: Rajagiri College of Social Sciences (Autonomous)</h2>
+            <div class="host-subtitle">
+                <p class="host-location"><strong>Conference Venue:</strong> RBS, Rajagiri Valley Campus Kakkanad, Kochi,
+                    Kerala, IN</p>
+            </div>
+            <div class="host-container">
+                <div class="host-slider">
+                    <!-- Slide 1 -->
+                    <div class="host-box1 host-box">
+                        <div class="host-bg"></div>
+                        <div class="host-details">
+                            <h1>Nationally Ranked Excellence</h1>
+                            <p>
+                                Ranked 12th Best College in India (NIRF 2025, Ministry of Education, Govt. of India,
+                                College category).
+                            </p>
+                        </div>
+                        <div class="host-illustration">
+                            <div class="host-inner">
+                                <img class="host-img" src="assets/awards_ceremony.jpg" alt="Awards Ceremony">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2 -->
+                    <div class="host-box2 host-box">
+                        <div class="host-bg"></div>
+                        <div class="host-details">
+                            <h1>Highest Accreditation</h1>
+                            <p>
+                                Highest National Accreditation: Reaccredited by NAAC with A++ Grade (CGPA 3.83).
+                            </p>
+                        </div>
+                        <div class="host-illustration">
+                            <div class="host-inner">
+                                <img class="host-img" src="assets/host_slide_2.jpg" alt="Host Slide 2">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3 -->
+                    <div class="host-box3 host-box">
+                        <div class="host-bg"></div>
+                        <div class="host-details">
+                            <h1>Academic Pioneers</h1>
+                            <p>
+                                Academic Firsts: Launched the first Masters of Social Work (MSW) and Bachelor of Social
+                                Work (BSW) programs in the state of Kerala.
+                            </p>
+                        </div>
+                        <div class="host-illustration">
+                            <div class="host-inner">
+                                <img class="host-img" src="assets/host_slide_3.png" alt="Host Slide 3">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 4 -->
+                    <div class="host-box4 host-box">
+                        <div class="host-bg"></div>
+                        <div class="host-details">
+                            <h1>Community Engagement</h1>
+                            <p>
+                                Community Impact: 'Live Labs' provide direct outreach and service to the community.
+                            </p>
+                        </div>
+                        <div class="host-illustration">
+                            <div class="host-inner">
+                                <img class="host-img" src="assets/conference_attendees.jpg" alt="Conference Attendees">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Arrows -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="host-prev" width="56.898" height="91"
+                    viewBox="0 0 56.898 91">
+                    <path d="M45.5,0,91,56.9,48.452,24.068,0,56.9Z" transform="translate(0 91) rotate(-90)"
+                        fill="#fff" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="host-next" width="56.898" height="91"
+                    viewBox="0 0 56.898 91">
+                    <path d="M45.5,0,91,56.9,48.452,24.068,0,56.9Z" transform="translate(56.898) rotate(90)"
+                        fill="#fff" />
+                </svg>
+
+                <!-- Trail Navigation -->
+                <div class="host-trail">
+                    <div class="host-box1 active">1</div>
+                    <div class="host-box2">2</div>
+                    <div class="host-box3">3</div>
+                    <div class="host-box4">4</div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- COMMENTED OUT: Speaker, Map and CTA Sections
 
 
 
@@ -2968,7 +3124,7 @@
                             <p class="cta-desc">Submit your abstracts and proposals for the conference
                                 program.
                             </p>
-                            <a href="#" class="cta-btn cta-front-btn">Submit Abstract</a>
+                            <a href="abstract.html" class="cta-btn cta-front-btn">Submit Abstract</a>
                         </div>
                     </div>
                 </div>
@@ -3009,62 +3165,65 @@
 
         const track = document.getElementById('tickerTrack');
         const container = document.getElementById('tickerContainer');
-        const item = track.querySelector('.ticker-item');
+        const item = track ? track.querySelector('.ticker-item') : null;
 
-        // Duplicate content to ensure it fills screen + buffer
-        const content = item.innerHTML;
-        // Create enough duplicates to ensure we can loop seamlessly
-        // We'll add 4 copies just to be safe for wide screens
-        for (let i = 0; i < 4; i++) {
-            const span = document.createElement('span');
-            span.className = 'ticker-item';
-            span.innerHTML = content;
-            track.appendChild(span);
-        }
-
-        let position = 0;
-        let speed = 0.5; // Reduced speed for better readability
-        let currentSpeed = speed;
-        let direction = -1; // -1 for Left (scrolling down), 1 for Right (scrolling up)
-        let lastScrollTop = 0;
-        let isHovered = false;
-
-        // Animation Loop
-        function animate() {
-            if (!isHovered) {
-                position += currentSpeed * direction;
-
-                // Reset logic for seamless loop
-                // Assuming the first item width is the "chunk" size
-                const itemWidth = item.offsetWidth;
-
-                // If moved too far left
-                if (position <= -itemWidth) {
-                    position += itemWidth;
-                }
-
-                // If moved too far right (positive)
-                if (position > 0) {
-                    position -= itemWidth;
-                }
-
-                track.style.transform = `translateX(${position}px)`;
+        // Only run ticker logic if elements exist
+        if (track && container && item) {
+            // Duplicate content to ensure it fills screen + buffer
+            const content = item.innerHTML;
+            // Create enough duplicates to ensure we can loop seamlessly
+            // We'll add 4 copies just to be safe for wide screens
+            for (let i = 0; i < 4; i++) {
+                const span = document.createElement('span');
+                span.className = 'ticker-item';
+                span.innerHTML = content;
+                track.appendChild(span);
             }
+
+            let position = 0;
+            let speed = 0.5; // Reduced speed for better readability
+            let currentSpeed = speed;
+            let direction = -1; // -1 for Left (scrolling down), 1 for Right (scrolling up)
+            let lastScrollTop = 0;
+            let isHovered = false;
+
+            // Animation Loop
+            function animate() {
+                if (!isHovered) {
+                    position += currentSpeed * direction;
+
+                    // Reset logic for seamless loop
+                    // Assuming the first item width is the "chunk" size
+                    const itemWidth = item.offsetWidth;
+
+                    // If moved too far left
+                    if (position <= -itemWidth) {
+                        position += itemWidth;
+                    }
+
+                    // If moved too far right (positive)
+                    if (position > 0) {
+                        position -= itemWidth;
+                    }
+
+                    track.style.transform = `translateX(${position}px)`;
+                }
+                requestAnimationFrame(animate);
+            }
+
+
+            // Hover Handlers
+            container.addEventListener('mouseenter', () => {
+                isHovered = true;
+            });
+
+            container.addEventListener('mouseleave', () => {
+                isHovered = false;
+            });
+
+            // Start animation
             requestAnimationFrame(animate);
         }
-
-
-        // Hover Handlers
-        container.addEventListener('mouseenter', () => {
-            isHovered = true;
-        });
-
-        container.addEventListener('mouseleave', () => {
-            isHovered = false;
-        });
-
-        // Start animation
-        requestAnimationFrame(animate);
 
         // Newsletter Toggle Logic
         function toggleNewsletter(event) {
@@ -3086,13 +3245,12 @@
         });
 
         // Scroll Button Function
+        // Scroll Button Function
         function scrollToNext() {
-            const aboutSection = document.querySelector('.about-section');
-            if (aboutSection) {
-                const offset = 150; // Adjust this value to control scroll distance
-                const targetPosition = aboutSection.getBoundingClientRect().top + window.pageYOffset - offset;
-                window.scrollTo({ top: targetPosition, behavior: 'smooth' });
-            }
+            window.scrollBy({
+                top: 600,
+                behavior: 'smooth'
+            });
         }
 
         // Parallax Effect
@@ -3135,9 +3293,9 @@
                 }
             }
 
-            // CEO Section Parallax
+            // CEO Section Parallax (disabled on mobile)
             const ceoSection = document.querySelector('.welcome-section');
-            if (ceoSection) {
+            if (ceoSection && window.innerWidth > 1111) {
                 const rect = ceoSection.getBoundingClientRect();
                 const viewHeight = window.innerHeight;
                 const sectionCenter = rect.top + rect.height / 2;
@@ -3289,23 +3447,34 @@
             trail.forEach(cur => cur.addEventListener("click", (ev) => clickCheck(ev)));
 
             // Mobile touch slide
-            let touchStart, touchMove, touchChange, sliderWidth;
+            let touchStartX, touchStartY, touchMoveX, touchMoveY, touchChangeX, touchChangeY, sliderWidth;
 
             slider.addEventListener("touchstart", (e) => {
-                touchStart = e.touches[0].clientX;
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
                 sliderWidth = slider.clientWidth / 4; // 4 slides
             });
 
             slider.addEventListener("touchmove", (e) => {
-                e.preventDefault();
-                touchMove = e.touches[0].clientX;
-                touchChange = touchStart - touchMove;
-            });
+                touchMoveX = e.touches[0].clientX;
+                touchMoveY = e.touches[0].clientY;
+
+                touchChangeX = touchStartX - touchMoveX;
+                touchChangeY = touchStartY - touchMoveY;
+
+                // If horizontal movement is greater than vertical movement, it's a swipe -> prevent scroll
+                if (Math.abs(touchChangeX) > Math.abs(touchChangeY)) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
 
             const mobileSlide = (e) => {
-                touchChange > (sliderWidth / 4) ? slide("increase") : null;
-                (touchChange * -1) > (sliderWidth / 4) ? slide("decrease") : null;
-                touchStart = touchMove = touchChange = sliderWidth = 0;
+                if (!touchChangeX) return; // No movement
+
+                touchChangeX > (sliderWidth / 4) ? slide("increase") : null;
+                (touchChangeX * -1) > (sliderWidth / 4) ? slide("decrease") : null;
+
+                touchStartX = touchStartY = touchMoveX = touchMoveY = touchChangeX = touchChangeY = sliderWidth = 0;
             }
 
             slider.addEventListener("touchend", mobileSlide);
