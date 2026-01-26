@@ -26,6 +26,8 @@
         /* Prevent navbar and footer from flickering during transitions */
         floating-navbar {
             view-transition-name: navbar;
+            position: relative;
+            z-index: 9999;
         }
 
         main-footer {
@@ -101,133 +103,19 @@
             color: var(--text-dark);
         }
 
-        /* Floating Navbar Component */
-        floating-navbar {
-            display: block;
-            width: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-        }
-
-        /* ============ HEADER ============ */
-        /* .main-header {
-            background: white;
-            padding: 30px 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .header-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 30px;
-        }
-
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 25px;
-        }
-
-        .logo-box {
-            width: 90px;
-            height: 90px;
-            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--secondary-purple) 100%);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .logo-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        } */
-
-        /* Placeholder for logo */
-        /* .logo-text {
-            color: white;
-            font-size: 1.6rem;
-            font-weight: 600;
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        .title-section h1 {
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            font-size: 2rem;
-            font-weight: 600;
-            color: var(--primary-purple);
-            margin: 0 0 8px 0;
-            line-height: 1.2;
-        }
-
-        .title-section .subtitle {
-            font-size: 1rem;
-            color: var(--text-light);
-            font-weight: 400;
-            margin: 0 0 5px 0;
-        }
-
-        .title-section .tagline {
-            font-size: 0.95rem;
-            color: var(--secondary-purple);
-            font-style: italic;
-            font-weight: 500;
-        } */
-
-        /* ============ NAVIGATION ============ */
-        /* .main-nav {
-            background: var(--primary-purple);
-            padding: 0;
-        }
-
-        .navbar {
-            padding: 0;
-        }
-
-        .navbar-nav {
-            width: 100%;
-            justify-content: center;
-        }
-
-        .nav-item .nav-link {
-            color: white;
-            padding: 18px 24px;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .nav-item .nav-link:hover,
-        .nav-item .nav-link.active {
-            background: var(--accent-gold);
-            color: var(--primary-purple);
-        }
-
-        .navbar-toggler {
-            background: white;
-            border: none;
-            padding: 10px 15px;
-        } */
-
         /* ============ BANNER SPACE ============ */
         .banner-hero {
-            background: var(--bg-light);
+            /* Restored Purple/Platinum Gradient */
+            background: linear-gradient(to bottom, #f3f4f6, #eaddff);
+            /* Slight purple tint */
             min-height: 400px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-bottom: 5px solid var(--accent-gold);
             position: relative;
-            margin-top: 120px;
+            border-bottom: 5px solid var(--accent-gold);
+            /* Gold border is classic */
+            margin-top: 100px;
         }
 
         .banner-placeholder {
@@ -266,8 +154,11 @@
 
         .page-title-section {
             text-align: center;
-            margin-bottom: 60px;
-            margin-top: 90px;
+            margin-bottom: 40px;
+            margin-top: 80px;
+            /* Increased from 30px to prevent overlap */
+            padding-top: 20px;
+            /* Added breathing room */
         }
 
         .page-title-section h1 {
@@ -275,7 +166,7 @@
             font-size: 3rem;
             font-weight: 600;
             color: var(--primary-purple);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .page-title-section .lead {
@@ -289,11 +180,11 @@
         /* Program Overview Card */
         .program-card {
             background: var(--bg-tone);
-            padding: 50px;
+            padding: 40px;
             border-radius: 10px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             background: #1D0A3F;
-            margin-bottom: 60px;
+            margin-bottom: 40px;
             border-left: 6px solid var(--accent-gold);
         }
 
@@ -302,7 +193,7 @@
             font-size: 2.2rem;
             font-weight: 600;
             color: #FFFFFF;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .program-card p {
@@ -317,13 +208,13 @@
         .stats-section {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 40px;
-            margin: 50px 0;
+            gap: 30px;
+            margin: 40px 0;
         }
 
         .stat-box {
             text-align: center;
-            padding: 40px 20px;
+            padding: 30px 20px;
             background: var(--bg-light);
             border-radius: 10px;
             transition: all 0.3s ease;
@@ -355,9 +246,9 @@
         /* Download Section */
         .download-box {
             background: var(--primary-purple);
-            padding: 60px 40px;
+            padding: 50px 40px;
             text-align: center;
-            margin: 60px 0;
+            margin: 50px 0;
         }
 
         .download-box h3 {
@@ -365,13 +256,13 @@
             font-size: 2rem;
             font-weight: 600;
             color: white;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .download-box p {
             color: rgba(255, 255, 255, 0.9);
             font-size: 1.1rem;
-            margin-bottom: 35px;
+            margin-bottom: 30px;
         }
 
         .btn-download {
@@ -417,7 +308,7 @@
 
         /* Program Details Section */
         .program-details {
-            margin: 80px 0;
+            margin: 50px 0;
         }
 
         .section-title {
@@ -425,7 +316,7 @@
             font-size: 2.5rem;
             font-weight: 600;
             color: var(--primary-purple);
-            margin-bottom: 50px;
+            margin-bottom: 30px;
             text-align: center;
         }
 
@@ -437,6 +328,10 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             border-left: 5px solid var(--accent-gold);
             transition: all 0.3s ease;
+            height: 100%;
+            /* Ensure full height for equal boxes */
+            z-index: 1;
+            position: relative;
         }
 
         .program-feature:hover {
@@ -482,7 +377,7 @@
 
         /* Schedule Table Placeholder */
         .schedule-section {
-            margin: 80px 0;
+            margin: 50px 0;
         }
 
         .schedule-placeholder {
@@ -513,109 +408,6 @@
             margin: 0;
         }
 
-        /* ============ FOOTER ============ */
-        /* .main-footer {
-            background: var(--primary-purple);
-            color: white;
-            padding: 70px 0 30px;
-            margin-top: 100px;
-        }
-
-        .footer-section {
-            margin-bottom: 40px;
-        }
-
-        .footer-section h5 {
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            font-size: 1.4rem;
-            font-weight: 600;
-            color: var(--accent-gold);
-            margin-bottom: 25px;
-        }
-
-        .footer-section p {
-            font-size: 0.95rem;
-            line-height: 1.8;
-            color: rgba(255, 255, 255, 0.85);
-            margin-bottom: 15px;
-        }
-
-        .footer-section ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .footer-section ul li {
-            margin-bottom: 12px;
-        }
-
-        .footer-section ul li a {
-            color: rgba(255, 255, 255, 0.85);
-            text-decoration: none;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-        }
-
-        .footer-section ul li a:hover {
-            color: var(--accent-gold);
-            padding-left: 8px;
-        }
-
-        .contact-info p {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-
-        .contact-info i {
-            color: var(--accent-gold);
-            font-size: 1.2rem;
-            margin-top: 3px;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-        }
-
-        .social-links a {
-            width: 45px;
-            height: 45px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-        }
-
-        .social-links a:hover {
-            background: var(--accent-gold);
-            color: var(--primary-purple);
-            transform: translateY(-5px);
-        }
-
-        .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
-            margin-top: 50px;
-            padding-top: 30px;
-            text-align: center;
-        }
-
-        .footer-bottom p {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
-            margin: 8px 0;
-        }
-
-        .footer-bottom a {
-            color: var(--accent-gold);
-            text-decoration: none;
-        } */
 
         /* ============ RESPONSIVE ============ */
         @media (max-width: 992px) {
@@ -726,7 +518,7 @@
 
         /* ============ SCHEDULE GRID ============ */
         .schedule-container-wrapper {
-            margin-top: 40px;
+            margin-top: 30px;
         }
 
         .nav-tabs .nav-link {
@@ -750,21 +542,25 @@
         }
 
         .schedule-container {
-            overflow-x: auto;
+            /* Fix: Ensure sticky works by allowing overflow on this container */
+            overflow: auto;
             border: 1px solid #e9ecef;
             background: white;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-            max-height: 800px;
-            overflow-y: auto;
+            max-height: 80vh;
+            position: relative;
+            /* Context for children */
         }
 
         .schedule-grid {
             display: grid;
-            /* Time column + 5 Streams for demo (expandable) */
-            grid-template-columns: 120px repeat(5, minmax(250px, 1fr));
-            /* Removed fixed min-width for mobile responsiveness */
+            grid-template-columns: 140px repeat(5, minmax(280px, 1fr));
+            /* Fixed Time column width */
+            min-width: 100%;
+            /* Force full width */
         }
 
+        /* The Sticky Header Row */
         .grid-header {
             background: var(--primary-purple);
             color: white;
@@ -773,20 +569,30 @@
             text-align: center;
             position: sticky;
             top: 0;
-            z-index: 20;
+            z-index: 50;
+            /* High z-index for visibility */
             border-right: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        /* The Sticky Time Column (Top Left Corner) */
         .time-col-header {
+            position: sticky;
             left: 0;
-            z-index: 30;
+            top: 0;
+            z-index: 60 !important;
+            /* Highest: Stays on top of everything */
+            background: var(--primary-purple);
+            /* Ensure opaque background */
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
         }
 
+        /* The Sticky Time Slots (Left Column) */
         .time-slot {
             background: #f8f9fa;
             position: sticky;
             left: 0;
-            z-index: 10;
+            z-index: 40;
+            /* Higher than content, lower than header */
             padding: 20px 10px;
             display: flex;
             align-items: center;
@@ -794,7 +600,10 @@
             font-weight: 600;
             color: var(--primary-purple);
             border-bottom: 1px solid #dee2e6;
-            border-right: 1px solid #dee2e6;
+            border-right: 2px solid #dee2e6;
+            /* Stronger separation */
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+            /* Slight shadow to indicate depth */
         }
 
         .session-cell {
@@ -802,6 +611,8 @@
             border-bottom: 1px solid #dee2e6;
             border-right: 1px solid #dee2e6;
             background: white;
+            z-index: 10;
+            position: relative;
         }
 
         .session-card {
@@ -852,7 +663,7 @@
         }
 
         .session-row-break {
-            grid-column: 2 / -1;
+            grid-column: 1 / -1;
             background: #f1f3f5;
             color: #6c757d;
             font-style: italic;
@@ -864,219 +675,7 @@
         }
 
         /* ============ MERGED FLOATING NAVBAR STYLES ============ */
-        /* .floating-navbar {
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 97%;
-            height: 90px;
-            background: linear-gradient(135deg, #1d0a3f 0%, #4b1c9b 100%);
-            border-radius: 50px;
-            display: flex;
-            align-items: center;
-            padding: 0;
-            z-index: 1000;
-            transition: all 0.6s ease-in-out;
-        }
-
-        .floating-navbar.scrolled {
-            width: 100%;
-            top: 0;
-            border-radius: 0;
-        }
-
-        .navbar-logo {
-            height: 100%;
-            position: relative;
-            display: flex;
-            align-items: center;
-            padding-left: 0;
-        } */
-
-        /* Base Logo (Conference) */
-        /* .logo-base {
-            height: 100%;
-            width: auto;
-            object-fit: cover;
-            border-top-left-radius: 50px;
-            border-bottom-left-radius: 50px;
-            transition: border-radius 0.6s ease-in-out;
-            position: relative;
-            z-index: 1;
-        }
-
-        .floating-navbar.scrolled .logo-base {
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
-        } */
-
-        /* Overlay Logos */
-        /* .logo-overlay {
-            position: absolute;
-            z-index: 10;
-            height: 50%;
-            width: auto;
-            object-fit: contain;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .logo-overlay.rajagiri {
-            left: 4px;
-            top: 45px;
-            height: 80%;
-            width: auto;
-        }
-
-        .logo-overlay.rcss {
-            top: 55px;
-            left: 80px;
-            height: 60%;
-            width: auto;
-        }
-
-        .floating-navbar li {
-            position: relative;
-            height: 100%;
-            display: flex;
-            align-items: center;
-        }
-
-        .navbar-links {
-            margin-left: auto;
-            display: flex;
-            gap: 15px;
-            padding-right: 40px;
-            list-style: none;
-            margin-top: 0;
-            margin-bottom: 0;
-            flex-wrap: nowrap;
-            height: 100%;
-            align-items: center;
-        }
-
-        .navbar-links a {
-            color: white;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: opacity 0.3s;
-            font-family: 'Segoe UI', sans-serif;
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            height: 100%;
-            padding: 0 5px;
-        }
-
-        .navbar-links a:hover {
-            opacity: 0.8;
-        } */
-
-        /* Dropdown Styles */
-        /* .dropdown-menu {
-            position: absolute;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            min-width: 300px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            padding: 10px 0;
-            list-style: none;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            z-index: 100;
-        }
-
-        .dropdown-menu::before {
-            content: '';
-            position: absolute;
-            top: -6px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-left: 6px solid transparent;
-            border-right: 6px solid transparent;
-            border-bottom: 6px solid rgba(255, 255, 255, 0.95);
-        }
-
-        .floating-navbar li:hover .dropdown-menu,
-        .floating-navbar li.active .dropdown-menu {
-            opacity: 1;
-            visibility: visible;
-            transform: translateX(-50%) translateY(0);
-            top: 60px;
-        }
-
-        .dropdown-menu li {
-            display: block;
-            height: auto;
-            margin: 0;
-        }
-
-        .dropdown-menu li a {
-            color: #1d0a3f;
-            padding: 10px 20px;
-            display: block;
-            width: 100%;
-            box-sizing: border-box;
-            height: auto;
-            border-radius: 0;
-            font-size: 13px;
-            white-space: nowrap;
-            text-align: left;
-            position: relative;
-            z-index: 1;
-            overflow: hidden;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        .dropdown-menu li a::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 0%;
-            height: 100%;
-            background-color: rgba(29, 10, 63, 0.1);
-            transition: width 0.3s ease;
-            z-index: -1;
-        }
-
-        .dropdown-menu li a:hover::before {
-            width: 100%;
-        }
-
-        .dropdown-menu li a:hover {
-            color: #4b1c9b;
-            opacity: 1;
-        }
-
-        .navbar-links>li:last-child {
-            margin-left: 10px;
-        }
-
-        .navbar-links a.contact-btn {
-            background-color: white;
-            color: #1d0a3f;
-            padding: 10px 25px;
-            border-radius: 25px;
-            font-weight: 600;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-            height: auto;
-        }
-
-        .navbar-links a.contact-btn:hover {
-            opacity: 1;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-            background-color: #f0f0f0;
-        } */
+        /* Styles removed as they are now handled by navbar.js Shadow DOM */
 
         /* ============ TOPICS GRID ============ */
         .topics-intro {
@@ -1224,7 +823,7 @@
             <div class="program-details">
                 <h2 class="section-title">What to Expect</h2>
 
-                <div class="row">
+                <div class="row g-4">
                     <div class="col-lg-6">
                         <div class="program-feature">
                             <h3>Keynote & Featured Speakers</h3>
@@ -1435,7 +1034,7 @@
             </div>
 
             <!-- Additional Info -->
-            <div class="row mt-5">
+            <div class="row g-4 mt-4">
                 <div class="col-lg-6">
                     <div class="program-feature">
                         <h3>CPD Accreditation</h3>
