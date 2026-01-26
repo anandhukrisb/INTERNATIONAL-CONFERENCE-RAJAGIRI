@@ -49,7 +49,7 @@
         }
 
         .main-container {
-            max-width: 1200px;
+            max-width: 95%;
             margin: 0 auto;
             padding: 0 20px;
         }
@@ -281,24 +281,47 @@
         .btn-register {
             display: inline-block;
             background-color: var(--accent-gold);
-            color: var(--white);
-            padding: 16px 45px;
+            color: #1D0A3F;
+            padding: 15px 35px;
             border-radius: 50px;
             text-decoration: none;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            text-transform: capitalize;
+            letter-spacing: normal;
+            transition: transform 0.3s ease;
             margin-top: 30px;
             border: none;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-register::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1D0A3F;
+            z-index: -1;
+            transition: clip-path 0.4s ease-out;
+            clip-path: circle(0% at 0 50%);
+        }
+
+        .btn-register:hover::before {
+            clip-path: circle(150% at 0 50%);
         }
 
         .btn-register:hover {
-            background-color: #b08d20;
             transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(201, 162, 39, 0.3);
+            color: var(--accent-gold);
+            box-shadow: 0 10px 20px rgba(29, 10, 63, 0.2);
         }
+
+
 
         /* ================= BOOTSTRAP ICONS FALLBACK ================= */
         @font-face {
