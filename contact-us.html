@@ -543,102 +543,6 @@
 
     <hr class="separator">
 
-    <!-- FAQ Section -->
-    <div class="faq-section" style="max-width: 95%; margin: 60px auto; padding: 0 20px;">
-        <h3 style="text-align: center; color: #1D0A3F; font-size: 2rem; margin-bottom: 40px; font-weight: 600;">
-            Frequently Asked Questions</h3>
-
-        <div class="faq-grid" style="display: flex; flex-direction: column; gap: 20px;">
-
-            <!-- Item 1 -->
-            <div class="info-strip">
-                <div class="info-header">
-                    <span>How do I register for the conference?</span>
-                    <span class="icon">+</span>
-                </div>
-                <div class="info-content">
-                    <div class="info-content-inner">
-                        <p>Visit the Registration page on our website and complete the online form. Early bird rates are
-                            available until [date]. For group registrations, please contact us directly for special
-                            pricing.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 2 -->
-            <div class="info-strip">
-                <div class="info-header">
-                    <span>Can I attend virtually?</span>
-                    <span class="icon">+</span>
-                </div>
-                <div class="info-content">
-                    <div class="info-content-inner">
-                        <p>Yes! The 2027 ICSWHMH is a hybrid event. Virtual attendance options include live-streamed
-                            keynotes, access to select sessions, and networking opportunities. Virtual registration is
-                            available at a reduced rate.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 3 -->
-            <div class="info-strip">
-                <div class="info-header">
-                    <span>When is the abstract submission deadline?</span>
-                    <span class="icon">+</span>
-                </div>
-                <div class="info-content">
-                    <div class="info-content-inner">
-                        <p>Abstract submissions close on [date]. All submissions will be reviewed by our scientific
-                            committee, and you'll receive notification of acceptance by [date].</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 4 -->
-            <div class="info-strip">
-                <div class="info-header">
-                    <span>Are accommodation recommendations available?</span>
-                    <span class="icon">+</span>
-                </div>
-                <div class="info-content">
-                    <div class="info-content-inner">
-                        <p>Yes, we have partnered with several hotels near the venue offering special conference rates.
-                            Visit our Accommodation page for details and booking codes.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 5 -->
-            <div class="info-strip">
-                <div class="info-header">
-                    <span>Will I receive a certificate of attendance?</span>
-                    <span class="icon">+</span>
-                </div>
-                <div class="info-content">
-                    <div class="info-content-inner">
-                        <p>All registered attendees will receive a digital certificate of attendance after the
-                            conference. CPD points may be available for eligible professionals.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 6 -->
-            <div class="info-strip">
-                <div class="info-header">
-                    <span>What is your cancellation policy?</span>
-                    <span class="icon">+</span>
-                </div>
-                <div class="info-content">
-                    <div class="info-content-inner">
-                        <p>Cancellations made 60+ days before receive a full refund minus admin fee. 30-59 days: 50%
-                            refund. Less than 30 days: registration can be transferred to another person.</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
     <!-- Venue Map Section -->
     <div class="venue-section" style="max-width: 95%; margin: 60px auto 40px; padding: 0 20px;">
         <h3 style="text-align: center; color: #1D0A3F; font-size: 2rem; margin-bottom: 20px; font-weight: 600;">
@@ -702,49 +606,8 @@
     </div> -->
 
     <main-footer></main-footer>
+</body>
 
-    <script>
-        function toggleAccordion(header) {
-            const strip = header.parentElement;
-            const content = strip.querySelector('.info-content');
-            const icon = header.querySelector('.icon');
-            const isExpanded = strip.classList.contains('expanded');
-
-            if (isExpanded) {
-                // Collapse
-                content.style.maxHeight = content.scrollHeight + 'px';
-                // Force reflow
-                content.offsetHeight;
-                content.style.maxHeight = '0px';
-                strip.classList.remove('expanded');
-                icon.textContent = '+';
-            } else {
-                // Expand
-                // Optional: Collapse others when one opens (Accordion behavior)
-                // document.querySelectorAll('.info-strip.expanded').forEach(openStrip => {
-                //    if (openStrip !== strip) {
-                //        // close it...
-                //    }
-                // });
-
-                strip.classList.add('expanded');
-                content.style.maxHeight = content.scrollHeight + 'px';
-                icon.textContent = '−';
-
-                // Cleanup after transition
-                content.addEventListener('transitionend', function handler() {
-                    if (strip.classList.contains('expanded')) {
-                        content.style.maxHeight = 'none';
-                    }
-                    content.removeEventListener('transitionend', handler);
-                });
-            }
-        }
-
-        document.querySelectorAll('.info-header').forEach(header => {
-            header.addEventListener('click', () => toggleAccordion(header));
-        });
-    </script>
 </body>
 
 </html>
