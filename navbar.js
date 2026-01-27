@@ -64,17 +64,18 @@ class FloatingNavbar extends HTMLElement {
                 .navbar-backdrop {
                     position: fixed;
                     top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100px;
-                    background-color: #FDFBF7;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 97%;
+                    height: 45px;
+                    background-color: white;
                     z-index: 999;
                     pointer-events: none; /* Allow clicks through backdrop */
                 }
 
                 .floating-navbar {
                     position: fixed;
-                    top: 10px;
+                    top: 20px;
                     left: 50%;
                     transform: translateX(-50%);
                     width: 97%; /* User defined */
@@ -86,6 +87,7 @@ class FloatingNavbar extends HTMLElement {
                     padding: 0;
                     z-index: 1000;
                     border: none;
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
                 }
 
                 .navbar-logo {
@@ -155,8 +157,8 @@ class FloatingNavbar extends HTMLElement {
                 .navbar-links a, .mobile-links a {
                     color: white;
                     text-decoration: none;
-                    font-size: 16px;
-                    font-weight: 500;
+                    font-size: 17px;
+                    font-weight: 400;
                     transition: opacity 0.3s;
                     font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
                     white-space: nowrap;
@@ -245,7 +247,7 @@ class FloatingNavbar extends HTMLElement {
                     box-sizing: border-box; 
                     height: auto;
                     border-radius: 0;
-                    font-size: 13px;
+                    font-size: 15px; 
                     white-space: nowrap; 
                     text-align: left;
                     position: relative;
@@ -282,20 +284,41 @@ class FloatingNavbar extends HTMLElement {
                 .navbar-links a.contact-btn, .mobile-links a.contact-btn {
                     background-color: white;
                     color: #1d0a3f;
-                    padding: 10px 25px;
-                    border-radius: 25px;
+                    padding: 12px 30px;
+                    border-radius: 50px;
                     font-weight: 600;
                     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-                    transition: all 0.3s ease;
+                    transition: transform 0.3s ease;
                     height: auto;
                     line-height: normal;
+                    text-transform: capitalize;
+                    letter-spacing: normal;
+                    position: relative;
+                    overflow: hidden;
+                    z-index: 1;
+                }
+
+                .navbar-links a.contact-btn::before, .mobile-links a.contact-btn::before {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: #C9A227;
+                    z-index: -1;
+                    transition: clip-path 0.4s ease-out;
+                    clip-path: circle(0% at 0 50%);
+                }
+
+                .navbar-links a.contact-btn:hover::before, .mobile-links a.contact-btn:hover::before {
+                    clip-path: circle(150% at 0 50%);
                 }
 
                 .navbar-links a.contact-btn:hover, .mobile-links a.contact-btn:hover {
                     opacity: 1;
                     transform: translateY(-2px);
                     box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-                    background-color: #f0f0f0;
                 }
 
                 /* Mobile toggle button (hamburger) */
@@ -425,6 +448,7 @@ class FloatingNavbar extends HTMLElement {
                     font-weight: 500;
                     margin-left: 20px;
                     white-space: nowrap;
+                    text-decoration: none;
                 }
 
                 /* Logo container specifically for mobile view */
@@ -498,7 +522,7 @@ class FloatingNavbar extends HTMLElement {
                     </a>
                 </div>
 
-                <div class="mobile-title">ICSWHMH 27</div>
+                <a href="index.html" class="mobile-title">2027 ICSWHMH</a>
 
                 <div class="navbar-logo">
                     <!-- Base Logo -->
@@ -513,25 +537,28 @@ class FloatingNavbar extends HTMLElement {
                 <ul class="navbar-links" id="navbar-links">
                     <li><a href="index.html">2027 ICSWHMH</a></li>
                     <li>
-                        <a href="#">Program</a>
+                        <a href="program.html">Program</a>
                         <ul class="dropdown-menu">
-                            <li><a href="program.html">Events</a></li>
-                            <li><a href="topics.html">Conference topics</a></li>
+                            <li><a href="topics.html">Conference Topics</a></li>
+                            <li><a href="ministerialopening.html">Ministerial Opening</a></li>
                         </ul>
                     </li>
                     <li>
                         <a href="#">Speakers</a>
                         <ul class="dropdown-menu">
                             <li><a href="speaker.html">Speakers list</a></li>
-                            <li><a href="ministerialopening.html">Ministerial opening</a></li>
+                            <li><a href="committee.html">Committee</a></li>
                         </ul>
                     </li>
                     <li><a href="registration.html">Registration</a></li>
-                    <li><a href="#">Abstracts</a></li>
-                    <li><a href="#">Social Functions</a></li>
-                    <li><a href="#">Sponsorships & Exhibitions</a></li>
-                    <li><a href="#">Host city</a></li>
-                    <li><a href="history.html">History</a></li>
+                    <li><a href="abstract.html">Abstract Submission</a></li>
+                    <li>
+                        <a href="#">Host city</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="hotels.html">Hotels</a></li>
+                            <li><a href="attractions.html">Attractions</a></li>
+                        </ul>
+                    </li>
                     <li><a href="contact-us.html" class="contact-btn">Contact Us</a></li>
                 </ul>
 
