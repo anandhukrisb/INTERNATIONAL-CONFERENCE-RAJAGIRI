@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - ICSWHMH 2027</title>
+    <link rel="icon" type="image/x-icon" href="assets/Favicon-192.ico?v=2">
+
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+
+    <script src="navbar.js" defer></script>
+    <script src="footer.js" defer></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* ================= GLOBAL ================= */
+        body {
+            background-color: #FDFBF7;
+            color: #2D3436;
+            font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        html {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* ================= TITLE ================= */
+        .faq-title-section {
+            margin-top: 150px;
+            margin-bottom: 50px;
+            max-width: 95%;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 20px;
+        }
+
+        #pageTitle {
+            font-weight: 700;
+            color: #1D0A3F;
+            text-transform: uppercase;
+            position: relative;
+            display: inline-block;
+            padding-left: 20px;
+            font-size: 2.5rem;
+        }
+
+        #pageTitle::after {
+            content: "";
+            display: block;
+            width: 70px;
+            height: 4px;
+            background-color: #C9A227;
+            margin-top: 10px;
+            border-radius: 3px;
+        }
+
+        .faq-intro {
+            padding: 0 20px;
+            font-size: 1.1rem;
+            color: #444;
+            margin-bottom: 60px;
+            max-width: 95%;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: justify;
+        }
+
+        /* ================= FAQ ACCORDION STYLES ================= */
+        .faq-section {
+            max-width: 95%;
+            margin: 0 auto 100px;
+            padding: 0 20px;
+        }
+
+        .faq-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .info-strip {
+            margin-bottom: 10px;
+            background: #FFFFFF;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .info-strip:hover {
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-header {
+            background-color: #1D0A3F;
+            color: #FFFFFF;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.15rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .info-header:hover {
+            background-color: #2a1056;
+        }
+
+        .info-header .icon {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #C9A227;
+            transition: transform 0.3s ease;
+        }
+
+        .info-strip.expanded .info-header .icon {
+            transform: rotate(45deg);
+        }
+
+        .info-content {
+            padding: 0 30px;
+            color: #555;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+            overflow: hidden;
+            text-align: justify;
+            background-color: #FFFFFF;
+        }
+
+        .info-strip.expanded .info-content {
+            opacity: 1;
+        }
+
+        .info-content-inner {
+            padding: 25px 0;
+        }
+
+        /* ================= MOBILE ================= */
+        @media (max-width: 768px) {
+            .faq-title-section {
+                margin-top: 100px;
+                text-align: center;
+            }
+
+            #pageTitle {
+                padding-left: 0;
+                font-size: 2rem;
+            }
+
+            #pageTitle::after {
+                margin: 10px auto 0;
+            }
+
+            .faq-intro {
+                text-align: center;
+            }
+
+            .info-header {
+                padding: 15px 20px;
+                font-size: 1rem;
+            }
+
+            .info-content {
+                padding: 0 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <floating-navbar></floating-navbar>
+
+    <div class="faq-title-section">
+        <h1 id="pageTitle">Frequently Asked Questions</h1>
+    </div>
+
+    <div class="faq-intro">
+        <p>Find answers to common questions about the ICSWHMH 2027 Conference. If you can't find what you're looking
+            for, please feel free to <a href="contact-us.html"
+                style="color: #C9A227; text-decoration: none; font-weight: 600;">contact us</a>.</p>
+    </div>
+
+    <section class="faq-section">
+        <div class="faq-grid">
+
+            <!-- Item 1 -->
+            <div class="info-strip">
+                <div class="info-header">
+                    <span>How do I register for the conference?</span>
+                    <span class="icon">+</span>
+                </div>
+                <div class="info-content">
+                    <div class="info-content-inner">
+                        <p>Visit the <a href="registration.html"
+                                style="color: #C9A227; text-decoration: none; font-weight: 600;">Registration page</a>
+                            on our website and complete the online form. Early bird rates are
+                            available until [date]. For group registrations, please contact us directly for special
+                            pricing.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="info-strip">
+                <div class="info-header">
+                    <span>Can I attend virtually?</span>
+                    <span class="icon">+</span>
+                </div>
+                <div class="info-content">
+                    <div class="info-content-inner">
+                        <p>Yes! The 2027 ICSWHMH is a hybrid event. Virtual attendance options include live-streamed
+                            keynotes, access to select sessions, and networking opportunities. Virtual registration is
+                            available at a reduced rate.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="info-strip">
+                <div class="info-header">
+                    <span>When is the abstract submission deadline?</span>
+                    <span class="icon">+</span>
+                </div>
+                <div class="info-content">
+                    <div class="info-content-inner">
+                        <p>Abstract submissions close on [date]. All submissions will be reviewed by our scientific
+                            committee, and you'll receive notification of acceptance by [date]. You can submit your
+                            abstract on the <a href="abstract.html"
+                                style="color: #C9A227; text-decoration: none; font-weight: 600;">Abstract Submission
+                                page</a>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="info-strip">
+                <div class="info-header">
+                    <span>Are accommodation recommendations available?</span>
+                    <span class="icon">+</span>
+                </div>
+                <div class="info-content">
+                    <div class="info-content-inner">
+                        <p>Yes, we have partnered with several hotels near the venue offering special conference rates.
+                            Visit our <a href="hotels.html"
+                                style="color: #C9A227; text-decoration: none; font-weight: 600;">Accommodation page</a>
+                            for details and booking codes.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 5 -->
+            <div class="info-strip">
+                <div class="info-header">
+                    <span>Will I receive a certificate of attendance?</span>
+                    <span class="icon">+</span>
+                </div>
+                <div class="info-content">
+                    <div class="info-content-inner">
+                        <p>All registered attendees will receive a digital certificate of attendance after the
+                            conference. CPD points may be available for eligible professionals.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 6 -->
+            <div class="info-strip">
+                <div class="info-header">
+                    <span>What is your cancellation policy?</span>
+                    <span class="icon">+</span>
+                </div>
+                <div class="info-content">
+                    <div class="info-content-inner">
+                        <p>Cancellations made 60+ days before receive a full refund minus admin fee. 30-59 days: 50%
+                            refund. Less than 30 days: registration can be transferred to another person.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <main-footer></main-footer>
+
+    <script>
+        function toggleAccordion(header) {
+            const strip = header.parentElement;
+            const content = strip.querySelector('.info-content');
+            const icon = header.querySelector('.icon');
+            const isExpanded = strip.classList.contains('expanded');
+
+            if (isExpanded) {
+                // Collapse
+                content.style.maxHeight = content.scrollHeight + 'px';
+                // Force reflow
+                content.offsetHeight;
+                content.style.maxHeight = '0px';
+                strip.classList.remove('expanded');
+                // icon.textContent = '+'; // Handled by CSS rotate now
+            } else {
+                // Optional: Collapse others when one opens (Accordion behavior)
+                document.querySelectorAll('.info-strip.expanded').forEach(openStrip => {
+                    if (openStrip !== strip) {
+                        const openContent = openStrip.querySelector('.info-content');
+                        openContent.style.maxHeight = openContent.scrollHeight + 'px';
+                        openContent.offsetHeight;
+                        openContent.style.maxHeight = '0px';
+                        openStrip.classList.remove('expanded');
+                    }
+                });
+
+                strip.classList.add('expanded');
+                content.style.maxHeight = content.scrollHeight + 'px';
+                // icon.textContent = '−'; // Handled by CSS rotate now
+
+                // Cleanup after transition to allow for content changes or window resizing
+                content.addEventListener('transitionend', function handler() {
+                    if (strip.classList.contains('expanded')) {
+                        content.style.maxHeight = 'none';
+                    }
+                    content.removeEventListener('transitionend', handler);
+                });
+            }
+        }
+
+        document.querySelectorAll('.info-header').forEach(header => {
+            header.addEventListener('click', () => toggleAccordion(header));
+        });
+    </script>
+</body>
+
+</html>
