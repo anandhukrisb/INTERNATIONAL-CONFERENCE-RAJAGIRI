@@ -196,8 +196,8 @@
             position: relative;
             width: 100%;
             max-width: 95%;
-            margin: 140px auto 0 auto;
-            height: 80vh;
+            margin: 150px auto 0 auto;
+            height: 78vh;
             /* Space for fixed navbar/ticker */
             display: flex;
             align-items: center;
@@ -685,13 +685,13 @@
         /* Ticker styles (if uncommented) */
         .news-ticker-container {
             position: fixed;
-            top: 100px;
+            top: 105px;
             left: 50%;
             transform: translateX(-50%);
             width: 80%;
             height: 40px;
             color: #1d0a3f;
-            padding: 10px 0;
+            /* padding: 10px 0; Removed to fix vertical centering */
             overflow: hidden;
             white-space: nowrap;
             z-index: 900;
@@ -701,6 +701,7 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
             display: flex;
             align-items: center;
+            justify-content: center;
         }
 
         #tickerTrack {
@@ -965,7 +966,7 @@
                 mask-image: none;
                 -webkit-mask-image: none;
                 height: 50px;
-                padding: 10px 0;
+                /* padding: 10px 0; Removed to fix vertical centering */
                 top: 90px;
                 border-radius: 0;
             }
