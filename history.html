@@ -113,34 +113,33 @@
             transition: transform 0.5s ease;
         }
 
-        /* Card 1: 2016 */
-        #card-2016 {
-            background: #ffffff;
+        /* Card 1: 2027 (India - Current) */
+        #card-2027 {
+            background: var(--primary-purple);
+            color: white;
             z-index: 2;
             top: 10vh;
         }
 
-        /* Card 2: 2019 */
-        #card-2019 {
-            background: #fdfbf7;
-            /* Slight warmth */
+        /* Card 2: 2024 */
+        #card-2024 {
+            /* Light purple tint */
+            background: #f3f0ff;
             z-index: 3;
             top: 12vh;
-            /* Slight offset for stacking effect */
         }
 
-        /* Card 3: 2024 */
-        #card-2024 {
-            background: #f3f0ff;
-            /* Light purple tint */
+        /* Card 3: 2019 */
+        #card-2019 {
+            /* Slight warmth */
+            background: #fdfbf7;
             z-index: 4;
             top: 14vh;
         }
 
-        /* Card 4: 2027 (India) */
-        #card-2027 {
-            background: var(--primary-purple);
-            color: white;
+        /* Card 4: 2016 */
+        #card-2016 {
+            background: #ffffff;
             z-index: 5;
             top: 16vh;
         }
@@ -209,7 +208,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 0 !important;
+            justify-content: center;
+            /* Restore margin for flow */
+            margin-bottom: var(--card-margin);
         }
 
         /* Hide default layout */
@@ -376,34 +377,53 @@
                 right: 20px;
             }
 
-            /* Mobile Updates for Glassmorphism Card (2027) */
             #card-2027 {
-                align-items: flex-end;
-                margin-bottom: 0;
-                /* Ensure background image is visible and positioned */
-                background-position: center bottom !important;
-                background-size: cover !important;
-                min-height: 500px !important;
-                /* Force height so image shows */
+                /* Reset to standard box behavior */
+                min-height: auto !important;
+                background: var(--primary-purple) !important;
+                background-image: none !important;
+                align-items: stretch;
+                /* Fix corner smoothing and artifacts */
+                -webkit-mask-image: -webkit-radial-gradient(white, black);
+                overflow: hidden;
             }
 
             #card-2027 .card-inner {
-                justify-content: center;
-                align-items: flex-end;
+                /* Standard column layout */
+                justify-content: flex-start;
+                align-items: stretch;
                 padding: 0;
             }
 
+            /* Reveal the image on mobile */
+            #card-2027 .card-visual {
+                display: block;
+                height: 300px;
+                /* Match other cards */
+            }
+
+            /* Ensure image respects corners */
+            #card-2027 .card-visual img {
+                border-radius: 30px 30px 0 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
             #card-2027 .card-content {
-                flex: none;
-                /* Do not stretch */
+                /* Reset all glass/floating effects */
+                flex: auto;
                 width: 100%;
                 margin: 0;
                 border-radius: 0;
-                border-top-left-radius: 30px;
-                border-top-right-radius: 30px;
-                background: rgba(29, 10, 63, 0.9);
-                /* Increased opacity for readability */
-                padding: 30px 20px;
+                border: none;
+                /* Remove any inherited borders */
+                background: transparent;
+                box-shadow: none;
+                backdrop-filter: none;
+                -webkit-backdrop-filter: none;
+                padding: 40px 25px;
+                /* Standard padding */
             }
 
             .global-section {
@@ -439,24 +459,40 @@
     <!-- Stacking Cards Container -->
     <main class="cards-container">
 
-        <!-- Card 1: 2016 -->
-        <article class="history-card" id="card-2016">
+        <!-- Card 1: 2027 (India) - GLASSMORPHISM REDESIGN -->
+        <article class="history-card" id="card-2027">
             <div class="card-inner">
+                <!-- Visual is now Background -->
                 <div class="card-visual">
-                    <img src="assets/singapore.png" alt="Singapore" loading="lazy">
+                    <!-- Image added for Mobile View (Hidden on Desktop) -->
+                    <img src="assets/kerala.png" alt="Kerala" loading="lazy">
                 </div>
                 <div class="card-content">
-                    <span class="card-year">2016</span>
-                    <span class="card-edition">08 Edition</span>
-                    <h2 class="card-title">Enhancing the<br>Human Condition</h2>
-                    <p class="card-desc">Held at the National University of Singapore, this landmark gathering brought
-                        together global experts to discuss the role of social work in rapidly changing Southeast Asian
-                        societies.</p>
+                    <span class="card-edition">Next Chapter</span>
+                    <h2 class="card-title">Embracing<br>Diversity</h2>
+                    <p class="card-desc">For the first time, the conference arrives in India. Join us at Rajagiri
+                        College of Social Sciences in Kerala to shape the future of global health.</p>
                 </div>
             </div>
         </article>
 
-        <!-- Card 2: 2019 -->
+        <!-- Card 2: 2024 -->
+        <article class="history-card" id="card-2024">
+            <div class="card-inner">
+                <div class="card-visual">
+                    <img src="assets/melbourne.png" alt="Melbourne" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <span class="card-year">2024</span>
+                    <span class="card-edition">10 Edition</span>
+                    <h2 class="card-title">Navigating A<br>Changing World</h2>
+                    <p class="card-desc">Gathered over 1100 delegates at the University of Melbourne. A critical
+                        dialogue on empowering mental health communities in post-pandemic times.</p>
+                </div>
+            </div>
+        </article>
+
+        <!-- Card 3: 2019 -->
         <article class="history-card" id="card-2019">
             <div class="card-inner">
                 <div class="card-visual">
@@ -473,34 +509,19 @@
             </div>
         </article>
 
-        <!-- Card 3: 2024 -->
-        <article class="history-card" id="card-2024">
+        <!-- Card 4: 2016 -->
+        <article class="history-card" id="card-2016">
             <div class="card-inner">
                 <div class="card-visual">
-                    <img src="assets/melbourne.png" alt="Melbourne" loading="lazy">
+                    <img src="assets/singapore.png" alt="Singapore" loading="lazy">
                 </div>
                 <div class="card-content">
-                    <span class="card-year">2024</span>
-                    <span class="card-edition">10 Edition</span>
-                    <h2 class="card-title">Navigating A<br>Changing World</h2>
-                    <p class="card-desc">Gathered over 1100 delegates at the University of Melbourne. A critical
-                        dialogue on empowering mental health communities in post-pandemic times.</p>
-                </div>
-            </div>
-        </article>
-
-        <!-- Card 4: 2027 (India) - GLASSMORPHISM REDESIGN -->
-        <article class="history-card" id="card-2027">
-            <div class="card-inner">
-                <!-- Visual is now Background -->
-                <div class="card-visual">
-                    <!-- Hidden by CSS -->
-                </div>
-                <div class="card-content">
-                    <span class="card-edition">Next Chapter</span>
-                    <h2 class="card-title">Embracing<br>Diversity</h2>
-                    <p class="card-desc">For the first time, the conference arrives in India. Join us at Rajagiri
-                        College of Social Sciences in Kerala to shape the future of global health.</p>
+                    <span class="card-year">2016</span>
+                    <span class="card-edition">08 Edition</span>
+                    <h2 class="card-title">Enhancing the<br>Human Condition</h2>
+                    <p class="card-desc">Held at the National University of Singapore, this landmark gathering brought
+                        together global experts to discuss the role of social work in rapidly changing Southeast Asian
+                        societies.</p>
                 </div>
             </div>
         </article>
