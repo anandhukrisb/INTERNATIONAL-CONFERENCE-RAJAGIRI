@@ -196,7 +196,7 @@
             position: relative;
             width: 100%;
             max-width: 95%;
-            margin: 120px auto 0 auto;
+            margin: 140px auto 0 auto;
             height: 80vh;
             /* Space for fixed navbar/ticker */
             display: flex;
@@ -544,7 +544,7 @@
                 height: auto;
                 min-height: auto;
                 padding: 15px 15px 0;
-                margin: 80px auto 0 auto;
+                margin: 150px auto 0 auto;
                 border-radius: 25px;
                 display: flex;
                 flex-direction: column;
@@ -685,21 +685,37 @@
         /* Ticker styles (if uncommented) */
         .news-ticker-container {
             position: fixed;
-            top: 90px;
+            top: 100px;
             left: 50%;
             transform: translateX(-50%);
-            width: 88%;
-            height: 50px;
+            width: 80%;
+            height: 40px;
             color: #1d0a3f;
             padding: 10px 0;
             overflow: hidden;
             white-space: nowrap;
             z-index: 900;
             background-color: #FDFBF7;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
             display: flex;
             align-items: center;
-            mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
-            -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+        }
+
+        #tickerTrack {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            will-change: transform;
+        }
+
+        .ticker-item {
+            display: inline-block;
+            padding-right: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #1d0a3f;
         }
 
         .title-section {
@@ -950,6 +966,8 @@
                 -webkit-mask-image: none;
                 height: 50px;
                 padding: 10px 0;
+                top: 90px;
+                border-radius: 0;
             }
 
             /* Mobile Banner Alignment */
@@ -2691,6 +2709,15 @@
     </div> -->
 
     <floating-navbar></floating-navbar>
+
+    <!-- News Ticker -->
+    <div class="news-ticker-container" id="tickerContainer">
+        <div id="tickerTrack">
+            <span class="ticker-item">11th International Conference on Social Work in Health and Mental Health
+                &nbsp;&nbsp;&bull;&nbsp;&nbsp; 5th - 8th January 2027 &nbsp;&nbsp;&bull;&nbsp;&nbsp; Kochi, India
+                &nbsp;&nbsp;&bull;&nbsp;&nbsp; Call for Abstracts Open Now!</span>
+        </div>
+    </div>
 
     <div class="scroll-button" onclick="scrollToNext()"></div>
     <!-- Sticky Sidebar Buttons -->
