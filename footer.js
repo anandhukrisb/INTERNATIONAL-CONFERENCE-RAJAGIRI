@@ -356,11 +356,12 @@ class MainFooter extends HTMLElement {
                     <div class="footer-col col-quick-links">
                         <h3>Quick Links</h3>
                         <ul>
-                            <li><a href="#">Submit Abstract</a></li>
+                            <li><a href="abstract.html">Submit Abstract</a></li>
                             <li><a href="program.html">Program</a></li>
                             <li><a href="speaker.html">Speakers</a></li>
                             <li><a href="registration.html">Registration</a></li>
                             <li><a href="hotels.html">Host City</a></li>
+                            <li><a href="faq.html">FAQ</a></li>
                         </ul>
                     </div>
 
