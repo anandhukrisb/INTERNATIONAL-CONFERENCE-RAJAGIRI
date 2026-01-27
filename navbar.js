@@ -520,10 +520,10 @@ class FloatingNavbar extends HTMLElement {
                     <li><a href="index.html">2027 ICSWHMH</a></li>
                     <li><a href="history.html">History</a></li>
                     <li>
-                        <a href="program.html">Program</a>
+                        <a href="#">Program</a>
                         <ul class="dropdown-menu">
+                            <li><a href="program.html">Program</a></li>
                             <li><a href="topics.html">Conference Topics</a></li>
-                            <li><a href="ministerialopening.html">Ministerial Opening</a></li>
                         </ul>
                     </li>
                     <li>
