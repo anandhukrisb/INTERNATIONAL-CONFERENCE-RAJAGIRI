@@ -720,10 +720,40 @@
                 border-color: rgba(255, 255, 255, 0.5);
             }
 
-            /* Hide scroll button and FAQ button on mobile */
-            .scroll-button,
-            .faq-button {
+            /* Hide scroll button on mobile */
+            .scroll-button {
                 display: none;
+            }
+
+            /* Mobile FAQ Button */
+            .faq-button {
+                display: flex;
+                bottom: 80px;
+                /* Above the bottom nav bar */
+                right: 20px;
+                width: 60px;
+                height: 60px;
+                background-color: #FFFFFF;
+                border-color: #1D0A3F;
+                gap: 0;
+            }
+
+            .faq-button:hover {
+                width: 60px;
+                /* Prevent expansion */
+                background-color: #FFFFFF;
+                border-color: #1D0A3F;
+                gap: 0;
+            }
+
+            .faq-button:hover .faq-icon {
+                color: #1D0A3F;
+            }
+
+            .faq-button:hover .faq-text {
+                opacity: 0;
+                width: 0;
+                margin-right: 0;
             }
 
             /* Mobile sidebar buttons - Fixed at bottom as horizontal bar */
