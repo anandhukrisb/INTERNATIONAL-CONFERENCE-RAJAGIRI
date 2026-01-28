@@ -14,6 +14,22 @@ class FloatingNavbar extends HTMLElement {
         }
         // Always update active link highlighting
         this.highlightActiveLink();
+        // Hide backdrop on specific pages
+        this.updateBackdropVisibility();
+    }
+
+    updateBackdropVisibility() {
+        const currentPage = window.location.pathname.split('/').pop();
+        const backdrop = this.shadowRoot.querySelector('.navbar-backdrop');
+
+        if (backdrop) {
+            // Hide backdrop on attractions.html and rajagiri.html
+            if (currentPage === 'attractions.html' || currentPage === 'rajagiri.html') {
+                backdrop.style.display = 'none';
+            } else {
+                backdrop.style.display = 'block';
+            }
+        }
     }
 
     highlightActiveLink() {
@@ -66,9 +82,9 @@ class FloatingNavbar extends HTMLElement {
                     top: 0;
                     left: 50%;
                     transform: translateX(-50%);
-                    width: 97%;
-                    height: 45px;
-                    background-color: white;
+                    width: 96.5%;
+                    height: 55px;
+                    background-color: #FDFBF7;
                     z-index: 999;
                     pointer-events: none; /* Allow clicks through backdrop */
                 }
@@ -527,11 +543,7 @@ class FloatingNavbar extends HTMLElement {
                         </ul>
                     </li>
                     <li>
-                        <a href="#">Speakers</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="speaker.html">Speakers list</a></li>
-                            <li><a href="committee.html">Committee</a></li>
-                        </ul>
+                        <a href="committee.html">Speakers</a>
                     </li>
                     <li><a href="registration.html">Registration</a></li>
                     <li><a href="abstract.html">Abstract Submission</a></li>

@@ -222,6 +222,10 @@
             z-index: 1;
             /* Intro Animation */
             clip-path: circle(0% at 0% 50%);
+        }
+
+        /* Start animation only after loading */
+        body:not(.loading) .hero-stripes {
             animation: expandStripe 1.2s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
         }
 
@@ -279,6 +283,10 @@
             /* User asked for logo, usually logos don't have box shadow or border radius unless card style. keeping it clean for now. */
             filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
             opacity: 0;
+        }
+
+        /* Start animation only after loading */
+        body:not(.loading) .hero-visual img {
             animation: fadeInLogo 1s ease forwards;
             animation-delay: 1.2s;
         }
@@ -313,6 +321,10 @@
             margin-bottom: 20px;
             display: block;
             opacity: 0;
+        }
+
+        /* Start animation only after loading */
+        body:not(.loading) .hero-date {
             animation: slideInDate 0.8s ease forwards;
             animation-delay: 0.3s;
         }
@@ -338,6 +350,10 @@
             line-height: 1.2;
             margin-bottom: 20px;
             opacity: 0;
+        }
+
+        /* Start animation only after loading */
+        body:not(.loading) .hero-title {
             animation: typeTitle 1.2s ease forwards;
             animation-delay: 0.8s;
         }
@@ -361,6 +377,10 @@
             display: flex;
             gap: 20px;
             opacity: 0;
+        }
+
+        /* Start animation only after loading */
+        body:not(.loading) .hero-btn-group {
             animation: slideInButtons 0.8s ease forwards;
             animation-delay: 2.3s;
         }
@@ -2696,10 +2716,10 @@
     </style>
 </head>
 
-<body>
+<body class="loading">
 
-    <!-- Loading Screen -->
-    <!-- <div id="page-loader">
+    <!-- Page Loader -->
+    <div id="page-loader">
         <div class="loader-content">
             <div class="ball-wrapper">
                 <div class="ball"></div>
@@ -2707,7 +2727,8 @@
             </div>
             <div class="loader-text">Loading...</div>
         </div>
-    </div> -->
+    </div>
+
 
     <floating-navbar></floating-navbar>
 
@@ -3184,6 +3205,8 @@
                     loader.style.opacity = '0';
                     setTimeout(() => {
                         loader.style.display = 'none';
+                        // Remove loading class to trigger hero animations
+                        document.body.classList.remove('loading');
                     }, 500);
                 }, 800);
             }
