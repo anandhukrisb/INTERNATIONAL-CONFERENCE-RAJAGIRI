@@ -558,6 +558,71 @@
             }
         }
 
+        /* FAQ Button - Round with expand on hover */
+        .faq-button {
+            position: fixed;
+            bottom: 120px;
+            right: 40px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50px;
+            background-color: #FFFFFF;
+            border: 2px solid #1D0A3F;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-right: 0;
+            gap: 0;
+            cursor: pointer;
+            z-index: 9999;
+            text-decoration: none;
+            transition: width 0.6s cubic-bezier(0.23, 1, 0.32, 1), background-color 0.5s ease-out, border-color 0.5s ease-out, gap 0.5s ease;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(29, 10, 63, 0.15);
+        }
+
+        .faq-button .faq-icon {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1D0A3F;
+            font-family: 'Outfit', sans-serif;
+            flex-shrink: 0;
+            transition: color 0.5s ease-out;
+        }
+
+        .faq-button .faq-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #FFFFFF;
+            white-space: nowrap;
+            opacity: 0;
+            width: 0;
+            margin-right: 0;
+            transition: opacity 0.4s ease-out 0.1s, width 0.5s cubic-bezier(0.23, 1, 0.32, 1), margin-right 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            overflow: hidden;
+            transform: translateY(1px);
+            /* Optical alignment */
+        }
+
+        .faq-button:hover {
+            width: 140px;
+            background-color: #1D0A3F;
+            border-color: #C9A227;
+            gap: 10px;
+        }
+
+        .faq-button:hover .faq-icon {
+            color: #C9A227;
+        }
+
+        .faq-button:hover .faq-text {
+            opacity: 1;
+            width: auto;
+            color: #C9A227;
+            margin-right: 0;
+        }
+
         /* Mobile Responsiveness - Switches to mobile layout at 1111px and below */
         @media (max-width: 1111px) {
             .hero-section {
@@ -655,8 +720,9 @@
                 border-color: rgba(255, 255, 255, 0.5);
             }
 
-            /* Hide scroll button on mobile */
-            .scroll-button {
+            /* Hide scroll button and FAQ button on mobile */
+            .scroll-button,
+            .faq-button {
                 display: none;
             }
 
@@ -2741,6 +2807,10 @@
         </div>
     </div>
 
+    <a href="faq.html" class="faq-button">
+        <span class="faq-text">FAQ</span>
+        <span class="faq-icon">?</span>
+    </a>
     <div class="scroll-button" onclick="scrollToNext()"></div>
     <!-- Sticky Sidebar Buttons -->
     <div class="sticky-sidebar-buttons">
@@ -3526,7 +3596,7 @@
                 touchStartX = touchStartY = touchMoveX = touchMoveY = touchChangeX = touchChangeY = sliderWidth = 0;
             }
 
-            slider.addEventListener("touchend", mobileSlide);
+            slidedEvener("touchend", mobileSlide);
         });
     </script>
 </body>
