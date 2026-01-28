@@ -382,34 +382,56 @@
                 right: 20px;
             }
 
-            /* Mobile Updates for Glassmorphism Card (2027) */
+            /* Standardized Stack Card for Mobile (2027) */
             #card-2027 {
-                align-items: flex-end;
-                margin-bottom: 0;
-                /* Ensure background image is visible and positioned */
-                background-position: center bottom !important;
-                background-size: cover !important;
-                min-height: 500px !important;
-                /* Force height so image shows */
+                background: transparent !important;
+                margin-bottom: 40px !important;
+                min-height: auto !important;
+                height: auto !important;
+                display: block !important;
+                align-items: stretch;
             }
 
             #card-2027 .card-inner {
-                justify-content: center;
-                align-items: flex-end;
+                display: flex;
+                flex-direction: column;
                 padding: 0;
+                width: 100%;
+                height: auto;
+            }
+
+            #card-2027 .card-visual {
+                display: block !important;
+                height: 300px;
+                border-top-left-radius: 30px;
+                border-top-right-radius: 30px;
+                overflow: hidden;
             }
 
             #card-2027 .card-content {
-                flex: none;
-                /* Do not stretch */
                 width: 100%;
                 margin: 0;
-                border-radius: 0;
-                border-top-left-radius: 30px;
-                border-top-right-radius: 30px;
-                background: rgba(29, 10, 63, 0.9);
-                /* Increased opacity for readability */
-                padding: 30px 20px;
+                border-radius: 0 0 30px 30px;
+                /* Bottom rounded */
+                background: var(--primary-purple);
+                padding: 40px 25px;
+                border: none;
+                backdrop-filter: none;
+                -webkit-backdrop-filter: none;
+                box-shadow: none;
+                flex: auto;
+            }
+
+            /* Fix text colors for the dark background */
+            #card-2027 .card-title,
+            #card-2027 .card-desc {
+                color: white;
+                text-align: left;
+            }
+
+            #card-2027 .card-edition {
+                color: var(--accent-gold);
+                text-align: left;
             }
 
             .global-section {
@@ -500,7 +522,8 @@
             <div class="card-inner">
                 <!-- Visual is now Background -->
                 <div class="card-visual">
-                    <!-- Hidden by CSS -->
+                    <!-- Image for standard/mobile layout -->
+                    <img src="assets/kerala.png" alt="Kerala Houseboat" loading="lazy">
                 </div>
                 <div class="card-content">
                     <span class="card-edition">Next Chapter</span>
