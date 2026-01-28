@@ -188,7 +188,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #1D0A3F;
+            background-color: #FFFFFF;
             z-index: -1;
             transition: clip-path 0.4s ease-out;
             clip-path: circle(0% at 0 50%);
@@ -200,7 +200,7 @@
 
         .read-more-btn:hover {
             transform: translateY(-3px);
-            color: #C9A227;
+            color: #1D0A3F;
         }
 
         /* Modal Styles */
@@ -896,6 +896,51 @@
                 font-size: 1.6rem;
             }
         }
+
+        .explore-btn {
+            background: #C9A227;
+            color: #1D0A3F;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            text-transform: capitalize;
+            letter-spacing: normal;
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(201, 162, 39, 0.3);
+        }
+
+        .explore-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #FFFFFF;
+            z-index: -1;
+            transition: clip-path 0.4s ease-out;
+            clip-path: circle(0% at 0 50%);
+        }
+
+        .explore-btn:hover::before {
+            clip-path: circle(150% at 0 50%);
+        }
+
+        .explore-btn:hover {
+            transform: translateY(-3px);
+            color: #1D0A3F;
+        }
     </style>
 </head>
 
@@ -1221,7 +1266,7 @@
             <!-- Explore More Restaurants CTA -->
             <div style="text-align: center; margin-top: 60px;">
                 <a href="https://www.google.com/maps/search/best+restaurants+near+Kakkanad+Kochi" target="_blank"
-                    style="display: inline-flex; align-items: center; gap: 12px; background: #C9A227; color: #1D0A3F; padding: 18px 40px; border-radius: 50px; font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; text-decoration: none; box-shadow: 0 10px 30px rgba(201, 162, 39, 0.3); transition: all 0.3s ease;">
+                    class="explore-btn">
                     <i class="bi bi-geo-alt-fill" style="font-size: 1.3rem;"></i>
                     Explore More Local Flavors Near Venue
                 </a>
