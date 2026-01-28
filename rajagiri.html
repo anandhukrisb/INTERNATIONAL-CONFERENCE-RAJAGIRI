@@ -40,15 +40,15 @@
 
         .parallax-main {
             position: fixed;
-            background: #fff;
+            background: #FDFBF7;
             width: 100%;
             /* Full width */
             max-width: none;
             /* Remove max-width */
-            height: calc(100vh - 150px);
-            /* Adjust for navbar */
-            top: 150px;
-            /* Start below navbar */
+            height: 100vh;
+            /* Full viewport height */
+            top: 0;
+            /* Start from top */
             left: 0;
             /* Start from left */
             transform: none;
@@ -65,7 +65,7 @@
 
         .scrollDist {
             width: 100%;
-            height: 150vh;
+            height: 120vh;
             position: relative;
             z-index: 0;
         }
@@ -108,7 +108,7 @@
             position: relative;
             min-height: 500px;
             display: flex;
-            justify-content: flex-start;
+            justify-content: center;
             align-items: flex-end;
             overflow: hidden;
             max-width: 95%;
@@ -143,12 +143,12 @@
         }
 
         .welcome-content {
-            flex: 0 0 30%;
+            position: absolute;
+            left: 40px;
+            bottom: 30px;
             padding-bottom: 30px;
-            position: relative;
             z-index: 5;
             max-width: 350px;
-            margin-left: 40px;
         }
 
         .welcome-content p {
@@ -161,10 +161,8 @@
         }
 
         .ceo-wrapper {
-            position: absolute;
+            position: relative;
             bottom: 0px;
-            left: 50%;
-            transform: translateX(-50%);
             z-index: 5;
             display: flex;
             align-items: flex-end;
@@ -194,7 +192,7 @@
 
         .ceo-name {
             position: absolute;
-            right: -250px;
+            right: -300px;
             bottom: 120px;
             color: white;
             text-align: left;
@@ -327,6 +325,22 @@
                 font-size: 0.9rem;
             }
         }
+
+        /* Rajagiri Info Section Responsive */
+        @media (max-width: 950px) {
+            .rajagiri-info-grid {
+                grid-template-columns: 1fr !important;
+                gap: 40px !important;
+            }
+
+            .rajagiri-info-title {
+                font-size: 2rem !important;
+            }
+
+            .rajagiri-info-text {
+                font-size: 1rem !important;
+            }
+        }
     </style>
 </head>
 
@@ -375,6 +389,54 @@
 
                 <rect id="arrow-btn" width="100" height="100" opacity="0" x="550" y="370" style="cursor:pointer" />
             </svg>
+
+            <!-- Rajagiri Content Overlay -->
+            <div
+                style="position: absolute; bottom: 0; left: 0; right: 0; z-index: 100; background: linear-gradient(to top, #FDFBF7 0%, transparent 100%); padding: 60px 20px 40px; pointer-events: none;">
+                <div style="max-width: 95%; margin: 0 auto; pointer-events: auto;">
+                    <div class="rajagiri-info-grid"
+                        style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end;">
+                        <div
+                            style="background: rgba(253, 251, 247, 0.95); backdrop-filter: blur(10px); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                            <h3 class="rajagiri-info-title"
+                                style="font-family: 'Outfit', sans-serif; font-size: 1.8rem; color: #1d0a3f; margin-bottom: 15px; font-weight: 700;">
+                                About Rajagiri College</h3>
+                            <p class="rajagiri-info-text"
+                                style="font-size: 0.95rem; line-height: 1.6; color: #333; margin-bottom: 15px; text-align: justify;">
+                                Established in 1955, Rajagiri College of Social Sciences (Autonomous) is a premier
+                                institution dedicated to excellence in social work education and research.
+                            </p>
+                            <p class="rajagiri-info-text"
+                                style="font-size: 0.95rem; line-height: 1.6; color: #333; margin: 0; text-align: justify;">
+                                The motto "Learn, Serve, Excel" embodies our commitment to holistic education combining
+                                academic rigor with community engagement.
+                            </p>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                            <div
+                                style="background: linear-gradient(135deg, #1d0a3f 0%, #3d1a5f 100%); padding: 25px 20px; border-radius: 15px; color: white; text-align: center;">
+                                <h3
+                                    style="font-family: 'Outfit', sans-serif; font-size: 2rem; margin: 0 0 5px 0; color: #C9A227;">
+                                    1955</h3>
+                                <p style="margin: 0; font-size: 0.85rem; opacity: 0.9;">Founded</p>
+                            </div>
+                            <div
+                                style="background: linear-gradient(135deg, #C9A227 0%, #d4af37 100%); padding: 25px 20px; border-radius: 15px; color: #1d0a3f; text-align: center;">
+                                <h3 style="font-family: 'Outfit', sans-serif; font-size: 2rem; margin: 0 0 5px 0;">60+
+                                </h3>
+                                <p style="margin: 0; font-size: 0.85rem; font-weight: 600;">Years</p>
+                            </div>
+                            <div
+                                style="background: linear-gradient(135deg, #1d0a3f 0%, #3d1a5f 100%); padding: 25px 20px; border-radius: 15px; color: white; text-align: center;">
+                                <h3
+                                    style="font-family: 'Outfit', sans-serif; font-size: 2rem; margin: 0 0 5px 0; color: #C9A227;">
+                                    1st</h3>
+                                <p style="margin: 0; font-size: 0.85rem; opacity: 0.9;">in Kerala</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -384,10 +446,9 @@
          We'll wrap the footer in a container that has high z-index and sits after scrollDist.
     -->
     <div style="position: relative; z-index: 20; background: #fff;">
-        <!-- Placeholder for 'images and content later' -->
         <section class="welcome-section">
             <div class="welcome-container">
-                <h3 class="welcome-header reveal-on-scroll">Welcome from the AASW CEO</h3>
+                <h3 class="welcome-header reveal-on-scroll">Welcome from Principal of Rajagiri</h3>
                 <div class="watermark-text">#2027 ICSWHMH</div>
 
                 <div class="welcome-content reveal-on-scroll delay-1">
