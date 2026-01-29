@@ -73,10 +73,11 @@
 
         .intro-content h1 {
             color: var(--primary-purple);
-            font-size: 4rem;
-            /* Slightly smaller for tighter feel */
+            font-size: clamp(1.8rem, 5vw, 4rem);
+            /* Responsive Single Line */
             margin-bottom: 10px;
             line-height: 1.1;
+            white-space: nowrap;
         }
 
         /* The Deck of Cards Container */
@@ -333,9 +334,7 @@
                 padding-bottom: 60px;
             }
 
-            .intro-content h1 {
-                font-size: 2.5rem;
-            }
+
 
             .cards-container {
                 padding-bottom: 0;
@@ -385,6 +384,7 @@
                 align-items: stretch;
                 /* Fix corner smoothing and artifacts */
                 -webkit-mask-image: -webkit-radial-gradient(white, black);
+                mask-image: radial-gradient(white, black);
                 overflow: hidden;
             }
 
@@ -452,7 +452,7 @@
     <section class="history-intro">
         <div class="intro-content">
             <h4 style="letter-spacing: 3px; margin-bottom: 20px; opacity: 0.8;">OUR JOURNEY</h4>
-            <h1>A Legacy of<br>Global Impact</h1>
+            <h1>A Legacy of Global Impact</h1>
         </div>
     </section>
 
