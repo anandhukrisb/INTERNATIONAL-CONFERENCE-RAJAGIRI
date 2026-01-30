@@ -1,0 +1,374 @@
+================================================================================
+         IMAGE REQUIREMENTS - 11TH ICSWHMH CONFERENCE WEBSITE
+================================================================================
+For: Photography Team
+Date: January 30, 2026
+
+================================================================================
+1. LOGO & BRANDING IMAGES
+================================================================================
+
+**CRITICAL REQUIREMENT: ALL LOGOS MUST HAVE BACKGROUNDS REMOVED**
+All logo images listed below MUST be provided with transparent backgrounds 
+
+1.1  Conference Logo (conf_logo_10th.png)
+     Dimensions: 800x800px
+     Format: PNG with transparent background
+     Usage: Hero section, main branding
+
+1.2  ICSWHMH Logo (icswhmh_logo_new.png)
+     Dimensions: 400x400px minimum
+     Format: PNG with transparent background
+     Usage: Footer, organizational branding
+
+1.3  Rajagiri College Logo (rajagiri_logo.png)
+     Dimensions: 400x400px minimum
+     Format: PNG with transparent background
+     Usage: Footer, navbar, institutional branding
+
+1.4  Favicon (Favicon-192.ico)
+     Dimensions: 192x192px (also provide 32x32px, 64x64px)
+     Format: ICO or PNG
+     Usage: Browser tab icon
+
+1.5  Footer Logo (footer_logo.png)
+     Dimensions: 300x150px
+     Format: PNG with transparent background
+     Usage: Footer section
+
+================================================================================
+2. HERO & BANNER IMAGES
+================================================================================
+
+2.1  Conference Banner (banner.png)
+     Dimensions: 1920x600px
+     Format: PNG or JPG
+     Usage: Hero/banner section
+
+2.2  Conference Banner Combined (banner_combined.png)
+     Dimensions: 2400x800px
+     Format: PNG
+     Usage: Extended banner display
+
+================================================================================
+3. ABOUT SECTION IMAGES
+================================================================================
+
+3.1  Conference Attendees (conference_attendees.jpg)
+     Dimensions: 1920x1280px
+     Format: JPG (optimize to 500-800 KB max)
+     Usage: Main about section, host slider
+     Note: High-quality conference photo showing diversity and engagement
+
+3.2  About Conference (about_conference.jpg)
+     Dimensions: 800x600px
+     Format: JPG
+     Usage: About section
+
+3.3  About Image (about_image.jpg)
+     Dimensions: 1200x800px
+     Format: JPG
+     Usage: About section
+
+3.4  About Image PNG (about_image1.png)
+     Dimensions: 1000x800px
+     Format: PNG
+     Usage: About section with transparency
+
+================================================================================
+4. PEOPLE & SPEAKERS
+================================================================================
+
+4.1  CEO/Leadership Image (ceo_image.png)
+     Dimensions: 600x800px (portrait)
+     Format: PNG with clean background
+     Usage: Welcome section, CEO message
+     Note: Professional headshot
+
+4.2  Principal Image (principal_saju.png)
+     Dimensions: 600x800px (portrait)
+     Format: PNG
+     Usage: Leadership section
+     Note: Professional headshot
+
+4.3  Speaker Images (assets/speakers/)
+     - speaker1.jpg: 600x600px (square) or 500x700px (portrait)
+     - speaker2.jpg: 600x600px (square) or 500x700px (portrait)
+     - speaker3.png: 600x600px (square) or 500x700px (portrait)
+     - speaker4.jpg: 600x600px (square) or 500x700px (portrait)
+     
+     Format: JPG or PNG
+     Usage: Keynote speakers section, speaker cards
+     Note: Professional headshots, consistent aspect ratio, clean backgrounds
+
+================================================================================
+5. HOST SLIDER IMAGES
+================================================================================
+
+5.1  Awards Ceremony (awards_ceremony.jpg / host_slide_1.jpg)
+     Dimensions: 1200x800px or 1600x900px (16:9 aspect)
+     Format: JPG
+     Usage: Host slider - slide 1
+
+5.2  Host Slide 2 (host_slide_2.jpg)
+     Dimensions: 1200x800px or 1600x900px (16:9 aspect)
+     Format: JPG
+     Usage: Host slider - slide 2
+
+5.3  Host Slide 3 (host_slide_3.png)
+     Dimensions: 1600x900px (16:9 aspect)
+     Format: PNG or JPG (optimize to <500 KB)
+     Usage: Host slider - slide 3
+
+5.4  Conference Attendees (reused from section 3.1)
+     Usage: Host slider - slide 4
+
+================================================================================
+6. CALL-TO-ACTION CARD IMAGES
+================================================================================
+
+6.1  Registration Card (card_registration.png)
+     Dimensions: 800x600px or 1000x750px
+     Format: PNG
+     Usage: CTA cards - Registration
+
+6.2  Abstracts Card (card_abstracts.png)
+     Dimensions: 800x600px or 1000x750px
+     Format: PNG
+     Usage: CTA cards - Submit Abstract
+
+6.3  Location Card (card_location.png)
+     Dimensions: 800x600px or 1000x750px
+     Format: PNG
+     Usage: CTA cards - Location
+
+================================================================================
+7. LOCATION & VENUE IMAGES
+================================================================================
+
+7.1  Rajagiri Campus Images
+     - rajagiri_left.png: 1200x800px, PNG
+     - rajagiri_center.png: 1200x800px, PNG
+     - rajagiri_right.png: 1200x800px, PNG
+     Usage: Campus showcase, parallax effects
+
+7.2  About Munnar (about_munnar.jpg)
+     Dimensions: 1600x1000px
+     Format: JPG
+     Usage: Regional attractions
+
+7.3  Kerala Imagery
+     - kerala.png: 1920x1080px, JPG (convert from PNG, optimize to <600 KB)
+     - kathakali.png: 1400x900px, JPG (convert from PNG, optimize to <600 KB)
+     Usage: Cultural/regional content, history page
+
+7.4  World Map (world.png)
+     Dimensions: 1200x800px
+     Format: PNG
+     Usage: International delegates section
+
+================================================================================
+8. PREVIOUS CONFERENCE LOCATIONS (History Page)
+================================================================================
+
+8.1  Singapore (singapore.png)
+     Dimensions: 1600x900px
+     Format: JPG (convert from PNG, optimize to <400 KB)
+     Usage: Conference history
+
+8.2  York (york.png)
+     Dimensions: 1600x900px
+     Format: JPG (convert from PNG, optimize to <400 KB)
+     Usage: Conference history
+
+8.3  Melbourne (melbourne.png)
+     Dimensions: 1600x900px
+     Format: JPG (convert from PNG, optimize to <400 KB)
+     Usage: Conference history
+
+================================================================================
+9. MINISTERIAL/SPECIAL GUESTS
+================================================================================
+
+9.1  Ministerial Opening (ministerial.png)
+     Dimensions: 600x800px (portrait)
+     Format: PNG
+     Usage: Ministerial opening page
+     Note: Official dignitary photo
+
+================================================================================
+10. ATTRACTIONS & TOURISM IMAGES (assets/attractions/)
+================================================================================
+
+10.1   Museum of Kerala History (Museum_of_Kerala_History_1_l_506_900.avif)
+       Dimensions: 1200x800px
+       Format: AVIF or JPG
+
+10.2   Hill Palace Museum (hill_palace_museum_thripunithura20131031104553_182_1.jpg)
+       Dimensions: 1200x800px
+       Format: JPG
+
+10.3   Fort Kochi Fishing Net (fort-kochi-fishing-net.jpg)
+       Dimensions: 1600x1000px
+       Format: JPG (optimize to <500 KB)
+
+10.4   Marine Drive Kochi (Marine_Drive_Kochi_Night_View_DSW.jpg)
+       Dimensions: 1600x900px
+       Format: JPG
+
+10.5   Wonderla Amusement Park (wonderla.jpg)
+       Dimensions: 1200x800px
+       Format: JPG
+
+10.6   Lulu Mall (lulu-mall.webp)
+       Dimensions: 1200x800px
+       Format: WebP or JPG
+
+10.7   Cherai Beach (Cherai-Beach.jpg)
+       Dimensions: 1600x900px
+       Format: JPG
+
+10.8   Kathakali Cultural (kathakali.jpg)
+       Dimensions: 1400x900px
+       Format: JPG (optimize to <600 KB)
+
+10.9   Jewish Town (jew-town.jpg)
+       Dimensions: 1600x1000px
+       Format: JPG (optimize to <400 KB)
+
+10.10  Synagogue (synagogue.jpg)
+       Dimensions: 1400x900px
+       Format: JPG (optimize to <400 KB)
+
+10.11  Backwaters (backwaters.jpg)
+       Dimensions: 1600x900px
+       Format: JPG
+
+10.12  Ernakulam Fishing Net (ernakulam-fishing-net.webp)
+       Dimensions: 800x600px
+       Format: WebP or JPG
+
+10.13  Tuk Tuk (tuk_tuk.jpg)
+       Dimensions: 1200x800px
+       Format: JPG
+
+================================================================================
+11. HOTEL ACCOMMODATION IMAGES (assets/hotel/)
+================================================================================
+
+11.1   Mount Mist Hotel (mountmist.webp)
+       Dimensions: 1200x800px
+       Format: WebP or JPG
+
+11.2   Nexus Hotel (nexus.webp)
+       Dimensions: 1200x800px
+       Format: WebP or JPG
+
+11.3   Loft Hotel (loft.avif)
+       Dimensions: 1200x800px
+       Format: AVIF or JPG
+
+11.4   Marriott Hotel (marriatt.jpg)
+       Dimensions: 1200x800px
+       Format: JPG
+
+11.5   Holiday Inn (holiday-inn.jpg)
+       Dimensions: 1200x800px
+       Format: JPG
+
+11.6   Novotel (novotel-1.webp)
+       Dimensions: 1200x800px
+       Format: WebP or JPG
+
+11.7   Blooms Hotel (blooms.webp)
+       Dimensions: 1200x800px
+       Format: WebP or JPG
+
+11.8   Olive Hotel (olive.avif)
+       Dimensions: 1200x800px
+       Format: AVIF or JPG
+
+11.9   Clarion Hotel (clarion.jpg)
+       Dimensions: 1200x800px
+       Format: JPG
+
+11.10  Four Points Hotel (four-points.jpg)
+       Dimensions: 1200x800px
+       Format: JPG
+
+11.11  Generic Hotel Room (hotel_room.png)
+       Dimensions: 1200x800px
+       Format: JPG (convert from PNG)
+
+================================================================================
+12. COMMITTEE MEMBER PHOTOS (assets/committee/)
+================================================================================
+
+Internal Committee Photos (8 members):
+- int1.jpg through int8.jpg
+  Dimensions: 600x600px (square, preferred)
+  Format: JPG
+  Note: Professional headshots, consistent lighting and backgrounds
+
+External Committee Photos (4 members):
+- ext1.jpg, ext2.jpg, ext3.webp, ext4.jpg
+  Dimensions: 600x600px (square, preferred)
+  Format: JPG or WebP
+  Note: Professional headshots, ext2.jpg needs optimization
+
+Internal Placeholder:
+- internal_placeholder.jpg
+  Dimensions: 600x600px
+  Format: JPG
+  Usage: Placeholder for missing photos
+
+================================================================================
+13. DECORATIVE ELEMENTS
+================================================================================
+
+13.1  Footer Top Shape (footer_top_shape.png)
+      Format: PNG with transparency
+      Usage: Footer decorative element
+
+13.2  Footer Bottom Shape (footer_bottom_shape.png)
+      Format: PNG with transparency
+      Usage: Footer decorative element
+
+================================================================================
+14. MISCELLANEOUS
+================================================================================
+
+14.1  About NETS (about_nets.jpg)
+      Dimensions: 800x600px
+      Format: JPG
+
+14.2  Excellence Award (excellentia_award.jpg)
+      Dimensions: 1200x800px
+      Format: JPG
+
+================================================================================
+OPTIMIZATION PRIORITIES
+================================================================================
+
+The following images require urgent optimization (current → target size):
+
+1. conference_attendees.jpg (8 MB → 500-800 KB)
+2. kerala.png (5 MB → 400-600 KB, convert to JPG)
+3. melbourne.png (5 MB → 300-400 KB, convert to JPG)
+4. york.png (4 MB → 300-400 KB, convert to JPG)
+5. fort-kochi-fishing-net.jpg (4 MB → 400-500 KB)
+6. jew-town.jpg (3 MB → 300-400 KB)
+7. singapore.png (2.6 MB → 300-400 KB, convert to JPG)
+8. kathakali.png (2 MB → 400-500 KB, convert to JPG)
+
+================================================================================
+GENERAL SPECIFICATIONS
+================================================================================
+
+Color Profile: sRGB
+JPEG Quality: 85-90%
+File Naming: Lowercase with underscores/hyphens
+All portrait photos: Clean, professional backgrounds
+All landscape photos: High quality, well-composed
+
+================================================================================
