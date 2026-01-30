@@ -43,8 +43,8 @@ class MainFooter extends HTMLElement {
                     position: relative;
                     background-color: var(--footer-bg);
                     color: white;
-                    height: 280px; /* Fixed height for desktop consistency */
-                    min-height: auto;
+                    height: 280px; /* Fixed height requested */
+                    min-height: 280px;
                     overflow: visible;
                     display: flex;
                     flex-direction: column;
@@ -138,7 +138,7 @@ class MainFooter extends HTMLElement {
                 /* Social Icons Styling - Wrapper with tooltips */
                 .social-section {
                     position: absolute;
-                    left: 25px;
+                    left: 14px;
                     bottom: 65px; /* Adjusted to center in dark stripe */
                     z-index: 20; /* Higher z-index */
                 }
@@ -263,7 +263,7 @@ class MainFooter extends HTMLElement {
                 /* Content Grid (Right Side) */
                 .content-section {
                     margin-left: 580px; /* Shifted slightly right from 480px */
-                    padding: 35px 50px 20px;
+                    padding: 25px 50px 20px; /* Reduced top padding */
                     position: relative;
                     z-index: 5;
                     display: grid;
@@ -275,14 +275,14 @@ class MainFooter extends HTMLElement {
                 .footer-col h3 {
                     font-family: 'Outfit', sans-serif;
                     font-size: 1.2rem;
-                    margin-bottom: 20px;
+                    margin-bottom: 15px; /* Reduced specific spacing */
                     color: #C9A227; /* Gold color for headers */
                     text-transform: uppercase;
                     letter-spacing: 1px;
                 }
 
                 .footer-col ul li {
-                    margin-bottom: 12px;
+                    margin-bottom: 8px; /* Reduced spacing */
                 }
 
                 .footer-col ul li a {
