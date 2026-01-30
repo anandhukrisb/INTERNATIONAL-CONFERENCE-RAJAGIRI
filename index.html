@@ -264,20 +264,23 @@
         .hero-text {
             flex: 1;
             max-width: 600px;
+            min-width: 0;
             text-align: left;
         }
 
         .hero-visual {
-            flex: 1;
+            flex: 0 1 auto;
             display: flex;
             justify-content: center;
             align-items: center;
+            max-width: 400px;
         }
 
         .hero-visual img {
-            max-width: 80%;
+            width: 100%;
+            max-width: 400px;
             height: auto;
-            margin-left: 50px;
+            margin-left: 30px;
             /* box-shadow: 0 20px 50px rgba(0,0,0,0.3); */
             /* border-radius: 20px; */
             /* User asked for logo, usually logos don't have box shadow or border radius unless card style. keeping it clean for now. */
