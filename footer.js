@@ -45,7 +45,7 @@ class MainFooter extends HTMLElement {
                     color: white;
                     height: 280px; /* Fixed height requested */
                     min-height: 280px;
-                    overflow: visible;
+                    overflow: hidden; /* Prevent content overflow */
                     display: flex;
                     flex-direction: column;
                     padding-bottom: 0;
