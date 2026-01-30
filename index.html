@@ -165,9 +165,6 @@
 
         html {
             overflow-x: hidden;
-            /* Improve zoom handling */
-            -webkit-text-size-adjust: 100%;
-            -ms-text-size-adjust: 100%;
         }
 
         body {
@@ -179,25 +176,9 @@
             /* Make page tall enough to scroll */
             overflow-x: hidden;
             width: 100%;
-            /* Improve zoom stability */
-            min-width: 320px;
-            position: relative;
         }
 
-        /* Global image constraints for zoom stability */
-        img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        /* Prevent containers from breaking on zoom */
-        section,
-        div[class*="section"],
-        div[class*="container"] {
-            max-width: 100%;
-            overflow-x: hidden;
-        }
+        /* Floating Navbar Component */
 
         /* Floating Navbar Component */
         floating-navbar {
@@ -207,11 +188,6 @@
             top: 0;
             left: 0;
             z-index: 1000;
-            max-width: 100%;
-            overflow: visible;
-            /* Allow navbar dropdown to show properly */
-            contain: layout style;
-            /* Improve zoom handling */
         }
 
 
@@ -232,8 +208,6 @@
             border-top-right-radius: 40px;
             border-top-left-radius: 40px;
             border-bottom-left-radius: 40px;
-            contain: layout;
-            /* Improve zoom containment */
         }
 
         /* Diagonal Stripes Background */
@@ -285,8 +259,6 @@
             align-items: center;
             justify-content: space-between;
             gap: 60px;
-            overflow: visible;
-            /* Ensure content isn't clipped on zoom */
         }
 
         .hero-text {
@@ -304,7 +276,6 @@
 
         .hero-visual img {
             max-width: 80%;
-            width: auto;
             height: auto;
             margin-left: 50px;
             /* box-shadow: 0 20px 50px rgba(0,0,0,0.3); */
@@ -312,8 +283,6 @@
             /* User asked for logo, usually logos don't have box shadow or border radius unless card style. keeping it clean for now. */
             filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
             opacity: 0;
-            object-fit: contain;
-            /* Maintain aspect ratio on zoom */
         }
 
         /* Start animation only after loading */
