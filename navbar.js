@@ -83,10 +83,13 @@ class FloatingNavbar extends HTMLElement {
                     left: 50%;
                     transform: translateX(-50%);
                     width: 96.5%;
+                    max-width: 100%;
+                    min-width: 320px; /* Prevent collapse on zoom */
                     height: 55px;
                     background-color: #FDFBF7;
                     z-index: 999;
                     pointer-events: none; /* Allow clicks through backdrop */
+                    contain: layout style; /* Improve containment for zoom */
                 }
 
                 .floating-navbar {
@@ -95,6 +98,8 @@ class FloatingNavbar extends HTMLElement {
                     left: 50%;
                     transform: translateX(-50%);
                     width: 97%; /* User defined */
+                    max-width: 100%;
+                    min-width: 320px; /* Prevent collapse on zoom */
                     height: 90px; /* User defined */
                     background: linear-gradient(to right, #F5F7F6 5%, transparent 5%), linear-gradient(135deg, #1d0a3f 0%, #4b1c9b 100%);
                     border-radius: 50px;
@@ -104,6 +109,8 @@ class FloatingNavbar extends HTMLElement {
                     z-index: 1000;
                     border: none;
                     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+                    contain: layout style; /* Improve containment for zoom */
+                    will-change: transform; /* Optimize rendering */
                 }
 
                 .navbar-logo {
@@ -112,12 +119,15 @@ class FloatingNavbar extends HTMLElement {
                     display: flex;
                     align-items: center;
                     padding-left: 0;
+                    flex-shrink: 0; /* Prevent logo from shrinking on zoom */
+                    overflow: hidden; /* Prevent overflow on zoom */
                 }
 
                 /* Base Logo (Conference) */
                 .logo-base {
                     height: 100%;
                     width: auto;
+                    max-width: 100%; /* Prevent overflow on zoom */
                     object-fit: cover;
                     border-top-left-radius: 50px;
                     border-bottom-left-radius: 50px;
@@ -132,6 +142,7 @@ class FloatingNavbar extends HTMLElement {
                     z-index: 10;
                     height: 50%; /* Smaller than base */
                     width: auto;
+                    max-width: 100%; /* Prevent overflow on zoom */
                     object-fit: contain;
                     top: 50%;
                     transform: translateY(-50%);
@@ -165,9 +176,10 @@ class FloatingNavbar extends HTMLElement {
                     height: 100%;
                     align-items: center;
                     /* Priority+ Flex Behavior */
-                    /* overflow: hidden; Removed to fix dropdown overlap */
+                    overflow: visible; /* Ensure dropdowns are visible on zoom */
                     flex: 1;
                     justify-content: flex-end;
+                    min-width: 0; /* Allow flex item to shrink if needed */
                 }
 
                 .navbar-links a, .mobile-links a {
