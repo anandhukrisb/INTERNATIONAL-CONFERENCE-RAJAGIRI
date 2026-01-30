@@ -449,6 +449,14 @@ class FloatingNavbar extends HTMLElement {
                     text-decoration: none;
                 }
 
+                .title-short { display: none; }
+                .title-long { display: inline; }
+
+                @media (max-width: 380px) {
+                    .title-long { display: none; }
+                    .title-short { display: inline; }
+                }
+
                 /* Logo container specifically for mobile view */
                 .logo-container-mobile {
                     display: none;
@@ -520,7 +528,10 @@ class FloatingNavbar extends HTMLElement {
                     </a>
                 </div>
 
-                <a href="index.html" class="mobile-title">2027 ICSWHMH</a>
+                <a href="index.html" class="mobile-title">
+                    <span class="title-long">2027 ICSWHMH</span>
+                    <span class="title-short">ICSWHMH</span>
+                </a>
 
                 <div class="navbar-logo">
                     <!-- Base Logo -->
