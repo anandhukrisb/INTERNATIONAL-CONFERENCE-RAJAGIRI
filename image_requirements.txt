@@ -200,57 +200,72 @@ All logo images listed below MUST be provided with transparent backgrounds
 10. ATTRACTIONS & TOURISM IMAGES (assets/attractions/)
 ================================================================================
 
-10.1   Museum of Kerala History (Museum_of_Kerala_History_1_l_506_900.avif)
-       Dimensions: 1200x800px
-       Format: AVIF or JPG
+**Category 1 - Hero/Featured Images**
+- Dimensions: 2560×1440px minimum
+- Aspect Ratio: 16:9 (landscape)
+- Format: WebP preferred, JPEG acceptable
+- Subject centered preferred
 
-10.2   Hill Palace Museum (hill_palace_museum_thripunithura20131031104553_182_1.jpg)
-       Dimensions: 1200x800px
-       Format: JPG
+10.1   Fort Kochi - Chinese Fishing Nets
+       Sunset view preferred
+       Dimensions: 2560×1440px
+       Format: WebP/JPEG
 
-10.3   Fort Kochi Fishing Net (fort-kochi-fishing-net.jpg)
-       Dimensions: 1600x1000px
-       Format: JPG (optimize to <500 KB)
+10.2   Mattancherry - Paradesi Synagogue or Dutch Palace
+       Paradesi Synagogue or Dutch Palace
+       Dimensions: 2560×1440px
+       Format: WebP/JPEG
 
-10.4   Marine Drive Kochi (Marine_Drive_Kochi_Night_View_DSW.jpg)
-       Dimensions: 1600x900px
-       Format: JPG
+10.3   Marine Drive - Night View
+       Night/Evening view of promenade preferred
+       Dimensions: 2560×1440px
+       Format: WebP/JPEG
 
-10.5   Wonderla Amusement Park (wonderla.jpg)
-       Dimensions: 1200x800px
-       Format: JPG
+10.4   Cherai Beach
+       Scenic beach view
+       Dimensions: 2560×1440px
+       Format: WebP/JPEG
 
-10.6   Lulu Mall (lulu-mall.webp)
-       Dimensions: 1200x800px
-       Format: WebP or JPG
+10.5   Kathakali
+       Traditional dance performance
+       Dimensions: 2560×1440px
+       Format: WebP/JPEG
 
-10.7   Cherai Beach (Cherai-Beach.jpg)
-       Dimensions: 1600x900px
-       Format: JPG
+10.6   Jew Town
+       Spice market or antique shops
+       Dimensions: 2560×1440px
+       Format: WebP/JPEG
 
-10.8   Kathakali Cultural (kathakali.jpg)
-       Dimensions: 1400x900px
-       Format: JPG (optimize to <600 KB)
+---
 
-10.9   Jewish Town (jew-town.jpg)
-       Dimensions: 1600x1000px
-       Format: JPG (optimize to <400 KB)
+**Category 2 - Section/Card Images**
+- Dimensions: 1200×900px
+- Aspect Ratio: 4:3 (landscape)
+- Format: WebP preferred
 
-10.10  Synagogue (synagogue.jpg)
-       Dimensions: 1400x900px
-       Format: JPG (optimize to <400 KB)
+10.7   Museum of Kerala History
+       Dimensions: 1200×900px
+       Format: WebP
 
-10.11  Backwaters (backwaters.jpg)
-       Dimensions: 1600x900px
-       Format: JPG
+10.8   Hill Palace Museum, Tripunithura
+       Dimensions: 1200×900px
+       Format: WebP
 
-10.12  Ernakulam Fishing Net (ernakulam-fishing-net.webp)
-       Dimensions: 800x600px
-       Format: WebP or JPG
+10.9   Fort Kochi Heritage Zone
+       Dimensions: 1200×900px
+       Format: WebP
 
-10.13  Tuk Tuk (tuk_tuk.jpg)
-       Dimensions: 1200x800px
-       Format: JPG
+10.10  Marine Drive & Backwaters
+       Dimensions: 1200×900px
+       Format: WebP
+
+10.11  Wonderla Amusement Park
+       Dimensions: 1200×900px
+       Format: WebP
+
+10.12  Lulu Mall, Edappally
+       Dimensions: 1200×900px
+       Format: WebP
 
 ================================================================================
 11. HOTEL ACCOMMODATION IMAGES (assets/hotel/)
