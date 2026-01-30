@@ -623,29 +623,6 @@
             margin-right: 0;
         }
 
-        /* 4K/Ultra-Wide Screen Optimization */
-        @media (min-width: 2000px) {
-            .hero-stripes {
-                width: 40%;
-                /* Reduce width to prevent overlapping right side */
-                transform: skewX(15deg) translateX(-25%);
-            }
-
-            .hero-visual {
-                justify-content: flex-start;
-                /* Align logo to the left */
-                padding-left: 80px;
-                /* Add breathing room from the text/center */
-            }
-
-            .hero-visual img {
-                margin-left: 0;
-                /* Reset any default margins */
-                max-width: 60%;
-                /* Ensure it doesn't get too massive */
-            }
-        }
-
         /* Mobile Responsiveness - Switches to mobile layout at 1111px and below */
         @media (max-width: 1111px) {
             .hero-section {
@@ -827,7 +804,7 @@
             top: 105px;
             left: 50%;
             transform: translateX(-50%);
-            width: 80%;
+            width: 94%;
             height: 40px;
             color: #1d0a3f;
             /* padding: 10px 0; Removed to fix vertical centering */
@@ -2830,6 +2807,28 @@
 
             .newsletter-dropdown.active {
                 clip-path: circle(150% at 100% 100%);
+            }
+        }
+
+        /* 4K Display Fixes */
+        @media (min-width: 2500px) {
+
+            /* Prevent header stripes from overlapping right content */
+            .hero-stripes {
+                width: 45%;
+                /* Reduce from 55% to prevent overlap */
+                max-width: 1800px;
+            }
+
+            /* Constrain Hero Image Size */
+            .hero-visual img {
+                max-width: 1400px;
+                height: auto;
+            }
+
+            /* Align Image to Right */
+            .hero-visual {
+                justify-content: flex-end;
             }
         }
     </style>
