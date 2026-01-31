@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Official Launch - ICSWHMH 2027</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #1D0A3F;
+            /* Deep Navy Brand Color */
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Outfit', sans-serif;
+            position: relative;
+        }
+
+        /* Ambient Background Glow */
+        .glow {
+            position: absolute;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(201, 162, 39, 0.15) 0%, rgba(29, 10, 63, 0) 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            pointer-events: none;
+            animation: pulseGlow 4s infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 0.8;
+            }
+        }
+
+        /* Launch Button Container */
+        .launch-container {
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        /* The Big Button */
+        .launch-btn {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #C9A227 0%, #D4AF37 100%);
+            /* Brand Yellow with Gradient */
+            border: none;
+            cursor: pointer;
+            box-shadow:
+                0 0 0 15px rgba(201, 162, 39, 0.1),
+                0 0 0 30px rgba(201, 162, 39, 0.05),
+                0 20px 50px rgba(0, 0, 0, 0.5);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .launch-btn::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #FFD700, #C9A227, #B8860B);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .launch-btn:hover {
+            transform: scale(1.05);
+            box-shadow:
+                0 0 0 20px rgba(201, 162, 39, 0.2),
+                0 0 0 40px rgba(201, 162, 39, 0.1),
+                0 30px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        .launch-btn:hover::before {
+            opacity: 1;
+            animation: rotateGradient 2s linear infinite;
+        }
+
+        .launch-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Text Styling */
+        .btn-text {
+            color: #1D0A3F;
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            z-index: 2;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 400;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease forwards 0.5s;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes rotateGradient {
+            0% {
+                filter: hue-rotate(0deg);
+            }
+
+            100% {
+                filter: hue-rotate(360deg);
+            }
+        }
+
+        /* Confetti Canvas */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="glow"></div>
+
+    <div class="launch-container">
+        <button class="launch-btn" id="launchBtn" onclick="launchConfetti()">
+            <span class="btn-text">Launch</span>
+        </button>
+        <div class="subtitle">ICSWHMH 2027 Official Website</div>
+    </div>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        const launchBtn = document.getElementById('launchBtn');
+        let launched = false;
+
+        function launchConfetti() {
+            if (launched) return;
+            // launched = true; // Optional: Allow re-clicking for more fun
+
+            // Haptic feedback if available (mobile)
+            if (navigator.vibrate) navigator.vibrate(200);
+
+            // Button Click Animation reinforcement
+            launchBtn.style.transform = "scale(0.90)";
+            setTimeout(() => {
+                launchBtn.style.transform = "scale(1)";
+            }, 100);
+
+            // Sound Effect (Optional - add audio file if needed, skipping for now to keep it pure HTML/JS)
+
+            // Massive Confetti Explosion
+            var duration = 5 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            var interval = setInterval(function () {
+                var timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                var particleCount = 50 * (timeLeft / duration);
+
+                // Since particles fall down, start a bit higher than random
+                confetti(Object.assign({}, defaults, {
+                    particleCount,
+                    origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+                    colors: ['#C9A227', '#FFFFFF', '#1D0A3F'] // Brand Colors
+                }));
+                confetti(Object.assign({}, defaults, {
+                    particleCount,
+                    origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+                    colors: ['#C9A227', '#FFFFFF', '#1D0A3F'] // Brand Colors
+                }));
+            }, 250);
+
+            // Center Burst
+            confetti({
+                particleCount: 150,
+                spread: 100,
+                origin: { y: 0.6 },
+                colors: ['#C9A227', '#FFFFFF', '#D4AF37']
+            });
+
+            // Redirect to index page after 3 seconds
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>
