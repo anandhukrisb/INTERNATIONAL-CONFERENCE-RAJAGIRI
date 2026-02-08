@@ -74,10 +74,11 @@
 
         .intro-content h1 {
             color: var(--primary-purple);
-            font-size: 4rem;
-            /* Slightly smaller for tighter feel */
+            font-size: clamp(1.8rem, 5vw, 4rem);
+            /* Responsive Single Line */
             margin-bottom: 10px;
             line-height: 1.1;
+            white-space: nowrap;
         }
 
         /* The Deck of Cards Container */
@@ -119,34 +120,33 @@
             margin-right: auto;
         }
 
-        /* Card 1: 2016 */
-        #card-2016 {
-            background: #ffffff;
+        /* Card 1: 2027 (India - Current) - First in Stack */
+        #card-2027 {
+            background: var(--primary-purple);
+            color: white;
             z-index: 2;
             top: 10vh;
         }
 
-        /* Card 2: 2019 */
-        #card-2019 {
-            background: #fdfbf7;
-            /* Slight warmth */
+        /* Card 2: 2024 */
+        #card-2024 {
+            /* Light purple tint */
+            background: #f3f0ff;
             z-index: 3;
             top: 12vh;
-            /* Slight offset for stacking effect */
         }
 
-        /* Card 3: 2024 */
-        #card-2024 {
-            background: #f3f0ff;
-            /* Light purple tint */
+        /* Card 3: 2019 */
+        #card-2019 {
+            /* Slight warmth */
+            background: #fdfbf7;
             z-index: 4;
             top: 14vh;
         }
 
-        /* Card 4: 2027 (India) */
-        #card-2027 {
-            background: var(--primary-purple);
-            color: white;
+        /* Card 4: 2016 */
+        #card-2016 {
+            background: #ffffff;
             z-index: 5;
             top: 16vh;
         }
@@ -215,6 +215,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            justify-content: center;
+            /* Restore margin for flow */
             margin-bottom: 0 !important;
         }
 
@@ -338,9 +340,7 @@
                 padding-bottom: 60px;
             }
 
-            .intro-content h1 {
-                font-size: 2.5rem;
-            }
+
 
             .cards-container {
                 padding-bottom: 0;
@@ -384,18 +384,26 @@
 
             /* Standardized Stack Card for Mobile (2027) */
             #card-2027 {
-                background: transparent !important;
-                margin-bottom: 40px !important;
+                /* Reset to standard box behavior */
                 min-height: auto !important;
-                height: auto !important;
-                display: block !important;
+                background: var(--primary-purple) !important;
+                background-image: none !important;
                 align-items: stretch;
+                /* Fix corner smoothing and artifacts */
+                -webkit-mask-image: -webkit-radial-gradient(white, black);
+                mask-image: radial-gradient(white, black);
+                overflow: hidden;
+                margin-bottom: 40px !important;
+                display: block !important;
             }
 
             #card-2027 .card-inner {
+                /* Standard column layout */
+                justify-content: flex-start;
+                align-items: stretch;
+                padding: 0;
                 display: flex;
                 flex-direction: column;
-                padding: 0;
                 width: 100%;
                 height: auto;
             }
@@ -403,26 +411,37 @@
             #card-2027 .card-visual {
                 display: block !important;
                 height: 300px;
+                /* Match other cards */
                 border-top-left-radius: 30px;
                 border-top-right-radius: 30px;
                 overflow: hidden;
             }
 
+            /* Ensure image respects corners */
+            #card-2027 .card-visual img {
+                border-radius: 30px 30px 0 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
             #card-2027 .card-content {
+                /* Reset all glass/floating effects */
+                flex: auto;
                 width: 100%;
                 margin: 0;
                 border-radius: 0 0 30px 30px;
                 /* Bottom rounded */
-                background: var(--primary-purple);
-                padding: 40px 25px;
                 border: none;
+                /* Remove any inherited borders */
+                background: var(--primary-purple);
+                box-shadow: none;
                 backdrop-filter: none;
                 -webkit-backdrop-filter: none;
-                box-shadow: none;
-                flex: auto;
+                padding: 40px 25px;
+                /* Standard padding */
             }
 
-            /* Fix text colors for the dark background */
             #card-2027 .card-title,
             #card-2027 .card-desc {
                 color: white;
@@ -460,31 +479,47 @@
     <section class="history-intro">
         <div class="intro-content">
             <h4 style="letter-spacing: 3px; margin-bottom: 20px; opacity: 0.8;">OUR JOURNEY</h4>
-            <h1>A Legacy of<br>Global Impact</h1>
+            <h1>A Legacy of Global Impact</h1>
         </div>
     </section>
 
     <!-- Stacking Cards Container -->
     <main class="cards-container">
 
-        <!-- Card 1: 2016 -->
-        <article class="history-card" id="card-2016">
+        <!-- Card 1: 2027 (India) - GLASSMORPHISM REDESIGN -->
+        <article class="history-card" id="card-2027">
             <div class="card-inner">
+                <!-- Visual is now Background -->
                 <div class="card-visual">
-                    <img src="assets/singapore.png" alt="Singapore" loading="lazy">
+                    <!-- Image added for Mobile View (Hidden on Desktop) -->
+                    <img src="assets/kerala.png" alt="Kerala" loading="lazy">
                 </div>
                 <div class="card-content">
-                    <span class="card-year">2016</span>
-                    <span class="card-edition">08 Edition</span>
-                    <h2 class="card-title">Enhancing the<br>Human Condition</h2>
-                    <p class="card-desc">Held at the National University of Singapore, this landmark gathering brought
-                        together global experts to discuss the role of social work in rapidly changing Southeast Asian
-                        societies.</p>
+                    <span class="card-edition">Next Chapter</span>
+                    <h2 class="card-title">Embracing<br>Diversity</h2>
+                    <p class="card-desc">For the first time, the conference arrives in India. Join us at Rajagiri
+                        College of Social Sciences in Kerala to shape the future of global health.</p>
                 </div>
             </div>
         </article>
 
-        <!-- Card 2: 2019 -->
+        <!-- Card 2: 2024 -->
+        <article class="history-card" id="card-2024">
+            <div class="card-inner">
+                <div class="card-visual">
+                    <img src="assets/melbourne.png" alt="Melbourne" loading="lazy">
+                </div>
+                <div class="card-content">
+                    <span class="card-year">2024</span>
+                    <span class="card-edition">10 Edition</span>
+                    <h2 class="card-title">Navigating A<br>Changing World</h2>
+                    <p class="card-desc">Gathered over 1100 delegates at the University of Melbourne. A critical
+                        dialogue on empowering mental health communities in post-pandemic times.</p>
+                </div>
+            </div>
+        </article>
+
+        <!-- Card 3: 2019 -->
         <article class="history-card" id="card-2019">
             <div class="card-inner">
                 <div class="card-visual">
@@ -501,35 +536,19 @@
             </div>
         </article>
 
-        <!-- Card 3: 2024 -->
-        <article class="history-card" id="card-2024">
+        <!-- Card 4: 2016 -->
+        <article class="history-card" id="card-2016">
             <div class="card-inner">
                 <div class="card-visual">
-                    <img src="assets/melbourne.png" alt="Melbourne" loading="lazy">
+                    <img src="assets/singapore.png" alt="Singapore" loading="lazy">
                 </div>
                 <div class="card-content">
-                    <span class="card-year">2024</span>
-                    <span class="card-edition">10 Edition</span>
-                    <h2 class="card-title">Navigating A<br>Changing World</h2>
-                    <p class="card-desc">Gathered over 1100 delegates at the University of Melbourne. A critical
-                        dialogue on empowering mental health communities in post-pandemic times.</p>
-                </div>
-            </div>
-        </article>
-
-        <!-- Card 4: 2027 (India) - GLASSMORPHISM REDESIGN -->
-        <article class="history-card" id="card-2027">
-            <div class="card-inner">
-                <!-- Visual is now Background -->
-                <div class="card-visual">
-                    <!-- Image for standard/mobile layout -->
-                    <img src="assets/kerala.png" alt="Kerala Houseboat" loading="lazy">
-                </div>
-                <div class="card-content">
-                    <span class="card-edition">Next Chapter</span>
-                    <h2 class="card-title">Embracing<br>Diversity</h2>
-                    <p class="card-desc">For the first time, the conference arrives in India. Join us at Rajagiri
-                        College of Social Sciences in Kerala to shape the future of global health.</p>
+                    <span class="card-year">2016</span>
+                    <span class="card-edition">08 Edition</span>
+                    <h2 class="card-title">Enhancing the<br>Human Condition</h2>
+                    <p class="card-desc">Held at the National University of Singapore, this landmark gathering brought
+                        together global experts to discuss the role of social work in rapidly changing Southeast Asian
+                        societies.</p>
                 </div>
             </div>
         </article>
