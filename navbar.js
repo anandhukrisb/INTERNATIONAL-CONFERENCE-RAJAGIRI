@@ -206,6 +206,26 @@ class FloatingNavbar extends HTMLElement {
                     border-radius: 2px;
                 }
 
+                /* Dropdown Icon */
+                .navbar-links a.has-dropdown::after, .mobile-links a.has-dropdown::after {
+                    content: '';
+                    display: inline-block;
+                    margin-left: 6px;
+                    width: 0; 
+                    height: 0; 
+                    border-left: 5px solid transparent;
+                    border-right: 5px solid transparent;
+                    border-top: 5px solid currentColor;
+                    transform-origin: center;
+                    transition: transform 0.3s ease;
+                    margin-top: 2px; 
+                }
+
+                .navbar-links li:hover > a.has-dropdown::after,
+                .mobile-links li.active > a.has-dropdown::after {
+                    transform: rotate(180deg);
+                }
+
                 /* Dropdown Styles */
                 .dropdown-menu {
                     backdrop-filter: blur(10px);
@@ -547,7 +567,7 @@ class FloatingNavbar extends HTMLElement {
                     <li><a href="index.html">2027 ICSWHMH</a></li>
                     <li><a href="history.html">History</a></li>
                     <li>
-                        <a href="#">Program</a>
+                        <a href="#" class="has-dropdown">Program</a>
                         <ul class="dropdown-menu">
                             <li><a href="program.html">Program</a></li>
                             <li><a href="topics.html">Conference Topics</a></li>
@@ -559,7 +579,7 @@ class FloatingNavbar extends HTMLElement {
                     <li><a href="registration.html">Registration</a></li>
                     <li><a href="abstract.html">Abstract Submission</a></li>
                     <li>
-                        <a href="#">Host city</a>
+                        <a href="#" class="has-dropdown">Host city</a>
                         <ul class="dropdown-menu">
                             <li><a href="hotels.html">Hotels</a></li>
                             <li><a href="attractions.html">Attractions</a></li>
