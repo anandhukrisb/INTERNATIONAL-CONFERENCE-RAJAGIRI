@@ -17,8 +17,9 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@400;600;800&display=swap"
-    rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@400;600;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
@@ -26,7 +27,7 @@
         body {
             background-color: #FDFBF7;
             color: #2D3436;
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             overflow-x: hidden;
         }
 
@@ -39,7 +40,7 @@
         .contact-title-section {
             margin-top: 150px;
             margin-bottom: 50px;
-            max-width: 1200px;
+            max-width: 95%;
             margin-left: auto;
             margin-right: auto;
             padding: 0 20px;
@@ -75,7 +76,7 @@
             font-size: 1.1rem;
             color: #444;
             margin-bottom: 60px;
-            max-width: 1200px;
+            max-width: 95%;
             margin-left: auto;
             margin-right: auto;
         }
@@ -84,7 +85,7 @@
         .contact-grid {
             padding: 0 20px;
             margin-bottom: 20px;
-            max-width: 1200px;
+            max-width: 95%;
             margin: 0 auto 40px;
             display: flex;
             flex-wrap: wrap;
@@ -150,6 +151,7 @@
         }
 
         .contact-text h4 {
+            font-family: 'Outfit', sans-serif;
             font-weight: 600;
             color: #FFFFFF;
             margin-bottom: 15px;
@@ -179,203 +181,7 @@
             margin: 10px 80px;
         }
 
-        /* ================= SOCIAL SECTION ================= */
-        .social-section {
-            text-align: center;
-            margin: 10px 0;
-        }
 
-        .social-icons {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            margin-bottom: 25px;
-        }
-
-        .social-icons a {
-            font-size: 2.5rem;
-            color: #333;
-            transition: color 0.3s ease, transform 0.3s ease;
-        }
-
-        .social-icons a:hover {
-            color: #1D0A3F;
-            transform: translateY(-5px);
-        }
-
-        .hashtag-text {
-            font-size: 1.1rem;
-            color: #666;
-        }
-
-        .hashtag-text span {
-            color: #C9A227;
-            /* Closest to the reddish hashtag in image */
-            font-weight: 600;
-        }
-
-       
-        /* ================= FAQ ACCORDION STYLES (MATCH REGISTRATION PAGE) ================= */
-
-            .info-strip {
-                margin-bottom: 25px;
-                background: #FFFFFF;
-                border: 1px solid #ddd;
-                border-radius: 10px;
-                overflow: hidden;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            }
-
-            /* HEADER */
-            .info-header {
-                background-color: #1D0A3F;        /* SAME PURPLE */
-                color: #FFFFFF;                   /* WHITE TEXT */
-                padding: 18px 25px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                font-weight: 600;
-                font-size: 1.1rem;
-                cursor: pointer;
-                border-left: none  /* GOLD ACCENT IF NEEDED */
-            }
-
-            /* REMOVE HOVER GREY */
-            .info-header:hover {
-                background-color: #1D0A3F;
-            }
-
-            /* ICON */
-            .info-header .icon {
-                font-size: 1.4rem;
-                font-weight: bold;
-                color: #FFFFFF;                   /* WHITE ICON */
-                cursor: pointer;
-            }
-
-            /* CONTENT */
-            .info-content {
-                padding: 0 25px;
-                color: #555;
-                font-size: 1rem;
-                line-height: 1.6;
-                max-height: 0;
-                opacity: 0;
-                overflow: hidden;
-                transition: max-height 0.3s ease, opacity 0.3s ease;
-                background-color: #FFFFFF;
-            }
-
-            /* OPEN STATE */
-            .info-strip.expanded .info-content {
-                opacity: 1;
-            }
-
-            /* INNER CONTENT */
-            .info-content-inner {
-                padding: 25px 0;
-            }
-
-
-        /* ================= CUSTOM SOCIAL ICONS ================= */
-        .wrapper {
-            display: inline-flex;
-            list-style: none;
-            padding: 0;
-            margin-bottom: 25px;
-        }
-
-        .wrapper .icon {
-            position: relative;
-            background: #ffffff;
-            border-radius: 50%;
-            padding: 15px;
-            margin: 10px;
-            width: 50px;
-            height: 50px;
-            font-size: 18px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        .wrapper .tooltip {
-            position: absolute;
-            top: 0;
-            font-size: 14px;
-            background: #ffffff;
-            color: #ffffff;
-            padding: 5px 8px;
-            border-radius: 5px;
-            box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            font-family: 'Outfit', sans-serif;
-        }
-
-        .wrapper .tooltip::before {
-            position: absolute;
-            content: "";
-            height: 8px;
-            width: 8px;
-            background: #ffffff;
-            bottom: -3px;
-            left: 50%;
-            transform: translate(-50%) rotate(45deg);
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        .wrapper .icon:hover .tooltip {
-            top: -45px;
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
-
-        .wrapper .icon:hover span,
-        .wrapper .icon:hover .tooltip {
-            text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.1);
-        }
-
-        .wrapper .facebook:hover,
-        .wrapper .facebook:hover .tooltip,
-        .wrapper .facebook:hover .tooltip::before {
-            background: #1877F2;
-            color: #ffffff;
-        }
-
-        .wrapper .twitter:hover,
-        .wrapper .twitter:hover .tooltip,
-        .wrapper .twitter:hover .tooltip::before {
-            background: #1DA1F2;
-            color: #ffffff;
-        }
-
-        .wrapper .instagram:hover,
-        .wrapper .instagram:hover .tooltip,
-        .wrapper .instagram:hover .tooltip::before {
-            background: #E4405F;
-            color: #ffffff;
-        }
-
-        .wrapper .github:hover,
-        .wrapper .github:hover .tooltip,
-        .wrapper .github:hover .tooltip::before {
-            background: #333333;
-            color: #ffffff;
-        }
-
-        .wrapper .youtube:hover,
-        .wrapper .youtube:hover .tooltip,
-        .wrapper .youtube:hover .tooltip::before {
-            background: #CD201F;
-            color: #ffffff;
-        }
 
         /* ================= SUBSCRIBE BUTTON ================= */
         .subscribe-container {
@@ -386,29 +192,47 @@
 
         .btn-subscribe {
             background-color: #C9A227;
-            /* Matching project gold color */
-            color: white;
-            padding: 15px 50px;
+            color: #1D0A3F;
+            padding: 15px 35px;
             border-radius: 50px;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
+            text-transform: capitalize;
+            letter-spacing: normal;
             border: none;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease;
             box-shadow: 0 4px 15px rgba(201, 162, 39, 0.2);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-subscribe::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1D0A3F;
+            z-index: -1;
+            transition: clip-path 0.4s ease-out;
+            clip-path: circle(0% at 0 50%);
+        }
+
+        .btn-subscribe:hover::before {
+            clip-path: circle(150% at 0 50%);
         }
 
         .btn-subscribe:hover {
-            background-color: #b08d20;
             transform: translateY(-3px);
+            color: #C9A227;
             box-shadow: 0 6px 20px rgba(201, 162, 39, 0.3);
-            color: white;
         }
 
         /* ================= MOBILE ================= */
         @media (max-width: 768px) {
             .contact-title-section {
-                margin-top: 120px;
+                margin-top: 110px;
                 margin-left: 0;
                 text-align: center;
             }
@@ -434,7 +258,7 @@
                 flex-direction: column;
                 align-items: center;
                 text-align: center;
-                margin-bottom: 40px;
+                margin-bottom: 20px;
             }
 
             .separator {
@@ -464,9 +288,9 @@
                 </div>
                 <div class="contact-text">
                     <h4>Address</h4>
-                    <p>Rajagiri College of Social Sciences (Autonomous),<br>
-                         Rajagiri P.O, Kalamassery, Cochin,<br>
-                         Kerala, India</p>
+                    <p>Suite 10/Level 1, 285a Crown St,<br>
+                        Surry Hills, NSW, 2010,<br>
+                        Australia</p>
                 </div>
             </div>
         </div>
@@ -479,7 +303,7 @@
                 </div>
                 <div class="contact-text">
                     <h4>Phone</h4>
-                    <p>+91 484 - 2911111 </p>
+                    <p>+ 61 2 8667 0737</p>
                 </div>
             </div>
         </div>
@@ -492,121 +316,41 @@
                 </div>
                 <div class="contact-text">
                     <h4>Email</h4>
-                    <p><a href="mailto:admin@rajagiri.edu">admin@rajagiri.edu</a></p>
+                    <p><a href="mailto:aasw@forumgroupevents.com.au">aasw@forumgroupevents.com.au</a></p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Office Hours Section -->
-    <div class="office-hours-section" style="text-align: center; margin: 40px auto; max-width: 800px; padding: 0 20px;">
-        <div style="background: #f9f5f0; border-left: 4px solid #C9A227; padding: 20px 30px; border-radius: 8px;">
-            <i class="bi bi-clock" style="font-size: 1.5rem; color: #1D0A3F;"></i>
-            <p style="margin: 10px 0 0; color: #555; font-size: 1rem;"><strong>Office Hours:</strong> Monday - Friday,
-                9:00 AM - 5:00 PM (AEDT)</p>
+    <!-- Office Hours & Response Time Section -->
+    <div class="info-row"
+        style="display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; max-width: 95%; margin: 40px auto; padding: 0 20px;">
+        <!-- Office Hours Card -->
+        <div style="flex: 1 1 calc(50% - 15px); min-width: 280px; max-width: 580px;">
+            <div
+                style="background: #f9f5f0; border-left: 4px solid #C9A227; padding: 20px 30px; border-radius: 8px; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+                <i class="bi bi-clock" style="font-size: 1.5rem; color: #1D0A3F;"></i>
+                <p style="margin: 10px 0 0; color: #555; font-size: 1rem;"><strong>Office Hours:</strong> Monday -
+                    Friday,
+                    9:00 AM - 5:00 PM (AEDT)</p>
+            </div>
+        </div>
+        <!-- Response Time Notice -->
+        <div style="flex: 1 1 calc(50% - 15px); min-width: 280px; max-width: 580px;">
+            <div
+                style="background: #f0f7ff; border: 1px solid #C9A227; padding: 20px 30px; border-radius: 8px; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+                <i class="bi bi-info-circle" style="font-size: 1.5rem; color: #1D0A3F;"></i>
+                <p style="margin: 10px 0 0; color: #555; font-size: 0.95rem;">We aim to respond to all inquiries within
+                    2-3
+                    business days. For urgent matters, please call us directly during office hours.</p>
+            </div>
         </div>
     </div>
 
     <hr class="separator">
 
-    <!-- FAQ Section -->
-    <div class="faq-section" style="max-width: 1000px; margin: 60px auto; padding: 0 20px;">
-        <h3 style="text-align: center; color: #1D0A3F; font-size: 2rem; margin-bottom: 40px; font-weight: 600;">
-            Frequently Asked Questions</h3>
-
-        <div class="faq-grid" style="display: flex; flex-direction: column; gap: 20px;">
-
-            <!-- Item 1 -->
-            <div class="info-strip">
-                <div class="info-header">
-                    <span>How do I register for the conference?</span>
-                    <span class="icon">+</span>
-                </div>
-                <div class="info-content">
-                    <div class="info-content-inner">
-                        <p>Visit the Registration page on our website and complete the online form. Early bird rates are
-                            available until [date]. For group registrations, please contact us directly for special
-                            pricing.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 2 -->
-            <div class="info-strip">
-                <div class="info-header">
-                    <span>Can I attend virtually?</span>
-                    <span class="icon">+</span>
-                </div>
-                <div class="info-content">
-                    <div class="info-content-inner">
-                        <p>Yes! The 2027 ICSWHMH is a hybrid event. Virtual attendance options include live-streamed
-                            keynotes, access to select sessions, and networking opportunities. Virtual registration is
-                            available at a reduced rate.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 3 -->
-            <div class="info-strip">
-                <div class="info-header">
-                    <span>When is the abstract submission deadline?</span>
-                    <span class="icon">+</span>
-                </div>
-                <div class="info-content">
-                    <div class="info-content-inner">
-                        <p>Abstract submissions close on [date]. All submissions will be reviewed by our scientific
-                            committee, and you'll receive notification of acceptance by [date].</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 4 -->
-            <div class="info-strip">
-                <div class="info-header">
-                    <span>Are accommodation recommendations available?</span>
-                    <span class="icon">+</span>
-                </div>
-                <div class="info-content">
-                    <div class="info-content-inner">
-                        <p>Yes, we have partnered with several hotels near the venue offering special conference rates.
-                            Visit our Accommodation page for details and booking codes.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 5 -->
-            <div class="info-strip">
-                <div class="info-header">
-                    <span>Will I receive a certificate of attendance?</span>
-                    <span class="icon">+</span>
-                </div>
-                <div class="info-content">
-                    <div class="info-content-inner">
-                        <p>All registered attendees will receive a digital certificate of attendance after the
-                            conference. CPD points may be available for eligible professionals.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 6 -->
-            <div class="info-strip">
-                <div class="info-header">
-                    <span>What is your cancellation policy?</span>
-                    <span class="icon">+</span>
-                </div>
-                <div class="info-content">
-                    <div class="info-content-inner">
-                        <p>Cancellations made 60+ days before receive a full refund minus admin fee. 30-59 days: 50%
-                            refund. Less than 30 days: registration can be transferred to another person.</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
     <!-- Venue Map Section -->
-    <div class="venue-section" style="max-width: 1000px; margin: 60px auto 40px; padding: 0 20px;">
+    <div class="venue-section" style="max-width: 95%; margin: 60px auto 40px; padding: 0 20px;">
         <h3 style="text-align: center; color: #1D0A3F; font-size: 2rem; margin-bottom: 20px; font-weight: 600;">
             Conference Venue</h3>
         <p style="text-align: center; color: #555; margin-bottom: 30px; font-size: 1.05rem;">Rajagiri College of Social
@@ -619,94 +363,21 @@
         </div>
     </div>
 
-    <!-- Response Time Notice -->
-    <div style="max-width: 600px; margin: 40px auto; padding: 0 20px;">
-        <div
-            style="background: #f0f7ff; border: 1px solid #C9A227; padding: 20px; border-radius: 8px; text-align: center;">
-            <i class="bi bi-info-circle" style="font-size: 1.5rem; color: #1D0A3F; margin-bottom: 10px;"></i>
-            <p style="margin: 0; color: #555; font-size: 0.95rem;">We aim to respond to all inquiries within 2-3
-                business days. For urgent matters, please call us directly during office hours.</p>
-        </div>
-    </div>
+
 
     <hr class="separator">
 
-    <div class="social-section">
-        <ul class="wrapper">
-            <li class="icon facebook">
-                <span class="tooltip">Facebook</span>
-                <span><i class="fab fa-facebook-f"></i></span>
-            </li>
-            <li class="icon twitter">
-                <span class="tooltip">Twitter</span>
-                <span><i class="fab fa-twitter"></i></span>
-            </li>
-            <li class="icon instagram">
-                <span class="tooltip">Instagram</span>
-                <span><i class="fab fa-instagram"></i></span>
-            </li>
-            <li class="icon github">
-                <span class="tooltip">Github</span>
-                <span><i class="fab fa-github"></i></span>
-            </li>
-            <li class="icon youtube">
-                <span class="tooltip">Youtube</span>
-                <span><i class="fab fa-youtube"></i></span>
-            </li>
-        </ul>
-        <p class="hashtag-text">Add your voice to the global conversation <span>#ISWMHCMelb2024</span></p>
-    </div>
 
-    <hr class="separator">
 
-    <div class="subscribe-container">
+
+
+    <!-- <div class="subscribe-container">
         <button class="btn btn-subscribe">Subscribe to News</button>
-    </div>
+    </div> -->
 
     <main-footer></main-footer>
+</body>
 
-    <script>
-        function toggleAccordion(header) {
-            const strip = header.parentElement;
-            const content = strip.querySelector('.info-content');
-            const icon = header.querySelector('.icon');
-            const isExpanded = strip.classList.contains('expanded');
-
-            if (isExpanded) {
-                // Collapse
-                content.style.maxHeight = content.scrollHeight + 'px';
-                // Force reflow
-                content.offsetHeight;
-                content.style.maxHeight = '0px';
-                strip.classList.remove('expanded');
-                icon.textContent = '+';
-            } else {
-                // Expand
-                // Optional: Collapse others when one opens (Accordion behavior)
-                // document.querySelectorAll('.info-strip.expanded').forEach(openStrip => {
-                //    if (openStrip !== strip) {
-                //        // close it...
-                //    }
-                // });
-
-                strip.classList.add('expanded');
-                content.style.maxHeight = content.scrollHeight + 'px';
-                icon.textContent = '−';
-
-                // Cleanup after transition
-                content.addEventListener('transitionend', function handler() {
-                    if (strip.classList.contains('expanded')) {
-                        content.style.maxHeight = 'none';
-                    }
-                    content.removeEventListener('transitionend', handler);
-                });
-            }
-        }
-
-        document.querySelectorAll('.info-header').forEach(header => {
-            header.addEventListener('click', () => toggleAccordion(header));
-        });
-    </script>
 </body>
 
 </html>

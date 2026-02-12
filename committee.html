@@ -31,9 +31,9 @@
     }
 
     .committee-section {
-      max-width: 1200px;
-      margin: 80px auto;
-      padding: 40px 20px;
+      max-width: 95%;
+      margin: 80px auto 0;
+      padding: 40px 20px 0;
     }
 
     .section-title {
@@ -116,7 +116,7 @@
 
     .card-footer {
       margin-top: auto;
-      padding: 10px 20px 20px;
+      padding: 0px 0px 50px;
       text-align: center;
     }
 
@@ -124,16 +124,39 @@
       background: #c9a227;
       color: #1d0a3f;
       border: none;
-      padding: 8px 22px;
-      border-radius: 20px;
+      padding: 15px 35px;
+      border-radius: 50px;
       font-size: 0.85rem;
       cursor: pointer;
       font-weight: 600;
-      transition: background 0.3s ease;
+      text-transform: capitalize;
+      letter-spacing: normal;
+      transition: transform 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .toggle-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #FFFFFF;
+      z-index: -1;
+      transition: clip-path 0.4s ease-out;
+      clip-path: circle(0% at 0 50%);
+    }
+
+    .toggle-btn:hover::before {
+      clip-path: circle(150% at 0 50%);
     }
 
     .toggle-btn:hover {
-      background: #fdfbf7;
+      transform: translateY(-3px);
+      color: #1d0a3f;
     }
 
     /* MODAL */
@@ -164,15 +187,15 @@
       padding: 30px;
       position: relative;
 
-      transform: translateY(30px) scale(0.96);
+      transform: translateY(100vh);
       opacity: 0;
       transition:
-        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 0.45s ease;
+        transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0.5s ease;
     }
 
     .modal-overlay.active .modal-content {
-      transform: translateY(0) scale(1);
+      transform: translateY(0);
       opacity: 1;
     }
 
@@ -313,52 +336,68 @@
 
     const internal = [
       [
-        "PROF. FR. SAJU M.D., Ph.D",
-        "Principal & Professor, RCSS",
+        // "PROF. FR. SAJU M.D., Ph.D",
+        // "Principal & Professor, RCSS",
+        "Name Placeholder",
+        "Designation Placeholder",
         "Professor Fr. Saju M.D. is an academic leader with extensive experience in social work education, community development, and mental health. His work emphasises institutional leadership, curriculum innovation, and the integration of academic learning with field-based practice.",
-        "assets/committee/int1.jpg"
+        "assets/committee/internal_placeholder.jpg"
       ],
       [
-        "DR. ANISH K.R.",
-        "Associate Professor, RCSS",
+        // "DR. ANISH K.R.",
+        // "Associate Professor, RCSS",
+        "Name Placeholder",
+        "Designation Placeholder",
         "Dr. Anish K.R. specialises in mental health, addiction studies, and community-based interventions. His teaching and research focus on evidence-informed practice, counselling approaches, and strengthening psychosocial support systems within communities.",
-        "assets/committee/int2.jpg"
+        "assets/committee/internal_placeholder.jpg"
       ],
       [
-        "DR. KIRAN THAMPI",
-        "Associate Professor & Head, RCSS",
-        "Dr. Kiran Thampi’s academic interests include organisational studies, development practice, and international social work. He actively engages in research, faculty mentoring, and academic programme coordination, contributing to institutional growth and quality assurance.",
-        "assets/committee/int3.jpg"
+        // "DR. KIRAN THAMPI",
+        // "Associate Professor & Head, RCSS",
+        "Name Placeholder",
+        "Designation Placeholder",
+        "Dr. Kiran Thampi's academic interests include organisational studies, development practice, and international social work. He actively engages in research, faculty mentoring, and academic programme coordination, contributing to institutional growth and quality assurance.",
+        "assets/committee/internal_placeholder.jpg"
       ],
       [
-        "DR. SUNIROSE I.P.",
-        "Associate Professor, RCSS",
+        // "DR. SUNIROSE I.P.",
+        // "Associate Professor, RCSS",
+        "Name Placeholder",
+        "Designation Placeholder",
         "Dr. Sunirose I.P. focuses on family counselling, gender studies, and community engagement. Her work integrates teaching, research, and field practice, with special emphasis on strengthening family systems and promoting social inclusion.",
-        "assets/committee/int4.jpg"
+        "assets/committee/internal_placeholder.jpg"
       ],
       [
-        "DR. NYCIL ROMIS THOMAS",
-        "Associate Professor, RCSS",
+        // "DR. NYCIL ROMIS THOMAS",
+        // "Associate Professor, RCSS",
+        "Name Placeholder",
+        "Designation Placeholder",
         "Dr. Nycil Romis Thomas is engaged in pedagogy, academic mentoring, and innovative social work practice. His interests include professional ethics, experiential learning, and capacity building for students and practitioners.",
-        "assets/committee/int5.jpg"
+        "assets/committee/internal_placeholder.jpg"
       ],
       [
-        "DR. SHINTO JOSEPH",
-        "Associate Professor, RCSS",
+        // "DR. SHINTO JOSEPH",
+        // "Associate Professor, RCSS",
+        "Name Placeholder",
+        "Designation Placeholder",
         "Dr. Shinto Joseph contributes to institutional development, governance, and academic planning. His academic work supports strategic initiatives aimed at enhancing teaching quality, research productivity, and community outreach.",
-        "assets/committee/int6.jpg"
+        "assets/committee/internal_placeholder.jpg"
       ],
       [
-        "DR. RAJEEV S.P.",
-        "Assistant Professor, RCSS",
+        // "DR. RAJEEV S.P.",
+        // "Assistant Professor, RCSS",
+        "Name Placeholder",
+        "Designation Placeholder",
         "Dr. Rajeev S.P. is involved in research coordination, academic administration, and scholarly activities. His professional interests include social research methods, programme evaluation, and student development.",
-        "assets/committee/int7.jpg"
+        "assets/committee/internal_placeholder.jpg"
       ],
       [
-        "DR. ANIL JOHN",
-        "Assistant Professor, RCSS",
+        // "DR. ANIL JOHN",
+        // "Assistant Professor, RCSS",
+        "Name Placeholder",
+        "Designation Placeholder",
         "Dr. Anil John focuses on curriculum design, professional training, and institutional capacity building. His work emphasises bridging theory and practice in social work education through field-based learning and skill development.",
-        "assets/committee/int8.jpg"
+        "assets/committee/internal_placeholder.jpg"
       ]
     ];
 
@@ -400,9 +439,11 @@
         modal.querySelector("#modalDetails").textContent = e.target.dataset.details;
       }
 
-      if (e.target.classList.contains("modal-close") || e.target === modal) {
+      if (e.target.classList.contains("modal-overlay") || e.target.classList.contains("modal-close") || e.target.closest('.modal-close')) {
         modal.classList.remove("active");
-        document.body.style.overflow = "";
+        setTimeout(() => {
+          document.body.style.overflow = "";
+        }, 500);
       }
     });
 
