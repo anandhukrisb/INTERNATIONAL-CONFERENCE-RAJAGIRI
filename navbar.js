@@ -188,6 +188,15 @@ class FloatingNavbar extends HTMLElement {
                     opacity: 0.8;
                 }
 
+                .dropdown-icon {
+                    margin-left: 5px;
+                    transition: transform 0.3s ease;
+                }
+                
+                li:hover .dropdown-icon {
+                    transform: rotate(180deg);
+                }
+
                 /* Active link styling (Desktop & Tablet) */
                  /* We don't restrict this to min-width: 1419px anymore because we want it for the "visible" links in tablet mode too */
                 .navbar-links a.active {
@@ -204,26 +213,6 @@ class FloatingNavbar extends HTMLElement {
                     height: 3px;
                     background-color: #d4af37;
                     border-radius: 2px;
-                }
-
-                /* Dropdown Icon */
-                .navbar-links a.has-dropdown::after, .mobile-links a.has-dropdown::after {
-                    content: '';
-                    display: inline-block;
-                    margin-left: 6px;
-                    width: 0; 
-                    height: 0; 
-                    border-left: 5px solid transparent;
-                    border-right: 5px solid transparent;
-                    border-top: 5px solid currentColor;
-                    transform-origin: center;
-                    transition: transform 0.3s ease;
-                    margin-top: 2px; 
-                }
-
-                .navbar-links li:hover > a.has-dropdown::after,
-                .mobile-links li.active > a.has-dropdown::after {
-                    transform: rotate(180deg);
                 }
 
                 /* Dropdown Styles */
@@ -567,7 +556,7 @@ class FloatingNavbar extends HTMLElement {
                     <li><a href="index.html">2027 ICSWHMH</a></li>
                     <li><a href="history.html">History</a></li>
                     <li>
-                        <a href="#" class="has-dropdown">Program</a>
+                        <a href="#">Program <svg class="dropdown-icon" xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
                         <ul class="dropdown-menu">
                             <li><a href="program.html">Program</a></li>
                             <li><a href="topics.html">Conference Topics</a></li>
@@ -579,7 +568,7 @@ class FloatingNavbar extends HTMLElement {
                     <li><a href="registration.html">Registration</a></li>
                     <li><a href="abstract.html">Abstract Submission</a></li>
                     <li>
-                        <a href="#" class="has-dropdown">Host city</a>
+                        <a href="#">Host city <svg class="dropdown-icon" xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
                         <ul class="dropdown-menu">
                             <li><a href="hotels.html">Hotels</a></li>
                             <li><a href="attractions.html">Attractions</a></li>
