@@ -19,11 +19,17 @@ class MainFooter extends HTMLElement {
                 :host {
                     display: block;
                     width: 100%;
-                    font-family: 'Outfit', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    --footer-bg: #1d0a3f;
+                    --icon-bg: #ffffff;
+                    --icon-color: #333333;
+                    --icon-hover-color: #ffffff;
                 }
 
                 * {
                     box-sizing: border-box;
+                    margin: 0;
+                    padding: 0;
                 }
 
 
@@ -35,12 +41,14 @@ class MainFooter extends HTMLElement {
 
                 .footer-container {
                     position: relative;
-                    background-color: #1d0a3f;
+                    background-color: var(--footer-bg);
                     color: white;
-                    min-height: 290px; /* Reduced height */
-                    overflow: visible;
+                    height: 280px; /* Fixed height requested */
+                    min-height: 280px;
+                    overflow: hidden; /* Prevent content overflow */
                     display: flex;
                     flex-direction: column;
+                    padding-bottom: 0;
                 }
 
                 /* Background Image Layer */
@@ -50,7 +58,7 @@ class MainFooter extends HTMLElement {
                     right: 0;
                     width: 60%;
                     height: 100%;
-                    background-image: url('assets/about_image.jpg');
+                    /* background-image: url('assets/about_image.jpg'); Removed as per request */
                     background-size: cover;
                     background-position: center;
                     opacity: 0.15;
@@ -78,18 +86,20 @@ class MainFooter extends HTMLElement {
                 }
 
                 .footer-logo {
-                    height: 100px; /* Smaller logos */
+                    height: 90px;
                     width: auto;
                     object-fit: contain;
+                    display: block;
                 }
 
                 .footer-logo:first-child {
-                    height: 150px; /* Bigger first logo */
+                    height: 120px;
+                    transform: translateY(-15px);
                 }
 
                 .footer-logo:last-child {
-                    height: 80px;
-                    margin-left: -15px; /* Shift second logo to the left */
+                    height: 90px;
+                    margin-left: 20px;
                 }
 
                 /* Bottom Left White Section (Copyright) - Desktop with curved shape */
@@ -125,71 +135,158 @@ class MainFooter extends HTMLElement {
                     z-index: 1;
                 }
 
-                /* Social Icons Styling */
-                .social-icons {
+                /* Social Icons Styling - Wrapper with tooltips */
+                .social-section {
                     position: absolute;
-                    left: 50px;
-                    bottom: 75px;
-                    display: flex;
-                    gap: 10px;
-                    z-index: 10;
+                    left: 14px;
+                    bottom: 65px; /* Adjusted to center in dark stripe */
+                    z-index: 20; /* Higher z-index */
                 }
 
-                .social-icon {
-                    width: 40px;
-                    height: 40px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
+                .wrapper {
+                    display: inline-flex;
+                    list-style: none;
+                    padding: 0;
+                    margin: 0;
+                }
+
+                .wrapper a {
+                    color: inherit;
+                    text-decoration: none;
+                }
+
+                .wrapper .icon {
+                    position: relative;
+                    background: var(--icon-bg);
                     border-radius: 50%;
-                    color: white;
-                    font-size: 1.2rem;
+                    padding: 0;
+                    margin: 5px;
+                    width: 42px;
+                    height: 42px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
                     cursor: pointer;
-                    transition: transform 0.3s;
-                }
-
-                .social-icon:hover {
-                    transform: translateY(-3px);
-                }
-
-                .icon-linkedin { background-color: #0077b5; }
-                .icon-facebook { background-color: #1877f2; }
-                .icon-instagram { 
-                    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); 
+                    transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                    color: var(--icon-color) !important; /* Force dark color */
                 }
 
                 .social-svg {
-                    width: 20px;
-                    height: 20px;
-                    fill: white;
+                    width: 18px; /* Slightly smaller for better optical balance */
+                    height: 18px;
+                    fill: currentColor;
+                    transition: fill 0.2s;
+                    display: block; /* Removes any line-height issues */
+                }
+
+                .wrapper .tooltip {
+                    position: absolute;
+                    top: 0;
+                    font-size: 12px;
+                    background: #ffffff;
+                    color: #333;
+                    padding: 4px 7px;
+                    border-radius: 5px;
+                    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+                    opacity: 0;
+                    pointer-events: none;
+                    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                    font-family: 'Outfit', sans-serif;
+                    white-space: nowrap;
+                    font-weight: 600;
+                }
+
+                .wrapper .tooltip::before {
+                    position: absolute;
+                    content: "";
+                    height: 8px;
+                    width: 8px;
+                    background: #ffffff;
+                    bottom: -3px;
+                    left: 50%;
+                    transform: translate(-50%) rotate(45deg);
+                    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                }
+
+                .wrapper .icon:hover .tooltip {
+                    top: -45px;
+                    opacity: 1;
+                    visibility: visible;
+                    pointer-events: auto;
+                }
+
+                .wrapper .icon:hover span,
+                .wrapper .icon:hover .tooltip {
+                    text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.1);
+                }
+
+                .wrapper .icon:hover {
+                    color: var(--icon-hover-color) !important;
+                }
+
+                .wrapper .facebook:hover,
+                .wrapper .facebook:hover .tooltip,
+                .wrapper .facebook:hover .tooltip::before {
+                    background: #1877F2;
+                    color: #ffffff;
+                }
+
+                .wrapper .x:hover,
+                .wrapper .x:hover .tooltip,
+                .wrapper .x:hover .tooltip::before {
+                    background: #000000;
+                    color: #ffffff;
+                }
+
+                .wrapper .instagram:hover,
+                .wrapper .instagram:hover .tooltip,
+                .wrapper .instagram:hover .tooltip::before {
+                    background: #E4405F;
+                    color: #ffffff;
+                }
+
+                .wrapper .linkedin:hover,
+                .wrapper .linkedin:hover .tooltip,
+                .wrapper .linkedin:hover .tooltip::before {
+                    background: #0A66C2;
+                    color: #ffffff;
+                }
+
+                .wrapper .youtube:hover,
+                .wrapper .youtube:hover .tooltip,
+                .wrapper .youtube:hover .tooltip::before {
+                    background: #CD201F;
+                    color: #ffffff;
                 }
 
                 /* Content Grid (Right Side) */
                 .content-section {
                     margin-left: 580px; /* Shifted slightly right from 480px */
-                    padding: 35px 50px 20px;
+                    padding: 25px 50px 20px; /* Reduced top padding */
                     position: relative;
                     z-index: 5;
                     display: grid;
-                    grid-template-columns: 1fr 1fr; /* Contact, Resources */
+                    grid-template-columns: 1.3fr 0.7fr 1fr; /* Contact, Quick Links, Resources */
                     gap: 20px;
                     align-items: start;
                 }
 
                 .footer-col h3 {
+                    font-family: 'Outfit', sans-serif;
                     font-size: 1.2rem;
-                    margin-bottom: 20px;
+                    margin-bottom: 15px; /* Reduced specific spacing */
                     color: #C9A227; /* Gold color for headers */
                     text-transform: uppercase;
                     letter-spacing: 1px;
                 }
 
                 .footer-col ul li {
-                    margin-bottom: 12px;
+                    margin-bottom: 8px; /* Reduced spacing */
                 }
 
                 .footer-col ul li a {
-                    color: rgba(255, 255, 255, 0.85);
+                    color: #ffffff;
                     text-decoration: none;
                     font-size: 0.95rem;
                     transition: color 0.3s;
@@ -224,44 +321,19 @@ class MainFooter extends HTMLElement {
                     text-decoration: none;
                 }
 
-                /* Tablet - Keep all 3 columns horizontal with tighter spacing */
-                @media (max-width: 1100px) and (min-width: 951px) {
-                    .footer-container {
-                        min-height: auto; /* Remove min-height to prevent white space */
-                    }
 
-                    .content-section {
-                        grid-template-columns: 1fr 1fr;
-                        gap: 15px;
-                        padding: 35px 30px 20px;
-                        margin-left: 40%; /* Dynamic margin instead of fixed px */
-                        width: 60%; /* Ensure it fits */
-                        font-size: 0.9rem;
-                    }
-                    
-                    .footer-col h3 {
-                        font-size: 1.1rem;
-                    }
-
-                    .logo-section {
-                        width: 40%; /* Dynamic width */
-                        height: 140px;
-                    }
-
-                    .copyright-section {
-                        width: 50%; /* Dynamic width */
-                    }
-                }
 
                 /* Smaller Tablet - 2 columns with Resources spanning (optional intermediate step) */
                 /* This breakpoint can be removed if direct jump to mobile is preferred */
 
 
-                @media (max-width: 950px) {
+                @media (max-width: 1307px) {
                     .footer-container {
                         min-height: auto;
+                        height: auto;
                         width: 100%;
                         overflow-x: hidden;
+                        padding-bottom: 0;
                     }
 
                     .logo-section {
@@ -278,8 +350,9 @@ class MainFooter extends HTMLElement {
                     .content-section {
                         margin-left: 0;
                         padding: 40px 20px;
-                        grid-template-columns: 1fr 1fr;
-                        gap: 30px 20px;
+                        grid-template-columns: auto auto;
+                        justify-content: center;
+                        gap: 30px 60px;
                         text-align: center;
                         width: 100%;
                     }
@@ -290,24 +363,33 @@ class MainFooter extends HTMLElement {
                         grid-row: 2;
                     }
                     
-
-                    
-                    .col-resources {
-                        grid-column: 1 / -1;
+                    .col-quick-links {
+                        grid-column: 1;
                         grid-row: 1;
+                        text-align: left;
+                        padding-left: 10px;
+                    }
+
+                    .col-resources {
+                        grid-column: 2;
+                        grid-row: 1;
+                        text-align: left;
+                        padding-left: 10px;
                     }
                     
                     .footer-col h3 {
                         margin-bottom: 15px;
                     }
 
-                    .social-icons {
+                    .social-section {
                         position: relative;
                         left: auto;
                         bottom: auto;
+                        display: flex;
                         justify-content: center;
                         margin-top: 20px;
                         width: 100%;
+                        padding-bottom: 20px;
                     }
 
                     .copyright-section {
@@ -326,27 +408,47 @@ class MainFooter extends HTMLElement {
                     }
                 }
             </style>
-
+            
             <div class="footer-container">
                 <div class="footer-bg"></div>
 
                 <!-- Left Top: Logos -->
                 <div class="logo-section">
-                    <img src="assets/footer_logo.png" alt="11th Conference Logo" class="footer-logo">
+                    <img src="assets/icswhmh_logo_new.png" alt="11th Conference Logo" class="footer-logo">
                     <img src="assets/rajagiri_logo.png" alt="RCSS Logo" class="footer-logo">
                 </div>
 
                 <!-- Left Middle: Social Icons -->
-                <div class="social-icons">
-                     <div class="social-icon icon-linkedin">
-                        <svg class="social-svg" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                    </div>
-                    <div class="social-icon icon-facebook">
-                        <svg class="social-svg" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
-                    </div>
-                    <div class="social-icon icon-instagram">
-                        <svg class="social-svg" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                    </div>
+                <div class="social-section">
+                    <ul class="wrapper">
+                        <a href="https://www.facebook.com/Rajagiri-College-of-Social-Sciences-Autonomous-1376623805998150/?fref=ts"
+                            target="_blank" rel="noopener noreferrer">
+                            <li class="icon facebook">
+                                <span class="tooltip">Facebook</span>
+                                <span><svg class="social-svg" viewBox="0 0 320 512"><path d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z"/></svg></span>
+                            </li>
+                        </a>
+
+                        <a href="https://www.instagram.com/rajagiri.official/" target="_blank" rel="noopener noreferrer">
+                            <li class="icon instagram">
+                                <span class="tooltip">Instagram</span>
+                                <span><svg class="social-svg" viewBox="0 0 448 512"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.9 0-184.9zm-49.2 273.9c-14.8 14.8-49.1 16.5-123.8 16.5-74.5 0-109-1.7-123.8-16.5-14.8-14.8-16.5-49.1-16.5-123.8 0-74.5 1.7-109 16.5-123.8 14.8-14.8 49.1-16.5 123.8-16.5 74.5 0 109 1.7 123.8 16.5 14.8 14.8 16.5 49.1 16.5 123.8 0 74.5-1.7 109-16.5 123.8z"/></svg></span>
+                            </li>
+                        </a>
+                        <a href="https://www.linkedin.com/school/rajagiri-college-of-social-sciences-autonomous/posts/?feedView=all"
+                            target="_blank" rel="noopener noreferrer">
+                            <li class="icon linkedin">
+                                <span class="tooltip">LinkedIn</span>
+                                <span><svg class="social-svg" viewBox="0 0 448 512"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg></span>
+                            </li>
+                        </a>
+                        <a href="https://www.youtube.com/@rajagiricollegeofsocialsci9476" target="_blank" rel="noopener noreferrer">
+                            <li class="icon youtube">
+                                <span class="tooltip">Youtube</span>
+                                <span><svg class="social-svg" viewBox="0 0 576 512"><path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"/></svg></span>
+                            </li>
+                        </a>
+                    </ul>
                 </div>
 
                 <!-- Right Content Area: CSS Grid -->
@@ -355,18 +457,29 @@ class MainFooter extends HTMLElement {
                     <div class="footer-col col-contact">
                         <h3>Contact Us</h3>
                         <div class="contact-info">
-                            <p><strong>Forum Group Events & Marketing</strong></p>
-
-                            
+                            <p>Rajagiri College of Social Sciences (Autonomous),<br>
+                                Rajagiri P.O, Kalamassery,<br>
+                                Cochin - 683104, Kerala, India.</p>
                             
                             <p>
-                                Phone: <a href="tel:+6123523423" class="contact-link">+61 23523423</a><br>
-                                Email: <a href="mailto:example@gmail.com.au" class="contact-link">example@gmail.com.au</a>
+                                Phone: <a href="tel:+914842911111" class="contact-link">+91 484 - 2911111</a> / <a href="tel:+914842911507" class="contact-link">2911507</a><br>
+                                Email: <a href="mailto:icswhmh2027@rajagiri.edu" class="contact-link">icswhmh2027@rajagiri.edu</a>
                             </p>
                         </div>
                     </div>
 
-
+                    <!-- Col 2: Quick Links -->
+                    <div class="footer-col col-quick-links">
+                        <h3>Quick Links</h3>
+                        <ul>
+                            <li><a href="abstract.html">Submit Abstract</a></li>
+                            <li><a href="program.html">Program</a></li>
+                            <li><a href="speaker.html">Speakers</a></li>
+                            <li><a href="registration.html">Registration</a></li>
+                            <li><a href="hotels.html">Host City</a></li>
+                            <li><a href="faq.html">FAQ</a></li>
+                        </ul>
+                    </div>
 
                     <!-- Col 3: Resources -->
                     <div class="footer-col col-resources">
@@ -384,7 +497,7 @@ class MainFooter extends HTMLElement {
                 <!-- Left Bottom: Copyright -->
                 <div class="copyright-section">
                     <img src="assets/footer_bottom_shape.png" class="footer-shape-bottom" alt="Footer Shape">
-                    <span class="copyright-text">Copyright © 2025 Rajagiri. All Rights Reserved.</span>
+                    <span class="copyright-text">Copyright © 2026 Rajagiri. All Rights Reserved.</span>
                 </div>
             </div>
         `;

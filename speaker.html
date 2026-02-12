@@ -19,7 +19,9 @@
     rel="stylesheet">
 
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -29,9 +31,9 @@
     }
 
     .speakers-section {
-      max-width: 1200px;
-      margin: 100px auto;
-      padding: 40px 20px;
+      max-width: 95%;
+      margin: 150px auto 0;
+      padding: 40px 20px 0;
     }
 
     .section-title {
@@ -64,7 +66,7 @@
       color: #fff;
       border-radius: 12px;
       border-left: 6px solid #C9A227;
-      box-shadow: 0 10px 25px rgba(0,0,0,.25);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, .25);
       padding: 30px;
       display: flex;
       gap: 25px;
@@ -73,7 +75,7 @@
 
     .speaker-card:hover {
       transform: translateY(-6px);
-      box-shadow: 0 25px 50px rgba(0,0,0,.35);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, .35);
     }
 
     .speaker-card img {
@@ -104,6 +106,7 @@
       text-align: justify;
       display: -webkit-box;
       -webkit-line-clamp: 3;
+      line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
@@ -112,22 +115,46 @@
       background: #C9A227;
       color: #1D0A3F;
       border: none;
-      padding: 8px 22px;
-      border-radius: 20px;
+      padding: 15px 35px;
+      border-radius: 50px;
       font-size: .85rem;
       cursor: pointer;
       font-weight: 600;
+      text-transform: capitalize;
+      letter-spacing: normal;
+      transition: transform 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .read-more-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #FFFFFF;
+      z-index: -1;
+      transition: clip-path 0.4s ease-out;
+      clip-path: circle(0% at 0 50%);
+    }
+
+    .read-more-btn:hover::before {
+      clip-path: circle(150% at 0 50%);
     }
 
     .read-more-btn:hover {
-      background: #FDFBF7;
+      transform: translateY(-3px);
+      color: #1D0A3F;
     }
 
     /* MODAL */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,.7);
+      background: rgba(0, 0, 0, .7);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -150,13 +177,13 @@
       border-radius: 16px;
       padding: 30px;
       position: relative;
-      transform: translateY(30px) scale(.96);
+      transform: translateY(100vh);
       opacity: 0;
-      transition: transform .45s cubic-bezier(.22,1,.36,1), opacity .45s ease;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
     }
 
     .modal-overlay.active .modal-content {
-      transform: translateY(0) scale(1);
+      transform: translateY(0);
       opacity: 1;
     }
 
@@ -210,9 +237,18 @@
     }
 
     @media (max-width: 768px) {
-      .speakers-grid { grid-template-columns: 1fr; }
-      .speaker-card { flex-direction: column; text-align: center; }
-      .speaker-info p { text-align: center; }
+      .speakers-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .speaker-card {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .speaker-info p {
+        text-align: center;
+      }
     }
   </style>
 </head>
@@ -331,9 +367,11 @@
         modal.querySelector("#modalDetails").textContent = e.target.dataset.details;
       }
 
-      if (e.target.classList.contains("modal-close") || e.target === modal) {
+      if (e.target.classList.contains("modal-overlay") || e.target.classList.contains("modal-close") || e.target.closest('.modal-close')) {
         modal.classList.remove("active");
-        document.body.style.overflow = "";
+        setTimeout(() => {
+          document.body.style.overflow = "";
+        }, 500);
       }
     });
 
@@ -346,4 +384,5 @@
   </script>
 
 </body>
+
 </html>
