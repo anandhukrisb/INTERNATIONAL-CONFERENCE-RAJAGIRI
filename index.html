@@ -515,6 +515,13 @@
             color: #1D0A3F;
             /* Dark arrow */
             font-weight: bold;
+            transition: transform 0.3s ease;
+            /* Smooth rotation */
+        }
+
+        .scroll-button.rotate-up::after {
+            transform: rotate(180deg);
+            display: inline-block;
         }
 
         .scroll-button:hover {
@@ -3424,13 +3431,36 @@
         });
 
         // Scroll Button Function
-        // Scroll Button Function
         function scrollToNext() {
-            window.scrollBy({
-                top: 600,
-                behavior: 'smooth'
-            });
+            const btn = document.querySelector('.scroll-button');
+            if (btn && btn.classList.contains('rotate-up')) {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            } else {
+                window.scrollBy({
+                    top: 600,
+                    behavior: 'smooth'
+                });
+            }
         }
+
+        // Scroll Listener for Button Rotation
+        window.addEventListener('scroll', () => {
+            const btn = document.querySelector('.scroll-button');
+            if (!btn) return;
+
+            // Check if we're near the bottom
+            const scrollPosition = window.innerHeight + window.scrollY;
+            const bodyHeight = document.documentElement.scrollHeight;
+
+            if (scrollPosition >= bodyHeight - 100) {
+                btn.classList.add('rotate-up');
+            } else {
+                btn.classList.remove('rotate-up');
+            }
+        });
 
         // Parallax Effect
         const aboutSection = document.querySelector('.about-section');
