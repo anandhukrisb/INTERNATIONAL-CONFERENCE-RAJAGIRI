@@ -639,27 +639,18 @@
         }
 
         /* Individual Images */
+        /* India — Taj Mahal */
         .hi-1 {
-            background-image: url('assets/attractions/fort-kochi-fishing-net.jpg');
+            background-image: url('assets/attractions/taj-mahal.jpg');
         }
 
+        /* Kerala — Kathakali */
         .hi-2 {
-            background-image: url('assets/attractions/synagogue.jpg');
-        }
-
-        .hi-3 {
-            background-image: url('assets/attractions/Marine_Drive_Kochi_Night_View_DSW.jpg');
-        }
-
-        .hi-4 {
-            background-image: url('assets/attractions/Cherai-Beach.jpg');
-        }
-
-        .hi-5 {
             background-image: url('assets/attractions/kathakali.jpg');
         }
 
-        .hi-6 {
+        /* Kochi — Jew Town */
+        .hi-3 {
             background-image: url('assets/attractions/jew-town.jpg');
         }
 
@@ -667,6 +658,60 @@
             .hero-info h1 {
                 font-size: 3rem;
             }
+        }
+
+        /* ================= SECTION NAV ================= */
+        .section-nav {
+            position: sticky;
+            top: 70px;
+            z-index: 100;
+            background: rgba(253, 251, 247, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(201, 162, 39, 0.2);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .section-nav.scrolled {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-nav-pill {
+            padding: 10px 28px;
+            border-radius: 50px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            color: #1D0A3F;
+            background: rgba(29, 10, 63, 0.06);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-nav-pill:hover {
+            background: rgba(201, 162, 39, 0.15);
+            border-color: rgba(201, 162, 39, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .section-nav-pill.active {
+            background: #1D0A3F;
+            color: #C9A227;
+            border-color: #1D0A3F;
+            box-shadow: 0 4px 15px rgba(29, 10, 63, 0.3);
+        }
+
+        .section-nav-pill .pill-emoji {
+            font-size: 1.1rem;
         }
 
         /* ================= ATTRACTIONS SECTION ================= */
@@ -682,7 +727,7 @@
             font-size: 2.5rem;
             color: #1D0A3F;
             text-transform: uppercase;
-            margin-bottom: 20px;
+            margin-bottom: 8px;
             position: relative;
             display: inline-block;
         }
@@ -695,6 +740,16 @@
             background-color: #C9A227;
             margin-top: 12px;
             border-radius: 3px;
+        }
+
+        .section-subtitle {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.15rem;
+            color: #C9A227;
+            font-weight: 600;
+            font-style: italic;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
         }
 
         .section-intro {
@@ -777,6 +832,15 @@
 
         .attraction-card .directions-link:hover {
             color: #1D0A3F;
+        }
+
+        /* ================= SECTION DIVIDER ================= */
+        .section-divider {
+            max-width: 95%;
+            margin: 0 auto;
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(201, 162, 39, 0.4), transparent);
         }
 
         /* ================= CULINARY SECTION ================= */
@@ -895,6 +959,17 @@
             .section-title {
                 font-size: 1.6rem;
             }
+
+            .section-nav {
+                gap: 8px;
+                padding: 12px 15px;
+                flex-wrap: wrap;
+            }
+
+            .section-nav-pill {
+                padding: 8px 18px;
+                font-size: 0.85rem;
+            }
         }
 
         .explore-btn {
@@ -950,63 +1025,33 @@
     <!-- Full Screen Hero Slider -->
     <div class="page-wrap">
         <div class="hero-slider">
-            <!-- Slide 1: Fort Kochi -->
+            <!-- Slide 1: India — Taj Mahal -->
             <div class="slide active">
                 <div class="hero-image hi-1"></div>
                 <div class="hero-info">
-                    <h2>Historic</h2>
-                    <h1>Fort Kochi</h1>
-                    <h3>Iconic Chinese Fishing Nets</h3>
+                    <h2>Explore</h2>
+                    <h1>India</h1>
+                    <h3>The Taj Mahal & Beyond</h3>
                 </div>
             </div>
 
-            <!-- Slide 2: Mattancherry -->
+            <!-- Slide 2: Kerala — Kathakali -->
             <div class="slide">
                 <div class="hero-image hi-2"></div>
                 <div class="hero-info">
-                    <h2>Heritage</h2>
-                    <h1>Mattancherry</h1>
-                    <h3>Dutch Palace & Synagogue</h3>
+                    <h2>Discover</h2>
+                    <h1>Kerala</h1>
+                    <h3>God's Own Country 🌴</h3>
                 </div>
             </div>
 
-            <!-- Slide 3: Marine Drive -->
+            <!-- Slide 3: Kochi — Jew Town -->
             <div class="slide">
                 <div class="hero-image hi-3"></div>
                 <div class="hero-info">
-                    <h2>Scenic</h2>
-                    <h1>Marine Drive</h1>
-                    <h3>Backwaters Walkway</h3>
-                </div>
-            </div>
-
-            <!-- Slide 4: Cherai Beach -->
-            <div class="slide">
-                <div class="hero-image hi-4"></div>
-                <div class="hero-info">
-                    <h2>Golden</h2>
-                    <h1>Cherai Beach</h1>
-                    <h3>Sunsets & Dolphins</h3>
-                </div>
-            </div>
-
-            <!-- Slide 5: Kerala Folklore -->
-            <div class="slide">
-                <div class="hero-image hi-5"></div>
-                <div class="hero-info">
-                    <h2>Cultural</h2>
-                    <h1>Kathakali</h1>
-                    <h3>Kerala Folklore Theatre</h3>
-                </div>
-            </div>
-
-            <!-- Slide 6: Jew Town -->
-            <div class="slide">
-                <div class="hero-image hi-6"></div>
-                <div class="hero-info">
-                    <h2>Shopping</h2>
-                    <h1>Jew Town</h1>
-                    <h3>Antiques & Spices</h3>
+                    <h2>Experience</h2>
+                    <h1>Kochi</h1>
+                    <h3>The Queen of the Arabian Sea</h3>
                 </div>
             </div>
         </div>
@@ -1073,12 +1118,207 @@
     </script>
 
 
-    <!-- ================= ATTRACTIONS NEARBY SECTION ================= -->
-    <section class="attractions-section">
-        <h2 class="section-title">Attractions Nearby</h2>
+    <!-- ================= SECTION NAVIGATION ================= -->
+    <nav class="section-nav" id="sectionNav">
+        <a href="#section-india" class="section-nav-pill active">
+            <span class="pill-emoji">🇮🇳</span> Explore India
+        </a>
+        <a href="#section-kerala" class="section-nav-pill">
+            <span class="pill-emoji">🌴</span> Explore Kerala
+        </a>
+        <a href="#section-kochi" class="section-nav-pill">
+            <span class="pill-emoji">🏙️</span> Explore Kochi
+        </a>
+    </nav>
+
+
+    <!-- ================= EXPLORE INDIA SECTION ================= -->
+    <section class="attractions-section" id="section-india">
+        <h2 class="section-title">Explore India</h2>
         <p class="section-intro">
-            Explore Kochi's rich heritage and natural beauty during your visit. From the historic Fort Kochi to modern
-            shopping destinations, there's something for everyone just a short drive away.
+            India offers a breathtaking tapestry of heritage, nature, and adventure. From the timeless beauty of the Taj
+            Mahal to the wild heart of its national parks, here are some must-visit destinations worth extending your
+            trip for.
+        </p>
+
+        <div class="attractions-grid">
+            <!-- Taj Mahal -->
+            <div class="attraction-card">
+                <img src="assets/attractions/taj-mahal.jpg" alt="Taj Mahal, Agra">
+                <div class="attraction-card-content">
+                    <h3>Taj Mahal</h3>
+                    <span class="distance-badge">Agra, Uttar Pradesh</span>
+                    <p>A UNESCO World Heritage Site and one of the Seven Wonders of the World. This ivory-white marble
+                        mausoleum is the ultimate symbol of love and Mughal architecture.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Taj+Mahal+Agra" target="_blank"
+                        class="directions-link">
+                        Get Directions <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Pink City (Jaipur) -->
+            <div class="attraction-card">
+                <img src="assets/attractions/hawa-mahal-jaipur.jpg" alt="Hawa Mahal, Jaipur">
+                <div class="attraction-card-content">
+                    <h3>Pink City — Jaipur</h3>
+                    <span class="distance-badge">Jaipur, Rajasthan</span>
+                    <p>Known for its stunning pink-hued architecture, Jaipur is home to the iconic Hawa Mahal, Amber
+                        Fort, and the City Palace. A vibrant blend of royalty and culture.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Hawa+Mahal+Jaipur" target="_blank"
+                        class="directions-link">
+                        Get Directions <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Jim Corbett National Park -->
+            <div class="attraction-card">
+                <img src="assets/attractions/jim-corrbet-national-park.jpg" alt="Jim Corbett National Park">
+                <div class="attraction-card-content">
+                    <h3>Jim Corbett National Park</h3>
+                    <span class="distance-badge">Nainital, Uttarakhand</span>
+                    <p>India's oldest national park and a premier tiger reserve. Home to Bengal tigers, elephants, and
+                        over 600 bird species amid the Himalayan foothills.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Jim+Corbett+National+Park" target="_blank"
+                        class="directions-link">
+                        Get Directions <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Manali / Leh -->
+            <div class="attraction-card">
+                <img src="assets/attractions/manali.jpg" alt="Manali-Leh Highway">
+                <div class="attraction-card-content">
+                    <h3>Manali & Leh</h3>
+                    <span class="distance-badge">Himachal Pradesh / Ladakh</span>
+                    <p>The legendary Manali-Leh Highway is one of the most scenic drives on Earth. Snow-capped peaks,
+                        ancient monasteries, and pristine valleys await adventurers.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Manali+Leh+Highway" target="_blank"
+                        class="directions-link">
+                        Get Directions <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Ranthambore National Park -->
+            <div class="attraction-card">
+                <img src="assets/attractions/Tiger_Ranthambore_National_Park.jpg" alt="Ranthambore National Park">
+                <div class="attraction-card-content">
+                    <h3>Ranthambore National Park</h3>
+                    <span class="distance-badge">Sawai Madhopur, Rajasthan</span>
+                    <p>One of the best places in India to spot tigers in the wild. The ancient Ranthambore Fort looms
+                        over the jungle, creating a dramatic backdrop for safaris.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Ranthambore+National+Park" target="_blank"
+                        class="directions-link">
+                        Get Directions <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ================= EXPLORE KERALA SECTION ================= -->
+    <section class="attractions-section" id="section-kerala">
+        <h2 class="section-title">Explore Kerala</h2>
+        <p class="section-subtitle">God's Own Country 🌴</p>
+        <p class="section-intro">
+            Kerala is a lush paradise of backwaters, hill stations, beaches, and waterfalls. Whether you seek
+            tranquility or adventure, these destinations showcase the best of this tropical wonderland.
+        </p>
+
+        <div class="attractions-grid">
+            <!-- Kerala Backwaters -->
+            <div class="attraction-card">
+                <img src="assets/attractions/backwater-Kerala-new.jpg" alt="Kerala Backwaters">
+                <div class="attraction-card-content">
+                    <h3>Kerala Backwaters</h3>
+                    <span class="distance-badge">Alleppey / Kumarakom</span>
+                    <p>A network of serene lagoons, canals, and lakes stretching across Kerala. Experience a traditional
+                        houseboat cruise through palm-lined waterways — truly magical.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Alleppey+Backwaters+Kerala" target="_blank"
+                        class="directions-link">
+                        Get Directions <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Wayanad -->
+            <div class="attraction-card">
+                <img src="assets/attractions/Mountain_Pass_Wayanad.jpg" alt="Wayanad">
+                <div class="attraction-card-content">
+                    <h3>Wayanad</h3>
+                    <span class="distance-badge">Wayanad District</span>
+                    <p>A misty hill district with ancient caves, stunning waterfalls, and wildlife sanctuaries. Edakkal
+                        Caves feature prehistoric carvings dating back thousands of years.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Wayanad+Kerala" target="_blank"
+                        class="directions-link">
+                        Get Directions <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Munnar -->
+            <div class="attraction-card">
+                <img src="assets/attractions/munnar.jpg" alt="Munnar Tea Plantations">
+                <div class="attraction-card-content">
+                    <h3>Munnar</h3>
+                    <span class="distance-badge">Idukki District • ~130 km from Kochi</span>
+                    <p>Rolling hills blanketed with emerald tea plantations. Munnar offers misty mornings, the
+                        Eravikulam
+                        National Park (home to Nilgiri Tahr), and breathtaking viewpoints.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Munnar+Kerala" target="_blank"
+                        class="directions-link">
+                        Get Directions <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Kovalam / Varkala -->
+            <div class="attraction-card">
+                <img src="assets/attractions/kovalam.jpg" alt="Kovalam Beach">
+                <div class="attraction-card-content">
+                    <h3>Kovalam & Varkala</h3>
+                    <span class="distance-badge">Thiruvananthapuram District</span>
+                    <p>Kovalam's crescent-shaped beaches and Varkala's dramatic seaside cliffs are among Kerala's most
+                        iconic coastal destinations, perfect for relaxation and sunsets.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Kovalam+Beach+Kerala" target="_blank"
+                        class="directions-link">
+                        Get Directions <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Athirappilly Falls -->
+            <div class="attraction-card">
+                <img src="assets/attractions/athirappilly-falls.jpg" alt="Athirappilly Falls">
+                <div class="attraction-card-content">
+                    <h3>Athirappilly Falls</h3>
+                    <span class="distance-badge">Thrissur District • ~70 km from Kochi</span>
+                    <p>The "Niagara of India" — Kerala's largest waterfall cascades 80 feet through lush rainforest.
+                        A spectacular sight during the monsoon season and a Bollywood filming favourite.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Athirappilly+Falls+Kerala" target="_blank"
+                        class="directions-link">
+                        Get Directions <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <!-- ================= EXPLORE KOCHI SECTION ================= -->
+    <section class="attractions-section" id="section-kochi">
+        <h2 class="section-title">Explore Kochi</h2>
+        <p class="section-subtitle">The Queen of the Arabian Sea</p>
+        <p class="section-intro">
+            Kochi is a vibrant port city where centuries of history blend with modern energy. From the iconic Chinese
+            Fishing Nets and heritage neighborhoods to world-class shopping, there's something for everyone just a short
+            drive from the conference venue.
         </p>
 
         <div class="attractions-grid">
@@ -1143,6 +1383,21 @@
                 </div>
             </div>
 
+            <!-- Cherai Beach -->
+            <div class="attraction-card">
+                <img src="assets/attractions/Cherai-Beach.jpg" alt="Cherai Beach">
+                <div class="attraction-card-content">
+                    <h3>Cherai Beach</h3>
+                    <span class="distance-badge">25 km • ~50 min drive</span>
+                    <p>A pristine 15-km stretch of golden sand where the backwaters meet the Arabian Sea. Known for
+                        dolphin sightings, stunning sunsets, and a calm swimming-friendly shoreline.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Cherai+Beach+Kochi" target="_blank"
+                        class="directions-link">
+                        Get Directions <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
             <!-- Wonderla -->
             <div class="attraction-card">
                 <img src="assets/attractions/wonderla.jpg" alt="Wonderla Amusement Park">
@@ -1176,7 +1431,8 @@
     </section>
 
 
-    <!-- ================= TASTE OF KERALA SECTION ================= -->
+    <!-- ================= TASTE OF KERALA SECTION (COMMENTED OUT) ================= -->
+    <!--
     <section class="culinary-section">
         <div class="culinary-container">
             <h2 class="section-title">Taste of Kerala</h2>
@@ -1186,7 +1442,6 @@
             </p>
 
             <div class="restaurant-grid">
-                <!-- Paragon Restaurant -->
                 <div class="restaurant-card">
                     <h4>Paragon Restaurant</h4>
                     <div class="cuisine-type">Malabar / Seafood</div>
@@ -1200,7 +1455,6 @@
                     </a>
                 </div>
 
-                <!-- Dhe Puttu -->
                 <div class="restaurant-card">
                     <h4>Dhe Puttu</h4>
                     <div class="cuisine-type">Specialty Puttu</div>
@@ -1214,7 +1468,6 @@
                     </a>
                 </div>
 
-                <!-- Grand Pavilion -->
                 <div class="restaurant-card">
                     <h4>Grand Pavilion</h4>
                     <div class="cuisine-type">Traditional Kerala Syrian Christian</div>
@@ -1227,7 +1480,6 @@
                     </a>
                 </div>
 
-                <!-- Palaaram -->
                 <div class="restaurant-card">
                     <h4>Palaaram</h4>
                     <div class="cuisine-type">Local Snacks & Meals</div>
@@ -1241,7 +1493,6 @@
                 </div>
             </div>
 
-            <!-- Explore More Restaurants CTA -->
             <div style="text-align: center; margin-top: 60px;">
                 <a href="https://www.google.com/maps/search/best+restaurants+near+Kakkanad+Kochi" target="_blank"
                     class="explore-btn">
@@ -1251,6 +1502,7 @@
             </div>
         </div>
     </section>
+    -->
 
 
     <main-footer></main-footer>
@@ -1337,6 +1589,66 @@
                 const threshold = 50; // min distance for swipe
                 if (touchEndX < touchStartX - threshold) nextSlide();
                 if (touchEndX > touchStartX + threshold) prevSlide();
+            }
+
+            // ================= SECTION NAVIGATION =================
+            const sectionNav = document.getElementById('sectionNav');
+            const navPills = document.querySelectorAll('.section-nav-pill');
+            const sections = document.querySelectorAll('.attractions-section');
+
+            // Smooth scroll on pill click
+            navPills.forEach(pill => {
+                pill.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = pill.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        const navHeight = sectionNav ? sectionNav.offsetHeight : 0;
+                        const targetPos = targetSection.offsetTop - navHeight - 80;
+                        window.scrollTo({
+                            top: targetPos,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // Active pill tracking on scroll using IntersectionObserver
+            if (sections.length > 0 && navPills.length > 0) {
+                const observerOptions = {
+                    root: null,
+                    rootMargin: '-30% 0px -60% 0px',
+                    threshold: 0
+                };
+
+                const sectionObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const activeId = entry.target.id;
+                            navPills.forEach(pill => {
+                                pill.classList.remove('active');
+                                if (pill.getAttribute('href') === '#' + activeId) {
+                                    pill.classList.add('active');
+                                }
+                            });
+                        }
+                    });
+                }, observerOptions);
+
+                sections.forEach(section => {
+                    sectionObserver.observe(section);
+                });
+            }
+
+            // Add shadow to section nav on scroll
+            if (sectionNav) {
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 100) {
+                        sectionNav.classList.add('scrolled');
+                    } else {
+                        sectionNav.classList.remove('scrolled');
+                    }
+                }, { passive: true });
             }
         });
     </script>
