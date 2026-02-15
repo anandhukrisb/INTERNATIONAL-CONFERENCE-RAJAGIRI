@@ -556,9 +556,9 @@ class FloatingNavbar extends HTMLElement {
                     <li><a href="index.html">2027 ICSWHMH</a></li>
                     <li><a href="history.html">History</a></li>
                     <li>
-                        <a href="#">Program <svg class="dropdown-icon" xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                        <a href="#">Themes <svg class="dropdown-icon" xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
                         <ul class="dropdown-menu">
-                            <li><a href="program.html">Program</a></li>
+                            <li><a href="themes.html">Themes</a></li>
                             <li><a href="topics.html">Conference Topics</a></li>
                         </ul>
                     </li>
