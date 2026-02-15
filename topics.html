@@ -566,6 +566,20 @@
             .stat-box .number {
                 font-size: 2.8rem;
             }
+
+            /* Topic card adjustments for tablets */
+            .category-header {
+                padding: 20px 25px;
+            }
+
+            .category-header h3 {
+                font-size: 1.3rem;
+            }
+
+            .topic-list {
+                padding: 25px;
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            }
         }
 
         @media (max-width: 768px) {
@@ -617,6 +631,75 @@
             .section-title {
                 font-size: 1.9rem;
             }
+
+            /* ---- Mobile topic card fixes ---- */
+            .topic-category {
+                margin-bottom: 25px;
+                border-left-width: 4px;
+            }
+
+            .category-header {
+                padding: 18px 20px;
+                gap: 12px;
+            }
+
+            .category-icon {
+                width: 42px;
+                height: 42px;
+                min-width: 42px;
+                font-size: 1.25rem;
+            }
+
+            .category-header h3 {
+                font-size: 1.15rem;
+                line-height: 1.3;
+            }
+
+            .topic-list {
+                padding: 20px;
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .topic-item {
+                font-size: 0.95rem;
+                padding-left: 20px;
+            }
+
+            .topic-item::before {
+                font-size: 1.3rem;
+                top: -3px;
+            }
+        }
+
+        /* ---- Extra-small mobile (≤480px) ---- */
+        @media (max-width: 480px) {
+            .category-header {
+                padding: 15px 16px;
+                gap: 10px;
+            }
+
+            .category-icon {
+                width: 36px;
+                height: 36px;
+                min-width: 36px;
+                font-size: 1.1rem;
+            }
+
+            .category-header h3 {
+                font-size: 1.05rem;
+            }
+
+            .topic-list {
+                padding: 16px;
+                gap: 10px;
+            }
+
+            .topic-item {
+                font-size: 0.9rem;
+                padding-left: 18px;
+                line-height: 1.5;
+            }
         }
 
         /* ============ TOPICS GRID ============ */
@@ -662,6 +745,7 @@
         .category-icon {
             width: 50px;
             height: 50px;
+            min-width: 50px;
             background: white;
             border-radius: 50%;
             display: flex;
@@ -670,6 +754,7 @@
             color: var(--accent-gold);
             font-size: 1.5rem;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            flex-shrink: 0;
         }
 
         .topic-list {
