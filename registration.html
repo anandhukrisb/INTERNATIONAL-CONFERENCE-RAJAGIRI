@@ -599,9 +599,11 @@
     <floating-navbar></floating-navbar>
 
     <!-- Sticky Sidebar Button -->
+    <!--
     <div class="sticky-sidebar-buttons">
         <a href="#" class="sidebar-btn" id="registerBtn">Register Now</a>
     </div>
+    -->
 
     <main class="main-container">
 
@@ -609,6 +611,7 @@
             <h2 id="pageTitle">REGISTRATION</h2>
         </div>
 
+        <!--
         <section class="intro-section">
             <p class="intro-text">
                 Welcome to the registration page for the 11th International Conference for Social Work in Health and
@@ -621,8 +624,11 @@
                     style="color: var(--accent-gold); text-decoration: none;">icswhmh2027@rajagiri.edu</a>.
             </p>
         </section>
+        -->
 
         <!-- Pricing Section -->
+        <!-- Pricing Section -->
+        <!--
         <section class="pricing-section">
             <h2 class="section-header">REGISTRATION FEES</h2>
             <p class="intro-text">
@@ -645,7 +651,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Academics/Field Practitioners - Developed Countries -->
+                        
                         <tr>
                             <td rowspan="3" style="font-weight: 600; vertical-align: middle;">Academics / Field
                                 Practitioners</td>
@@ -655,7 +661,7 @@
                             <td class="price-tag">150 USD</td>
                             <td class="price-tag">500 USD</td>
                         </tr>
-                        <!-- Academics/Field Practitioners - Developing Countries -->
+                        
                         <tr>
                             <td>From Developing Countries</td>
                             <td class="price-tag">250 USD</td>
@@ -663,7 +669,7 @@
                             <td class="price-tag">150 USD</td>
                             <td class="price-tag">300 USD</td>
                         </tr>
-                        <!-- Academics/Field Practitioners - National -->
+                        
                         <tr>
                             <td>National Participants</td>
                             <td class="price-tag">3500 INR</td>
@@ -672,7 +678,7 @@
                             <td class="price-tag">4500 INR</td>
                         </tr>
 
-                        <!-- Students/PhD Scholars - Developed Countries -->
+                        
                         <tr>
                             <td rowspan="3" style="font-weight: 600; vertical-align: middle;">Students / PhD Scholars
                             </td>
@@ -682,7 +688,7 @@
                             <td class="price-tag">150 USD</td>
                             <td class="price-tag">350 USD</td>
                         </tr>
-                        <!-- Students/PhD Scholars - Developing Countries -->
+                        
                         <tr>
                             <td>From Developing Countries</td>
                             <td class="price-tag">200 USD</td>
@@ -690,7 +696,7 @@
                             <td class="price-tag">150 USD</td>
                             <td class="price-tag">250 USD</td>
                         </tr>
-                        <!-- Students/PhD Scholars - National -->
+                        
                         <tr>
                             <td>National Participants</td>
                             <td class="price-tag">2500 INR</td>
@@ -702,7 +708,7 @@
                 </table>
             </div>
 
-            <!-- Notes Section -->
+            
             <div
                 style="margin-top: 30px; padding: 25px; background: #fff9e6; border-left: 4px solid var(--accent-gold); border-radius: 8px;">
                 <p style="margin-bottom: 15px; font-size: 0.95rem; line-height: 1.6; color: var(--text-dark);">
@@ -719,8 +725,12 @@
                 </ul>
             </div>
         </section>
+        -->
+
 
         <!-- What's Included Section -->
+        <!-- What's Included Section -->
+        <!--
         <section class="info-section" style="margin-top: 60px; margin-bottom: 60px;">
             <h2 class="section-header">WHAT'S INCLUDED</h2>
             <div class="inclusions-grid">
@@ -746,106 +756,117 @@
                 </div>
             </div>
         </section>
+        -->
 
         <section class="registration-form-section">
 
+            <div style="text-align: center; padding: 40px 20px;">
+                <h3
+                    style="font-family: 'Outfit', sans-serif; color: var(--primary-purple); font-size: 1.5rem; margin-bottom: 20px;">
+                    Registration is not available for now</h3>
+                <p style="margin-bottom: 30px; color: var(--text-muted);">Please visit the abstract submission page for
+                    more details.</p>
+                <a href="abstract.html" class="btn-register" style="margin-top: 0;">Go to Abstract Page</a>
+            </div>
+
+            <!--
             <h2 class="section-header">REGISTRATION FORM</h2>
             <form action="#" method="POST">
-                <!-- Personal Details -->
-                <div class="form-row">
-                    <div class="form-group" style="flex: 0.2;">
-                        <label for="title" class="form-label">Title</label>
-                        <select id="title" name="title" class="form-control" required>
-                            <option value="" disabled selected>Select</option>
-                            <option value="Mr">Mr</option>
-                            <option value="Ms">Ms</option>
-                            <option value="Mrs">Mrs</option>
-                            <option value="Dr">Dr</option>
-                            <option value="Prof">Prof</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="firstName" class="form-label">First Name</label>
-                        <input type="text" id="firstName" name="firstName" class="form-control" placeholder="Alan"
-                            required>
-                    </div>
-                    <div class="form-group">
-                        <label for="lastName" class="form-label">Last Name</label>
-                        <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Wake"
-                            required>
-                    </div>
-                </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="organization" class="form-label">Organization / Institution</label>
-                        <input type="text" id="organization" name="organization" class="form-control"
-                            placeholder="University / Company Name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="country" class="form-label">Country</label>
-                        <select id="country" name="country" class="form-control" required>
-                            <option value="" disabled selected>Select Country</option>
-                            <option value="Australia">Australia</option>
-                            <option value="India">India</option>
-                            <option value="USA">USA</option>
-                            <option value="UK">UK</option>
-                            <option value="Canada">Canada</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
+            <div class="form-row">
+                <div class="form-group" style="flex: 0.2;">
+                    <label for="title" class="form-label">Title</label>
+                    <select id="title" name="title" class="form-control" required>
+                        <option value="" disabled selected>Select</option>
+                        <option value="Mr">Mr</option>
+                        <option value="Ms">Ms</option>
+                        <option value="Mrs">Mrs</option>
+                        <option value="Dr">Dr</option>
+                        <option value="Prof">Prof</option>
+                    </select>
                 </div>
+                <div class="form-group">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input type="text" id="firstName" name="firstName" class="form-control" placeholder="Alan" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Wake" required>
+                </div>
+            </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="email" class="form-label">Email Address</label>
-                        <input type="email" id="email" name="email" class="form-control"
-                            placeholder="alan.wake.2@example.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone" class="form-label">Phone Number</label>
-                        <input type="tel" id="phone" name="phone" class="form-control" placeholder="+971 55 555 5555">
-                    </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="organization" class="form-label">Organization / Institution</label>
+                    <input type="text" id="organization" name="organization" class="form-control"
+                        placeholder="University / Company Name" required>
                 </div>
+                <div class="form-group">
+                    <label for="country" class="form-label">Country</label>
+                    <select id="country" name="country" class="form-control" required>
+                        <option value="" disabled selected>Select Country</option>
+                        <option value="Australia">Australia</option>
+                        <option value="India">India</option>
+                        <option value="USA">USA</option>
+                        <option value="UK">UK</option>
+                        <option value="Canada">Canada</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
 
-                <!-- Registration Details -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="registrationType" class="form-label">Registration Type</label>
-                        <select id="registrationType" name="registrationType" class="form-control" required>
-                            <option value="" disabled selected>Select Registration Category</option>
-                            <option value="full-in-person">Full In-Person Delegate ($995)</option>
-                            <option value="member">AASW Member Rate ($850)</option>
-                            <option value="student">Student Registration ($450)</option>
-                            <option value="lrc">Low Resource Country ($250)</option>
-                            <option value="online">Full Online Registration ($500)</option>
-                        </select>
-                    </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-control"
+                        placeholder="alan.wake.2@example.com" required>
                 </div>
+                <div class="form-group">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" class="form-control" placeholder="+971 55 555 5555">
+                </div>
+            </div>
 
-                <div class="form-group" style="margin-bottom: 25px;">
-                    <label for="dietary" class="form-label">Dietary Requirements / Special Needs</label>
-                    <textarea id="dietary" name="dietary" class="form-control" rows="3"
-                        placeholder="Please specify any dietary requirements or accessibility needs..."></textarea>
-                </div>
 
-                <div class="checkbox-group" style="margin-bottom: 30px;">
-                    <input type="checkbox" id="terms" name="terms" required>
-                    <label for="terms" class="checkbox-label">I agree to the <a href="#"
-                            style="color: var(--primary-purple); font-weight: 600;">Terms & Conditions</a> and Privacy
-                        Policy.</label>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="registrationType" class="form-label">Registration Type</label>
+                    <select id="registrationType" name="registrationType" class="form-control" required>
+                        <option value="" disabled selected>Select Registration Category</option>
+                        <option value="full-in-person">Full In-Person Delegate ($995)</option>
+                        <option value="member">AASW Member Rate ($850)</option>
+                        <option value="student">Student Registration ($450)</option>
+                        <option value="lrc">Low Resource Country ($250)</option>
+                        <option value="online">Full Online Registration ($500)</option>
+                    </select>
                 </div>
+            </div>
 
-                <div style="text-align: center;">
-                    <button type="submit" class="btn-register">Submit Registration</button>
-                </div>
+            <div class="form-group" style="margin-bottom: 25px;">
+                <label for="dietary" class="form-label">Dietary Requirements / Special Needs</label>
+                <textarea id="dietary" name="dietary" class="form-control" rows="3"
+                    placeholder="Please specify any dietary requirements or accessibility needs..."></textarea>
+            </div>
+
+            <div class="checkbox-group" style="margin-bottom: 30px;">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms" class="checkbox-label">I agree to the <a href="#"
+                        style="color: var(--primary-purple); font-weight: 600;">Terms & Conditions</a> and Privacy
+                    Policy.</label>
+            </div>
+
+            <div style="text-align: center;">
+                <button type="submit" class="btn-register">Submit Registration</button>
+            </div>
             </form>
+            -->
         </section>
 
+        <!--
         <section class="info-section">
             <h2 class="section-header">MORE INFORMATION:</h2>
 
-            <!-- Registration Confirmation -->
+            
             <div class="info-strip">
                 <div class="info-header">
                     <span>Registration Confirmation</span>
@@ -859,7 +880,7 @@
                 </div>
             </div>
 
-            <!-- Payment Options -->
+            
             <div class="info-strip">
                 <div class="info-header">
                     <span>Payment Options</span>
@@ -875,7 +896,7 @@
                 </div>
             </div>
 
-            <!-- Cancellation/Postponement -->
+            
             <div class="info-strip">
                 <div class="info-header">
                     <span>Cancellation/Postponement</span>
@@ -926,6 +947,7 @@
                 </div>
             </div>
         </section>
+        -->
     </main>
 
     <main-footer></main-footer>
