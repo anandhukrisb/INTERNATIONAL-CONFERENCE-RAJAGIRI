@@ -41,8 +41,74 @@
             display: flex;
             justify-content: center;
             padding-bottom: 50px;
-            margin-top: 120px;
-            /* Space for fixed navbar */
+            margin-top: 40px;
+            /* Adjusted margin since banner is above */
+        }
+
+        /* Banner Section Styles */
+        .raju-banner-section {
+            width: 98vw;
+            margin: 110px auto 0 auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .raju-banner-image {
+            width: 100%;
+            height: 85vh;
+            /* Full screen height minus some space */
+            object-fit: cover;
+            display: block;
+            border-radius: 20px;
+            filter: brightness(0.4);
+            /* Dark filter */
+        }
+
+        .raju-banner-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 2;
+            width: 100%;
+        }
+
+        .raju-banner-logo {
+            width: 180px;
+            height: auto;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+        }
+
+        .raju-banner-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 8rem;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin: 0;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            line-height: 1;
+        }
+
+        @media (max-width: 768px) {
+            .raju-banner-text {
+                font-size: 4rem;
+                letter-spacing: 5px;
+            }
+
+            .raju-banner-logo {
+                width: 120px;
+            }
         }
 
         .rajagiri-hero-container {
@@ -331,6 +397,15 @@
     <!-- Navbar -->
     <floating-navbar></floating-navbar>
 
+    <!-- Banner Section -->
+    <section class="raju-banner-section">
+        <img src="assets/RCSS_Banner.png" alt="RCSS Banner" class="raju-banner-image">
+        <div class="raju-banner-content">
+            <img src="assets/rajagiri_logo.png" alt="Rajagiri Logo" class="raju-banner-logo">
+            <h1 class="raju-banner-text">RAJAGIRI</h1>
+        </div>
+    </section>
+
     <!-- Rajagiri Hero Slider Section -->
     <section class="rajagiri-hero-section">
         <div class="rajagiri-hero-container">
@@ -348,12 +423,7 @@
                 <p>Kalamassery, Kerala</p>
             </div>
 
-            <!-- Static Image Container -->
-            <div class="raj-slider-images">
-                <div class="raj-slide-image-wrapper slide-active" style="opacity: 1; transform: scale(1);">
-                    <img src="assets/rajagiri_hero_bg.png" class="raj-slide-image" alt="Rajagiri College">
-                </div>
-            </div>
+
 
             <!-- Bottom Right: Small Card -->
             <div class="raj-hero-card">
