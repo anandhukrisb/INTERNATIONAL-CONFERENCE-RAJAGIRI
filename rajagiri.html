@@ -38,6 +38,298 @@
             width: 100%;
         }
 
+        /* Rajagiri Hero Slider Section Styles */
+        .rajagiri-hero-section {
+            width: 95vw;
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            padding-bottom: 50px;
+            margin-top: 50px;
+        }
+
+        .rajagiri-hero-container {
+            width: 100%;
+            height: 65vh;
+            min-height: 500px;
+            border-radius: 40px;
+            background: radial-gradient(circle at 50% 100%, #4B2C7A 20%, #1D0A3F 80%);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            transition: background 1s ease;
+        }
+
+        /* Top Left: Name */
+        .raj-hero-name {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            z-index: 5;
+            text-align: left;
+        }
+
+        .raj-hero-name h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        /* Top Right: Designation */
+        .raj-hero-designation {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            z-index: 5;
+            text-align: right;
+            max-width: 300px;
+        }
+
+        .raj-hero-designation p {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #FFFFFF;
+            margin: 0;
+        }
+
+        /* Center: Image */
+        .raj-hero-image-wrapper {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 100%;
+            z-index: 10;
+            display: flex;
+            align-items: flex-end;
+            pointer-events: none;
+        }
+
+        .raj-hero-image {
+            height: 100%;
+            width: auto;
+            object-fit: cover;
+            display: block;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+        }
+
+        /* Bottom Right: Small Card */
+        .raj-hero-card {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            z-index: 15;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 20px;
+            width: 250px;
+            color: #FFFFFF;
+        }
+
+        .raj-hero-card h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0 0 5px 0;
+            color: #C9A227;
+        }
+
+        .raj-hero-card p {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            margin: 0;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.4;
+        }
+
+        /* Bottom Left Placeholder */
+        .raj-hero-placeholder {
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            z-index: 15;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 900px) {
+            .rajagiri-hero-container {
+                height: auto;
+                min-height: 700px;
+                background: linear-gradient(to top, #1D0A3F 60%, #FDFBF7 60%);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-end;
+                padding-top: 100px;
+            }
+
+            .raj-hero-name {
+                top: 20px;
+                left: 20px;
+                text-align: center;
+                width: 100%;
+                left: 0;
+            }
+
+            .raj-hero-designation {
+                top: 60px;
+                right: auto;
+                left: 0;
+                width: 100%;
+                text-align: center;
+                max-width: 100%;
+            }
+
+            .raj-hero-image-wrapper {
+                position: relative;
+                left: auto;
+                transform: none;
+                height: 400px;
+                width: 100%;
+                justify-content: center;
+                margin-top: auto;
+            }
+
+            .raj-hero-card {
+                position: relative;
+                bottom: auto;
+                right: auto;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                width: 90%;
+            }
+
+            .raj-hero-placeholder {
+                display: none;
+            }
+        }
+
+        /* Slider Image Styles */
+        .raj-slider-images {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .raj-slide-image-wrapper {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            height: 100%;
+            display: flex;
+            align-items: flex-end;
+            transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+            opacity: 0;
+            transform-origin: bottom center;
+        }
+
+        .raj-slide-image {
+            height: 100%;
+            width: auto;
+            object-fit: cover;
+            display: block;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+        }
+
+        /* Animation States */
+        .slide-active {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+            left: 50%;
+        }
+
+        .slide-enter {
+            opacity: 0;
+            transform: translate(50%, 50%) scale(0.5);
+            left: 80%;
+        }
+
+        .slide-exit {
+            opacity: 0;
+            transform: translate(-150%, 20%) scale(0.5);
+            left: 20%;
+        }
+
+        /* Text Transitions */
+        .raj-hero-name,
+        .raj-hero-designation,
+        .raj-hero-card {
+            transition: opacity 0.5s ease;
+        }
+
+        /* Navigation Arrows */
+        .raj-hero-prev,
+        .raj-hero-next {
+            z-index: 500;
+            position: absolute;
+            width: 40px;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+            top: 50%;
+        }
+
+        .raj-hero-prev:hover,
+        .raj-hero-next:hover {
+            opacity: 1;
+        }
+
+        .raj-hero-prev {
+            left: 20px;
+            transform: translateY(-50%);
+        }
+
+        .raj-hero-next {
+            right: 20px;
+            transform: translateY(-50%);
+        }
+
+        /* Background Watermarks */
+        .raj-watermark-left,
+        .raj-watermark-right {
+            position: absolute;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.05);
+            z-index: 1;
+            pointer-events: none;
+            white-space: nowrap;
+            line-height: 1;
+        }
+
+        .raj-watermark-left {
+            font-size: 8rem;
+            left: 40px;
+            top: 150px;
+            transform: none;
+            writing-mode: initial;
+        }
+
+        .raj-watermark-right {
+            font-size: 4rem;
+            right: 40px;
+            bottom: 150px;
+            text-align: right;
+        }
+
+        .card-img {
+            border-radius: 20px;
+            height: 70%;
+        }
+
         .parallax-main {
             position: fixed;
             background: #FDFBF7;
@@ -768,14 +1060,19 @@
                 </mask>
 
                 <image class="sky" xlink:href="https://assets.codepen.io/721952/sky.jpg" width="1200" height="590" />
-                <image class="mountBg" xlink:href="https://assets.codepen.io/721952/mountBg.png" width="1200"
-                    height="800" />
-                <image class="mountMg" xlink:href="https://assets.codepen.io/721952/mountMg.png" width="1200"
-                    height="800" />
-                <image class="cloud2" xlink:href="https://assets.codepen.io/721952/cloud2.png" width="1200"
+
+                <!-- New Rajagiri Background Image -->
+                <!-- <image class="rajagiri-bg" xlink:href="assets/rajagiri_hero_bg.jpg" width="100%" height="100%"
+                    preserveAspectRatio="xMidYMax slice" /> -->
+
+                <!-- <image class="mountBg" xlink:href="https://assets.codepen.io/721952/mountBg.png" width="1200"
+                    height="800" /> -->
+                <image class="mountMg" xlink:href="assets/rajagiri_hero_bg.png" width="75%" x="12.5%" height="100%"
+                    preserveAspectRatio="xMidYMax slice" />
+                <!--<image class="cloud2" xlink:href="https://assets.codepen.io/721952/cloud2.png" width="1200"
                     height="800" />
                 <image class="mountFg" xlink:href="https://assets.codepen.io/721952/mountFg.png" width="1200"
-                    height="800" />
+                    height="800" /> -->
                 <image class="cloud1" xlink:href="https://assets.codepen.io/721952/cloud1.png" width="1200"
                     height="800" />
                 <image class="cloud3" xlink:href="https://assets.codepen.io/721952/cloud3.png" width="1200"
@@ -784,17 +1081,12 @@
                 <text fill="#fff" x="50%" y="350" text-anchor="middle"
                     style="font-family: 'Montserrat', sans-serif; font-size: 99px; font-weight: 900;">RAJAGIRI</text>
 
-                <polyline class="arrow" fill="#fff"
-                    points="599,400 599,439 590,429 590,432 600,442 610,432 610,429 601,439 601,400" />
-
                 <g mask="url(#m)">
                     <rect fill="#fff" width="100%" height="100%" />
                     <text x="50%" y="350" fill="#162a43" text-anchor="middle"
                         style="font-family: 'Montserrat', sans-serif; font-size: 65px; font-weight: 900;">LEARN SERVE
                         EXCEL</text>
                 </g>
-
-                <rect id="arrow-btn" width="100" height="100" opacity="0" x="550" y="370" style="cursor:pointer" />
             </svg>
 
             <!-- Rajagiri Content Overlay -->
@@ -854,7 +1146,7 @@
     -->
     <div style="position: relative; z-index: 20; background: #fff;">
         <section class="welcome-section">
-            <div class="welcome-container">
+            <!--<div class="welcome-container">
                 <h3 class="welcome-header reveal-on-scroll">Welcome from Principal of Rajagiri</h3>
                 <div class="watermark-text">#2027 ICSWHMH</div>
 
@@ -891,81 +1183,119 @@
                         <p>Chief Executive Officer</p>
                     </div>
                 </div>
+            </div> -->
+        </section>
+
+        <!-- Rajagiri Hero Slider Section -->
+        <section class="rajagiri-hero-section">
+            <div class="rajagiri-hero-container">
+                <!-- Background Watermarks -->
+                <div class="raj-watermark-left">RAJAGIRI</div>
+                <div class="raj-watermark-right">LEARN SERVE EXCEL</div>
+
+                <!-- Top Left: Name -->
+                <div class="raj-hero-name" id="heroName">
+                    <!-- Dynamic Content -->
+                </div>
+
+                <!-- Top Right: Designation -->
+                <div class="raj-hero-designation" id="heroDesignation">
+                    <!-- Dynamic Content -->
+                </div>
+
+                <!-- Slider Images Container -->
+                <div class="raj-slider-images" id="heroImages">
+                    <!-- Images will be injected here -->
+                </div>
+
+                <!-- Navigation Arrows -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="raj-hero-prev" id="prevBtn" width="56.898" height="91"
+                    viewBox="0 0 56.898 91">
+                    <path d="M45.5,0,91,56.9,48.452,24.068,0,56.9Z" transform="translate(0 91) rotate(-90)"
+                        fill="#fff" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="raj-hero-next" id="nextBtn" width="56.898" height="91"
+                    viewBox="0 0 56.898 91">
+                    <path d="M45.5,0,91,56.9,48.452,24.068,0,56.9Z" transform="translate(56.898) rotate(90)"
+                        fill="#fff" />
+                </svg>
+
+                <!-- Bottom Right: Small Card -->
+                <div class="raj-hero-card" id="heroCard">
+                    <!-- Dynamic Content -->
+                </div>
+
+                <!-- Bottom Left: Placeholder -->
+                <div class="raj-hero-placeholder">
+                    <!-- Placeholder content -->
+                </div>
             </div>
         </section>
 
-        <!-- Specialities Section -->
-        <div class="section">
+        <!--<div class="section">
             <div class="video-visual">
-                <video class="video" autoplay loop muted poster="" role="none"
+                 <video class="video" autoplay loop muted poster="" role="none"
                     aria-label="background gradient animation">
                     <source
                         src="https://raw.githubusercontent.com/mobalti/open-props-interfaces/main/dynamic-content-lockups-v2/assets/bg-gradient-animation.mp4"
                         type="video/mp4" />
-                </video>
+                </video> 
             </div>
             <div class="section-wrapper">
                 <div class="content-wrapper">
                     <div class="content content-1">
                         <div class="mobile-visual">
-                            <img class="card-img" src="nirf.jpg" alt="Fantasy warrior  - Video game character" />
+                            <img class="card-img" src="assets/nirf.jpeg" alt="NIRF Ranking" />
                         </div>
                         <div class="meta">
                             <h2 class="headline">
-                                Unleash Your<span class="text-highlight"> Inner Warrior</span>
+                                Nationally Ranked <span class="text-highlight">Excellence</span>
                             </h2>
                             <p class="desc">
-                                Join the battle and conquer the arena with unmatched skill and
-                                strategy.
+                                Ranked 12th Best College in India (NIRF 2025, Ministry of Education, Govt. of India).
                             </p>
                         </div>
                     </div>
                     <div class="content content-2">
                         <div class="mobile-visual">
-                            <img class="card-img" src="assets/nirf.jpeg"
-                                alt="Green haired ninja in armor - Video game character" />
+                            <img class="card-img" src="assets/1765640015868.jpg" alt="NAAC Accreditation" />
                         </div>
                         <div class="meta">
                             <h2 class="headline">
-                                Embark on Your
-                                <span class="text-highlight">Legendary Journey</span>
+                                Highest
+                                <span class="text-highlight">Accreditation</span>
                             </h2>
                             <p class="desc">
-                                Immerse Yourself in a World Where Legends Clash and Heroes Rise
-                                to Glory.
+                                Reaccredited by NAAC with A++ Grade (CGPA 3.83), the highest national recognition.
                             </p>
                         </div>
                     </div>
                     <div class="content content-3">
                         <div class="mobile-visual">
-                            <img class="card-img"
-                                src="https://raw.githubusercontent.com/mobalti/open-props-interfaces/main/dynamic-content-lockups-v2/assets/img-3.avif"
-                                alt="Female warrior in armor - Video game character" />
+                            <img class="card-img" src="assets/rajagiri_center.png" alt="Rajagiri Campus" />
                         </div>
                         <div class="meta">
                             <h2 class="headline">
-                                Master the
-                                <span class="text-highlight">Art of Magic</span>
+                                Academic
+                                <span class="text-highlight">Pioneers</span>
                             </h2>
                             <p class="desc">
-                                Harness powerful spells and enchantments to dominate your foes
-                                and change the course of battle.
+                                Launched the first Masters of Social Work (MSW) and Bachelor of Social Work (BSW)
+                                programs in Kerala.
                             </p>
                         </div>
                     </div>
                     <div class="content content-4">
                         <div class="mobile-visual">
-                            <img class="card-img"
-                                src="https://raw.githubusercontent.com/mobalti/open-props-interfaces/main/dynamic-content-lockups-v2/assets/img-4.avif"
-                                alt="Agile warrior - Video game character" />
+                            <img class="card-img" src="assets/conference_attendees.jpg" alt="Community Impact" />
                         </div>
                         <div class="meta">
                             <h2 class="headline">
-                                Rise as the <span class="text-highlight">Champion</span>
+                                Community <span class="text-highlight">Impact</span>
                             </h2>
                             <p class="desc">
-                                Lead your team to victory with unparalleled strength and
-                                unwavering determination.
+                                'Live Labs' provide direct outreach and service, fostering holistic education and
+                                community engagement.
                             </p>
                         </div>
                     </div>
@@ -973,29 +1303,21 @@
                 <div class="visual">
                     <div class="card-wrapper">
                         <div class="card card-1">
-                            <img class="card-img"
-                                src="https://raw.githubusercontent.com/mobalti/open-props-interfaces/main/dynamic-content-lockups-v2/assets/img-1.avif"
-                                alt="Fantasy warrior  - Video game character" />
+                            <img class="card-img" src="assets/nirf.jpeg" alt="NIRF Ranking" />
                         </div>
                         <div class="card card-2">
-                            <img class="card-img"
-                                src="https://raw.githubusercontent.com/mobalti/open-props-interfaces/main/dynamic-content-lockups-v2/assets/img-2.avif"
-                                alt="Green haired ninja in armor - Video game character" />
+                            <img class="card-img" src="assets/1765640015868.jpg" alt="NAAC Accreditation" />
                         </div>
                         <div class="card card-3">
-                            <img class="card-img"
-                                src="https://raw.githubusercontent.com/mobalti/open-props-interfaces/main/dynamic-content-lockups-v2/assets/img-3.avif"
-                                alt="Female warrior in armor - Video game character" />
+                            <img class="card-img" src="assets/rajagiri_center.png" alt="Rajagiri Campus" />
                         </div>
                         <div class="card card-4">
-                            <img class="card-img"
-                                src="https://raw.githubusercontent.com/mobalti/open-props-interfaces/main/dynamic-content-lockups-v2/assets/img-4.avif"
-                                alt="Agile warrior - Video game character" />
+                            <img class="card-img" src="assets/conference_attendees.jpg" alt="Community Impact" />
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
         <!-- Footer -->
         <main-footer></main-footer>
     </div>
@@ -1079,6 +1401,185 @@
         document.querySelectorAll('.reveal-on-scroll').forEach(el => {
             revealObserver.observe(el);
         });
+
+        // Rajagiri Hero Slider JavaScript
+        const slidesData = [
+            {
+                name: "Dr. Saju M.D.",
+                designation: "Principal, Rajagiri College of Social Sciences",
+                image: "assets/ceo_image.png",
+                cardTitle: "Visionary Leadership",
+                cardText: "Driving excellence in education and social commitment.",
+                gradient: "radial-gradient(circle at 50% 100%, #4B2C7A 20%, #1D0A3F 80%)"
+            },
+            {
+                name: "Fr. Dr. Jose Kuriedath",
+                designation: "Director, Rajagiri Institutions",
+                image: "assets/ceo_image.png",
+                cardTitle: "Academic Excellence",
+                cardText: "Fostering a culture of learning and innovation.",
+                gradient: "radial-gradient(circle at 50% 100%, #2C4B7A 20%, #0A1D3F 80%)"
+            },
+            {
+                name: "Dr. Binoy Joseph",
+                designation: "Associate Director",
+                image: "assets/ceo_image.png",
+                cardTitle: "Global Perspective",
+                cardText: "Connecting local values with global opportunities.",
+                gradient: "radial-gradient(circle at 50% 100%, #7A2C4B 20%, #3F0A1D 80%)"
+            }
+        ];
+
+        let currentIndex = 0;
+        let slideInterval;
+        const container = document.getElementById('heroImages');
+        const heroWrapper = document.querySelector('.rajagiri-hero-container');
+        const nameEl = document.getElementById('heroName');
+        const desigEl = document.getElementById('heroDesignation');
+        const cardEl = document.getElementById('heroCard');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        if (container && heroWrapper && nameEl && desigEl && cardEl && prevBtn && nextBtn) {
+            // Initial Layout
+            function initSlider() {
+                // Create image elements
+                slidesData.forEach((slide, index) => {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = `raj-slide-image-wrapper ${index === 0 ? 'slide-active' : 'slide-enter'}`;
+
+                    const img = document.createElement('img');
+                    img.src = slide.image;
+                    img.className = 'raj-slide-image';
+                    img.alt = slide.name;
+
+                    wrapper.appendChild(img);
+                    container.appendChild(wrapper);
+                });
+
+                updateText(0, false);
+                startAutoSlide();
+
+                // Event Listeners
+                prevBtn.addEventListener('click', () => {
+                    prevSlide();
+                    resetAutoSlide();
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    nextSlide();
+                    resetAutoSlide();
+                });
+            }
+
+            function startAutoSlide() {
+                slideInterval = setInterval(nextSlide, 3000);
+            }
+
+            function resetAutoSlide() {
+                clearInterval(slideInterval);
+                startAutoSlide();
+            }
+
+            function updateText(index, animate = true) {
+                const data = slidesData[index];
+
+                if (heroWrapper) {
+                    heroWrapper.style.background = data.gradient;
+                }
+
+                const updateContent = () => {
+                    nameEl.innerHTML = `<h3>${data.name}</h3>`;
+                    desigEl.innerHTML = `<p>${data.designation}</p>`;
+                    cardEl.innerHTML = `<h4>${data.cardTitle}</h4><p>${data.cardText}</p>`;
+                };
+
+                if (animate) {
+                    nameEl.style.opacity = '0';
+                    desigEl.style.opacity = '0';
+                    cardEl.style.opacity = '0';
+
+                    setTimeout(() => {
+                        updateContent();
+                        nameEl.style.opacity = '1';
+                        desigEl.style.opacity = '1';
+                        cardEl.style.opacity = '1';
+                    }, 500);
+                } else {
+                    updateContent();
+                }
+            }
+
+            function nextSlide() {
+                const slides = document.querySelectorAll('.raj-slide-image-wrapper');
+                let nextIndex = (currentIndex + 1) % slidesData.length;
+
+                if (slides[nextIndex].classList.contains('slide-exit')) {
+                    slides[nextIndex].style.transition = 'none';
+                    slides[nextIndex].classList.remove('slide-exit');
+                    slides[nextIndex].classList.add('slide-enter');
+                    void slides[nextIndex].offsetWidth;
+                    slides[nextIndex].style.transition = '';
+                }
+
+                slides[currentIndex].classList.remove('slide-active');
+                slides[currentIndex].classList.add('slide-exit');
+
+                slides[nextIndex].classList.remove('slide-enter');
+                slides[nextIndex].classList.add('slide-active');
+
+                setTimeout(() => {
+                    slides.forEach((slide, idx) => {
+                        if (idx !== currentIndex && idx !== nextIndex) {
+                            slide.style.transition = 'none';
+                            slide.classList.remove('slide-active', 'slide-exit');
+                            slide.classList.add('slide-enter');
+                            void slide.offsetWidth;
+                            slide.style.transition = '';
+                        }
+                    });
+                }, 1000);
+
+                updateText(nextIndex);
+                currentIndex = nextIndex;
+            }
+
+            function prevSlide() {
+                const slides = document.querySelectorAll('.raj-slide-image-wrapper');
+                let nextIndex = (currentIndex - 1 + slidesData.length) % slidesData.length;
+
+                if (slides[nextIndex].classList.contains('slide-enter')) {
+                    slides[nextIndex].style.transition = 'none';
+                    slides[nextIndex].classList.remove('slide-enter');
+                    slides[nextIndex].classList.add('slide-exit');
+                    void slides[nextIndex].offsetWidth;
+                    slides[nextIndex].style.transition = '';
+                }
+
+                slides[currentIndex].classList.remove('slide-active');
+                slides[currentIndex].classList.add('slide-enter');
+
+                slides[nextIndex].classList.remove('slide-exit');
+                slides[nextIndex].classList.add('slide-active');
+
+                setTimeout(() => {
+                    slides.forEach((slide, idx) => {
+                        if (idx !== currentIndex && idx !== nextIndex) {
+                            slide.style.transition = 'none';
+                            slide.classList.remove('slide-active', 'slide-exit');
+                            slide.classList.add('slide-enter');
+                            void slide.offsetWidth;
+                            slide.style.transition = '';
+                        }
+                    });
+                }, 1000);
+
+                updateText(nextIndex);
+                currentIndex = nextIndex;
+            }
+
+            initSlider();
+        }
     </script>
 </body>
 

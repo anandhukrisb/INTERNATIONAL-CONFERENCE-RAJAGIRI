@@ -566,6 +566,20 @@
             .stat-box .number {
                 font-size: 2.8rem;
             }
+
+            /* Topic card adjustments for tablets */
+            .category-header {
+                padding: 20px 25px;
+            }
+
+            .category-header h3 {
+                font-size: 1.3rem;
+            }
+
+            .topic-list {
+                padding: 25px;
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            }
         }
 
         @media (max-width: 768px) {
@@ -617,6 +631,75 @@
             .section-title {
                 font-size: 1.9rem;
             }
+
+            /* ---- Mobile topic card fixes ---- */
+            .topic-category {
+                margin-bottom: 25px;
+                border-left-width: 4px;
+            }
+
+            .category-header {
+                padding: 18px 20px;
+                gap: 12px;
+            }
+
+            .category-icon {
+                width: 42px;
+                height: 42px;
+                min-width: 42px;
+                font-size: 1.25rem;
+            }
+
+            .category-header h3 {
+                font-size: 1.15rem;
+                line-height: 1.3;
+            }
+
+            .topic-list {
+                padding: 20px;
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .topic-item {
+                font-size: 0.95rem;
+                padding-left: 20px;
+            }
+
+            .topic-item::before {
+                font-size: 1.3rem;
+                top: -3px;
+            }
+        }
+
+        /* ---- Extra-small mobile (≤480px) ---- */
+        @media (max-width: 480px) {
+            .category-header {
+                padding: 15px 16px;
+                gap: 10px;
+            }
+
+            .category-icon {
+                width: 36px;
+                height: 36px;
+                min-width: 36px;
+                font-size: 1.1rem;
+            }
+
+            .category-header h3 {
+                font-size: 1.05rem;
+            }
+
+            .topic-list {
+                padding: 16px;
+                gap: 10px;
+            }
+
+            .topic-item {
+                font-size: 0.9rem;
+                padding-left: 18px;
+                line-height: 1.5;
+            }
         }
 
         /* ============ TOPICS GRID ============ */
@@ -662,6 +745,7 @@
         .category-icon {
             width: 50px;
             height: 50px;
+            min-width: 50px;
             background: white;
             border-radius: 50%;
             display: flex;
@@ -670,6 +754,7 @@
             color: var(--accent-gold);
             font-size: 1.5rem;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            flex-shrink: 0;
         }
 
         .topic-list {
@@ -719,139 +804,128 @@
                     critical perspectives.</p>
             </div>
 
-            <!-- Topics Categories -->
+            <!-- Topics Categories (Sub-Themes) -->
 
-            <!-- Category 1: Practice Domains -->
+            <!-- Sub-Theme 1: Health Equity, Access, and Social Justice -->
             <div class="topic-category">
                 <div class="category-header">
-                    <div class="category-icon"><i class="bi bi-briefcase"></i></div>
-                    <h3>Practice Domains</h3>
+                    <div class="category-icon"><i class="bi bi-shield-check"></i></div>
+                    <h3>1. Health Equity, Access, and Social Justice</h3>
                 </div>
                 <div class="topic-list">
-                    <div class="topic-item">Acquired brain injury</div>
-                    <div class="topic-item">Addiction / Substance Use</div>
-                    <div class="topic-item">Cancer care</div>
-                    <div class="topic-item">Child Protection</div>
-                    <div class="topic-item">Chronic health conditions</div>
-                    <div class="topic-item">Critical care and crisis intervention</div>
-                    <div class="topic-item">Disability</div>
-                    <div class="topic-item">Disaster social work</div>
-                    <div class="topic-item">Eating disorders</div>
-                    <div class="topic-item">End of life / Palliative care</div>
-                    <div class="topic-item">Family violence</div>
-                    <div class="topic-item">First Nations peoples' health & wellbeing</div>
-                    <div class="topic-item">Forensic social work</div>
-                    <div class="topic-item">Grief and bereavement</div>
-                    <div class="topic-item">Long COVID</div>
-                    <div class="topic-item">Mental health social work</div>
-                    <div class="topic-item">Neurological conditions</div>
-                    <div class="topic-item">Older persons physical and mental health</div>
-                    <div class="topic-item">Oncology & Haematology</div>
-                    <div class="topic-item">Paediatrics and child health</div>
-                    <div class="topic-item">Private practice</div>
-                    <div class="topic-item">Rehabilitation</div>
-                    <div class="topic-item">Renal social work</div>
-                    <div class="topic-item">Sexual health</div>
-                    <div class="topic-item">Women's health</div>
+                    <div class="topic-item">Health equities and disparities</div>
+                    <div class="topic-item">Access to services across diverse populations</div>
+                    <div class="topic-item">Policy advocacy for inclusive health systems</div>
+                    <div class="topic-item">Social justice frameworks in health and mental health</div>
+                    <div class="topic-item">Macro-level influences on service delivery</div>
+                    <div class="topic-item">Practice in resource-constrained environments</div>
+                    <div class="topic-item">Extreme climates and provision of services</div>
+                    <div class="topic-item">Sustainability and equitable systems</div>
+                    <div class="topic-item">Legal frameworks of Health and Mental Health across populations</div>
                 </div>
             </div>
 
-            <!-- Category 2: Global Challenges -->
+            <!-- Sub-Theme 2: Public Health, Mental Health, and Population Well-being -->
             <div class="topic-category">
                 <div class="category-header">
-                    <div class="category-icon"><i class="bi bi-globe-americas"></i></div>
-                    <h3>Global Challenges</h3>
+                    <div class="category-icon"><i class="bi bi-heart-pulse"></i></div>
+                    <h3>2. Public Health, Mental Health, and Population Well-being</h3>
                 </div>
                 <div class="topic-list">
-                    <div class="topic-item">Changing climate and environments</div>
-                    <div class="topic-item">Consequences of pandemics</div>
-                    <div class="topic-item">Digital health and telehealth</div>
-                    <div class="topic-item">Housing & homelessness</div>
-                    <div class="topic-item">Immigration and refugee settlement</div>
-                    <div class="topic-item">International social work</div>
-                    <div class="topic-item">Isolation and loneliness</div>
-                    <div class="topic-item">Migration and displacement</div>
-                    <div class="topic-item">Trauma</div>
-                    <div class="topic-item">Veterans and military families</div>
+                    <div class="topic-item">Public health priorities</div>
+                    <div class="topic-item">Social determinants of health</div>
+                    <div class="topic-item">Link between mental health and public health</div>
+                    <div class="topic-item">Population health approaches</div>
+                    <div class="topic-item">Integration of mental health into public health systems</div>
+                    <div class="topic-item">Community-based and prevention-focused models</div>
+                    <div class="topic-item">Community resilience and responsive systems</div>
                 </div>
             </div>
 
-            <!-- Category 3: Social Determinants -->
+            <!-- Sub-Theme 3: Trauma, Resilience, and Healing -->
+            <div class="topic-category">
+                <div class="category-header">
+                    <div class="category-icon"><i class="bi bi-bandaid"></i></div>
+                    <h3>3. Trauma, Resilience, and Healing</h3>
+                </div>
+                <div class="topic-list">
+                    <div class="topic-item">Trauma and its impact on health and mental health</div>
+                    <div class="topic-item">Trauma-informed practice in social work</div>
+                    <div class="topic-item">Community resilience and recovery models</div>
+                    <div class="topic-item">Crisis, disaster, and emergency health responses</div>
+                </div>
+            </div>
+
+            <!-- Sub-Theme 4: Innovation, Technology, and Effectiveness -->
+            <div class="topic-category">
+                <div class="category-header">
+                    <div class="category-icon"><i class="bi bi-lightbulb"></i></div>
+                    <h3>4. Innovation, Technology, and Effectiveness</h3>
+                </div>
+                <div class="topic-list">
+                    <div class="topic-item">Technology and innovation in health and mental health care</div>
+                    <div class="topic-item">Digital mental health, telehealth, and service transformation</div>
+                    <div class="topic-item">Evaluating effectiveness and outcome-based practices</div>
+                    <div class="topic-item">Innovations in low-resource settings</div>
+                </div>
+            </div>
+
+            <!-- Sub-Theme 5: Interdisciplinary and Collaborative Practice -->
             <div class="topic-category">
                 <div class="category-header">
                     <div class="category-icon"><i class="bi bi-people"></i></div>
-                    <h3>Social Determinants</h3>
+                    <h3>5. Interdisciplinary and Collaborative Practice</h3>
                 </div>
                 <div class="topic-list">
-                    <div class="topic-item">Cultural safety and responsiveness</div>
-                    <div class="topic-item">Gender identity and expression</div>
-                    <div class="topic-item">Health and Income inequalities</div>
-                    <div class="topic-item">Intersectionality</div>
-                    <div class="topic-item">LGBTIQA+ health and wellbeing</div>
-                    <div class="topic-item">Rural and Remote health</div>
-                    <div class="topic-item">Social prescribing</div>
+                    <div class="topic-item">Collaborative and interprofessional practice</div>
+                    <div class="topic-item">Interdisciplinary and transdisciplinary leadership</div>
+                    <div class="topic-item">Roles and changing roles of social workers</div>
+                    <div class="topic-item">Social work leadership in complex systems</div>
                 </div>
             </div>
 
-            <!-- Category 4: Social Work Intervention -->
+            <!-- Sub-Theme 6: Professional Practice, Interventions, and Models of Care -->
             <div class="topic-category">
                 <div class="category-header">
-                    <div class="category-icon"><i class="bi bi-tools"></i></div>
-                    <h3>Social Work Intervention</h3>
+                    <div class="category-icon"><i class="bi bi-clipboard2-pulse"></i></div>
+                    <h3>6. Professional Practice, Interventions, and Models of Care</h3>
                 </div>
                 <div class="topic-list">
-                    <div class="topic-item">Advocacy and activism</div>
-                    <div class="topic-item">Arts-based interventions</div>
-                    <div class="topic-item">Artificial intelligence in practice</div>
-                    <div class="topic-item">Spirituality and mental health</div>
-                    <div class="topic-item">Suicide prevention and postvention</div>
+                    <div class="topic-item">Evidence-based and culturally responsive interventions</div>
+                    <div class="topic-item">Best practices in social work in health and mental health</div>
+                    <div class="topic-item">Intervention innovation and practice frameworks</div>
+                    <div class="topic-item">Strengthening practice in diverse clinical and community contexts</div>
                 </div>
             </div>
 
-            <!-- Category 5: Working with Children -->
+            <!-- Sub-Theme 7: Workforce Development, Wellbeing, and Leadership -->
             <div class="topic-category">
                 <div class="category-header">
-                    <div class="category-icon"><i class="bi bi-balloon-heart"></i></div>
-                    <h3>Working with Children</h3>
+                    <div class="category-icon"><i class="bi bi-briefcase"></i></div>
+                    <h3>7. Workforce Development, Wellbeing, and Leadership</h3>
                 </div>
                 <div class="topic-list">
-                    <div class="topic-item">Adolescence and youth mental health</div>
-                    <div class="topic-item">Adverse childhood experiences</div>
-                    <div class="topic-item">Child and family welfare</div>
-                    <div class="topic-item">Child poverty and health</div>
-                    <div class="topic-item">Perinatal and infant mental health</div>
+                    <div class="topic-item">Self-care and its relationship to workplace functioning</div>
+                    <div class="topic-item">Staff retention and workforce wellbeing</div>
+                    <div class="topic-item">Empowerment issues in professional settings</div>
+                    <div class="topic-item">Individual responsibility and leadership roles in organisational commitment
+                    </div>
+                    <div class="topic-item">Competency development and strengthening capacity</div>
                 </div>
             </div>
 
-            <!-- Category 6: Knowledge Production -->
+            <!-- Sub-Theme 8: Education, Training, and Future Directions for Social Work -->
             <div class="topic-category">
                 <div class="category-header">
-                    <div class="category-icon"><i class="bi bi-book"></i></div>
-                    <h3>Knowledge Production</h3>
+                    <div class="category-icon"><i class="bi bi-mortarboard"></i></div>
+                    <h3>8. Education, Training, and Future Directions for Social Work</h3>
                 </div>
                 <div class="topic-list">
-                    <div class="topic-item">Co-design and co-production</div>
-                    <div class="topic-item">Interdisciplinary and transdisciplinary practice</div>
-                    <div class="topic-item">Leadership and management</div>
-                    <div class="topic-item">Research and evaluation</div>
-                    <div class="topic-item">Service user and carer participation</div>
-                    <div class="topic-item">Social work education and field education</div>
-                    <div class="topic-item">Supervision and mentoring</div>
-                    <div class="topic-item">Theory and practice knowledge</div>
-                </div>
-            </div>
-
-            <!-- Category 7: Law & Policy -->
-            <div class="topic-category">
-                <div class="category-header">
-                    <div class="category-icon"><i class="bi bi-bank"></i></div>
-                    <h3>Law & Policy</h3>
-                </div>
-                <div class="topic-list">
-                    <div class="topic-item">Ethics and ethical dilemmas</div>
-                    <div class="topic-item">Human rights and social justice</div>
-                    <div class="topic-item">Mental health law and policy</div>
-                    <div class="topic-item">Social policy and health reform</div>
+                    <div class="topic-item">Scope for education and training in health and mental health social work
+                    </div>
+                    <div class="topic-item">Curriculum innovation and research-informed teaching</div>
+                    <div class="topic-item">Preparing future practitioners for collaborative and evolving roles</div>
+                    <div class="topic-item">Emerging directions in social work education globally</div>
                 </div>
             </div>
 

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Program - ICSWHMH 2027</title>
+    <title>Themes - ICSWHMH 2027</title>
     <link rel="icon" type="image/x-icon" href="assets/Favicon-192.ico?v=2">
 
     <!-- Professional Fonts -->
@@ -674,7 +674,7 @@
         /* ============ MERGED FLOATING NAVBAR STYLES ============ */
         /* Styles removed as they are now handled by navbar.js Shadow DOM */
 
-        /* ============ TOPICS GRID ============ */
+        /* ============ MODERN THEMES LAYOUT ============ */
         .topics-intro {
             text-align: center;
             max-width: 900px;
@@ -682,79 +682,201 @@
         }
 
         .topics-intro p {
-            font-size: 1.1rem;
-            color: var(--text-dark);
+            font-size: 1.2rem;
+            color: var(--text-light);
             line-height: 1.8;
         }
 
-        .topic-category {
-            background: var(--bg-tone);
-            border-radius: 10px;
-            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05);
-            margin-bottom: 40px;
-            overflow: hidden;
-            border-top: 5px solid var(--primary-purple);
-            transition: transform 0.3s ease;
-        }
-
-        .topic-category:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-        }
-
-        .category-header {
-            background: #fff;
-            padding: 25px 30px;
-            border-bottom: 1px solid #eee;
+        .themes-list-container {
             display: flex;
-            align-items: center;
-            gap: 15px;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .category-header h3 {
-            margin: 0;
-            font-family: 'Segoe UI', serif;
-            color: var(--primary-purple);
-            font-size: 1.5rem;
-            font-weight: 600;
+        .topic-category {
+            display: flex;
+            flex-direction: row;
+            background: #FFFFFF;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            overflow: hidden;
+            transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            min-height: 350px;
+            /* Ensure substantial height */
+        }
+
+        /* Hover Effect */
+        .topic-category:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(29, 10, 63, 0.12);
+        }
+
+        /* Alternating Layout - Even Items Reversed */
+        .topic-category:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        /* Header Section (Left/Right side) */
+        .category-header {
+            flex: 0 0 35%;
+            background: var(--primary-purple);
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        /* Subtle Pattern Overlay */
+        .category-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 10%, transparent 10%);
+            background-size: 30px 30px;
+            transform: rotate(30deg);
+            z-index: -1;
+        }
+
+        .category-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: var(--accent-gold);
         }
 
         .category-icon {
-            width: 50px;
-            height: 50px;
-            background: var(--bg-tone);
+            width: 90px;
+            height: 90px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--accent-gold);
-            font-size: 1.5rem;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            font-size: 2.5rem;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.4s ease;
         }
 
+        .topic-category:hover .category-icon {
+            transform: scale(1.1) rotate(5deg);
+            background: #FFFFFF;
+        }
+
+        .category-header h3 {
+            margin: 0;
+            font-family: 'Outfit', sans-serif;
+            color: #FFFFFF;
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        /* List Section */
         .topic-list {
-            padding: 30px;
+            flex: 1;
+            padding: 50px;
+            background: #FFFFFF;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px 30px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px 40px;
+            align-content: center;
         }
 
         .topic-item {
             position: relative;
-            padding-left: 25px;
-            font-size: 1rem;
-            color: var(--text-dark);
+            padding-left: 35px;
+            font-size: 1.1rem;
+            color: #4b5563;
+            /* Gray-600 */
             line-height: 1.6;
+            font-weight: 400;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .topic-item:hover {
+            color: var(--primary-purple);
+            transform: translateX(5px);
         }
 
         .topic-item::before {
-            content: "•";
+            content: "\F135";
+            /* Bootstrap Check Icon or similar */
+            font-family: "bootstrap-icons";
             color: var(--accent-gold);
             font-weight: bold;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             position: absolute;
             left: 0;
-            top: -5px;
+            top: 2px;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 992px) {
+
+            .topic-category,
+            .topic-category:nth-child(even) {
+                flex-direction: column;
+                min-height: auto;
+            }
+
+            .category-header {
+                flex: auto;
+                width: 100%;
+                padding: 40px 30px;
+                flex-direction: row;
+                gap: 25px;
+                text-align: left;
+                justify-content: flex-start;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .category-icon {
+                margin-bottom: 0;
+                width: 70px;
+                height: 70px;
+                font-size: 2rem;
+                flex-shrink: 0;
+            }
+
+            .category-header h3 {
+                font-size: 1.5rem;
+            }
+
+            .topic-list {
+                padding: 30px 25px;
+                grid-template-columns: 1fr;
+                /* Single column on mobile */
+                gap: 15px;
+            }
+
+            .topic-item {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .category-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
         }
     </style>
 </head>
@@ -772,282 +894,138 @@
 
             <!-- Page Title -->
             <div class="page-title-section">
-                <h1>Conference Program</h1>
+                <h1>Conference Themes</h1>
                 <p class="lead">A comprehensive three-day experience featuring eleven concurrent streams, exploring the
                     intersection of social work with health and mental health care.</p>
             </div>
 
-            <!-- Program Overview -->
-            <div class="program-card">
-                <h2>Program Overview</h2>
-                <p>Spanning three days, the Conference main program will be offered over <strong>eleven concurrent
-                        streams</strong> each day. The diverse range of topics covered in each stream will explore the
-                    intersection between social workers and Health and Mental Health care.</p>
-                <p>Blending keynote and featured speakers, plenary and concurrent sessions and workshops, the Conference
-                    program will bring forward new concepts, discuss existing practices and give attendees the most
-                    up-to-date subject knowledge available.</p>
+            <!-- Themes List -->
+            <div class="themes-list-container">
 
-                <!-- Statistics -->
-                <div class="stats-section">
-                    <div class="stat-box">
-                        <div class="number">3</div>
-                        <div class="label">Days</div>
+                <!-- Theme 1 -->
+                <div class="topic-category">
+                    <div class="category-header">
+                        <div class="category-icon"><i class="bi bi-scales"></i></div>
+                        <h3>1. Health Equity, Access, and Social Justice</h3>
                     </div>
-                    <div class="stat-box">
-                        <div class="number">11</div>
-                        <div class="label">Streams</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="number">1000+</div>
-                        <div class="label">Delegates</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="number">62</div>
-                        <div class="label">Topics</div>
+                    <div class="topic-list">
+                        <div class="topic-item">Health equities and disparities</div>
+                        <div class="topic-item">Access to services across diverse populations</div>
+                        <div class="topic-item">Policy advocacy for inclusive health systems</div>
+                        <div class="topic-item">Social justice frameworks in health and mental health</div>
+                        <div class="topic-item">Macro-level influences on service delivery</div>
+                        <div class="topic-item">Practice in resource-constrained environments</div>
+                        <div class="topic-item">Extreme climates and provision of services</div>
+                        <div class="topic-item">Sustainability and equitable systems</div>
+                        <div class="topic-item">Legal frameworks of Health and Mental Health across populations</div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Download Program -->
-            <div class="download-box">
-                <h3>Download Full Program</h3>
-                <p>Access the complete conference program with detailed session information, timings, and speaker
-                    details.</p>
-                <a href="#" class="btn-download"><i class="bi bi-download"></i> Download PDF</a>
-            </div>
-
-            <!-- Program Features -->
-            <div class="program-details">
-                <h2 class="section-title">What to Expect</h2>
-
-                <div class="row g-4">
-                    <div class="col-lg-6">
-                        <div class="program-feature">
-                            <h3>Keynote & Featured Speakers</h3>
-                            <p>Hear from internationally renowned experts who are shaping the future of social work in
-                                health and mental health. Our keynote presentations will challenge conventional thinking
-                                and inspire innovative approaches to practice.</p>
-                        </div>
+                <!-- Theme 2 -->
+                <div class="topic-category">
+                    <div class="category-header">
+                        <div class="category-icon"><i class="bi bi-people-fill"></i></div>
+                        <h3>2. Public Health, Mental Health, and Population Well-being</h3>
                     </div>
-                    <div class="col-lg-6">
-                        <div class="program-feature">
-                            <h3>Plenary Sessions</h3>
-                            <p>Engage in comprehensive discussions that bring together diverse perspectives on critical
-                                issues. These sessions foster collaborative thinking and knowledge exchange among
-                                delegates from around the world.</p>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="program-feature">
-                            <h3>Concurrent Sessions</h3>
-                            <p>Choose from eleven parallel streams covering specialized topics. Each stream offers deep
-                                dives into specific practice domains, emerging research, and innovative methodologies in
-                                health and mental health social work.</p>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="program-feature">
-                            <h3>Interactive Workshops</h3>
-                            <p>Participate in hands-on workshops designed to build practical skills. Learn new
-                                techniques, tools, and methodologies directly applicable to your professional practice
-                                from experienced facilitators.</p>
-                        </div>
+                    <div class="topic-list">
+                        <div class="topic-item">Public health priorities</div>
+                        <div class="topic-item">Social determinants of health</div>
+                        <div class="topic-item">Link between mental health and public health</div>
+                        <div class="topic-item">Population health approaches</div>
+                        <div class="topic-item">Integration of mental health into public health systems</div>
+                        <div class="topic-item">Community-based and prevention-focused models</div>
+                        <div class="topic-item">Community resilience and responsive systems</div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Session Formats -->
-            <div class="program-card">
-                <h2>Session Formats</h2>
-                <p>The conference offers varied session formats to accommodate different learning preferences and
-                    professional development needs:</p>
-                <ul>
-                    <li><strong>Keynote Presentations (60 minutes)</strong> – Inspiring talks from leading international
-                        experts addressing major themes and challenges in the field</li>
-                    <li><strong>Plenary Sessions (90 minutes)</strong> – Large-group discussions featuring panels of
-                        experts exploring critical issues from multiple perspectives</li>
-                    <li><strong>Concurrent Sessions (45 minutes)</strong> – Focused presentations on specific research
-                        findings, innovative practices, and case studies across 11 parallel streams</li>
-                    <li><strong>Workshops (2 hours)</strong> – Interactive, hands-on sessions for skill development and
-                        practical application of new methodologies</li>
-                    <li><strong>Panel Discussions (75 minutes)</strong> – Multi-perspective explorations of complex
-                        issues featuring diverse expert viewpoints</li>
-                    <li><strong>Networking Sessions</strong> – Dedicated time for connecting with colleagues, building
-                        relationships, and informal knowledge exchange</li>
-                </ul>
-            </div>
-
-            <!-- Schedule Structure -->
-            <div class="schedule-section">
-                <h2 class="section-title">Conference Schedule</h2>
-
-                <div class="schedule-container-wrapper">
-                    <!-- Tabs -->
-                    <ul class="nav nav-tabs justify-content-center mb-5" id="programTabs" role="tablist">
-                        <li class="nav-item">
-                            <button class="nav-link active" id="tue-tab" data-bs-toggle="tab" data-bs-target="#tue"
-                                type="button">Tuesday, Nov 19</button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link" id="wed-tab" data-bs-toggle="tab" data-bs-target="#wed"
-                                type="button">Wednesday, Nov 20</button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link" id="thu-tab" data-bs-toggle="tab" data-bs-target="#thu"
-                                type="button">Thursday, Nov 21</button>
-                        </li>
-                        <li class="nav-item">
-                            <button class="nav-link" id="fri-tab" data-bs-toggle="tab" data-bs-target="#fri"
-                                type="button">Friday, Nov 22</button>
-                        </li>
-                    </ul>
-
-                    <!-- Content -->
-                    <div class="tab-content" id="programTabsContent">
-
-                        <!-- TUESDAY -->
-                        <div class="tab-pane fade show active" id="tue" role="tabpanel">
-                            <p class="text-center text-muted mb-4"><i class="bi bi-info-circle"></i> Scroll horizontally
-                                to view all streams</p>
-                            <div class="schedule-container">
-                                <div class="schedule-grid">
-                                    <!-- Header Row -->
-                                    <div class="grid-header time-col-header">Time</div>
-                                    <div class="grid-header">Stream 1<br><small
-                                            style="font-weight:400; opacity:0.8;">Mental Health</small></div>
-                                    <div class="grid-header">Stream 2<br><small
-                                            style="font-weight:400; opacity:0.8;">Child Wellbeing</small></div>
-                                    <div class="grid-header">Stream 3<br><small
-                                            style="font-weight:400; opacity:0.8;">Aged Care</small></div>
-                                    <div class="grid-header">Stream 4<br><small
-                                            style="font-weight:400; opacity:0.8;">Disability</small></div>
-                                    <div class="grid-header">Stream 5<br><small
-                                            style="font-weight:400; opacity:0.8;">Education</small></div>
-
-                                    <!-- 09:00 Slot -->
-                                    <div class="time-slot">09:00 - 10:30</div>
-                                    <div class="session-cell session-plenary" style="grid-column: 2 / -1;">
-                                        <div class="session-card"
-                                            style="border-left-color: var(--primary-purple); background: #f3f0ff;">
-                                            <h4><span class="badge bg-primary mb-2">Keynote</span> Opening Ceremony &
-                                                Presidential Address</h4>
-                                            <p><strong>Speaker: Dr. Jane Doe</strong> - "The Future of Social Work in a
-                                                Digital Age"</p>
-                                            <div class="room-badge"><i class="bi bi-geo-alt"></i> Grand Ballroom</div>
-                                        </div>
-                                    </div>
-
-                                    <!-- 10:30 Break -->
-                                    <div class="time-slot">10:30 - 11:00</div>
-                                    <div class="session-row-break">
-                                        <i class="bi bi-cup-hot-fill"></i> Morning Tea & Networking Break
-                                    </div>
-
-                                    <!-- 11:00 Slot -->
-                                    <div class="time-slot">11:00 - 12:30</div>
-
-                                    <!-- Stream 1 -->
-                                    <div class="session-cell">
-                                        <div class="session-card">
-                                            <h4>Trauma-Informed Practice in Clinical Settings</h4>
-                                            <p>Exploring new methodologies for PTSD treatment in public health.</p>
-                                            <div class="room-badge">Room A101</div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Stream 2 -->
-                                    <div class="session-cell">
-                                        <div class="session-card">
-                                            <h4>Safeguarding Children in Digital Spaces</h4>
-                                            <p>Addressing cyberbullying and online exploitation risks.</p>
-                                            <div class="room-badge">Room B205</div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Stream 3 -->
-                                    <div class="session-cell">
-                                        <div class="session-card">
-                                            <h4>Dementia Care: A Holistic Approach</h4>
-                                            <p>Supporting families and caregivers through transition phases.</p>
-                                            <div class="room-badge">Room C301</div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Stream 4 -->
-                                    <div class="session-cell">
-                                        <div class="session-card">
-                                            <h4>NDIS Policy Reforms</h4>
-                                            <p>Navigating the changing landscape of disability support services.</p>
-                                            <div class="room-badge">Room D410</div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Stream 5 -->
-                                    <div class="session-cell">
-                                        <div class="session-card">
-                                            <h4>Social Work Education Curriculum</h4>
-                                            <p>Integrating field practice with academic theory effectively.</p>
-                                            <div class="room-badge">Room E102</div>
-                                        </div>
-                                    </div>
-
-                                    <!-- 12:30 Lunch -->
-                                    <div class="time-slot">12:30 - 13:30</div>
-                                    <div class="session-row-break"
-                                        style="background: #e9ecef; color: var(--text-dark); font-weight: 600;">
-                                        <i class="bi bi-basket-fill"></i> Networking Lunch
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- WEDNESDAY (Demo structure) -->
-                        <div class="tab-pane fade" id="wed" role="tabpanel">
-                            <div class="alert alert-light text-center border p-5">
-                                <h4>Wednesday Schedule</h4>
-                                <p>Detailed sessions for Wednesday will appear here with the same grid layout.</p>
-                            </div>
-                        </div>
-
-                        <!-- THURSDAY -->
-                        <div class="tab-pane fade" id="thu" role="tabpanel">
-                            <div class="alert alert-light text-center border p-5">
-                                <h4>Thursday Schedule</h4>
-                                <p>Detailed sessions for Thursday will appear here.</p>
-                            </div>
-                        </div>
-
-                        <!-- FRIDAY -->
-                        <div class="tab-pane fade" id="fri" role="tabpanel">
-                            <div class="alert alert-light text-center border p-5">
-                                <h4>Friday Schedule</h4>
-                                <p>Detailed sessions for Friday will appear here.</p>
-                            </div>
-                        </div>
-
+                <!-- Theme 3 -->
+                <div class="topic-category">
+                    <div class="category-header">
+                        <div class="category-icon"><i class="bi bi-bandaid"></i></div>
+                        <h3>3. Trauma, Resilience, and Healing</h3>
+                    </div>
+                    <div class="topic-list">
+                        <div class="topic-item">Trauma and its impact on health and mental health</div>
+                        <div class="topic-item">Trauma-informed practice in social work</div>
+                        <div class="topic-item">Community resilience and recovery models</div>
+                        <div class="topic-item">Crisis, disaster, and emergency health responses</div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Additional Info -->
-            <div class="row g-4 mt-4">
-                <div class="col-lg-6">
-                    <div class="program-feature">
-                        <h3>CPD Accreditation</h3>
-                        <p>All conference sessions are eligible for Continuing Professional Development (CPD) points,
-                            helping you meet your professional learning requirements. Attendees will receive
-                            certificates upon completion.</p>
+                <!-- Theme 4 -->
+                <div class="topic-category">
+                    <div class="category-header">
+                        <div class="category-icon"><i class="bi bi-lightbulb"></i></div>
+                        <h3>4. Innovation, Technology, and Effectiveness</h3>
+                    </div>
+                    <div class="topic-list">
+                        <div class="topic-item">Technology and innovation in health and mental health care</div>
+                        <div class="topic-item">Digital mental health, telehealth, and service transformation</div>
+                        <div class="topic-item">Evaluating effectiveness and outcome-based practices</div>
+                        <div class="topic-item">Innovations in low-resource settings</div>
                     </div>
                 </div>
-                <div class="col-lg-6">
-                    <div class="program-feature">
-                        <h3>Hybrid Participation</h3>
-                        <p>Join us in-person in Kerala for the full experience, or participate virtually from anywhere
-                            in the world. Virtual attendees have access to live-streamed sessions, Q&A, and on-demand
-                            recordings.</p>
+
+                <!-- Theme 5 -->
+                <div class="topic-category">
+                    <div class="category-header">
+                        <div class="category-icon"><i class="bi bi-diagram-3"></i></div>
+                        <h3>5. Interdisciplinary and Collaborative Practice</h3>
+                    </div>
+                    <div class="topic-list">
+                        <div class="topic-item">Collaborative and interprofessional practice</div>
+                        <div class="topic-item">Interdisciplinary and transdisciplinary leadership</div>
+                        <div class="topic-item">Roles and changing roles of social workers</div>
+                        <div class="topic-item">Social work leadership in complex systems</div>
                     </div>
                 </div>
+
+                <!-- Theme 6 -->
+                <div class="topic-category">
+                    <div class="category-header">
+                        <div class="category-icon"><i class="bi bi-journal-medical"></i></div>
+                        <h3>6. Professional Practice, Interventions, and Models of Care</h3>
+                    </div>
+                    <div class="topic-list">
+                        <div class="topic-item">Evidence-based and culturally responsive interventions</div>
+                        <div class="topic-item">Best practices in social work in health and mental health</div>
+                        <div class="topic-item">Intervention innovation and practice frameworks</div>
+                        <div class="topic-item">Strengthening practice in diverse clinical and community contexts</div>
+                    </div>
+                </div>
+
+                <!-- Theme 7 -->
+                <div class="topic-category">
+                    <div class="category-header">
+                        <div class="category-icon"><i class="bi bi-person-workspace"></i></div>
+                        <h3>7. Workforce Development, Wellbeing, and Leadership</h3>
+                    </div>
+                    <div class="topic-list">
+                        <div class="topic-item">Self-care and its relationship to workplace functioning</div>
+                        <div class="topic-item">Staff retention and workforce wellbeing</div>
+                        <div class="topic-item">Empowerment issues in professional settings</div>
+                        <div class="topic-item">Individual responsibility and leadership roles in organisational
+                            commitment</div>
+                        <div class="topic-item">Competency development and strengthening capacity</div>
+                    </div>
+                </div>
+
+                <!-- Theme 8 -->
+                <div class="topic-category">
+                    <div class="category-header">
+                        <div class="category-icon"><i class="bi bi-mortarboard"></i></div>
+                        <h3>8. Education, Training, and Future Directions for Social Work</h3>
+                    </div>
+                    <div class="topic-list">
+                        <div class="topic-item">Scope for education and training in health and mental health social work
+                        </div>
+                        <div class="topic-item">Curriculum innovation and research-informed teaching</div>
+                        <div class="topic-item">Preparing future practitioners for collaborative and evolving roles
+                        </div>
+                        <div class="topic-item">Emerging directions in social work education globally</div>
+                    </div>
+                </div>
+
             </div>
 
         </div>

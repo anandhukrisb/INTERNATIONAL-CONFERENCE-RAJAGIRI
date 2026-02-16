@@ -188,6 +188,15 @@ class FloatingNavbar extends HTMLElement {
                     opacity: 0.8;
                 }
 
+                .dropdown-icon {
+                    margin-left: 5px;
+                    transition: transform 0.3s ease;
+                }
+                
+                li:hover .dropdown-icon {
+                    transform: rotate(180deg);
+                }
+
                 /* Active link styling (Desktop & Tablet) */
                  /* We don't restrict this to min-width: 1419px anymore because we want it for the "visible" links in tablet mode too */
                 .navbar-links a.active {
@@ -546,25 +555,13 @@ class FloatingNavbar extends HTMLElement {
                 <ul class="navbar-links" id="navbar-links">
                     <li><a href="index.html">2027 ICSWHMH</a></li>
                     <li><a href="history.html">History</a></li>
-                    <li>
-                        <a href="#">Program</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="program.html">Program</a></li>
-                            <li><a href="topics.html">Conference Topics</a></li>
-                        </ul>
-                    </li>
+                    <li><a href="themes.html">Themes</a></li>
                     <li>
                         <a href="committee.html">Speakers</a>
                     </li>
                     <li><a href="registration.html">Registration</a></li>
                     <li><a href="abstract.html">Abstract Submission</a></li>
-                    <li>
-                        <a href="#">Host city</a>
-                        <ul class="dropdown-menu">
-                            <li><a href="hotels.html">Hotels</a></li>
-                            <li><a href="attractions.html">Attractions</a></li>
-                        </ul>
-                    </li>
+                    <li><a href="attractions.html">Attractions</a></li>
                     <li><a href="contact-us.html" class="contact-btn">Contact Us</a></li>
                 </ul>
 
