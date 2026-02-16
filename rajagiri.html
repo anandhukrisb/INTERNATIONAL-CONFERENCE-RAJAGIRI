@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rajagiri - ICSWHMH 2027</title>
+    <link rel="icon" type="image/x-icon" href="assets/Favicon-192.ico?v=2">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,58 +20,14 @@
     <!-- GSAP (Optional for future use or if arrows need it) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
-    <!-- View Transitions API CSS -->
-    <style>
-        /* Prevent navbar and footer from flickering during transitions */
-        floating-navbar {
-            view-transition-name: navbar;
-            position: relative;
-            z-index: 9999;
-        }
-
-        main-footer {
-            view-transition-name: footer;
-        }
-
-        /* Smooth crossfade animation for page content */
-        ::view-transition-old(root),
-        ::view-transition-new(root) {
-            animation-duration: 0.3s;
-        }
-
-        /* Keep navbar and footer stable (no animation) */
-        ::view-transition-old(navbar),
-        ::view-transition-new(navbar),
-        ::view-transition-old(footer),
-        ::view-transition-new(footer) {
-            animation: none;
-        }
-
-        /* Respect user's motion preferences */
-        @media (prefers-reduced-motion: reduce) {
-
-            ::view-transition-old(root),
-            ::view-transition-new(root) {
-                animation: none !important;
-            }
-        }
-    </style>
-
     <style>
         /* Base Styles */
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-        }
-
         body,
         html {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            max-width: 100vw;
             font-family: 'Inter', sans-serif;
             background: #ffffff;
             overflow-x: hidden;
@@ -242,7 +199,8 @@
             position: relative;
             overflow: hidden;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
-            padding: 60px 40px;
+            padding: 60px 40px 60px 40px;
+            padding-top: 80px;
         }
 
         /* Section Header */
@@ -271,7 +229,7 @@
             position: relative;
             z-index: 2;
             align-items: flex-start;
-            padding: 50px 0 30px 0;
+            padding: 30px 0;
         }
 
         .rajagiri-info-card {
@@ -359,89 +317,7 @@
             text-align: right;
         }
 
-        /* ============ RESPONSIVE ============ */
-
-        /* --- Tablet (992px) --- */
-        @media (max-width: 992px) {
-            .rajagiri-banner-section {
-                width: calc(100% - 16px);
-                height: 60vh;
-                border-radius: 16px;
-                margin: 100px auto 0 auto;
-                left: 0;
-                transform: none;
-            }
-
-            .rajagiri-banner-image {
-                height: 65vh;
-                border-radius: 16px;
-            }
-
-            .rajagiri-banner-text {
-                font-size: 5rem;
-            }
-
-            .rajagiri-banner-tagline {
-                font-size: 1.6rem;
-                letter-spacing: 5px;
-            }
-
-            .rajagiri-banner-desc {
-                font-size: 1rem;
-            }
-
-            .rajagiri-hero-section {
-                width: 98vw;
-            }
-
-            .rajagiri-hero-container {
-                border-radius: 24px;
-                padding: 50px 30px;
-            }
-
-            .rajagiri-cards-grid {
-                flex-wrap: wrap;
-                gap: 20px;
-                padding: 30px 0 20px 0;
-            }
-
-            .rajagiri-info-card {
-                flex: 1 1 calc(50% - 10px);
-                min-width: calc(50% - 10px);
-            }
-
-            .rajagiri-info-card:nth-child(odd) {
-                transform: translateY(-15px);
-            }
-
-            .rajagiri-info-card:nth-child(even) {
-                transform: translateY(15px);
-            }
-
-            .rajagiri-info-card:nth-child(odd):hover {
-                transform: translateY(-20px);
-            }
-
-            .rajagiri-info-card:nth-child(even):hover {
-                transform: translateY(10px);
-            }
-
-            .rajagiri-host-title {
-                font-size: 1.9rem;
-            }
-
-            .rajagiri-watermark-left {
-                font-size: 5rem;
-                left: 20px;
-            }
-
-            .rajagiri-watermark-right {
-                font-size: 2.5rem;
-                right: 20px;
-            }
-        }
-
-        /* --- Mobile (900px and below) --- */
+        /* Mobile Responsiveness */
         @media (max-width: 900px) {
             .rajagiri-hero-container {
                 padding: 40px 20px;
@@ -449,14 +325,8 @@
 
             .rajagiri-cards-grid {
                 flex-direction: column;
-                flex-wrap: nowrap;
                 gap: 20px;
-                padding: 20px 0 10px 0;
-            }
-
-            .rajagiri-info-card {
-                flex: 1 1 100%;
-                min-width: 100%;
+                padding: 0;
             }
 
             .rajagiri-info-card:nth-child(odd),
@@ -474,147 +344,7 @@
             }
 
             .rajagiri-info-card .card-img {
-                height: 180px;
-            }
-        }
-
-        /* --- Mobile (768px) --- */
-        @media (max-width: 768px) {
-            .rajagiri-banner-section {
-                width: calc(100% - 12px);
-                height: 50vh;
-                border-radius: 12px;
-                margin: 80px auto 0 auto;
-                left: 0;
-                transform: none;
-                top: 0;
-            }
-
-            .rajagiri-banner-image {
-                height: 55vh;
-                border-radius: 12px;
-            }
-
-            .rajagiri-banner-content {
-                top: 50%;
-                padding: 0 15px;
-            }
-
-            .rajagiri-hero-section {
-                width: 100%;
-                padding-bottom: 30px;
-                margin-top: 25px;
-            }
-
-            .rajagiri-hero-container {
-                border-radius: 16px;
-                padding: 30px 15px;
-            }
-
-            .rajagiri-info-card {
-                padding: 24px;
-                border-radius: 18px;
-            }
-
-            .rajagiri-info-card .card-img {
-                height: 160px;
-            }
-
-            .rajagiri-watermark-left {
-                font-size: 3.5rem;
-                left: 15px;
-                top: 30px;
-            }
-
-            .rajagiri-watermark-right {
-                font-size: 2rem;
-                right: 15px;
-                bottom: 30px;
-            }
-        }
-
-        /* --- Small Mobile (480px) --- */
-        @media (max-width: 480px) {
-            .rajagiri-banner-section {
-                width: calc(100% - 8px);
-                height: auto;
-                min-height: 70vh;
-                border-radius: 10px;
-                margin: 70px auto 0 auto;
-                left: 0;
-                transform: none;
-            }
-
-            .rajagiri-banner-image {
-                height: 75vh;
-                border-radius: 10px;
-            }
-
-            .rajagiri-banner-text {
-                font-size: 2.5rem;
-                letter-spacing: 2px;
-            }
-
-            .rajagiri-banner-tagline {
-                font-size: 1rem;
-                letter-spacing: 2px;
-                margin: 10px 0;
-            }
-
-            .rajagiri-banner-desc {
-                font-size: 0.85rem;
-                max-width: 95%;
-                line-height: 1.5;
-            }
-
-            .rajagiri-banner-logo {
-                width: 80px;
-                margin-bottom: 10px;
-            }
-
-            .rajagiri-banner-btn {
-                padding: 10px 24px;
-                font-size: 0.75rem;
-                margin-top: 20px;
-            }
-
-            .rajagiri-hero-container {
-                padding: 25px 12px;
-                border-radius: 12px;
-            }
-
-            .rajagiri-host-title {
-                font-size: 1.4rem;
-            }
-
-            .rajagiri-info-card {
-                padding: 20px;
-                border-radius: 16px;
-            }
-
-            .rajagiri-info-card h3 {
-                font-size: 1.05rem;
-            }
-
-            .rajagiri-info-card p {
-                font-size: 0.8rem;
-            }
-
-            .rajagiri-info-card .card-img {
-                height: 140px;
-                border-radius: 12px;
-            }
-
-            .rajagiri-watermark-left {
-                font-size: 2.5rem;
-                left: 10px;
-                top: 20px;
-            }
-
-            .rajagiri-watermark-right {
-                font-size: 1.5rem;
-                right: 10px;
-                bottom: 20px;
+                height: 150px;
             }
         }
     </style>
