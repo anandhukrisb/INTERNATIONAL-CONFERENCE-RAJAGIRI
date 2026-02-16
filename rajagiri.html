@@ -9,33 +9,28 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Montserrat:wght@900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Montserrat:wght@900&family=Inter:wght@300..700&display=swap"
         rel="stylesheet">
+
     <!-- Navbar/Footer Scripts -->
     <script src="navbar.js" defer></script>
     <script src="footer.js" defer></script>
-    <!-- GSAP -->
+
+    <!-- GSAP (Optional for future use or if arrows need it) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
     <style>
-        /* Base Page Styles */
+        /* Base Styles */
         body,
         html {
-            width: 100%;
-            height: 100%;
             margin: 0;
             padding: 0;
-            background: #ffffff;
-            /* White background */
-            font-family: 'Inter', sans-serif;
-        }
-
-        /* Scoped Parallax Styles */
-        .parallax-wrapper {
-            position: relative;
             width: 100%;
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background: #ffffff;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
         }
 
         /* Rajagiri Hero Slider Section Styles */
@@ -47,1540 +42,381 @@
             display: flex;
             justify-content: center;
             padding-bottom: 50px;
-            margin-top: 50px;
+            margin-top: 40px;
+            /* Adjusted margin since banner is above */
         }
 
+        /* Banner Section Styles */
+        .rajagiri-banner-section {
+            width: 98vw;
+            margin: 110px auto 0 auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 80vh;
+            top: 10px;
+        }
+
+        .rajagiri-banner-image {
+            width: 100%;
+            height: 85vh;
+            /* Full screen height minus some space */
+            object-fit: cover;
+            display: block;
+            border-radius: 20px;
+            filter: brightness(0.4);
+            /* Dark filter */
+        }
+
+        .rajagiri-banner-content {
+            position: absolute;
+            top: 45%;
+            /* Moved up slightly */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 2;
+            width: 100%;
+            padding: 0 20px;
+            /* Add padding for mobile */
+        }
+
+        .rajagiri-banner-logo {
+            width: 150px;
+            /* Slightly smaller to fit better */
+            height: auto;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+        }
+
+        .rajagiri-banner-text {
+            font-family: 'Outfit', sans-serif;
+            font-size: 7rem;
+            /* Adjusted size */
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin: 0;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            line-height: 1;
+        }
+
+        .rajagiri-banner-tagline {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: #C9A227;
+            /* Gold color */
+            letter-spacing: 8px;
+            margin: 15px 0;
+            text-transform: uppercase;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .rajagiri-banner-desc {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 700px;
+            margin: 10px auto 0;
+            line-height: 1.6;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        /* View More Button */
+        .rajagiri-banner-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+            padding: 12px 30px;
+            background-color: #1D0A3F;
+            /* Primary Blue */
+            color: #C9A227;
+            /* Gold Text */
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(29, 10, 63, 0.3);
+        }
+
+        .rajagiri-banner-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(29, 10, 63, 0.4);
+            background-color: #2a0e5b;
+            color: #FFFFFF;
+            border-color: #FFFFFF;
+        }
+
+        .btn-arrow {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .rajagiri-banner-btn:hover .btn-arrow {
+            transform: translateY(3px);
+        }
+
+        @media (max-width: 768px) {
+            .rajagiri-banner-text {
+                font-size: 3.5rem;
+                letter-spacing: 3px;
+            }
+
+            .rajagiri-banner-logo {
+                width: 100px;
+            }
+
+            .rajagiri-banner-desc {
+                font-size: 0.9rem;
+                max-width: 90%;
+            }
+
+            .rajagiri-banner-tagline {
+                font-size: 1.2rem;
+                letter-spacing: 4px;
+            }
+        }
+
+        /* Hero Container */
         .rajagiri-hero-container {
             width: 100%;
-            height: 65vh;
-            min-height: 500px;
             border-radius: 40px;
             background: radial-gradient(circle at 50% 100%, #4B2C7A 20%, #1D0A3F 80%);
             position: relative;
             overflow: hidden;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
-            transition: background 1s ease;
+            padding: 60px 40px;
         }
 
-        /* Top Left: Name */
-        .raj-hero-name {
-            position: absolute;
-            top: 40px;
-            left: 40px;
-            z-index: 5;
-            text-align: left;
-        }
-
-        .raj-hero-name h3 {
+        /* Section Header */
+        .rajagiri-host-title {
             font-family: 'Outfit', sans-serif;
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 700;
             color: #FFFFFF;
-            margin: 0;
-            line-height: 1.2;
+            text-align: center;
+            margin: 0 0 8px 0;
         }
 
-        /* Top Right: Designation */
-        .raj-hero-designation {
-            position: absolute;
-            top: 40px;
-            right: 40px;
-            z-index: 5;
-            text-align: right;
-            max-width: 300px;
-        }
-
-        .raj-hero-designation p {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #FFFFFF;
-            margin: 0;
-        }
-
-        /* Center: Image */
-        .raj-hero-image-wrapper {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            height: 100%;
-            z-index: 10;
-            display: flex;
-            align-items: flex-end;
-            pointer-events: none;
-        }
-
-        .raj-hero-image {
-            height: 100%;
-            width: auto;
-            object-fit: cover;
-            display: block;
-            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
-        }
-
-        /* Bottom Right: Small Card */
-        .raj-hero-card {
-            position: absolute;
-            bottom: 40px;
-            right: 40px;
-            z-index: 15;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 20px;
-            border-radius: 20px;
-            width: 250px;
-            color: #FFFFFF;
-        }
-
-        .raj-hero-card h4 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin: 0 0 5px 0;
-            color: #C9A227;
-        }
-
-        .raj-hero-card p {
+        .rajagiri-host-venue {
             font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
-            margin: 0;
-            color: rgba(255, 255, 255, 0.8);
-            line-height: 1.4;
+            font-size: 1rem;
+            color: #C9A227;
+            text-align: center;
+            margin: 0 0 40px 0;
+            font-weight: 600;
         }
 
-        /* Bottom Left Placeholder */
-        .raj-hero-placeholder {
-            position: absolute;
-            bottom: 40px;
-            left: 40px;
-            z-index: 15;
-        }
-
-        /* Mobile Responsiveness */
-        @media (max-width: 900px) {
-            .rajagiri-hero-container {
-                height: auto;
-                min-height: 700px;
-                background: linear-gradient(to top, #1D0A3F 60%, #FDFBF7 60%);
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: flex-end;
-                padding-top: 100px;
-            }
-
-            .raj-hero-name {
-                top: 20px;
-                left: 20px;
-                text-align: center;
-                width: 100%;
-                left: 0;
-            }
-
-            .raj-hero-designation {
-                top: 60px;
-                right: auto;
-                left: 0;
-                width: 100%;
-                text-align: center;
-                max-width: 100%;
-            }
-
-            .raj-hero-image-wrapper {
-                position: relative;
-                left: auto;
-                transform: none;
-                height: 400px;
-                width: 100%;
-                justify-content: center;
-                margin-top: auto;
-            }
-
-            .raj-hero-card {
-                position: relative;
-                bottom: auto;
-                right: auto;
-                margin-top: 20px;
-                margin-bottom: 20px;
-                width: 90%;
-            }
-
-            .raj-hero-placeholder {
-                display: none;
-            }
-        }
-
-        /* Slider Image Styles */
-        .raj-slider-images {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        .raj-slide-image-wrapper {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            height: 100%;
+        /* Cards Grid - Horizontal Zigzag */
+        .rajagiri-cards-grid {
             display: flex;
-            align-items: flex-end;
-            transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
-            opacity: 0;
-            transform-origin: bottom center;
+            gap: 24px;
+            position: relative;
+            z-index: 2;
+            align-items: flex-start;
+            padding: 30px 0;
         }
 
-        .raj-slide-image {
-            height: 100%;
-            width: auto;
+        .rajagiri-info-card {
+            flex: 1;
+            min-width: 0;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 24px;
+            padding: 32px;
+            transition: all 0.4s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Zigzag: odd cards up, even cards down */
+        .rajagiri-info-card:nth-child(odd) {
+            transform: translateY(-30px);
+        }
+
+        .rajagiri-info-card:nth-child(even) {
+            transform: translateY(30px);
+        }
+
+        .rajagiri-info-card:nth-child(odd):hover {
+            transform: translateY(-38px);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .rajagiri-info-card:nth-child(even):hover {
+            transform: translateY(22px);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .rajagiri-info-card .card-img {
+            width: 100%;
+            height: 160px;
             object-fit: cover;
-            display: block;
-            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+            border-radius: 16px;
+            margin-bottom: 20px;
         }
 
-        /* Animation States */
-        .slide-active {
-            opacity: 1;
-            transform: translateX(-50%) scale(1);
-            left: 50%;
+        .rajagiri-info-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #C9A227;
+            margin: 0 0 10px 0;
         }
 
-        .slide-enter {
-            opacity: 0;
-            transform: translate(50%, 50%) scale(0.5);
-            left: 80%;
+        .rajagiri-info-card p {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.6;
+            margin: 0;
         }
 
-        .slide-exit {
-            opacity: 0;
-            transform: translate(-150%, 20%) scale(0.5);
-            left: 20%;
-        }
-
-        /* Text Transitions */
-        .raj-hero-name,
-        .raj-hero-designation,
-        .raj-hero-card {
-            transition: opacity 0.5s ease;
-        }
-
-        /* Navigation Arrows */
-        .raj-hero-prev,
-        .raj-hero-next {
-            z-index: 500;
-            position: absolute;
-            width: 40px;
-            cursor: pointer;
-            opacity: 0.5;
-            transition: all 0.3s ease;
-            top: 50%;
-        }
-
-        .raj-hero-prev:hover,
-        .raj-hero-next:hover {
-            opacity: 1;
-        }
-
-        .raj-hero-prev {
-            left: 20px;
-            transform: translateY(-50%);
-        }
-
-        .raj-hero-next {
-            right: 20px;
-            transform: translateY(-50%);
-        }
-
-        /* Background Watermarks */
-        .raj-watermark-left,
-        .raj-watermark-right {
+        /* Watermarks */
+        .rajagiri-watermark-left,
+        .rajagiri-watermark-right {
             position: absolute;
             font-family: 'Outfit', sans-serif;
             font-weight: 800;
-            color: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.03);
             z-index: 1;
             pointer-events: none;
             white-space: nowrap;
             line-height: 1;
         }
 
-        .raj-watermark-left {
+        .rajagiri-watermark-left {
             font-size: 8rem;
             left: 40px;
-            top: 150px;
-            transform: none;
-            writing-mode: initial;
+            top: 60px;
         }
 
-        .raj-watermark-right {
+        .rajagiri-watermark-right {
             font-size: 4rem;
             right: 40px;
-            bottom: 150px;
+            bottom: 60px;
             text-align: right;
         }
 
-        .card-img {
-            border-radius: 20px;
-            height: 70%;
-        }
-
-        .parallax-main {
-            position: fixed;
-            background: #FDFBF7;
-            width: 100%;
-            /* Full width */
-            max-width: none;
-            /* Remove max-width */
-            height: 100vh;
-            /* Full viewport height */
-            top: 0;
-            /* Start from top */
-            left: 0;
-            /* Start from left */
-            transform: none;
-            /* Remove center transform */
-            z-index: 1;
-        }
-
-        @media (max-width: 768px) {
-            .parallax-main {
-                top: 0;
-                height: 100vh;
+        /* Mobile Responsiveness */
+        @media (max-width: 900px) {
+            .rajagiri-hero-container {
+                padding: 40px 20px;
             }
-        }
 
-        .scrollDist {
-            width: 100%;
-            height: 120vh;
-            position: relative;
-            z-index: 0;
-        }
-
-        /* SVG Internal Styles */
-        svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Footer positioning */
-        main-footer {
-            position: relative;
-            z-index: 10;
-            display: block;
-            background: #fdfbf7;
-            margin-top: 0;
-        }
-    </style>
-    <style>
-        /* CEO Section Styles */
-        .section-separator {
-            max-width: 95%;
-            margin: 10px auto;
-            border-top: 1px solid #ddd;
-            width: 100%;
-        }
-
-        .welcome-section {
-            background-color: #FDFBF7;
-            padding-top: 0;
-            /* Added padding to separate from potential overlap */
-            padding-bottom: 80px;
-        }
-
-        .welcome-container {
-            background-color: #1d0a3f;
-            border-radius: 50px;
-            padding: 100px 30px 0;
-            position: relative;
-            min-height: 500px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            overflow: hidden;
-            max-width: 95%;
-            margin: 0 auto;
-        }
-
-        .welcome-header {
-            position: absolute;
-            top: 40px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            font-size: 1.5rem;
-            text-transform: uppercase;
-            color: white;
-            z-index: 10;
-            letter-spacing: 2px;
-        }
-
-        .watermark-text {
-            position: absolute;
-            top: 35%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 8rem;
-            font-weight: 900;
-            color: rgba(255, 255, 255, 0.1);
-            white-space: nowrap;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .welcome-content {
-            position: absolute;
-            left: 40px;
-            bottom: 30px;
-            padding-bottom: 30px;
-            z-index: 5;
-            max-width: 350px;
-        }
-
-        .welcome-content p {
-            font-size: 0.95rem;
-            line-height: 1.8;
-            margin-bottom: 25px;
-            text-align: justify;
-            color: rgba(255, 255, 255, 0.85);
-            font-weight: 300;
-        }
-
-        .ceo-wrapper {
-            position: relative;
-            bottom: 0px;
-            z-index: 5;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-        }
-
-        .ceo-image {
-            height: 480px;
-            width: auto;
-            display: block;
-            margin-bottom: -5px;
-        }
-
-        .ceo-title-bg {
-            position: absolute;
-            bottom: 100px;
-            right: -55%;
-            font-size: 7rem;
-            font-weight: 900;
-            color: rgba(255, 255, 255, 0.1);
-            line-height: 0.85;
-            text-align: left;
-            z-index: -1;
-            text-transform: uppercase;
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        .ceo-name {
-            position: absolute;
-            right: -300px;
-            bottom: 120px;
-            color: white;
-            text-align: left;
-            z-index: 6;
-        }
-
-        .ceo-name h3 {
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            font-size: 2rem;
-            font-weight: 600;
-            margin: 0 0 5px 0;
-            margin-left: 20px;
-            color: #C9A227;
-        }
-
-        .ceo-name p {
-            font-size: 1rem;
-            margin: 0;
-            margin-left: 20px;
-            margin-bottom: 20px;
-            color: rgba(255, 255, 255, 0.85);
-            font-weight: 400;
-        }
-
-        /* Reveal Animation Classes */
-        .reveal-on-scroll {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
-        }
-
-        .reveal-on-scroll.revealed {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .delay-1 {
-            transition-delay: 0.2s;
-        }
-
-        .delay-2 {
-            transition-delay: 0.4s;
-        }
-
-        /* Mobile Styles */
-        @media (max-width: 950px) {
-            .welcome-container {
+            .rajagiri-cards-grid {
                 flex-direction: column;
-                padding: 0 30px 0;
-                align-items: center;
-                gap: 0;
+                gap: 20px;
+                padding: 0;
             }
 
-            .welcome-header {
-                position: static !important;
-                padding: 60px 40px 30px;
-                box-sizing: border-box;
+            .rajagiri-info-card:nth-child(odd),
+            .rajagiri-info-card:nth-child(even) {
+                transform: translateY(0);
             }
 
-            .watermark-text {
-                font-size: 4rem;
+            .rajagiri-info-card:nth-child(odd):hover,
+            .rajagiri-info-card:nth-child(even):hover {
+                transform: translateY(-5px);
             }
 
-            .welcome-content {
-                flex: auto;
-                max-width: 100%;
-                padding: 40px;
-                text-align: center;
-                margin-left: 0;
-                padding-bottom: 40px;
-                background: rgba(255, 255, 255, 0.05);
-                backdrop-filter: blur(15px);
-                -webkit-backdrop-filter: blur(15px);
-                border: 1px solid rgba(255, 255, 255, 0.15);
-                border-radius: 30px;
-                box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+            .rajagiri-host-title {
+                font-size: 1.6rem;
             }
 
-            .welcome-content p {
-                text-align: justify;
-                font-size: 1rem !important;
-                color: rgba(255, 255, 255, 0.9);
-            }
-
-            .ceo-wrapper {
-                position: relative !important;
-                bottom: auto;
-                left: auto;
-                transform: none;
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                margin-top: 20px;
-                z-index: 6;
-            }
-
-            .ceo-image {
-                height: 400px;
-                margin-left: auto;
-                margin-right: auto;
-                padding-bottom: 20px;
-            }
-
-            .ceo-title-bg {
-                font-size: 3.5rem;
-                bottom: 50px;
-                right: auto;
-                left: 50%;
-                transform: translateX(-50%);
-                opacity: 0.08;
-            }
-
-            .ceo-name {
-                position: static;
-                order: -1;
-                margin-bottom: 30px;
-                margin-top: 20px;
-                text-align: center;
-            }
-
-            .ceo-name h3 {
-                margin-left: 0;
-                font-size: 1.7rem;
-            }
-
-            .ceo-name p {
-                margin-left: 0;
-                margin-bottom: 0;
-                font-size: 0.9rem;
-            }
-        }
-
-        /* Rajagiri Info Section Responsive */
-        @media (max-width: 950px) {
-            .rajagiri-info-grid {
-                grid-template-columns: 1fr !important;
-                gap: 40px !important;
-            }
-
-            .rajagiri-info-title {
-                font-size: 2rem !important;
-            }
-
-            .rajagiri-info-text {
-                font-size: 1rem !important;
-            }
-        }
-    </style>
-    <style>
-        @layer library, reset, base, demo;
-        @import 'https://unpkg.com/open-props@2.0.0-beta.5' layer(library);
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..700&display=swap');
-
-        @layer reset {
-
-            *,
-            ::before,
-            ::after {
-                box-sizing: border-box;
-            }
-
-            :where(:not(dialog)) {
-                margin: 0;
-            }
-        }
-
-        @layer base {
-            html {
-                --nav-block-size: 74px;
-                --brand-gradient: linear-gradient(227deg,
-                        #1400c7 0%,
-                        #00bbff 100%);
-
-                @media (prefers-reduced-motion: no-preference) {
-                    scroll-behavior: smooth;
-                }
-            }
-
-            body {
-                font-family: 'Inter', sans-serif;
-                min-block-size: 100dvb;
-            }
-        }
-
-        @layer demo {
-            .navbar {
-                min-block-size: var(--nav-block-size);
-                display: grid;
-                position: fixed;
-                inset-block-start: 0;
-                inset-inline: 0;
-                background-color: white;
-                z-index: var(--layer-3);
-                place-items: center end;
-                padding-block: var(--size-3);
-                padding-inline: var(--size-5);
-
-                @media (width >=600px) {
-                    padding-inline: 6dvi;
-                }
-            }
-
-            .nav-cta-btn {
-                font-size: var(--font-size-1);
-                font-weight: var(--font-weight-7);
-                inline-size: max-content;
-                white-space: nowrap;
-                text-decoration: none;
-                padding-block: var(--size-3);
-                padding-inline: var(--size-7);
-                border: var(--border-size-2) solid transparent;
-                color: black;
-                position: relative;
-                isolation: isolate;
-
-                background: linear-gradient(white, white) padding-box,
-                    var(--brand-gradient) border-box;
-                border-radius: var(--radius-6);
-                overflow: hidden;
-
-                &::before {
-                    content: '';
-                    display: block;
-                    position: absolute;
-                    inset: 0;
-
-                    background: var(--brand-gradient);
-                    mix-blend-mode: screen;
-                }
-
-                &:hover {
-                    color: white;
-
-                    &::before {
-                        background: var(--brand-gradient) padding-box,
-                            var(--brand-gradient) border-box;
-                        background-repeat: no-repeat;
-                        background-size: contain;
-                        mix-blend-mode: normal;
-                        z-index: -1;
-                    }
-                }
-            }
-
-            .section {
-                --section-block-size: max(400px, 100dvb);
-                display: grid;
-                background-color: white;
-                min-block-size: var(--section-block-size);
-                position: relative;
-                block-size: 100%;
-                display: grid;
-
-                >* {
-                    grid-area: 1/1;
-                }
-            }
-
-            .section-wrapper {
-                position: relative;
-                display: grid;
-
-                @media (width >=960px) {
-                    grid-template-columns: 1fr 1fr;
-                }
-
-                @media (width < 960px) {
-                    padding-block-start: calc(var(--nav-block-size) + var(--size-7));
-                    padding-block-end: var(--size-7);
-                }
-            }
-
-            .video {
-                display: block;
-                inline-size: 100%;
-                block-size: 100%;
-                object-fit: cover;
-                position: relative;
-                z-index: -1;
-            }
-
-            .content-wrapper {
-                display: grid;
-
-                @media (width < 960px) {
-                    gap: var(--size-7);
-                }
-            }
-
-            .meta {
-                display: grid;
-                gap: var(--size-3);
-            }
-
-            .content {
-                display: grid;
-                inline-size: 100%;
-                place-items: center;
-                padding-block: var(--size-7);
-                padding-inline: var(--size-5);
-
-                @media (width >=960px) {
-                    padding: var(--size-10);
-                    min-block-size: 100cqb;
-                    place-items: center end;
-                }
-
-                @media (width < 960px) {
-                    gap: var(--size-5);
-                }
-            }
-
-            .mobile-visual {
-                inline-size: 100%;
-                aspect-ratio: var(--ratio-square);
-
-                @media (width >=960px) {
-                    display: none;
-                }
-            }
-
-            .headline {
-                font-size: var(--font-size-7);
-                font-weight: var(--font-weight-4);
-                max-inline-size: var(--size-content-1);
-                text-wrap: pretty;
-
-                @media (width < 960px) {
-                    font-size: var(--font-size-6);
-                }
-            }
-
-            .desc {
-                font-size: var(--font-size-4);
-                line-height: 1.5;
-                max-inline-size: 40ch;
-                text-wrap: pretty;
-
-                @media (width < 960px) {
-                    font-size: var(--font-size-3);
-                }
-            }
-
-            .visual {
-                display: grid;
-                position: sticky;
-                block-size: var(--section-block-size);
-                inset-block-start: 0;
-                container-type: size;
-
-                @media (width < 960px) {
-                    display: none;
-                }
-            }
-
-            .video-visual {
-                inline-size: 100%;
-                block-size: var(--section-block-size);
-                display: block;
-                position: sticky;
-                inset-block-start: 0;
-                isolation: isolate;
-                filter: hue-rotate(210deg);
-            }
-
-            .card-wrapper {
-                container-type: size;
-                display: grid;
-                place-items: center;
-                overflow: clip;
-
-                >* {
-                    grid-area: 1/1;
-                }
-            }
-
-            .card {
-                aspect-ratio: var(--ratio-square);
-                inline-size: 70cqi;
-                border-radius: var(--radius-3);
-                scale: 0.4;
-            }
-
-            .card-img {
-                display: block;
-                inline-size: 100%;
-                block-size: 100%;
-                object-fit: cover;
-            }
-
-            .card-1 {
-                scale: 1;
-            }
-
-            .card-2 {
-                translate: -35cqi 30cqb;
-                opacity: 0.3;
-            }
-
-            .card-3 {
-                translate: 0cqi 50cqb;
-                opacity: 0.5;
-            }
-
-            .card-4 {
-                translate: 45cqi 40cqb;
-                opacity: 0.5;
-            }
-
-            .content-1 {
-                --_text-gradient: linear-gradient(227deg,
-                        #1400c7 0%,
-                        #00bbff 100%);
-            }
-
-            .content-2 {
-                --_text-gradient: linear-gradient(227deg,
-                        #28dc28 0%,
-                        #00bbff 100%);
-            }
-
-            .content-3 {
-                --_text-gradient: linear-gradient(227deg,
-                        #1400c7 0%,
-                        #b800b1 100%);
-            }
-
-            .content-4 {
-                --_text-gradient: linear-gradient(227deg,
-                        #b800b1 0%,
-                        #f50000 100%);
-            }
-
-            .text-highlight {
-                background: var(--_text-gradient);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-                text-fill-color: transparent;
-            }
-        }
-
-        @supports (animation-timeline: scroll()) {
-            body {
-                timeline-scope: --content-1, --content-2, --content-3, --content-4;
-            }
-
-            .section {
-                view-timeline-name: --section;
-            }
-
-            .content-1 {
-                view-timeline-name: --content-1;
-            }
-
-            .content-2 {
-                view-timeline-name: --content-2;
-            }
-
-            .content-3 {
-                view-timeline-name: --content-3;
-            }
-
-            .content-4 {
-                view-timeline-name: --content-4;
-            }
-
-            .card {
-                animation-timing-function: linear;
-                animation-fill-mode: forwards;
-            }
-
-            .card-1 {
-                animation-timeline: --content-1;
-                animation-name: slide-up-first-card;
-            }
-
-            .card-2 {
-                animation-timeline: --content-2;
-                animation-name: slide-up-card;
-            }
-
-            .card-3 {
-                animation-timeline: --content-3;
-                animation-name: slide-up-card;
-            }
-
-            .card-4 {
-                animation-timeline: --content-4;
-                animation-name: slide-up-card;
-            }
-
-            .video-visual {
-                animation-timeline: --section;
-                animation-range-end: exit 110%;
-                animation-name: update-hue;
-                animation-timing-function: step-end;
-                animation-fill-mode: forwards;
-            }
-
-            @keyframes update-hue {
-                0% {
-                    filter: hue-rotate(210deg);
-                }
-
-                25% {
-                    filter: hue-rotate(150deg);
-                }
-
-                45% {
-                    filter: hue-rotate(300deg);
-                }
-
-                60% {
-                    filter: hue-rotate(4deg);
-                }
-            }
-
-            @keyframes slide-up-first-card {
-                50% {
-                    translate: 0;
-                    opacity: 1;
-                }
-
-                90% {
-                    translate: 0 -50cqi;
-                    scale: 0.6;
-                }
-
-                100% {
-                    translate: 0 -100cqi;
-                    opacity: 0;
-                }
-            }
-
-            @keyframes slide-up-card {
-                50% {
-                    opacity: 1;
-                    translate: 0;
-                    scale: 1;
-                }
-
-                90% {
-                    opacity: 0.5;
-                    scale: 0.6;
-                    translate: 0 -50cqb;
-                }
-
-                100% {
-                    translate: 0 -100cqi;
-                    opacity: 0;
-                }
+            .rajagiri-info-card .card-img {
+                height: 150px;
             }
         }
     </style>
 </head>
 
 <body>
-
+    <!-- Navbar -->
     <floating-navbar></floating-navbar>
 
-    <div class="parallax-wrapper">
-        <div class="scrollDist"></div>
+    <!-- Banner Section -->
+    <section class="rajagiri-banner-section">
+        <img src="assets/RCSS_Banner.png" alt="RCSS Banner" class="rajagiri-banner-image">
+        <div class="rajagiri-banner-content">
+            <img src="assets/rajagiri_logo.png" alt="Rajagiri Logo" class="rajagiri-banner-logo">
+            <h1 class="rajagiri-banner-text">RAJAGIRI</h1>
+            <h2 class="rajagiri-banner-tagline">LEARN SERVE EXCEL</h2>
+            <p class="rajagiri-banner-desc">
+                Rajagiri College of Social Sciences (Autonomous) is a premier institution dedicated to excellence in
+                higher education, research, and social engagement.
+            </p>
+            <a href="#rajagiri-hero" class="rajagiri-banner-btn">
+                View Achievements
+                <span class="btn-arrow">↓</span>
+            </a>
+        </div>
+    </section>
 
-        <div class="parallax-main">
-            <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-                <mask id="m">
-                    <g class="cloud1">
-                        <rect fill="#fff" width="100%" height="801" y="799" />
-                        <image xlink:href="https://assets.codepen.io/721952/cloud1Mask.jpg" width="1200" height="800" />
-                    </g>
-                </mask>
+    <!-- Rajagiri Host Section -->
+    <section id="rajagiri-hero" class="rajagiri-hero-section">
+        <div class="rajagiri-hero-container">
+            <!-- Background Watermarks -->
+            <div class="rajagiri-watermark-left">RAJAGIRI</div>
+            <div class="rajagiri-watermark-right">LEARN SERVE EXCEL</div>
 
-                <image class="sky" xlink:href="https://assets.codepen.io/721952/sky.jpg" width="1200" height="590" />
+            <!-- Section Header -->
+            <h2 class="rajagiri-host-title">Achievements</h2>
 
-                <!-- New Rajagiri Background Image -->
-                <!-- <image class="rajagiri-bg" xlink:href="assets/rajagiri_hero_bg.jpg" width="100%" height="100%"
-                    preserveAspectRatio="xMidYMax slice" /> -->
+            <!-- Cards Grid -->
+            <div class="rajagiri-cards-grid">
+                <!-- Card 1 -->
+                <div class="rajagiri-info-card">
+                    <img class="card-img" src="assets/awards_ceremony.jpg" alt="Awards Ceremony">
+                    <h3>Nationally Ranked Excellence</h3>
+                    <p>Ranked 12th Best College in India (NIRF 2025, Ministry of Education, Govt. of India, College
+                        category).</p>
+                </div>
 
-                <!-- <image class="mountBg" xlink:href="https://assets.codepen.io/721952/mountBg.png" width="1200"
-                    height="800" /> -->
-                <!-- <image class="mountMg" xlink:href="assets/rajagiri_hero_bg.png" width="75%" x="12.5%" height="100%"
-                    preserveAspectRatio="xMidYMax slice" /> -->
-                <!--<image class="cloud2" xlink:href="https://assets.codepen.io/721952/cloud2.png" width="1200"
-                    height="800" />
-                <image class="mountFg" xlink:href="https://assets.codepen.io/721952/mountFg.png" width="1200"
-                    height="800" /> -->
-                <image class="cloud1" xlink:href="https://assets.codepen.io/721952/cloud1.png" width="1200"
-                    height="800" />
-                <image class="cloud3" xlink:href="https://assets.codepen.io/721952/cloud3.png" width="1200"
-                    height="800" />
+                <!-- Card 2 -->
+                <div class="rajagiri-info-card">
+                    <img class="card-img" src="assets/host_slide_2.jpg" alt="Accreditation">
+                    <h3>Highest Accreditation</h3>
+                    <p>Highest National Accreditation: Reaccredited by NAAC with A++ Grade (CGPA 3.83).</p>
+                </div>
 
-                <text fill="#fff" x="50%" y="350" text-anchor="middle"
-                    style="font-family: 'Montserrat', sans-serif; font-size: 99px; font-weight: 900;">RAJAGIRI</text>
+                <!-- Card 3 -->
+                <div class="rajagiri-info-card">
+                    <img class="card-img" src="assets/host_slide_3.png" alt="Academic Pioneers">
+                    <h3>Academic Pioneers</h3>
+                    <p>Academic Firsts: Launched the first Masters of Social Work (MSW) and Bachelor of Social Work
+                        (BSW) programs in the state of Kerala.</p>
+                </div>
 
-                <g mask="url(#m)">
-                    <rect fill="#fff" width="100%" height="100%" />
-                    <text x="50%" y="350" fill="#162a43" text-anchor="middle"
-                        style="font-family: 'Montserrat', sans-serif; font-size: 65px; font-weight: 900;">LEARN SERVE
-                        EXCEL</text>
-                </g>
-            </svg>
-
-            <!-- Rajagiri Content Overlay -->
-            <div
-                style="position: absolute; bottom: 0; left: 0; right: 0; z-index: 100; background: linear-gradient(to top, #FDFBF7 0%, transparent 100%); padding: 60px 20px 40px; pointer-events: none;">
-                <div style="max-width: 95%; margin: 0 auto; pointer-events: auto;">
-                    <div class="rajagiri-info-grid"
-                        style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: end;">
-                        <div
-                            style="background: rgba(253, 251, 247, 0.95); backdrop-filter: blur(10px); padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-                            <h3 class="rajagiri-info-title"
-                                style="font-family: 'Outfit', sans-serif; font-size: 1.8rem; color: #1d0a3f; margin-bottom: 15px; font-weight: 700;">
-                                About Rajagiri College</h3>
-                            <p class="rajagiri-info-text"
-                                style="font-size: 0.95rem; line-height: 1.6; color: #333; margin-bottom: 15px; text-align: justify;">
-                                Established in 1955, Rajagiri College of Social Sciences (Autonomous) is a premier
-                                institution dedicated to excellence in social work education and research.
-                            </p>
-                            <p class="rajagiri-info-text"
-                                style="font-size: 0.95rem; line-height: 1.6; color: #333; margin: 0; text-align: justify;">
-                                The motto "Learn, Serve, Excel" embodies our commitment to holistic education combining
-                                academic rigor with community engagement.
-                            </p>
-                        </div>
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
-                            <div
-                                style="background: linear-gradient(135deg, #1d0a3f 0%, #3d1a5f 100%); padding: 25px 20px; border-radius: 15px; color: white; text-align: center;">
-                                <h3
-                                    style="font-family: 'Outfit', sans-serif; font-size: 2rem; margin: 0 0 5px 0; color: #C9A227;">
-                                    1955</h3>
-                                <p style="margin: 0; font-size: 0.85rem; opacity: 0.9;">Founded</p>
-                            </div>
-                            <div
-                                style="background: linear-gradient(135deg, #C9A227 0%, #d4af37 100%); padding: 25px 20px; border-radius: 15px; color: #1d0a3f; text-align: center;">
-                                <h3 style="font-family: 'Outfit', sans-serif; font-size: 2rem; margin: 0 0 5px 0;">60+
-                                </h3>
-                                <p style="margin: 0; font-size: 0.85rem; font-weight: 600;">Years</p>
-                            </div>
-                            <div
-                                style="background: linear-gradient(135deg, #1d0a3f 0%, #3d1a5f 100%); padding: 25px 20px; border-radius: 15px; color: white; text-align: center;">
-                                <h3
-                                    style="font-family: 'Outfit', sans-serif; font-size: 2rem; margin: 0 0 5px 0; color: #C9A227;">
-                                    1st</h3>
-                                <p style="margin: 0; font-size: 0.85rem; opacity: 0.9;">in Kerala</p>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Card 4 -->
+                <div class="rajagiri-info-card">
+                    <img class="card-img" src="assets/conference_attendees.jpg" alt="Community Engagement">
+                    <h3>Community Engagement</h3>
+                    <p>Community Impact: 'Live Labs' provide direct outreach and service to the community.</p>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Content below parallax? The scrollDist is 200vh. 
-         Ideally, after 200vh of scrolling, the footer should appear.
-         Since .parallax-main is fixed, we need to make sure the footer can come over it or sit below.
-         We'll wrap the footer in a container that has high z-index and sits after scrollDist.
-    -->
-    <div style="position: relative; z-index: 20; background: #fff;">
-        <section class="welcome-section">
-            <!--<div class="welcome-container">
-                <h3 class="welcome-header reveal-on-scroll">Welcome from Principal of Rajagiri</h3>
-                <div class="watermark-text">#2027 ICSWHMH</div>
-
-                <div class="welcome-content reveal-on-scroll delay-1">
-                    <p>Dear Colleagues,<br>I am delighted to welcome each of you as we embark on the 10th
-                        International
-                        Conference on Social Work in Health and Mental Health (10th ICSWHMH). This event
-                        takes
-                        advantage
-                        of
-                        being a hybrid experience, wherever you are and in the vibrant city of Melbourne.
-                    </p>
-                    <p>Hosting over 600 national and international delegates, this Conference provides a
-                        unique
-                        platform
-                        to
-                        exchange insights on the current challenges and trends in the social work sector. I
-                        look
-                        forward
-                        to
-                        forging new connections, learning from leading experts, and exploring the latest
-                        ideas
-                        available.
-                    </p>
-                </div>
-
-                <div class="ceo-wrapper reveal-on-scroll delay-2">
-                    <div class="ceo-title-bg">
-                        CEO<br>AASW
-                    </div>
-                    <img src="assets/ceo_image.png" alt="AASW CEO" class="ceo-image">
-                    <div class="ceo-name">
-                        <h3>Dr. Emma Richardson</h3>
-                        <p>Chief Executive Officer</p>
-                    </div>
-                </div>
-            </div> -->
-        </section>
-
-        <!-- Rajagiri Hero Slider Section -->
-        <section class="rajagiri-hero-section">
-            <div class="rajagiri-hero-container">
-                <!-- Background Watermarks -->
-                <div class="raj-watermark-left">RAJAGIRI</div>
-                <div class="raj-watermark-right">LEARN SERVE EXCEL</div>
-
-                <!-- Top Left: Name -->
-                <div class="raj-hero-name" id="heroName">
-                    <!-- Dynamic Content -->
-                </div>
-
-                <!-- Top Right: Designation -->
-                <div class="raj-hero-designation" id="heroDesignation">
-                    <!-- Dynamic Content -->
-                </div>
-
-                <!-- Slider Images Container -->
-                <div class="raj-slider-images" id="heroImages">
-                    <!-- Images will be injected here -->
-                </div>
-
-                <!-- Navigation Arrows -->
-                <svg xmlns="http://www.w3.org/2000/svg" class="raj-hero-prev" id="prevBtn" width="56.898" height="91"
-                    viewBox="0 0 56.898 91">
-                    <path d="M45.5,0,91,56.9,48.452,24.068,0,56.9Z" transform="translate(0 91) rotate(-90)"
-                        fill="#fff" />
-                </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" class="raj-hero-next" id="nextBtn" width="56.898" height="91"
-                    viewBox="0 0 56.898 91">
-                    <path d="M45.5,0,91,56.9,48.452,24.068,0,56.9Z" transform="translate(56.898) rotate(90)"
-                        fill="#fff" />
-                </svg>
-
-                <!-- Bottom Right: Small Card -->
-                <div class="raj-hero-card" id="heroCard">
-                    <!-- Dynamic Content -->
-                </div>
-
-                <!-- Bottom Left: Placeholder -->
-                <div class="raj-hero-placeholder">
-                    <!-- Placeholder content -->
-                </div>
-            </div>
-        </section>
-
-        <!--<div class="section">
-            <div class="video-visual">
-                 <video class="video" autoplay loop muted poster="" role="none"
-                    aria-label="background gradient animation">
-                    <source
-                        src="https://raw.githubusercontent.com/mobalti/open-props-interfaces/main/dynamic-content-lockups-v2/assets/bg-gradient-animation.mp4"
-                        type="video/mp4" />
-                </video> 
-            </div>
-            <div class="section-wrapper">
-                <div class="content-wrapper">
-                    <div class="content content-1">
-                        <div class="mobile-visual">
-                            <img class="card-img" src="assets/nirf.jpeg" alt="NIRF Ranking" />
-                        </div>
-                        <div class="meta">
-                            <h2 class="headline">
-                                Nationally Ranked <span class="text-highlight">Excellence</span>
-                            </h2>
-                            <p class="desc">
-                                Ranked 12th Best College in India (NIRF 2025, Ministry of Education, Govt. of India).
-                            </p>
-                        </div>
-                    </div>
-                    <div class="content content-2">
-                        <div class="mobile-visual">
-                            <img class="card-img" src="assets/1765640015868.jpg" alt="NAAC Accreditation" />
-                        </div>
-                        <div class="meta">
-                            <h2 class="headline">
-                                Highest
-                                <span class="text-highlight">Accreditation</span>
-                            </h2>
-                            <p class="desc">
-                                Reaccredited by NAAC with A++ Grade (CGPA 3.83), the highest national recognition.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="content content-3">
-                        <div class="mobile-visual">
-                            <img class="card-img" src="assets/rajagiri_center.png" alt="Rajagiri Campus" />
-                        </div>
-                        <div class="meta">
-                            <h2 class="headline">
-                                Academic
-                                <span class="text-highlight">Pioneers</span>
-                            </h2>
-                            <p class="desc">
-                                Launched the first Masters of Social Work (MSW) and Bachelor of Social Work (BSW)
-                                programs in Kerala.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="content content-4">
-                        <div class="mobile-visual">
-                            <img class="card-img" src="assets/conference_attendees.jpg" alt="Community Impact" />
-                        </div>
-                        <div class="meta">
-                            <h2 class="headline">
-                                Community <span class="text-highlight">Impact</span>
-                            </h2>
-                            <p class="desc">
-                                'Live Labs' provide direct outreach and service, fostering holistic education and
-                                community engagement.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="visual">
-                    <div class="card-wrapper">
-                        <div class="card card-1">
-                            <img class="card-img" src="assets/nirf.jpeg" alt="NIRF Ranking" />
-                        </div>
-                        <div class="card card-2">
-                            <img class="card-img" src="assets/1765640015868.jpg" alt="NAAC Accreditation" />
-                        </div>
-                        <div class="card card-3">
-                            <img class="card-img" src="assets/rajagiri_center.png" alt="Rajagiri Campus" />
-                        </div>
-                        <div class="card card-4">
-                            <img class="card-img" src="assets/conference_attendees.jpg" alt="Community Impact" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> -->
-        <!-- Footer -->
-        <main-footer></main-footer>
-    </div>
-
-    <script>
-        // Register ScrollTrigger
-        gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
-
-        // Parallax Animation
-        gsap.timeline({
-            scrollTrigger: {
-                trigger: '.scrollDist',
-                start: '0 0',
-                end: '100% 100%',
-                scrub: 1
-            }
-        })
-            .fromTo('.sky', { y: 0 }, { y: -100 }, 0)
-            .fromTo('.cloud1', { y: 100 }, { y: -400 }, 0)
-            .fromTo('.cloud2', { y: -150 }, { y: -250 }, 0)
-            .fromTo('.cloud3', { y: -50 }, { y: -325 }, 0)
-            .fromTo('.mountBg', { y: -10 }, { y: -50 }, 0)
-            .fromTo('.mountMg', { y: -30 }, { y: -125 }, 0)
-            .fromTo('.mountFg', { y: -50 }, { y: -300 }, 0);
-
-        // Arrow Interaction
-        const arrowBtn = document.querySelector('#arrow-btn');
-
-        if (arrowBtn) {
-            arrowBtn.addEventListener('mouseenter', () => {
-                gsap.to('.arrow', { y: 10, duration: 0.8, ease: 'back.inOut(3)', overwrite: 'auto' });
-            });
-
-            arrowBtn.addEventListener('mouseleave', () => {
-                gsap.to('.arrow', { y: 0, duration: 0.5, ease: 'power3.out', overwrite: 'auto' });
-            });
-
-            arrowBtn.addEventListener('click', () => {
-                gsap.to(window, { scrollTo: window.innerHeight, duration: 1.5, ease: 'power1.inOut' });
-            });
-        }
-
-        // CEO Section Parallax & Reveal
-        window.addEventListener('scroll', () => {
-            const ceoSection = document.querySelector('.welcome-section');
-            if (ceoSection) {
-                const rect = ceoSection.getBoundingClientRect();
-                const viewHeight = window.innerHeight;
-                const sectionCenter = rect.top + rect.height / 2;
-                const screenCenter = viewHeight / 2;
-                const diff = (screenCenter - sectionCenter);
-
-                if (rect.top <= viewHeight && rect.bottom >= 0) {
-                    const watermark = ceoSection.querySelector('.watermark-text');
-                    const ceoTitleBg = ceoSection.querySelector('.ceo-title-bg');
-                    const content = ceoSection.querySelector('.welcome-content');
-                    const header = ceoSection.querySelector('.welcome-header');
-                    const ceoImage = ceoSection.querySelector('.ceo-image');
-
-                    if (watermark) watermark.style.transform = `translate(-50%, calc(-50% + ${diff * 0.45}px))`;
-                    if (ceoTitleBg) ceoTitleBg.style.transform = `translateY(${diff * 0.35}px)`;
-                    if (content) content.style.transform = `translateY(${diff * 0.08}px)`;
-                    if (header) header.style.transform = `translateY(${diff * 0.04}px)`;
-                    if (ceoImage) ceoImage.style.transform = `translateY(${diff * 0.12}px)`;
-                }
-            }
-        });
-
-        // Intersection Observer for Reveal on Scroll
-        const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('revealed');
-                    revealObserver.unobserve(entry.target);
-                }
-            });
-        }, {
-            threshold: 0.15
-        });
-
-        document.querySelectorAll('.reveal-on-scroll').forEach(el => {
-            revealObserver.observe(el);
-        });
-
-        // Rajagiri Hero Slider JavaScript
-        const slidesData = [
-            {
-                name: "Dr. Saju M.D.",
-                designation: "Principal, Rajagiri College of Social Sciences",
-                image: "assets/ceo_image.png",
-                cardTitle: "Visionary Leadership",
-                cardText: "Driving excellence in education and social commitment.",
-                gradient: "radial-gradient(circle at 50% 100%, #4B2C7A 20%, #1D0A3F 80%)"
-            },
-            {
-                name: "Fr. Dr. Jose Kuriedath",
-                designation: "Director, Rajagiri Institutions",
-                image: "assets/ceo_image.png",
-                cardTitle: "Academic Excellence",
-                cardText: "Fostering a culture of learning and innovation.",
-                gradient: "radial-gradient(circle at 50% 100%, #2C4B7A 20%, #0A1D3F 80%)"
-            },
-            {
-                name: "Dr. Binoy Joseph",
-                designation: "Associate Director",
-                image: "assets/ceo_image.png",
-                cardTitle: "Global Perspective",
-                cardText: "Connecting local values with global opportunities.",
-                gradient: "radial-gradient(circle at 50% 100%, #7A2C4B 20%, #3F0A1D 80%)"
-            }
-        ];
-
-        let currentIndex = 0;
-        let slideInterval;
-        const container = document.getElementById('heroImages');
-        const heroWrapper = document.querySelector('.rajagiri-hero-container');
-        const nameEl = document.getElementById('heroName');
-        const desigEl = document.getElementById('heroDesignation');
-        const cardEl = document.getElementById('heroCard');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-
-        if (container && heroWrapper && nameEl && desigEl && cardEl && prevBtn && nextBtn) {
-            // Initial Layout
-            function initSlider() {
-                // Create image elements
-                slidesData.forEach((slide, index) => {
-                    const wrapper = document.createElement('div');
-                    wrapper.className = `raj-slide-image-wrapper ${index === 0 ? 'slide-active' : 'slide-enter'}`;
-
-                    const img = document.createElement('img');
-                    img.src = slide.image;
-                    img.className = 'raj-slide-image';
-                    img.alt = slide.name;
-
-                    wrapper.appendChild(img);
-                    container.appendChild(wrapper);
-                });
-
-                updateText(0, false);
-                startAutoSlide();
-
-                // Event Listeners
-                prevBtn.addEventListener('click', () => {
-                    prevSlide();
-                    resetAutoSlide();
-                });
-
-                nextBtn.addEventListener('click', () => {
-                    nextSlide();
-                    resetAutoSlide();
-                });
-            }
-
-            function startAutoSlide() {
-                slideInterval = setInterval(nextSlide, 3000);
-            }
-
-            function resetAutoSlide() {
-                clearInterval(slideInterval);
-                startAutoSlide();
-            }
-
-            function updateText(index, animate = true) {
-                const data = slidesData[index];
-
-                if (heroWrapper) {
-                    heroWrapper.style.background = data.gradient;
-                }
-
-                const updateContent = () => {
-                    nameEl.innerHTML = `<h3>${data.name}</h3>`;
-                    desigEl.innerHTML = `<p>${data.designation}</p>`;
-                    cardEl.innerHTML = `<h4>${data.cardTitle}</h4><p>${data.cardText}</p>`;
-                };
-
-                if (animate) {
-                    nameEl.style.opacity = '0';
-                    desigEl.style.opacity = '0';
-                    cardEl.style.opacity = '0';
-
-                    setTimeout(() => {
-                        updateContent();
-                        nameEl.style.opacity = '1';
-                        desigEl.style.opacity = '1';
-                        cardEl.style.opacity = '1';
-                    }, 500);
-                } else {
-                    updateContent();
-                }
-            }
-
-            function nextSlide() {
-                const slides = document.querySelectorAll('.raj-slide-image-wrapper');
-                let nextIndex = (currentIndex + 1) % slidesData.length;
-
-                if (slides[nextIndex].classList.contains('slide-exit')) {
-                    slides[nextIndex].style.transition = 'none';
-                    slides[nextIndex].classList.remove('slide-exit');
-                    slides[nextIndex].classList.add('slide-enter');
-                    void slides[nextIndex].offsetWidth;
-                    slides[nextIndex].style.transition = '';
-                }
-
-                slides[currentIndex].classList.remove('slide-active');
-                slides[currentIndex].classList.add('slide-exit');
-
-                slides[nextIndex].classList.remove('slide-enter');
-                slides[nextIndex].classList.add('slide-active');
-
-                setTimeout(() => {
-                    slides.forEach((slide, idx) => {
-                        if (idx !== currentIndex && idx !== nextIndex) {
-                            slide.style.transition = 'none';
-                            slide.classList.remove('slide-active', 'slide-exit');
-                            slide.classList.add('slide-enter');
-                            void slide.offsetWidth;
-                            slide.style.transition = '';
-                        }
-                    });
-                }, 1000);
-
-                updateText(nextIndex);
-                currentIndex = nextIndex;
-            }
-
-            function prevSlide() {
-                const slides = document.querySelectorAll('.raj-slide-image-wrapper');
-                let nextIndex = (currentIndex - 1 + slidesData.length) % slidesData.length;
-
-                if (slides[nextIndex].classList.contains('slide-enter')) {
-                    slides[nextIndex].style.transition = 'none';
-                    slides[nextIndex].classList.remove('slide-enter');
-                    slides[nextIndex].classList.add('slide-exit');
-                    void slides[nextIndex].offsetWidth;
-                    slides[nextIndex].style.transition = '';
-                }
-
-                slides[currentIndex].classList.remove('slide-active');
-                slides[currentIndex].classList.add('slide-enter');
-
-                slides[nextIndex].classList.remove('slide-exit');
-                slides[nextIndex].classList.add('slide-active');
-
-                setTimeout(() => {
-                    slides.forEach((slide, idx) => {
-                        if (idx !== currentIndex && idx !== nextIndex) {
-                            slide.style.transition = 'none';
-                            slide.classList.remove('slide-active', 'slide-exit');
-                            slide.classList.add('slide-enter');
-                            void slide.offsetWidth;
-                            slide.style.transition = '';
-                        }
-                    });
-                }, 1000);
-
-                updateText(nextIndex);
-                currentIndex = nextIndex;
-            }
-
-            initSlider();
-        }
-    </script>
+    <!-- Footer -->
+    <main-footer></main-footer>
 </body>
 
 </html>
