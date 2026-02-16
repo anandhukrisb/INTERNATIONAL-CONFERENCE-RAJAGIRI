@@ -473,7 +473,7 @@ class MainFooter extends HTMLElement {
                         <h3>Quick Links</h3>
                         <ul>
                             <li><a href="abstract.html">Submit Abstract</a></li>
-                            <li><a href="program.html">Program</a></li>
+                            <li><a href="themes.html">Themes</a></li>
                             <li><a href="speaker.html">Speakers</a></li>
                             <li><a href="registration.html">Registration</a></li>
                             <li><a href="hotels.html">Host City</a></li>

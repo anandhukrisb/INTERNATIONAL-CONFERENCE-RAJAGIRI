@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raju - ICSWHMH 2027</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Montserrat:wght@900&family=Inter:wght@300..700&display=swap"
+        rel="stylesheet">
+
+    <!-- Navbar/Footer Scripts -->
+    <script src="navbar.js" defer></script>
+    <script src="footer.js" defer></script>
+
+    <!-- GSAP (Optional for future use or if arrows need it) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <style>
+        /* Base Styles */
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Rajagiri Hero Slider Section Styles */
+        .rajagiri-hero-section {
+            width: 95vw;
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            padding-bottom: 50px;
+            margin-top: 120px;
+            /* Space for fixed navbar */
+        }
+
+        .rajagiri-hero-container {
+            width: 100%;
+            height: 65vh;
+            min-height: 500px;
+            border-radius: 40px;
+            background: radial-gradient(circle at 50% 100%, #4B2C7A 20%, #1D0A3F 80%);
+            position: relative;
+            overflow: visible;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            transition: background 1s ease;
+        }
+
+        /* Top Left: Name (Hidden as requested) */
+        .raj-hero-name {
+            display: block;
+            z-index: 20;
+            /* Ensure it is above the images */
+        }
+
+        /* ... existing styles ... */
+
+
+
+        .raj-hero-name h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        /* Top Right: Designation */
+        .raj-hero-designation {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            z-index: 5;
+            text-align: right;
+            max-width: 300px;
+        }
+
+        .raj-hero-designation p {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #FFFFFF;
+            margin: 0;
+        }
+
+        /* Center: Image */
+        .raj-hero-image-wrapper {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 100%;
+            z-index: 10;
+            display: flex;
+            align-items: flex-end;
+            pointer-events: none;
+        }
+
+        .raj-hero-image {
+            height: 100%;
+            width: auto;
+            object-fit: cover;
+            display: block;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+        }
+
+        /* Bottom Right: Small Card */
+        .raj-hero-card {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            z-index: 15;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 20px;
+            width: 250px;
+            color: #FFFFFF;
+        }
+
+        .raj-hero-card h4 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0 0 5px 0;
+            color: #C9A227;
+        }
+
+        .raj-hero-card p {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            margin: 0;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.4;
+        }
+
+        /* Bottom Left Placeholder */
+        .raj-hero-placeholder {
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            z-index: 15;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 900px) {
+            .rajagiri-hero-container {
+                height: auto;
+                min-height: 700px;
+                background: linear-gradient(to top, #1D0A3F 60%, #FDFBF7 60%);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-end;
+                padding-top: 100px;
+            }
+
+            .raj-hero-name {
+                top: 20px;
+                left: 20px;
+                text-align: center;
+                width: 100%;
+                left: 0;
+            }
+
+            .raj-hero-designation {
+                top: 60px;
+                right: auto;
+                left: 0;
+                width: 100%;
+                text-align: center;
+                max-width: 100%;
+            }
+
+            .raj-hero-image-wrapper {
+                position: relative;
+                left: auto;
+                transform: none;
+                height: 400px;
+                width: 100%;
+                justify-content: center;
+                margin-top: auto;
+            }
+
+            .raj-hero-card {
+                position: relative;
+                bottom: auto;
+                right: auto;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                width: 90%;
+            }
+
+            .raj-hero-placeholder {
+                display: none;
+            }
+        }
+
+        /* Slider Image Styles */
+        .raj-slider-images {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            /* Occupy left half */
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .raj-slide-image-wrapper {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: flex-end;
+            /* Align bottom to pop up */
+            justify-content: flex-start;
+        }
+
+        .raj-slide-image {
+            height: 115%;
+            /* Taller than container */
+            width: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+            border-radius: 40px 0 0 40px;
+            /* Round left corners only */
+            margin: 0;
+        }
+
+        /* Animation States */
+        .slide-active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .slide-enter {
+            opacity: 0;
+            transform: translateX(50px) scale(0.9);
+        }
+
+        .slide-exit {
+            opacity: 0;
+            transform: translateX(-50px) scale(0.9);
+        }
+
+        /* Text Transitions */
+        .raj-hero-name,
+        .raj-hero-designation,
+        .raj-hero-card {
+            transition: opacity 0.5s ease;
+        }
+
+        /* Navigation Arrows */
+        .raj-hero-prev,
+        .raj-hero-next {
+            z-index: 500;
+            position: absolute;
+            width: 40px;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+            top: 50%;
+        }
+
+        .raj-hero-prev:hover,
+        .raj-hero-next:hover {
+            opacity: 1;
+        }
+
+        .raj-hero-prev {
+            left: 20px;
+            transform: translateY(-50%);
+        }
+
+        .raj-hero-next {
+            right: 20px;
+            transform: translateY(-50%);
+        }
+
+        /* Background Watermarks */
+        .raj-watermark-left,
+        .raj-watermark-right {
+            position: absolute;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.05);
+            z-index: 1;
+            pointer-events: none;
+            white-space: nowrap;
+            line-height: 1;
+        }
+
+        .raj-watermark-left {
+            font-size: 8rem;
+            left: 40px;
+            top: 150px;
+            transform: none;
+            writing-mode: initial;
+        }
+
+        .raj-watermark-right {
+            font-size: 4rem;
+            right: 40px;
+            bottom: 150px;
+            text-align: right;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <floating-navbar></floating-navbar>
+
+    <!-- Rajagiri Hero Slider Section -->
+    <section class="rajagiri-hero-section">
+        <div class="rajagiri-hero-container">
+            <!-- Background Watermarks -->
+            <div class="raj-watermark-left">RAJAGIRI</div>
+            <div class="raj-watermark-right">LEARN SERVE EXCEL</div>
+
+            <!-- Top Left: Name -->
+            <div class="raj-hero-name">
+                <h3>Rajagiri College</h3>
+            </div>
+
+            <!-- Top Right: Designation -->
+            <div class="raj-hero-designation">
+                <p>Kalamassery, Kerala</p>
+            </div>
+
+            <!-- Static Image Container -->
+            <div class="raj-slider-images">
+                <div class="raj-slide-image-wrapper slide-active" style="opacity: 1; transform: scale(1);">
+                    <img src="assets/rajagiri_hero_bg.png" class="raj-slide-image" alt="Rajagiri College">
+                </div>
+            </div>
+
+            <!-- Bottom Right: Small Card -->
+            <div class="raj-hero-card">
+                <h4>Legacy</h4>
+                <p>Excellence in education since 1955.</p>
+            </div>
+
+            <!-- Bottom Left: Placeholder -->
+            <div class="raj-hero-placeholder">
+                <!-- Placeholder content -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <main-footer></main-footer>
+</body>
+
+</html>

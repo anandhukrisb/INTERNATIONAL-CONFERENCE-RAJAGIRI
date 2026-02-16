@@ -515,6 +515,13 @@
             color: #1D0A3F;
             /* Dark arrow */
             font-weight: bold;
+            transition: transform 0.3s ease;
+            /* Smooth rotation */
+        }
+
+        .scroll-button.rotate-up::after {
+            transform: rotate(180deg);
+            display: inline-block;
         }
 
         .scroll-button:hover {
@@ -1477,7 +1484,7 @@
 
         .ceo-name {
             position: absolute;
-            right: -250px;
+            right: -290px;
             bottom: 120px;
             color: white;
             text-align: left;
@@ -2900,8 +2907,8 @@
                     <h1 class="hero-title">11th International Conference on Social Work in Health and Mental Health</h1>
 
                     <div class="hero-btn-group">
-                        <a href="registration.html" class="hero-btn-primary">Registration</a>
-                        <a href="attractions.html" class="hero-btn-outline">Host City</a>
+                        <a href="abstract.html" class="hero-btn-primary">Submit Abstract</a>
+                        <a href="rajagiri.html" class="hero-btn-outline">Rajagiri</a>
                     </div>
                 </div>
                 <div class="hero-visual">
@@ -3034,7 +3041,7 @@
                     <div class="ceo-title-bg">
                         CEO<br>AASW
                     </div>
-                    <img src="assets/ceo_image.png" alt="AASW CEO" class="ceo-image">
+                    <img src="assets/new_ceo.png" alt="AASW CEO" class="ceo-image">
                     <div class="ceo-name">
                         <h3>Dr. Emma Richardson</h3>
                         <p>Chief Executive Officer</p>
@@ -3424,13 +3431,36 @@
         });
 
         // Scroll Button Function
-        // Scroll Button Function
         function scrollToNext() {
-            window.scrollBy({
-                top: 600,
-                behavior: 'smooth'
-            });
+            const btn = document.querySelector('.scroll-button');
+            if (btn && btn.classList.contains('rotate-up')) {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            } else {
+                window.scrollBy({
+                    top: 600,
+                    behavior: 'smooth'
+                });
+            }
         }
+
+        // Scroll Listener for Button Rotation
+        window.addEventListener('scroll', () => {
+            const btn = document.querySelector('.scroll-button');
+            if (!btn) return;
+
+            // Check if we're near the bottom
+            const scrollPosition = window.innerHeight + window.scrollY;
+            const bodyHeight = document.documentElement.scrollHeight;
+
+            if (scrollPosition >= bodyHeight - 100) {
+                btn.classList.add('rotate-up');
+            } else {
+                btn.classList.remove('rotate-up');
+            }
+        });
 
         // Parallax Effect
         const aboutSection = document.querySelector('.about-section');
