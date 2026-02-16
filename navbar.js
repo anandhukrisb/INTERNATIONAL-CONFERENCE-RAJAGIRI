@@ -555,25 +555,13 @@ class FloatingNavbar extends HTMLElement {
                 <ul class="navbar-links" id="navbar-links">
                     <li><a href="index.html">2027 ICSWHMH</a></li>
                     <li><a href="history.html">History</a></li>
-                    <li>
-                        <a href="#">Themes <svg class="dropdown-icon" xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="themes.html">Themes</a></li>
-                            <li><a href="topics.html">Conference Topics</a></li>
-                        </ul>
-                    </li>
+                    <li><a href="themes.html">Themes</a></li>
                     <li>
                         <a href="committee.html">Speakers</a>
                     </li>
                     <li><a href="registration.html">Registration</a></li>
                     <li><a href="abstract.html">Abstract Submission</a></li>
-                    <li>
-                        <a href="#">Host city <svg class="dropdown-icon" xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="hotels.html">Hotels</a></li>
-                            <li><a href="attractions.html">Attractions</a></li>
-                        </ul>
-                    </li>
+                    <li><a href="attractions.html">Attractions</a></li>
                     <li><a href="contact-us.html" class="contact-btn">Contact Us</a></li>
                 </ul>
 
