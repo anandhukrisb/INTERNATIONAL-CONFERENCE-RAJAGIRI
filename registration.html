@@ -953,32 +953,29 @@
     <main-footer></main-footer>
 
     <script>
-        function toggleAccordion(header) {
-            const strip = header.parentElement;
+        function toggleAccordion(icon) {
+            const strip = icon.closest('.info-strip');
             const content = strip.querySelector('.info-content');
-            const icon = header.querySelector('.icon');
             const isExpanded = strip.classList.contains('expanded');
 
             if (isExpanded) {
-                // Collapse
-                content.style.maxHeight = content.scrollHeight + 'px';
-                // Force reflow
-                content.offsetHeight;
-                content.style.maxHeight = '0px';
+                // Close
+                content.style.maxHeight = content.scrollHeight + "px";
+                content.offsetHeight; // force reflow
+                content.style.maxHeight = "0";
                 strip.classList.remove('expanded');
-                icon.textContent = '+';
+                icon.textContent = "+";
             } else {
-                // Expand
+                // Open
                 strip.classList.add('expanded');
-                content.style.maxHeight = content.scrollHeight + 'px';
-                icon.textContent = '−';
+                content.style.maxHeight = content.scrollHeight + "px";
+                icon.textContent = "−";
 
-                // Cleanup after transition
-                content.addEventListener('transitionend', function handler() {
-                    if (strip.classList.contains('expanded')) {
-                        content.style.maxHeight = 'none';
+                content.addEventListener("transitionend", function handler() {
+                    if (strip.classList.contains("expanded")) {
+                        content.style.maxHeight = "none";
                     }
-                    content.removeEventListener('transitionend', handler);
+                    content.removeEventListener("transitionend", handler);
                 });
             }
         }
@@ -994,20 +991,7 @@
                 content.style.opacity = '1';
             }
         });
-
-        // Smooth scroll to registration form
-        document.getElementById('registerBtn').addEventListener('click', function (e) {
-            e.preventDefault();
-            const formSection = document.querySelector('.registration-form-section');
-            if (formSection) {
-                formSection.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
     </script>
-
 </body>
 
 </html>
