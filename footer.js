@@ -414,8 +414,8 @@ class MainFooter extends HTMLElement {
 
                 <!-- Left Top: Logos -->
                 <div class="logo-section">
-                    <img src="assets/icswhmh_logo_new.png" alt="11th Conference Logo" class="footer-logo">
-                    <img src="assets/rajagiri_logo.png" alt="RCSS Logo" class="footer-logo">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434104/icswhmh_logo_new_bfw7dv.png" alt="11th Conference Logo" class="footer-logo">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434113/rajagiri_logo_lltueo.png" alt="RCSS Logo" class="footer-logo">
                 </div>
 
                 <!-- Left Middle: Social Icons -->

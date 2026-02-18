@@ -69,7 +69,7 @@ class FloatingNavbar extends HTMLElement {
 
 
     render() {
-        const logoSrc = this.getAttribute('logo-src') || 'assets/logo.png';
+        const logoSrc = this.getAttribute('logo-src') || 'https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434106/logo_zuz2f8.png';
 
         this.shadowRoot.innerHTML = `
             <style>
@@ -533,7 +533,7 @@ class FloatingNavbar extends HTMLElement {
                     <img src="${logoSrc}" alt="Conference Logo" class="logo-mobile-base">
                     <a href="https://rajagiri.edu/" target="_blank">
                         <!-- Use class logo-mobile-overlay instead of rajagiri-mobile -->
-                        <img src="assets/rajagiri_logo.png" alt="Rajagiri" class="logo-mobile-overlay">
+                        <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434113/rajagiri_logo_lltueo.png" alt="Rajagiri" class="logo-mobile-overlay">
                     </a>
                 </div>
 
