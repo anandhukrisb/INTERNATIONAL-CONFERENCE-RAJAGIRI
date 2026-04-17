@@ -159,6 +159,16 @@
       color: #1d0a3f;
     }
 
+    .toggle-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .toggle-btn:disabled::before {
+      display: none;
+    }
+
     /* MODAL */
     .modal-overlay {
       position: fixed;
@@ -282,10 +292,10 @@
 
   <div class="committee-section">
 
-    <h2 class="section-title">EXTERNAL COMMITTEE MEMBERS</h2>
+    <h2 class="section-title">CONFERENCE ADVISORY BOARD</h2>
     <div class="committee-grid" id="externalGrid"></div>
 
-    <h2 class="section-title">INTERNAL COMMITTEE MEMBERS</h2>
+    <h2 class="section-title">SCIENTIFIC COMMITTEE MEMBERS</h2>
     <div class="committee-grid" id="internalGrid"></div>
 
   </div>
@@ -323,7 +333,7 @@
         "DR. HADAS ROSENNE",
         "Medical Social Work Specialist, Hadassah Medical Center",
         "Dr. Hadas Rosenne is a medical social work specialist with extensive experience in hospital-based psychosocial care. Her professional interests include trauma-informed practice, crisis intervention, and interdisciplinary healthcare teamwork. She works closely with medical professionals to support patients and families through complex health challenges.",
-        "assets/committee/ext3.webp"
+        "assets/committee/internal_placeholder.jpg"
       ],
       [
         "PROF. MIRIAM SCHIFF",
@@ -416,7 +426,8 @@
               data-img="${m[3]}"
               data-name="${m[0]}"
               data-affiliation="${m[1]}"
-              data-details="${m[2]}">
+              data-details="${m[2]}"
+              disabled>
               View Profile
             </button>
           </div>
