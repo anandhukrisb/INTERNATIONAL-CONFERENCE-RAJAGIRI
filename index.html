@@ -2897,6 +2897,194 @@
                 justify-content: flex-end;
             }
         }
+
+        /* Sponsors Section */
+        .sponsors-section {
+            padding: 20px 20px 80px 20px;
+            background-color: #FDFBF7;
+            text-align: center;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .sponsors-subtitle {
+            font-family: 'Outfit', sans-serif;
+            color: #6B46C1;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+        }
+
+        .sponsors-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1D0A3F;
+            margin-bottom: 50px;
+            margin-top: 0;
+        }
+
+        .sponsors-flex {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            height: 280px;
+            /* Taller for text */
+        }
+
+        .sponsor-card {
+            flex: 1;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            transition: flex 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .sponsor-card:hover {
+            flex: 6.5;
+            /* Expands smoothly */
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+            border-color: #D1D5DB;
+        }
+
+        .sponsor-logo {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            min-width: 100%;
+            /* Takes full space initially */
+        }
+
+        .sponsor-card:hover .sponsor-logo {
+            min-width: 180px;
+            flex: 0 0 180px;
+            padding-right: 25px;
+            border-right: 1px solid #E2E8F0;
+        }
+
+        .sponsor-logo img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transform: scale(1.1);
+        }
+
+        .sponsor-info {
+            flex: 0;
+            min-width: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            color: #4B5563;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            text-align: left;
+        }
+
+        .sponsor-info-content {
+            width: 350px;
+            /* Fixed width to prevent ugly wrapping during flex transition */
+            padding-left: 25px;
+        }
+
+        .sponsor-card:hover .sponsor-info {
+            flex: 1;
+            opacity: 1;
+        }
+
+        /* Mobile Dots */
+        .sponsors-dots {
+            display: none;
+        }
+
+        @media (max-width: 1111px) {
+            .sponsors-flex {
+                flex-direction: row;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+                scroll-behavior: smooth;
+                padding-bottom: 10px;
+                height: auto;
+            }
+            .sponsors-flex::-webkit-scrollbar {
+                display: none;
+            }
+
+            .sponsor-card, .sponsor-card:hover {
+                flex: 0 0 100% !important;
+                scroll-snap-align: start;
+                width: 100%;
+                height: auto !important;
+                flex-direction: column;
+                align-items: center;
+                padding: 30px 20px;
+                cursor: default;
+                transform: none !important;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04) !important;
+            }
+
+            .sponsors-dots {
+                display: flex;
+                justify-content: center;
+                gap: 8px;
+                margin-top: 10px;
+                padding-bottom: 10px;
+            }
+
+            .sponsors-dots .dot {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background-color: #D1D5DB;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+
+            .sponsors-dots .dot.active {
+                background-color: #6B46C1;
+            }
+
+            .sponsor-logo, .sponsor-card:hover .sponsor-logo {
+                min-width: 100% !important;
+                width: 100% !important;
+                height: 120px !important;
+                flex: none !important;
+                border-right: none !important;
+                border-bottom: 1px solid #E2E8F0 !important;
+                padding-right: 0 !important;
+                padding-bottom: 20px !important;
+                margin-bottom: 20px;
+            }
+
+            .sponsor-info, .sponsor-card:hover .sponsor-info {
+                opacity: 1 !important;
+                width: 100% !important;
+                flex: none !important;
+                overflow: visible !important;
+                transform: none !important;
+                padding: 0 !important;
+            }
+
+            .sponsor-info-content {
+                width: 100% !important;
+                padding-left: 0 !important;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 
@@ -3178,7 +3366,7 @@
                         <div class="host-illustration">
                             <div class="host-inner">
                                 <img class="host-img"
-                                    src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434106/awards_ceremony_rrwhd1.jpg"
+                                    src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777275234/DSC01239_zb4vlp.jpg"
                                     alt="Awards Ceremony">
                             </div>
                         </div>
@@ -3196,7 +3384,7 @@
                         <div class="host-illustration">
                             <div class="host-inner">
                                 <img class="host-img"
-                                    src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434109/nirf1_wnalrb.jpg"
+                                    src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777274982/DSC00105_iniref.jpg"
                                     alt="Host Slide 2">
                             </div>
                         </div>
@@ -3215,7 +3403,7 @@
                         <div class="host-illustration">
                             <div class="host-inner">
                                 <img class="host-img"
-                                    src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434117/host_slide_3_dydstb.png"
+                                    src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777274194/DSC00502_1_rahpwv.jpg"
                                     alt="Host Slide 3">
                             </div>
                         </div>
@@ -3233,7 +3421,7 @@
                         <div class="host-illustration">
                             <div class="host-inner">
                                 <img class="host-img"
-                                    src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434119/conference_attendees_wyrps5.png"
+                                    src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777274694/DSC01012_dnfcv2.jpg"
                                     alt="Conference Attendees">
                             </div>
                         </div>
@@ -3262,186 +3450,87 @@
             </div>
         </section>
 
-
-
-        <!-- COMMENTED OUT: Speaker, Map and CTA Sections
-
-
-
-        <div class="section-separator"></div>
-        <section class="speakers-section">
-            <h4 class="speakers-title">Keynote Speakers Announced</h4>
-
-            <div class="speakers-grid">
-                <div class="speaker-card">
-                    <div class="speaker-card-inner">
-                        <div class="speaker-card-front">
-                            <img src="assets/speaker1.jpg" class="speaker-img" alt="Speaker Name">
-                            <div class="speaker-info">
-                                <h3>Dr. Sarah Jenkins</h3>
-                                <p>Professor of Social Work at University of Melbourne. Expert in mental
-                                    health
-                                    policy and
-                                    community
-                                    care systems.</p>
-                                <a class="read-more-btn" onclick="flipCard(this)">Read More</a>
-                            </div>
-                        </div>
-                        <div class="speaker-card-back">
-                            <h3>Dr. Sarah Jenkins</h3>
-                            <p>Dr. Jenkins has over 20 years of experience in social work and mental health
-                                policy. She has
-                                published numerous papers on community care systems and is a leading voice
-                                in
-                                advocating for
-                                mental health reform. Her current research focuses on the intersection of
-                                social
-                                policy and
-                                individual well-being.</p>
-                            <button class="close-btn" onclick="unflipCard(this)">Close</button>
+        <!-- Sponsors Section -->
+        <section class="sponsors-section">
+            <div class="sponsors-subtitle">OUR PARTNERS</div>
+            <div class="sponsors-flex" id="sponsorsSlider">
+                <div class="sponsor-card">
+                    <div class="sponsor-logo">
+                        <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777277365/download_fhvzhy.png"
+                            alt="Partner 1">
+                    </div>
+                    <div class="sponsor-info">
+                        <div class="sponsor-info-content">
+                            <strong>The University of Melbourne’s Department of Social Work is a premier Australian
+                                institution for professional social work education, research, and advanced practice
+                                training.</strong>
                         </div>
                     </div>
                 </div>
-
-                <div class="speaker-card">
-                    <div class="speaker-card-inner">
-                        <div class="speaker-card-front">
-                            <img src="assets/speaker2.jpg" class="speaker-img" alt="Speaker Name">
-                            <div class="speaker-info">
-                                <h3>Prof. David Chen</h3>
-                                <p>Director of Global Health Initiatives. Focusing on cross-cultural social
-                                    work
-                                    practices
-                                    in
-                                    developing nations.</p>
-                                <a class="read-more-btn" onclick="flipCard(this)">Read More</a>
-                            </div>
-                        </div>
-                        <div class="speaker-card-back">
-                            <h3>Prof. David Chen</h3>
-                            <p>Professor Chen leads global initiatives aimed at improving social work
-                                practices
-                                in
-                                developing nations. His work emphasizes the importance of cultural
-                                competence
-                                and
-                                sustainable development. He has worked extensively in Southeast Asia and
-                                Africa.
-                            </p>
-                            <button class="close-btn" onclick="unflipCard(this)">Close</button>
+                <div class="sponsor-card">
+                    <div class="sponsor-logo">
+                        <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777275489/bcc41c67-33da-4fd8-80f2-3508f9a13a0a.png"
+                            alt="Partner 2">
+                    </div>
+                    <div class="sponsor-info">
+                        <div class="sponsor-info-content">
+                            <strong>The School of Social and Political Science</strong> is a large and diverse community
+                            of more than 3,000 students and 400 staff. We are engaged in understanding and addressing
+                            many of the challenges facing society through our teaching, research and community outreach.
+                            We are one of the largest and most successful centres of excellence for social and political
+                            science scholarship internationally.
                         </div>
                     </div>
                 </div>
-
-                <div class="speaker-card">
-                    <div class="speaker-card-inner">
-                        <div class="speaker-card-front">
-                            <img src="assets/speaker3.png" class="speaker-img" alt="Speaker Name">
-                            <div class="speaker-info">
-                                <h3>Dr. Emily Carter</h3>
-                                <p>Clinical Psychologist and Author. Specializes in trauma-informed care and
-                                    resilience
-                                    building.
-                                </p>
-                                <a class="read-more-btn" onclick="flipCard(this)">Read More</a>
-                            </div>
-                        </div>
-                        <div class="speaker-card-back">
-                            <h3>Dr. Emily Carter</h3>
-                            <p>Dr. Carter is a renowned clinical psychologist specializing in
-                                trauma-informed
-                                care. She is
-                                the author of several best-selling books on resilience and recovery. Her
-                                workshops provide
-                                practical tools for practitioners working with trauma survivors.</p>
-                            <button class="close-btn" onclick="unflipCard(this)">Close</button>
+                <div class="sponsor-card">
+                    <div class="sponsor-logo">
+                        <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777275506/Iassw-logo-white_hp6yim.png"
+                            alt="Partner 3">
+                    </div>
+                    <div class="sponsor-info">
+                        <div class="sponsor-info-content">
+                            <strong>The International Association of Schools of Social Work (IASSW)</strong>, is the
+                            worldwide association of schools of social work, other tertiary-level social work
+                            educational programs, and social work educators.
                         </div>
                     </div>
                 </div>
-
-                <div class="speaker-card">
-                    <div class="speaker-card-inner">
-                        <div class="speaker-card-front">
-                            <img src="assets/speaker4.jpg" class="speaker-img" alt="Speaker Name">
-                            <div class="speaker-info">
-                                <h3>Mr. James Wilson</h3>
-                                <p>Social Justice Advocate. Dedicating his career to housing equality and
-                                    urban
-                                    social work.
-                                </p>
-                                <a class="read-more-btn" onclick="flipCard(this)">Read More</a>
-                            </div>
+                <div class="sponsor-card">
+                    <div class="sponsor-logo">
+                        <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777275507/Original-LOGO-of-AIAMSWP_uf4rbl.jpg"
+                            alt="Partner 4">
+                    </div>
+                    <div class="sponsor-info">
+                        <div class="sponsor-info-content">
+                            <strong>All India Association of Medical Social Work Professionals (AIAMSWP)</strong>, New
+                            Delhi is a registered non–profit, non-political, National level organization dedicated to
+                            the promotion of standards and enhancement of the status of Social Work Profession in health
+                            care in India.
                         </div>
-                        <div class="speaker-card-back">
-                            <h3>Mr. James Wilson</h3>
-                            <p>Mr. Wilson has dedicated his career to fighting for housing equality. As a
-                                social
-                                justice
-                                advocate, he works tirelessly to address urban poverty and homelessness. He
-                                is a
-                                frequent
-                                speaker at national conferences on urban planning and social equity.</p>
-                            <button class="close-btn" onclick="unflipCard(this)">Close</button>
+                    </div>
+                </div>
+                <div class="sponsor-card">
+                    <div class="sponsor-logo">
+                        <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777275466/b4f4bee9-ef2c-4818-95fe-ac7c6624c206.png"
+                            alt="Partner 5">
+                    </div>
+                    <div class="sponsor-info">
+                        <div class="sponsor-info-content">
+                            <strong>National Association of Professional Social Workers in India (NAPSWI)</strong> is
+                            one of largest member based organization of professional social workers in the country.
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-
-
-        <h2 class="delegates-title">1000+ Delegates registered</h2>
-        <section class="delegates-section">
-            <div class="map-container">
-                <iframe
-                    src="https://maps.google.com/maps?q=Rajagiri+College+of+Social+Sciences+Kalamassery&t=&z=15&ie=UTF8&iwloc=&output=embed"
-                    width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            <!-- Mobile dots for slider -->
+            <div class="sponsors-dots" id="sponsorsDots">
+                <span class="dot active" data-index="0"></span>
+                <span class="dot" data-index="1"></span>
+                <span class="dot" data-index="2"></span>
+                <span class="dot" data-index="3"></span>
+                <span class="dot" data-index="4"></span>
             </div>
         </section>
-
-        <section class="cta-cards-section">
-            <div class="cta-cards-grid">
-                <div class="cta-card">
-                    <div class="cta-card-inner">
-                        <div class="cta-card-front">
-                            <div class="cta-image-wrapper">
-                                <img src="assets/card_registration.png" alt="Registration">
-                            </div>
-                            <p class="cta-text cta-title">Registrations for<br>the 10th ICSWHMH</p>
-                            <a href="registration.html" class="cta-btn cta-front-btn">Register</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="cta-card">
-                    <div class="cta-card-inner">
-                        <div class="cta-card-front">
-                            <div class="cta-image-wrapper">
-                                <img src="assets/card_abstracts.png" alt="Abstracts">
-                            </div>
-                            <p class="cta-desc">Submit your abstracts and proposals for the conference
-                                program.
-                            </p>
-                            <a href="abstract.html" class="cta-btn cta-front-btn">Submit Abstract</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="cta-card">
-                    <div class="cta-card-inner">
-                        <div class="cta-card-front">
-                            <div class="cta-image-wrapper">
-                                <img src="assets/card_location.png" alt="Melbourne">
-                            </div>
-                            <p class="cta-desc">Explore the vibrant city of Melbourne and the beautiful
-                                Victoria
-                                region.</p>
-                            <a href="#" class="cta-btn cta-front-btn">Visit Melbourne</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        END COMMENTED OUT SECTION -->
     </main>
     <main-footer></main-footer>
 
@@ -3800,6 +3889,40 @@
             }
 
             slidedEvener("touchend", mobileSlide);
+        });
+
+        // Mobile Sponsors Slider Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const sponsorsSlider = document.getElementById('sponsorsSlider');
+            const sponsorsDots = document.querySelectorAll('#sponsorsDots .dot');
+            
+            if (sponsorsSlider && sponsorsDots.length > 0) {
+                sponsorsSlider.addEventListener('scroll', () => {
+                    const scrollLeft = sponsorsSlider.scrollLeft;
+                    const cardWidth = sponsorsSlider.offsetWidth;
+                    if (cardWidth === 0) return;
+                    
+                    const currentIndex = Math.round(scrollLeft / cardWidth);
+                    
+                    sponsorsDots.forEach((dot, index) => {
+                        if (index === currentIndex) {
+                            dot.classList.add('active');
+                        } else {
+                            dot.classList.remove('active');
+                        }
+                    });
+                }, { passive: true });
+
+                sponsorsDots.forEach((dot, index) => {
+                    dot.addEventListener('click', () => {
+                        const cardWidth = sponsorsSlider.offsetWidth;
+                        sponsorsSlider.scrollTo({
+                            left: cardWidth * index,
+                            behavior: 'smooth'
+                        });
+                    });
+                });
+            }
         });
     </script>
 </body>
