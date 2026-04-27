@@ -1509,6 +1509,48 @@
             font-weight: 400;
         }
 
+        .ceo-slide {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: auto;
+            transform-origin: bottom center;
+            animation: ceoSlideAnim 16s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes ceoSlideAnim {
+            0% {
+                opacity: 0;
+                transform: translate(50vw, 50vh) scale(0.2);
+            }
+
+            5% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+
+            20% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+
+            25% {
+                opacity: 0;
+                transform: translate(-50vw, 50vh) scale(0.2);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50vw, 50vh) scale(0.2);
+            }
+        }
+
         /* Kathakali Section Styles */
         .kathakali-section {
             background-color: #FDFBF7;
@@ -2948,9 +2990,9 @@
                     Building on the momentum and global collaborations fostered during the 10th ICSWHMH in Melbourne,
                     the 11th International Conference on Social Work in Health and Mental Health will be hosted in
                     India, marking a significant expansion of the conference’s global footprint.
-                    The 11th ICSWHMH will offer a distinctive platform to engage with Global perspectives,
-                    community-based practices, and culturally grounded approaches to health and mental health social
-                    work.
+                    The 11th ICSWHMH, in hybrid mode, will offer a distinctive platform to engage with Global
+                    perspectives, community-based practices, and culturally grounded approaches to health and mental
+                    health social work.
                     The conference will focus on cultural diversity, complex health systems, and innovative grassroots
                     interventions, fostering critical reflection, cross-national learning, and the strengthening of
                     international partnerships.
@@ -3050,15 +3092,64 @@
                     <div class="ceo-title-bg" style="font-size: 3rem; line-height: 1; right: -95%; bottom: 200px;">
                         Rajagiri College of Social Sciences (Autonomous)
                     </div>
-                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434109/new_ceo_yhmtc5.png"
-                        alt="AASW CEO" class="ceo-image">
-                    <div class="ceo-name">
-                        <h3>PROF. LYNETTE JOUBERT</h3>
-                        <p>
-                            Professor of Social Work
-                            <br>
-                            University of Melbourne
-                        </p>
+                    <!-- Placeholder to maintain container size -->
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434109/new_ceo_yhmtc5.png" alt=""
+                        class="ceo-image" style="opacity: 0; visibility: hidden; pointer-events: none;">
+
+                    <!-- Slide 1 -->
+                    <div class="ceo-slide" style="animation-delay: 0s;">
+                        <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434109/new_ceo_yhmtc5.png"
+                            alt="AASW CEO" class="ceo-image">
+                        <div class="ceo-name">
+                            <h3>PROF. LYNETTE JOUBERT</h3>
+                            <p>
+                                Professor of Social Work
+                                <br>
+                                University of Melbourne
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2 -->
+                    <div class="ceo-slide" style="animation-delay: 4s;">
+                        <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434109/new_ceo_yhmtc5.png"
+                            alt="AASW CEO" class="ceo-image">
+                        <div class="ceo-name">
+                            <h3>PROF. LYNETTE JOUBERT</h3>
+                            <p>
+                                Professor of Social Work
+                                <br>
+                                University of Melbourne
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3 -->
+                    <div class="ceo-slide" style="animation-delay: 8s;">
+                        <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434109/new_ceo_yhmtc5.png"
+                            alt="AASW CEO" class="ceo-image">
+                        <div class="ceo-name">
+                            <h3>PROF. LYNETTE JOUBERT</h3>
+                            <p>
+                                Professor of Social Work
+                                <br>
+                                University of Melbourne
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Slide 4 -->
+                    <div class="ceo-slide" style="animation-delay: 12s;">
+                        <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434109/new_ceo_yhmtc5.png"
+                            alt="AASW CEO" class="ceo-image">
+                        <div class="ceo-name">
+                            <h3>PROF. LYNETTE JOUBERT</h3>
+                            <p>
+                                Professor of Social Work
+                                <br>
+                                University of Melbourne
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
