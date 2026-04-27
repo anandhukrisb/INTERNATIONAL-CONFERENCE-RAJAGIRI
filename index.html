@@ -3020,11 +3020,13 @@
                 padding-bottom: 10px;
                 height: auto;
             }
+
             .sponsors-flex::-webkit-scrollbar {
                 display: none;
             }
 
-            .sponsor-card, .sponsor-card:hover {
+            .sponsor-card,
+            .sponsor-card:hover {
                 flex: 0 0 100% !important;
                 scroll-snap-align: start;
                 width: 100%;
@@ -3058,7 +3060,8 @@
                 background-color: #6B46C1;
             }
 
-            .sponsor-logo, .sponsor-card:hover .sponsor-logo {
+            .sponsor-logo,
+            .sponsor-card:hover .sponsor-logo {
                 min-width: 100% !important;
                 width: 100% !important;
                 height: 120px !important;
@@ -3070,7 +3073,8 @@
                 margin-bottom: 20px;
             }
 
-            .sponsor-info, .sponsor-card:hover .sponsor-info {
+            .sponsor-info,
+            .sponsor-card:hover .sponsor-info {
                 opacity: 1 !important;
                 width: 100% !important;
                 flex: none !important;
@@ -3256,7 +3260,7 @@
         <div class="section-separator"></div>
         <section class="welcome-section">
             <div class="welcome-container">
-                <h3 class="welcome-header reveal-on-scroll">Welcome</h3>
+                <h3 class="welcome-header reveal-on-scroll">Welcome from the conference patron</h3>
                 <div class="watermark-text">#2027 ICSWHMH</div>
 
                 <div class="welcome-content reveal-on-scroll delay-1">
@@ -3280,64 +3284,15 @@
                     <div class="ceo-title-bg" style="font-size: 3rem; line-height: 1; right: -95%; bottom: 200px;">
                         Rajagiri College of Social Sciences (Autonomous)
                     </div>
-                    <!-- Placeholder to maintain container size -->
-                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434109/new_ceo_yhmtc5.png" alt=""
-                        class="ceo-image" style="opacity: 0; visibility: hidden; pointer-events: none;">
-
-                    <!-- Slide 1 -->
-                    <div class="ceo-slide" style="animation-delay: 0s;">
-                        <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434109/new_ceo_yhmtc5.png"
-                            alt="AASW CEO" class="ceo-image">
-                        <div class="ceo-name">
-                            <h3>PROF. LYNETTE JOUBERT</h3>
-                            <p>
-                                Professor of Social Work
-                                <br>
-                                University of Melbourne
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Slide 2 -->
-                    <div class="ceo-slide" style="animation-delay: 4s;">
-                        <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434109/new_ceo_yhmtc5.png"
-                            alt="AASW CEO" class="ceo-image">
-                        <div class="ceo-name">
-                            <h3>PROF. LYNETTE JOUBERT</h3>
-                            <p>
-                                Professor of Social Work
-                                <br>
-                                University of Melbourne
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Slide 3 -->
-                    <div class="ceo-slide" style="animation-delay: 8s;">
-                        <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434109/new_ceo_yhmtc5.png"
-                            alt="AASW CEO" class="ceo-image">
-                        <div class="ceo-name">
-                            <h3>PROF. LYNETTE JOUBERT</h3>
-                            <p>
-                                Professor of Social Work
-                                <br>
-                                University of Melbourne
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Slide 4 -->
-                    <div class="ceo-slide" style="animation-delay: 12s;">
-                        <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434109/new_ceo_yhmtc5.png"
-                            alt="AASW CEO" class="ceo-image">
-                        <div class="ceo-name">
-                            <h3>PROF. LYNETTE JOUBERT</h3>
-                            <p>
-                                Professor of Social Work
-                                <br>
-                                University of Melbourne
-                            </p>
-                        </div>
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434109/new_ceo_yhmtc5.png"
+                        alt="Conference Patron" class="ceo-image">
+                    <div class="ceo-name">
+                        <h3>PROF. LYNETTE JOUBERT</h3>
+                        <p>
+                            Professor of Social Work
+                            <br>
+                            University of Melbourne
+                        </p>
                     </div>
                 </div>
             </div>
@@ -3366,7 +3321,7 @@
                         <div class="host-illustration">
                             <div class="host-inner">
                                 <img class="host-img"
-                                    src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777275234/DSC01239_zb4vlp.jpg"
+                                    src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777322022/_DSC9801_twnmgf.jpg"
                                     alt="Awards Ceremony">
                             </div>
                         </div>
@@ -3895,15 +3850,15 @@
         document.addEventListener('DOMContentLoaded', () => {
             const sponsorsSlider = document.getElementById('sponsorsSlider');
             const sponsorsDots = document.querySelectorAll('#sponsorsDots .dot');
-            
+
             if (sponsorsSlider && sponsorsDots.length > 0) {
                 sponsorsSlider.addEventListener('scroll', () => {
                     const scrollLeft = sponsorsSlider.scrollLeft;
                     const cardWidth = sponsorsSlider.offsetWidth;
                     if (cardWidth === 0) return;
-                    
+
                     const currentIndex = Math.round(scrollLeft / cardWidth);
-                    
+
                     sponsorsDots.forEach((dot, index) => {
                         if (index === currentIndex) {
                             dot.classList.add('active');
