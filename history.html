@@ -54,23 +54,35 @@
         }
 
         /* Fixed Hero Background */
+        .video-fullscreen {
+            width: 100vw;
+            height: calc(100vh - 130px); /* Safely clear navbar */
+            margin-top: 130px;
+            position: relative;
+            background: #000;
+        }
+
+        .video-fullscreen iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
         .history-intro {
-            height: 40vh;
-            /* Reduced from 80vh to remove wasted space */
-            min-height: 350px;
+            height: auto;
+            min-height: 40vh;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             background: #f0f2f5;
-            /* Perfectly blends with body/cards */
-            /* Light Theme */
             color: var(--primary-purple);
             position: relative;
             z-index: 1;
-            margin-top: 80px;
-            padding-top: 0px;
-            /* Account for navbar */
+            padding-top: 60px;
+            padding-bottom: 60px;
         }
 
         .intro-content h1 {
@@ -313,8 +325,7 @@
             }
 
             .history-intro {
-                height: 40vh;
-                /* Change this from 50vh */
+                height: auto;
             }
 
 
@@ -476,9 +487,14 @@
 
     <floating-navbar></floating-navbar>
 
+    <!-- Video Hero Screen -->
+    <section class="video-fullscreen">
+        <iframe title="vimeo-player" src="https://player.vimeo.com/video/1038770180?h=b890ac9e66" width="100%" height="100%" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen></iframe>
+    </section>
+
     <!-- Intro Screen -->
     <section class="history-intro">
-        <div class="intro-content">
+        <div class="intro-content" style="width: 100%; padding: 0 20px;">
             <h4 style="letter-spacing: 3px; margin-bottom: 20px; opacity: 0.8;">OUR JOURNEY</h4>
             <h1>A Legacy of Global Impact</h1>
         </div>
