@@ -262,8 +262,10 @@
         }
 
         @media (max-width: 768px) {
+
+            /* On mobile, navbar is top:0, height:90px — match that clearance */
             .photo-hero {
-                margin-top: 60px;
+                margin-top: 90px;
             }
 
             .photo-hero__mosaic {
@@ -290,8 +292,8 @@
             }
 
             .scroll-track .scroll-item {
-                width: 260px;
-                height: 180px;
+                width: 240px;
+                height: 165px;
             }
         }
 
@@ -317,6 +319,7 @@
             margin-bottom: 10px;
             line-height: 1.1;
             white-space: nowrap;
+            /* Only safe on desktop; overridden below on mobile */
         }
 
         /* The Deck of Cards Container */
@@ -1110,44 +1113,64 @@
             }
 
             .ref-links {
-                grid-column: 1 / 3;
-                grid-row: 6;
-                padding: 20px 0;
+                display: none !important;
             }
 
-            .ref-grid-mirrored .ref-heading,
-            .ref-grid-mirrored .ref-para,
-            .ref-grid-mirrored .ref-links {
+            /* ---- Mirrored grid: reset grid-column/row overrides ----
+               Desktop .ref-grid-mirrored .* rules have higher specificity
+               (2 classes) than the generic mobile .* rules (1 class) above,
+               so we must repeat the high-specificity selector here to win. */
+
+            /* Heading spans full 2-column width, same as normal grid */
+            .ref-grid-mirrored .ref-heading {
+                grid-column: 1 / 3;
+                grid-row: 1;
                 text-align: left;
                 align-items: flex-start;
             }
 
-            .ref-grid-mirrored .ref-links ul li {
-                flex-direction: row;
+            /* Paragraph moves to the left cell in row 3, next to the image */
+            .ref-grid-mirrored .ref-para {
+                grid-column: 1 / 2;
+                grid-row: 3;
+                padding-left: 0;
+                padding-right: 15px;
+                text-align: left;
+                align-self: center;
             }
 
-            .ref-grid-mirrored .ref-links ul li::before {
-                content: '›';
+            /* Small square image: left cell, row 3 */
+            .ref-grid-mirrored .ref-img-1 {
+                grid-column: 1 / 2;
+                grid-row: 3;
             }
 
-            .ref-grid-mirrored .ref-all-features {
-                flex-direction: row;
+            /* Main image: spans full width, row 4 */
+            .ref-grid-mirrored .ref-img-main {
+                grid-column: 1 / 3;
+                grid-row: 4;
+            }
+
+            /* Small square image 2: right cell, row 3 */
+            .ref-grid-mirrored .ref-img-2 {
+                grid-column: 2 / 3;
+                grid-row: 3;
+            }
+
+            /* Quote box: full width, row 5, stacked vertically */
+            .ref-grid-mirrored .ref-quote-box {
+                grid-column: 1 / 3;
+                grid-row: 5;
+                flex-direction: column;
+            }
+
+            /* Links: hidden on mobile */
+            .ref-grid-mirrored .ref-links {
+                display: none !important;
             }
 
             .ref-grid-mirrored .ref-all-features span {
                 transform: none;
-            }
-
-            .ref-grid-mirrored .ref-img-1 {
-                grid-column: 2 / 3;
-            }
-
-            .ref-grid-mirrored .ref-img-2 {
-                grid-column: 1 / 2;
-            }
-
-            .ref-grid-mirrored .ref-quote-box {
-                flex-direction: column;
             }
 
             .ref-grid-mirrored .speech-bubble {
@@ -1259,6 +1282,175 @@
                 right: 15px;
                 left: auto;
                 border-width: 15px 15px 0;
+            }
+        }
+
+        /* =====================================================================
+           HISTORY PAGE — ADDITIONAL RESPONSIVE RULES
+           Pattern reference: attractions.html, themes.html
+        ===================================================================== */
+
+        /* --- Tablet (769px – 1418px) tweaks for reference-hero-section --- */
+        @media (min-width: 769px) and (max-width: 1418px) {
+            .reference-hero-section {
+                padding: 60px 20px 30px;
+                /* Navbar on tablet is still floating (top:20px, h:90px) so 80px is fine,
+                   but tighten horizontal space */
+            }
+
+            .ref-heading h2 {
+                font-size: 2.2rem;
+            }
+        }
+
+        /* --- Mobile (≤ 768px) — reference-hero-section top clearance --- */
+        @media (max-width: 768px) {
+
+            /* Navbar on mobile: top:0, height:90px → need 90px clearance */
+            .reference-hero-section {
+                margin-top: 90px;
+                padding: 30px 15px 20px;
+            }
+
+            /* Prevent h1 overflow by allowing wrap on mobile */
+            .intro-content h1 {
+                white-space: normal;
+                font-size: clamp(1.6rem, 7vw, 2.8rem);
+                word-break: break-word;
+            }
+
+            /* Tighten history-intro section on mobile */
+            .history-intro {
+                padding-top: 50px;
+                padding-bottom: 50px;
+            }
+
+            /* Scroll track: slightly smaller items for phones */
+            .scroll-track .scroll-item {
+                width: 230px;
+                height: 160px;
+            }
+
+            /* Stat text should never overflow on mobile */
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+
+        /* --- Small phones (≤ 480px) --- */
+        @media (max-width: 480px) {
+            .reference-hero-section {
+                margin-top: 90px;
+                padding: 20px 12px 15px;
+            }
+
+            .ref-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                margin-bottom: 30px;
+            }
+
+            .ref-heading {
+                grid-column: 1 / 2;
+                padding-bottom: 8px;
+            }
+
+            .ref-heading h2 {
+                font-size: 1.5rem;
+            }
+
+            .ref-para {
+                grid-column: 1 / 2;
+                grid-row: auto;
+                padding: 0;
+            }
+
+            .ref-img-1,
+            .ref-img-2 {
+                grid-column: 1 / 2;
+                grid-row: auto;
+            }
+
+            .ref-img-main {
+                grid-column: 1 / 2;
+                grid-row: auto;
+                aspect-ratio: 4 / 3;
+            }
+
+            .ref-quote-box {
+                grid-column: 1 / 2;
+                grid-row: auto;
+                flex-direction: column;
+            }
+
+            .ref-quote-img,
+            .ref-quote-text {
+                width: 100%;
+                aspect-ratio: 16 / 9;
+            }
+
+            .ref-links {
+                grid-column: 1 / 2;
+                grid-row: auto;
+                padding: 10px 0;
+            }
+
+            /* speech bubble hides to keep layout clean on smallest screens */
+            .speech-bubble {
+                display: none;
+            }
+
+            /* Cards */
+            .card-content {
+                padding: 30px 18px;
+            }
+
+            .card-title {
+                font-size: 1.6rem;
+            }
+
+            /* Mosaic: single column on tiny phones */
+            .mosaic-grid {
+                grid-template-columns: 1fr;
+                grid-auto-rows: 200px;
+            }
+
+            .mosaic-item.span-2-col,
+            .mosaic-item.span-2-both {
+                grid-column: span 1;
+            }
+
+            /* Intro */
+            .intro-content h1 {
+                font-size: clamp(1.4rem, 8vw, 2.2rem);
+            }
+
+            .history-intro {
+                padding-top: 40px;
+                padding-bottom: 40px;
+            }
+
+            /* Stats */
+            .stat-number {
+                font-size: 1.6rem;
+            }
+
+            .global-stats-card {
+                padding: 30px 10px;
+                margin: 0 10px;
+            }
+
+            /* Mirrored grid reset for tiny phones */
+            .ref-grid-mirrored .ref-img-1,
+            .ref-grid-mirrored .ref-img-2,
+            .ref-grid-mirrored .ref-para {
+                grid-column: 1 / 2;
+                grid-row: auto;
+                padding-right: 0;
+            }
+
+            .ref-grid-mirrored .speech-bubble {
+                display: none;
             }
         }
     </style>
