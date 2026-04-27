@@ -56,8 +56,9 @@
         /* Fixed Hero Background */
         .video-fullscreen {
             width: 100vw;
-            height: calc(100vh - 130px); /* Safely clear navbar */
-            margin-top: 130px;
+            height: calc(100vh - 60px);
+            /* Safely clear navbar */
+            margin-top: 80px;
             position: relative;
             background: #000;
         }
@@ -68,6 +69,230 @@
             left: 0;
             width: 100%;
             height: 100%;
+        }
+
+        /* ===== PHOTO HERO SECTION ===== */
+        .photo-hero {
+            margin-top: 80px;
+            position: relative;
+            background: var(--primary-purple);
+            overflow: hidden;
+        }
+
+        /* --- Section 1: Mosaic Grid --- */
+        .photo-hero__mosaic {
+            padding: 40px 30px 30px;
+            position: relative;
+        }
+
+        .photo-hero__mosaic-heading {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .photo-hero__mosaic-heading h4 {
+            color: var(--accent-gold);
+            letter-spacing: 4px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .photo-hero__mosaic-heading h1 {
+            color: #fff;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            line-height: 1.15;
+        }
+
+        .photo-hero__mosaic-heading p {
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            margin: 15px auto 0;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .mosaic-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: 200px;
+            gap: 10px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .mosaic-grid .mosaic-item {
+            border-radius: 14px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .mosaic-grid .mosaic-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .mosaic-grid .mosaic-item:hover img {
+            transform: scale(1.08);
+        }
+
+        /* Span variations for mosaic */
+        .mosaic-item.span-2-col {
+            grid-column: span 2;
+        }
+
+        .mosaic-item.span-2-row {
+            grid-row: span 2;
+        }
+
+        .mosaic-item.span-2-both {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        /* --- Section 2: Horizontal Scroll Gallery --- */
+        .photo-hero__scroll {
+            padding: 30px 0 50px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .photo-hero__scroll-heading {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 0 30px;
+        }
+
+        .photo-hero__scroll-heading h2 {
+            color: var(--primary-purple);
+            font-size: clamp(1.4rem, 3vw, 2rem);
+        }
+
+        .photo-hero__scroll-heading p {
+            color: var(--text-dark);
+            max-width: 500px;
+            margin: 10px auto 0;
+            font-size: 0.95rem;
+        }
+
+        .scroll-track-wrapper {
+            overflow: hidden;
+            width: 100%;
+            position: relative;
+        }
+
+        .scroll-track-wrapper::before,
+        .scroll-track-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 80px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .scroll-track-wrapper::before {
+            left: 0;
+            background: linear-gradient(to right, #f0f2f5, transparent);
+        }
+
+        .scroll-track-wrapper::after {
+            right: 0;
+            background: linear-gradient(to left, #f0f2f5, transparent);
+        }
+
+        .scroll-track {
+            display: flex;
+            gap: 14px;
+            animation: scrollMarquee 35s linear infinite;
+            width: max-content;
+        }
+
+        .scroll-track:hover {
+            animation-play-state: paused;
+        }
+
+        .scroll-track .scroll-item {
+            flex: 0 0 auto;
+            width: 320px;
+            height: 220px;
+            border-radius: 14px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .scroll-track .scroll-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .scroll-track .scroll-item:hover img {
+            transform: scale(1.08);
+        }
+
+        @keyframes scrollMarquee {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* --- Photo Hero Responsive --- */
+        @media (max-width: 1024px) {
+            .mosaic-grid {
+                grid-template-columns: repeat(3, 1fr);
+                grid-auto-rows: 180px;
+            }
+
+            .mosaic-item.span-2-both {
+                grid-column: span 2;
+                grid-row: span 2;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .photo-hero {
+                margin-top: 60px;
+            }
+
+            .photo-hero__mosaic {
+                padding: 30px 15px 20px;
+            }
+
+            .mosaic-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-auto-rows: 150px;
+                gap: 8px;
+            }
+
+            .mosaic-item.span-2-col {
+                grid-column: span 2;
+            }
+
+            .mosaic-item.span-2-row {
+                grid-row: span 1;
+            }
+
+            .mosaic-item.span-2-both {
+                grid-column: span 2;
+                grid-row: span 1;
+            }
+
+            .scroll-track .scroll-item {
+                width: 260px;
+                height: 180px;
+            }
         }
 
         .history-intro {
@@ -480,6 +705,562 @@
                 /* Significantly reduced for horizontal text */
             }
         }
+
+        /* Custom Hero Layout based on reference image */
+        .reference-hero-section {
+            padding: 80px 20px 40px;
+            background: #f0f2f5;
+            position: relative;
+            z-index: 5;
+            margin-top: 80px;
+            /* Account for navbar */
+        }
+
+        .ref-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            max-width: 1200px;
+            margin: 0 auto 60px;
+        }
+
+        .ref-item {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ref-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .ref-heading {
+            grid-column: 1 / 3;
+            padding-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .ref-heading .tag {
+            display: inline-block;
+            background-color: var(--primary-purple);
+            color: white;
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            align-self: flex-start;
+        }
+
+        .ref-heading h2 {
+            font-size: 2.8rem;
+            line-height: 1.1;
+            color: #333;
+            margin: 0;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .ref-para {
+            grid-column: 1 / 2;
+            padding-right: 20px;
+            color: #777;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .ref-img-1 {
+            grid-column: 2 / 3;
+            aspect-ratio: 1 / 1;
+        }
+
+        .ref-img-main {
+            grid-column: 3 / 5;
+            grid-row: 1 / 3;
+            position: relative;
+        }
+
+        .ref-img-main-inner {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ref-img-main-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .ref-img-2 {
+            grid-column: 1 / 2;
+            grid-row: 3;
+            aspect-ratio: 1 / 1;
+        }
+
+        .ref-quote-box {
+            grid-column: 2 / 4;
+            grid-row: 3;
+            display: flex;
+        }
+
+        .ref-quote-img {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ref-quote-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .ref-quote-text {
+            flex: 1;
+            background-color: var(--primary-purple);
+            color: white;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .ref-quote-text h4 {
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            line-height: 1.2;
+            font-weight: 400;
+            font-style: italic;
+        }
+
+        .ref-quote-text small {
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .ref-links {
+            grid-column: 4 / 5;
+            grid-row: 3;
+            padding: 20px 0 20px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .ref-links h5 {
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            color: #333;
+            font-weight: 800;
+        }
+
+        .ref-links ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 15px 0;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .ref-links ul li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ref-links ul li::before {
+            content: '›';
+            color: #999;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        .ref-all-features {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .ref-all-features span {
+            color: var(--accent-gold);
+            font-size: 1rem;
+        }
+
+        .text-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+
+        .play-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-gold);
+            color: white;
+            width: 24px;
+            height: 24px;
+            margin-top: 10px;
+            font-size: 0.8rem;
+        }
+
+        .speech-bubble {
+            position: absolute;
+            top: 50px;
+            left: -60px;
+            background: white;
+            padding: 25px;
+            border-radius: 50%;
+            width: 220px;
+            height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: 15px;
+            right: 35px;
+            border-width: 20px 20px 0;
+            border-style: solid;
+            border-color: white transparent transparent transparent;
+            transform: rotate(-30deg);
+        }
+
+        .speech-bubble p {
+            color: var(--primary-purple);
+            font-style: italic;
+            font-size: 1.6rem;
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 10px;
+        }
+
+        .speech-bubble small {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #666;
+            letter-spacing: 1px;
+        }
+
+        /* Mirrored Grid Layout */
+        .ref-grid-mirrored .ref-heading {
+            grid-column: 3 / 5;
+            text-align: right;
+            align-items: flex-end;
+        }
+
+        .ref-grid-mirrored .ref-para {
+            grid-column: 4 / 5;
+            padding-right: 0;
+            padding-left: 20px;
+            text-align: right;
+        }
+
+        .ref-grid-mirrored .ref-img-1 {
+            grid-column: 3 / 4;
+        }
+
+        .ref-grid-mirrored .ref-img-main {
+            grid-column: 1 / 3;
+        }
+
+        .ref-grid-mirrored .ref-img-2 {
+            grid-column: 4 / 5;
+        }
+
+        .ref-grid-mirrored .ref-quote-box {
+            grid-column: 2 / 4;
+            flex-direction: row-reverse;
+        }
+
+        .ref-grid-mirrored .ref-links {
+            grid-column: 1 / 2;
+            padding: 20px 20px 20px 0;
+            text-align: right;
+            align-items: flex-end;
+        }
+
+        .ref-grid-mirrored .ref-links ul li {
+            flex-direction: row-reverse;
+        }
+
+        .ref-grid-mirrored .ref-links ul li::before {
+            content: '‹';
+        }
+
+        .ref-grid-mirrored .ref-all-features {
+            flex-direction: row-reverse;
+        }
+
+        .ref-grid-mirrored .ref-all-features span {
+            transform: rotate(180deg);
+        }
+
+        .ref-grid-mirrored .speech-bubble {
+            left: auto;
+            right: -60px;
+        }
+
+        .ref-grid-mirrored .speech-bubble::after {
+            right: auto;
+            left: 35px;
+            border-width: 20px 20px 0;
+            border-color: white transparent transparent transparent;
+            transform: rotate(30deg);
+        }
+
+        @media (max-width: 1024px) {
+            .ref-heading h2 {
+                font-size: 2rem;
+            }
+
+            .speech-bubble {
+                width: 160px;
+                height: 160px;
+                left: -30px;
+                padding: 15px;
+            }
+
+            .speech-bubble p {
+                font-size: 1.2rem;
+            }
+
+            .speech-bubble::after {
+                right: 20px;
+            }
+
+            .ref-quote-text h4 {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .ref-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .ref-heading {
+                grid-column: 1 / 3;
+            }
+
+            .ref-para {
+                grid-column: 1 / 3;
+                grid-row: 2;
+                padding-right: 0;
+                margin-bottom: 20px;
+            }
+
+            .ref-img-1 {
+                grid-column: 1 / 2;
+                grid-row: 3;
+            }
+
+            .ref-img-main {
+                grid-column: 1 / 3;
+                grid-row: 4;
+                aspect-ratio: 16 / 9;
+            }
+
+            .speech-bubble {
+                left: 20px;
+                top: 20px;
+            }
+
+            .ref-img-2 {
+                grid-column: 2 / 3;
+                grid-row: 3;
+            }
+
+            .ref-quote-box {
+                grid-column: 1 / 3;
+                grid-row: 5;
+                flex-direction: column;
+            }
+
+            .ref-quote-img,
+            .ref-quote-text {
+                width: 100%;
+                aspect-ratio: 16 / 9;
+            }
+
+            .ref-links {
+                grid-column: 1 / 3;
+                grid-row: 6;
+                padding: 20px 0;
+            }
+
+            .ref-grid-mirrored .ref-heading,
+            .ref-grid-mirrored .ref-para,
+            .ref-grid-mirrored .ref-links {
+                text-align: left;
+                align-items: flex-start;
+            }
+
+            .ref-grid-mirrored .ref-links ul li {
+                flex-direction: row;
+            }
+
+            .ref-grid-mirrored .ref-links ul li::before {
+                content: '›';
+            }
+
+            .ref-grid-mirrored .ref-all-features {
+                flex-direction: row;
+            }
+
+            .ref-grid-mirrored .ref-all-features span {
+                transform: none;
+            }
+
+            .ref-grid-mirrored .ref-img-1 {
+                grid-column: 2 / 3;
+            }
+
+            .ref-grid-mirrored .ref-img-2 {
+                grid-column: 1 / 2;
+            }
+
+            .ref-grid-mirrored .ref-quote-box {
+                flex-direction: column;
+            }
+
+            .ref-grid-mirrored .speech-bubble {
+                left: 20px;
+                right: auto;
+            }
+
+            .ref-grid-mirrored .speech-bubble::after {
+                right: 35px;
+                left: auto;
+                border-width: 20px 20px 0;
+                border-color: white transparent transparent transparent;
+                transform: rotate(-30deg);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .reference-hero-section {
+                padding: 40px 15px 20px;
+                margin-top: 60px;
+            }
+
+            .ref-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                margin-bottom: 40px;
+            }
+
+            .ref-heading {
+                grid-column: 1 / 2;
+                padding-bottom: 10px;
+            }
+
+            .ref-heading h2 {
+                font-size: 1.8rem;
+            }
+
+            .ref-para {
+                grid-column: 1 / 2;
+                grid-row: auto;
+                padding: 0;
+            }
+
+            .ref-img-1,
+            .ref-img-2 {
+                grid-column: 1 / 2;
+                grid-row: auto;
+            }
+
+            .ref-img-main {
+                grid-column: 1 / 2;
+                grid-row: auto;
+                aspect-ratio: 1 / 1;
+            }
+
+            .ref-quote-box {
+                grid-column: 1 / 2;
+                grid-row: auto;
+            }
+
+            .ref-links {
+                grid-column: 1 / 2;
+                grid-row: auto;
+                padding: 10px 0;
+            }
+
+            .speech-bubble {
+                width: 130px;
+                height: 130px;
+                padding: 15px;
+                left: 15px;
+                top: 15px;
+            }
+
+            .speech-bubble p {
+                font-size: 1rem;
+            }
+
+            .speech-bubble::after {
+                right: 15px;
+                border-width: 15px 15px 0;
+            }
+
+            .ref-quote-text {
+                padding: 20px;
+            }
+
+            .ref-quote-text h4 {
+                font-size: 1.1rem;
+            }
+
+            .text-overlay {
+                padding: 15px;
+                font-size: 0.85rem;
+            }
+
+            /* Fix mirrored grid for mobile 1 column */
+            .ref-grid-mirrored .ref-img-1,
+            .ref-grid-mirrored .ref-img-2 {
+                grid-column: 1 / 2;
+            }
+
+            .ref-grid-mirrored .speech-bubble {
+                left: 15px;
+                right: auto;
+            }
+
+            .ref-grid-mirrored .speech-bubble::after {
+                right: 15px;
+                left: auto;
+                border-width: 15px 15px 0;
+            }
+        }
     </style>
 </head>
 
@@ -487,9 +1268,186 @@
 
     <floating-navbar></floating-navbar>
 
-    <!-- Video Hero Screen -->
-    <section class="video-fullscreen">
-        <iframe title="vimeo-player" src="https://player.vimeo.com/video/1038770180?h=b890ac9e66" width="100%" height="100%" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" allowfullscreen></iframe>
+    <!-- Reference Hero Section based on layout -->
+    <section class="reference-hero-section">
+        <div class="ref-grid">
+            <div class="ref-heading">
+                <span class="tag">CONFERENCE</span>
+                <h2>GLOBAL CONNECTIONS<br>IN HEALTH & MENTAL HEALTH</h2>
+            </div>
+            <div class="ref-para">
+                <p>The 10th ICSWHMH brought together over 1,100 delegates from 25 countries to Melbourne.
+                    A landmark hybrid event fostering innovation and exchange between practitioners and researchers.</p>
+            </div>
+            <div class="ref-item ref-img-1">
+                <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777277240/AASW-2024-2211-0063_x7wqjq.jpg"
+                    alt="Conference Session">
+                <div class="text-overlay">
+                    WATCH THE HIGHLIGHT VIDEO <span style="color:#666">""</span>
+                    <br><span class="play-btn">▶</span>
+                </div>
+            </div>
+            <div class="ref-img-main">
+                <div class="ref-img-main-inner">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777276116/AASW-2024-1911-0368_fpzcnu.jpg"
+                        alt="Main Conference Hall">
+                </div>
+                <div class="speech-bubble">
+                    <p>Fostering global connections and promoting innovation</p>
+                </div>
+            </div>
+            <div class="ref-item ref-img-2">
+                <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777277238/AASW-2024-1911-0316_jwfxe5.jpg"
+                    alt="Networking Event">
+                <div class="text-overlay">
+                    367 EXPERT PRESENTATIONS
+                    <br><span class="play-btn">▶</span>
+                </div>
+            </div>
+            <div class="ref-quote-box">
+                <div class="ref-item ref-quote-img">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777277237/AASW-2024-2011-0440_ge2fk3.jpg"
+                        alt="Keynote Speaker">
+                </div>
+                <div class="ref-quote-text">
+                    <h4><span style="font-size:2rem; vertical-align:-0.2em;">"</span> Social work is vital for health
+                        equity
+                        and mental wellbeing worldwide.</h4>
+                    <small style="font-weight:bold;">10th ICSWHMH<br>KEYNOTE HIGHLIGHT</small>
+                </div>
+            </div>
+            <div class="ref-links">
+                <h5 style="font-size:0.9rem; margin-bottom: 10px;">CONFERENCE<br>RESOURCES</h5>
+                <ul style="list-style:none; padding:0; font-size:0.8rem; color:#666;">
+                    <li style="margin-bottom:5px;">Conference Handbook</li>
+                    <li style="margin-bottom:5px;">Photo Gallery</li>
+                    <li style="margin-bottom:5px;">On-Demand Viewing</li>
+                </ul>
+                <div class="ref-all-features">
+                    ALL EVENTS <span style="color: #8cc63f;">▶</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="ref-grid ref-grid-mirrored">
+            <div class="ref-heading">
+                <span class="tag">LEADERSHIP</span>
+                <h2>DISTINGUISHED VOICES<br>IN SOCIAL JUSTICE</h2>
+            </div>
+            <div class="ref-para">
+                <p>Featuring keynotes from the Governor-General of Australia and experts in Indigenous rights,
+                    environmental social work, and resilience research.</p>
+            </div>
+            <div class="ref-img-main">
+                <div class="ref-img-main-inner">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777277235/AASW-2024-2011-0537_ruev5n.jpg"
+                        alt="Audience Participation">
+                </div>
+                <div class="speech-bubble">
+                    <p>It puts a big smile on my face</p>
+                    <small>AASW MEMBER<br>DELEGATE 2024</small>
+                </div>
+            </div>
+            <div class="ref-item ref-img-2">
+                <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777277234/AASW-2024-2011-0593_xsndhj.jpg"
+                    alt="Research Poster">
+                <div class="text-overlay">
+                    EXPLORE ON-DEMAND SESSIONS
+                    <br><span class="play-btn">▶</span>
+                </div>
+            </div>
+            <div class="ref-quote-box">
+                <div class="ref-item ref-quote-img">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777277234/AASW-2024-2011-0626_cep3ju.jpg"
+                        alt="Speaker">
+                </div>
+                <div class="ref-quote-text">
+                    <h4><span style="font-size:2rem; vertical-align:-0.2em;">"</span> Bridging the gap between
+                        research and frontline practice.</h4>
+                    <small style="font-weight:bold;">DR MICHAEL UNGAR<br>KEYNOTE SPEAKER</small>
+                </div>
+            </div>
+            <div class="ref-links">
+                <h5 style="font-size:0.9rem; margin-bottom: 10px;">COMMUNITY<br>HUB LINKS</h5>
+                <ul style="list-style:none; padding:0; font-size:0.8rem; color:#666;">
+                    <li style="margin-bottom:5px;">AASW Horizon Jobs</li>
+                    <li style="margin-bottom:5px;">CPD Newsletter</li>
+                    <li style="margin-bottom:5px;">Membership Benefits</li>
+                </ul>
+                <div class="ref-all-features">
+                    LEARN MORE <span style="color: #8cc63f;">▶</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Auto-Scrolling Gallery -->
+    <div class="photo-hero__scroll">
+
+        <div class="scroll-track-wrapper">
+            <div class="scroll-track">
+                <!-- First set -->
+                <div class="scroll-item">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777277231/AASW-2024-2011-0885_kqzedl.jpg"
+                        alt="Gallery 1" loading="lazy">
+                </div>
+                <div class="scroll-item">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777277230/AASW-2024-2111-0269_xgzrjk.jpg"
+                        alt="Gallery 2" loading="lazy">
+                </div>
+                <div class="scroll-item">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777277230/AASW-2024-2111-0058_u4fhyv.jpg"
+                        alt="Gallery 3" loading="lazy">
+                </div>
+                <div class="scroll-item">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777276329/AASW-2024-2111-0615_r95bmu.jpg"
+                        alt="Gallery 4" loading="lazy">
+                </div>
+                <div class="scroll-item">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777276329/AASW-2024-1911-0619_nlklzr.jpg"
+                        alt="Gallery 5" loading="lazy">
+                </div>
+                <div class="scroll-item">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777276116/AASW-2024-2211-0233_bgqpgu.jpg"
+                        alt="Gallery 6" loading="lazy">
+                </div>
+                <div class="scroll-item">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777276116/AASW-2024-1911-0368_fpzcnu.jpg"
+                        alt="Gallery 7" loading="lazy">
+                </div>
+                <!-- Duplicate set for seamless loop -->
+                <div class="scroll-item">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777277231/AASW-2024-2011-0885_kqzedl.jpg"
+                        alt="Gallery 1" loading="lazy">
+                </div>
+                <div class="scroll-item">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777277230/AASW-2024-2111-0269_xgzrjk.jpg"
+                        alt="Gallery 2" loading="lazy">
+                </div>
+                <div class="scroll-item">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777277230/AASW-2024-2111-0058_u4fhyv.jpg"
+                        alt="Gallery 3" loading="lazy">
+                </div>
+                <div class="scroll-item">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777276329/AASW-2024-2111-0615_r95bmu.jpg"
+                        alt="Gallery 4" loading="lazy">
+                </div>
+                <div class="scroll-item">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777276329/AASW-2024-1911-0619_nlklzr.jpg"
+                        alt="Gallery 5" loading="lazy">
+                </div>
+                <div class="scroll-item">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777276116/AASW-2024-2211-0233_bgqpgu.jpg"
+                        alt="Gallery 6" loading="lazy">
+                </div>
+                <div class="scroll-item">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777276116/AASW-2024-1911-0368_fpzcnu.jpg"
+                        alt="Gallery 7" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </div>
+
     </section>
 
     <!-- Intro Screen -->
@@ -509,7 +1467,8 @@
                 <!-- Visual is now Background -->
                 <div class="card-visual">
                     <!-- Image added for Mobile View (Hidden on Desktop) -->
-                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771438063/kerala_mtfcxe.jpg" alt="Kerala" loading="lazy">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771438063/kerala_mtfcxe.jpg"
+                        alt="Kerala" loading="lazy">
                 </div>
                 <div class="card-content">
                     <span class="card-edition">Next Chapter</span>
@@ -525,7 +1484,8 @@
         <article class="history-card" id="card-2024">
             <div class="card-inner">
                 <div class="card-visual">
-                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434108/melbourne_suo1yv.png" alt="Melbourne" loading="lazy">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434108/melbourne_suo1yv.png"
+                        alt="Melbourne" loading="lazy">
                 </div>
                 <div class="card-content">
                     <span class="card-year">2024</span>
@@ -541,7 +1501,8 @@
         <article class="history-card" id="card-2019">
             <div class="card-inner">
                 <div class="card-visual">
-                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434112/newyork_idmtsf.png" alt="York" loading="lazy">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434112/newyork_idmtsf.png"
+                        alt="York" loading="lazy">
                 </div>
                 <div class="card-content">
                     <span class="card-year">2019</span>
@@ -558,7 +1519,8 @@
         <article class="history-card" id="card-2016">
             <div class="card-inner">
                 <div class="card-visual">
-                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434120/singapore_qw7zac.png  " alt="Singapore" loading="lazy">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434120/singapore_qw7zac.png  "
+                        alt="Singapore" loading="lazy">
                 </div>
                 <div class="card-content">
                     <span class="card-year">2016</span>
