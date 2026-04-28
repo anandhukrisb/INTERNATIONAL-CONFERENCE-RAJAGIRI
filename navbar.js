@@ -554,14 +554,10 @@ class FloatingNavbar extends HTMLElement {
                 <!-- Visible Links (Priority+) -->
                 <ul class="navbar-links" id="navbar-links">
                     <li><a href="index.html">2027 ICSWHMH</a></li>
+                    <li><a href="committee.html">Committee</a></li>
                     <li><a href="rajagiri.html">Rajagiri</a></li>
                     <li><a href="history.html">History</a></li>
                     <li><a href="themes.html">Themes</a></li>
-                    <!--
-                    <li>
-                        <a href="committee.html">Speakers</a>
-                    </li>
-                    -->
                     <li><a href="registration.html">Registration</a></li>
                     <li><a href="abstract.html">Abstract Submission</a></li>
                     <li><a href="attractions.html">Attractions</a></li>
