@@ -474,7 +474,7 @@ class MainFooter extends HTMLElement {
                         <ul>
                             <li><a href="abstract.html">Submit Abstract</a></li>
                             <li><a href="themes.html">Themes</a></li>
-                            <li><a href="speaker.html">Speakers</a></li>
+                            <li><a href="committee.html">Committee</a></li>
                             <li><a href="registration.html">Registration</a></li>
                             <li><a href="hotels.html">Host City</a></li>
                             <li><a href="faq.html">FAQ</a></li>
