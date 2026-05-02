@@ -3,7 +3,7 @@ name: Deploy to cPanel
 on:
   push:
     branches:
-      - fix/auto-deploy
+      - main
 
 jobs:
   deploy:
