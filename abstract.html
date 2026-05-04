@@ -223,126 +223,53 @@
             .custom-table { display: block; overflow-x: auto; white-space: nowrap; }
         }
 
-        /* ===== TEAR & REVEAL CARD SYSTEM ===== */
-        #guidelines-interactive { text-align:center; padding:8px 0 40px; font-family:'Poppins',sans-serif; }
+        /* ===== GUIDELINES — STACKED SECTIONS ===== */
+        .gd-wrapper { margin-top: 0; }
 
-        /* Progress */
-        .guide-progress { margin-bottom:20px; }
-        .guide-step-label {
-            font-family:'Poppins',sans-serif; font-size:14px; font-weight:500;
-            color:#888; letter-spacing:.5px; display:block; margin-bottom:10px;
-        }
-        .guide-dots { display:flex; justify-content:center; gap:8px; }
-        .guide-dot {
-            width:10px; height:10px; border-radius:50%; background:#ddd;
-            transition:background .35s,transform .35s,width .35s;
-        }
-        .guide-dot.active { background:var(--accent-gold); transform:scale(1.4); }
-        .guide-dot.done { background:var(--primary-purple); }
-
-        /* Card Stage */
-        .card-stage {
-            position:relative; display:flex; justify-content:center;
-            align-items:center; min-height:320px; overflow:visible;
+        /* Subheading — per-guideline label */
+        .gd-subheading {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1d0a3f;
+            margin-top: 36px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: .3px;
         }
 
-        /* Paper Card */
-        .paper-card {
-            position:relative;
-            background:#fff;
-            background-image:
-                linear-gradient(rgba(240,235,228,.5) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(240,235,228,.5) 1px, transparent 1px);
-            background-size:28px 28px;
-            border-radius:16px;
-            box-shadow:
-                0 2px 4px rgba(0,0,0,.04),
-                0 8px 24px rgba(29,10,63,.1),
-                0 1px 0 rgba(255,255,255,.9) inset;
-            padding:32px 32px 22px;
-            max-width:480px; width:100%;
-            cursor:pointer; user-select:none;
-            border:1px solid rgba(0,0,0,.07);
-            transition:transform .2s ease, box-shadow .2s ease, opacity .3s ease;
+        /* Card — gold-accented, matches committee.html border + themes.html elevation */
+        .gd-card {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,.05);
+            border: 1px solid rgba(0,0,0,.04);
+            border-left: 5px solid #c9a227;
+            padding: 28px 32px;
+            transition: transform .3s cubic-bezier(.165,.84,.44,1),
+                        box-shadow .3s ease,
+                        border-left-color .3s ease;
+            margin-bottom: 12px;
         }
-        .paper-card::before {
-            content:'';
-            position:absolute; top:0; left:0; right:0;
-            height:4px; border-radius:16px 16px 0 0;
-            background:linear-gradient(90deg, var(--primary-purple), var(--accent-gold));
+        .gd-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 50px rgba(201,162,39,.12), 0 8px 20px rgba(0,0,0,.06);
+            border-left-color: #b8861a;
         }
-        .paper-card:hover {
-            transform:translateY(-5px);
-            box-shadow:0 4px 8px rgba(0,0,0,.06),0 16px 40px rgba(29,10,63,.16);
+        .gd-card-body {
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 1.7;
+            color: #444;
         }
-
-        /* Card badge */
-        .card-step-badge {
-            font-family:'Poppins',sans-serif;
-            font-size:11px; font-weight:700;
-            color:var(--accent-gold);
-            text-transform:uppercase; letter-spacing:2.5px;
-            margin-bottom:14px;
-            display:flex; align-items:center; justify-content:center; gap:10px;
+        .gd-card-body strong {
+            font-weight: 600;
+            color: #1d0a3f;
         }
-        .card-step-badge::before,.card-step-badge::after {
-            content:''; flex:1; height:1px; background:#ede8df; max-width:40px;
-        }
-
-        /* Card text */
-        .card-text {
-            font-family:'Poppins',sans-serif;
-            font-size:17px; font-weight:400;
-            line-height:1.7; color:#333;
-            margin:0; text-align:left;
-        }
-        .card-text strong {
-            font-weight:600; color:var(--primary-purple);
-        }
-
-        /* Hint */
-        .card-hint {
-            margin-top:20px; padding-top:14px;
-            border-top:1px dashed #e8e2d8;
-            font-family:'Poppins',sans-serif;
-            font-size:12px; font-weight:500;
-            color:#c0b8a8; letter-spacing:.3px;
-            display:flex; align-items:center; justify-content:center; gap:6px;
-        }
-        .hint-icon { display:inline-block; animation:hintBob 2s ease-in-out infinite; }
-        @keyframes hintBob { 0%,100%{transform:translateX(0)} 50%{transform:translateX(5px)} }
-
-        /* Shake */
-        @keyframes cardShake {
-            0%,100%{ transform:translateX(0) rotate(0deg) }
-            20%{ transform:translateX(-8px) rotate(-1.5deg) }
-            40%{ transform:translateX(8px) rotate(1.5deg) }
-            60%{ transform:translateX(-6px) rotate(-1deg) }
-            80%{ transform:translateX(6px) rotate(1deg) }
-        }
-        .paper-card.shaking { animation:cardShake .36s ease; }
-
-        /* Enter */
-        @keyframes cardEnter {
-            from{ opacity:0; transform:scale(.93) translateY(20px) }
-            to  { opacity:1; transform:scale(1)  translateY(0) }
-        }
-        .paper-card.card-enter { animation:cardEnter .42s cubic-bezier(.22,1,.36,1); }
-
-        /* Tear pieces (left/right split) */
-        .tear-piece {
-            position:absolute; overflow:hidden; pointer-events:none;
-            will-change:transform,opacity;
-            transition:transform .48s cubic-bezier(.4,0,1,1), opacity .42s ease;
-            background:#fff;
-            border-radius:16px;
-            box-shadow:0 8px 24px rgba(29,10,63,.1);
-        }
-
-        @media(max-width:576px) {
-            .paper-card { padding:26px 20px 18px; border-radius:14px; }
-            .card-text { font-size:15px; }
-            .guide-step-label { font-size:13px; }
+        @media(max-width: 576px) {
+            .gd-heading { font-size: 1.5rem; margin-top: 36px; }
+            .gd-card { padding: 20px 22px; }
         }
     </style>
 </head>
@@ -433,24 +360,10 @@
             </div>
         </section>
 
-        <!-- Guidelines — Tear & Reveal Cards -->
+        <!-- GUIDELINES — Stacked Sections -->
         <section class="content-section" id="guidelines-section">
             <h2 class="section-header">GUIDELINES FOR ABSTRACT</h2>
-            <div id="guidelines-interactive">
-                <div class="guide-progress" id="guide-progress">
-                    <span class="guide-step-label" id="guide-step-label">1 / 5</span>
-                    <div class="guide-dots" id="guide-dots"></div>
-                </div>
-                <div class="card-stage" id="card-stage">
-                    <div class="paper-card card-enter" id="paper-card">
-                        <div id="card-content"></div>
-                        <div class="card-hint">
-                            <span class="hint-icon">👉</span>
-                            <span>Click or swipe to reveal next</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="gd-wrapper" id="gd-wrapper"></div>
         </section>
 
 
@@ -544,124 +457,26 @@
     <script>
     (function () {
         var guidelines = [
-            { icon: '📝', label: 'Word Limit',     html: 'The abstract should be within <strong>300 words</strong> of text including the title and keywords (MS Word Doc.)' },
-            { icon: '📐', label: 'Structure',      html: 'The text should be arranged according to the following headlines: <strong>Objectives, Design, Model, Result and Conclusion.</strong>' },
-            { icon: '👤', label: 'Author Details', html: 'The abstract\'s title page should include the <strong>paper\'s title, Author\'s name, designation, institution affiliation, mailing address, contact number and email id.</strong>' },
-            { icon: '🏷️', label: 'Theme & Subtheme', html: 'It is essential that you specify the <strong>Theme and Subtheme</strong> to which your abstract pertains when submitting it.' },
-            { icon: '🌐', label: 'Call for Papers', html: 'We are calling for papers <strong>(oral and poster presentations)</strong> that bring together novel solutions through social work and social development practices — methodological, theoretical, social, technological, policy, practice-based or organisational innovations. Proposals for a <strong>workshop (90 min)</strong> or <strong>panel discussion (4 panellists, 10 min each)</strong> are also welcome.' }
+            { icon: '📝', label: 'Word Limit',       html: 'The abstract should be within <strong>300 words</strong> of text including the title and keywords (MS Word Doc.)' },
+            { icon: '📐', label: 'Structure',        html: 'The text should be arranged according to the following headlines: <strong>Objectives, Design, Model, Result and Conclusion.</strong>' },
+            { icon: '👤', label: 'Author Details',   html: 'The abstract\'s title page should include the <strong>paper\'s title, Author\'s name, designation, institution affiliation, mailing address, contact number and email id.</strong>' },
+            { icon: '🏷️', label: 'Theme & Subtheme',  html: 'It is essential that you specify the <strong>Theme and Subtheme</strong> to which your abstract pertains when submitting it.' },
+            { icon: '🌐', label: 'Call for Papers',   html: 'We are calling for papers <strong>(oral and poster presentations)</strong> that bring together novel solutions through social work and social development practices — methodological, theoretical, social, technological, policy, practice-based or organisational innovations. Proposals for a <strong>workshop (90 min)</strong> or <strong>panel discussion (4 panellists, 10 min each)</strong> are also welcome.' }
         ];
 
-        var currentStep = 0;
-        var isAnimating  = false;
-        var touchStartX  = 0;
-        var touchStartY  = 0;
+        var wrapper = document.getElementById('gd-wrapper');
+        guidelines.forEach(function (g) {
+            var heading = document.createElement('h3');
+            heading.className = 'gd-subheading';
+            heading.textContent = g.label;
 
-        var card          = document.getElementById('paper-card');
-        var cardContent   = document.getElementById('card-content');
-        var stepLabel     = document.getElementById('guide-step-label');
-        var dotsContainer = document.getElementById('guide-dots');
-        var cardStage     = document.getElementById('card-stage');
+            var card = document.createElement('div');
+            card.className = 'gd-card';
+            card.innerHTML = '<div class="gd-card-body">' + g.html + '</div>';
 
-        /* Build progress dots */
-        guidelines.forEach(function (_, i) {
-            var dot = document.createElement('span');
-            dot.className = 'guide-dot' + (i === 0 ? ' active' : '');
-            dotsContainer.appendChild(dot);
+            wrapper.appendChild(heading);
+            wrapper.appendChild(card);
         });
-
-        /* Render current step content */
-        function updateCard() {
-            var g = guidelines[currentStep];
-            cardContent.innerHTML =
-                '<div class="card-step-badge">' + g.icon + '&ensp;Step ' + (currentStep + 1) + '&ensp;&mdash;&ensp;' + g.label + '</div>' +
-                '<p class="card-text">' + g.html + '</p>';
-            stepLabel.textContent = (currentStep + 1) + ' / ' + guidelines.length;
-            var dots = dotsContainer.querySelectorAll('.guide-dot');
-            dots.forEach(function (d, i) {
-                d.className = 'guide-dot' +
-                    (i === currentStep ? ' active' : (i < currentStep ? ' done' : ''));
-            });
-        }
-
-        /* Left / Right split tear */
-        function triggerTear() {
-            if (isAnimating) return;
-            isAnimating = true;
-
-            /* 1 — shake */
-            card.classList.add('shaking');
-
-            setTimeout(function () {
-                card.classList.remove('shaking');
-                card.style.opacity = '0';
-
-                var stageRect = cardStage.getBoundingClientRect();
-                var cardRect  = card.getBoundingClientRect();
-                var w  = cardRect.width;
-                var h  = cardRect.height;
-                var t  = cardRect.top  - stageRect.top;
-                var l  = cardRect.left - stageRect.left;
-
-                /* Jagged vertical tear line at ~50% width */
-                var jagLeft  = 'polygon(0 0, 50% 0, 52% 12%, 49% 25%, 53% 38%, 48% 50%, 52% 62%, 49% 75%, 53% 88%, 50% 100%, 0 100%)';
-                var jagRight = 'polygon(50% 0, 100% 0, 100% 100%, 50% 100%, 53% 88%, 49% 75%, 52% 62%, 48% 50%, 53% 38%, 49% 25%, 52% 12%)';
-
-                [true, false].forEach(function (isLeft) {
-                    var p = document.createElement('div');
-                    p.className = 'tear-piece';
-                    p.style.cssText =
-                        'top:'  + t + 'px;' +
-                        'left:' + l + 'px;' +
-                        'width:'  + w + 'px;' +
-                        'height:' + h + 'px;' +
-                        'clip-path:' + (isLeft ? jagLeft : jagRight) + ';' +
-                        'padding:32px 32px 22px;' +
-                        'box-sizing:border-box;';
-                    p.innerHTML = cardContent.innerHTML;
-                    cardStage.appendChild(p);
-
-                    /* Double rAF ensures transition triggers after paint */
-                    requestAnimationFrame(function () {
-                        requestAnimationFrame(function () {
-                            p.style.transform = isLeft
-                                ? 'translateX(-110px) rotate(-12deg)'
-                                : 'translateX( 110px) rotate( 12deg)';
-                            p.style.opacity = '0';
-                        });
-                    });
-                });
-
-                /* 2 — after pieces fly out, show next card */
-                setTimeout(function () {
-                    cardStage.querySelectorAll('.tear-piece').forEach(function (p) { p.remove(); });
-
-                    currentStep = (currentStep + 1) % guidelines.length; /* infinite loop */
-                    updateCard();
-                    card.style.opacity = '1';
-                    card.classList.add('card-enter');
-                    setTimeout(function () { card.classList.remove('card-enter'); }, 450);
-                    isAnimating = false;
-                }, 520);
-
-            }, 360);
-        }
-
-        /* Events */
-        card.addEventListener('click', triggerTear);
-
-        card.addEventListener('touchstart', function (e) {
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-        }, { passive: true });
-
-        card.addEventListener('touchend', function (e) {
-            var dx = e.changedTouches[0].clientX - touchStartX;
-            var dy = e.changedTouches[0].clientY - touchStartY;
-            if (Math.abs(dx) > 40 || Math.abs(dy) > 40) triggerTear();
-        });
-
-        /* Init */
-        updateCard();
     })();
     </script>
 </body>
