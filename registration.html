@@ -483,8 +483,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .fee-table-title {
@@ -534,7 +541,7 @@
             height: 5px;
             background: var(--primary-purple);
         }
-        
+
         .pricing-card.accent::before {
             background: var(--accent-gold);
         }
@@ -634,7 +641,7 @@
             background: #fff;
             margin-bottom: 10px;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
         }
 
         .result-label {
@@ -653,11 +660,13 @@
             .fee-filter-controls {
                 flex-direction: column;
             }
+
             .result-card {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 5px;
             }
+
             .fee-toggle-btn {
                 padding: 10px 15px;
                 font-size: 0.9rem;
@@ -842,14 +851,17 @@
         <section class="fee-guidelines-section">
             <h2 class="section-header" style="text-align: center; margin-bottom: 30px;">FEE GUIDELINES</h2>
             <div class="fee-toggle-container">
-                <button class="fee-toggle-btn active" id="btn-view-all" onclick="showFeeTab('all')">View All Fees</button>
-                <button class="fee-toggle-btn" id="btn-filter" onclick="showFeeTab('filter')">Filter My Fee</button>
+                <button class="fee-toggle-btn active" id="btn-view-all" onclick="showFeeTab('all')">View All
+                    Fees</button>
+                <button class="fee-toggle-btn" id="btn-filter" onclick="showFeeTab('filter')">Find My Fee</button>
             </div>
 
             <!-- View All Tab -->
             <div id="fee-view-all" class="fee-tab-content active">
-                
-                <h3 class="fee-table-title" style="text-align: center; margin-bottom: 30px; font-size: 1.6rem; font-weight: 700;">General Registration</h3>
+
+                <h3 class="fee-table-title"
+                    style="text-align: center; margin-bottom: 30px; font-size: 1.6rem; font-weight: 700;">General
+                    Registration</h3>
                 <div class="pricing-cards-container">
                     <!-- Developed -->
                     <div class="pricing-card">
@@ -921,7 +933,11 @@
                     </div>
                 </div>
 
-                <h3 class="fee-table-title" style="text-align: center; margin-top: 40px; margin-bottom: 30px; font-size: 1.6rem; font-weight: 700;">PhD Scholars <span style="font-size: 1.05rem; color: var(--text-muted); font-weight: 500; display: block; margin-top: 5px;">(One-day Colloquium)</span></h3>
+                <h3 class="fee-table-title"
+                    style="text-align: center; margin-top: 40px; margin-bottom: 30px; font-size: 1.6rem; font-weight: 700;">
+                    PhD Scholars <span
+                        style="font-size: 1.05rem; color: var(--text-muted); font-weight: 500; display: block; margin-top: 5px;">(One-day
+                        Colloquium)</span></h3>
                 <div class="pricing-cards-container">
                     <!-- Developed -->
                     <div class="pricing-card">
@@ -969,7 +985,11 @@
                     </div>
                 </div>
 
-                <h3 class="fee-table-title" style="text-align: center; margin-top: 40px; margin-bottom: 30px; font-size: 1.6rem; font-weight: 700;">Students <span style="font-size: 1.05rem; color: var(--text-muted); font-weight: 500; display: block; margin-top: 5px;">(One-day International Summit)</span></h3>
+                <h3 class="fee-table-title"
+                    style="text-align: center; margin-top: 40px; margin-bottom: 30px; font-size: 1.6rem; font-weight: 700;">
+                    Students <span
+                        style="font-size: 1.05rem; color: var(--text-muted); font-weight: 500; display: block; margin-top: 5px;">(One-day
+                        International Summit)</span></h3>
                 <div class="pricing-cards-container">
                     <!-- Developed -->
                     <div class="pricing-card">
@@ -1482,8 +1502,8 @@
         function showFeeTab(tab) {
             document.querySelectorAll('.fee-toggle-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.fee-tab-content').forEach(content => content.classList.remove('active'));
-            
-            if(tab === 'all') {
+
+            if (tab === 'all') {
                 document.getElementById('btn-view-all').classList.add('active');
                 document.getElementById('fee-view-all').classList.add('active');
             } else {
@@ -1497,10 +1517,10 @@
             const participant = document.getElementById('filter-participant').value;
             const category = document.getElementById('filter-category').value;
             const resultContainer = document.getElementById('filtered-fee-result');
-            
+
             const data = feeData[participant][category];
             let html = `<h4 style="margin-bottom: 15px; color: var(--primary-purple); font-family: 'Outfit', sans-serif;">Your Applicable Fees</h4>`;
-            
+
             data.forEach(item => {
                 html += `
                     <div class="result-card">
@@ -1509,7 +1529,7 @@
                     </div>
                 `;
             });
-            
+
             resultContainer.innerHTML = html;
         }
 

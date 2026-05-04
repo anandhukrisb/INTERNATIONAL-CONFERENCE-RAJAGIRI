@@ -111,6 +111,7 @@
             font-weight: 700;
             text-transform: uppercase;
         }
+
         .gd-section-header::after {
             content: '';
             display: block;
@@ -135,7 +136,7 @@
             margin: 0;
         }
 
-        .guidelines-list > li {
+        .guidelines-list>li {
             position: relative;
             padding-left: 30px;
             margin-bottom: 15px;
@@ -144,7 +145,7 @@
             line-height: 1.6;
         }
 
-        .guidelines-list > li::before {
+        .guidelines-list>li::before {
             content: "\F272";
             /* Bootstrap Check Icon */
             font-family: "bootstrap-icons";
@@ -236,13 +237,25 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .page-title { font-size: 2.2rem; }
-            .page-header { padding-top: 120px; }
-            .custom-table { display: block; overflow-x: auto; white-space: nowrap; }
+            .page-title {
+                font-size: 2.2rem;
+            }
+
+            .page-header {
+                padding-top: 120px;
+            }
+
+            .custom-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
         }
 
         /* ===== GUIDELINES — STACKED SECTIONS ===== */
-        .gd-wrapper { margin-top: 0; }
+        .gd-wrapper {
+            margin-top: 0;
+        }
 
         /* Subheading — per-guideline label */
         .gd-subheading {
@@ -260,20 +273,22 @@
         .gd-card {
             background: #fff;
             border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0,0,0,.05);
-            border: 1px solid rgba(0,0,0,.04);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, .05);
+            border: 1px solid rgba(0, 0, 0, .04);
             border-left: 5px solid #c9a227;
             padding: 28px 32px;
-            transition: transform .3s cubic-bezier(.165,.84,.44,1),
-                        box-shadow .3s ease,
-                        border-left-color .3s ease;
+            transition: transform .3s cubic-bezier(.165, .84, .44, 1),
+                box-shadow .3s ease,
+                border-left-color .3s ease;
             margin-bottom: 12px;
         }
+
         .gd-card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 20px 50px rgba(201,162,39,.12), 0 8px 20px rgba(0,0,0,.06);
+            box-shadow: 0 20px 50px rgba(201, 162, 39, .12), 0 8px 20px rgba(0, 0, 0, .06);
             border-left-color: #b8861a;
         }
+
         .gd-card-body {
             font-family: 'Inter', sans-serif;
             font-size: 15px;
@@ -281,13 +296,21 @@
             line-height: 1.7;
             color: #444;
         }
+
         .gd-card-body strong {
             font-weight: 600;
             color: #1d0a3f;
         }
+
         @media(max-width: 576px) {
-            .gd-heading { font-size: 1.5rem; margin-top: 36px; }
-            .gd-card { padding: 20px 22px; }
+            .gd-heading {
+                font-size: 1.5rem;
+                margin-top: 36px;
+            }
+
+            .gd-card {
+                padding: 20px 22px;
+            }
         }
     </style>
 </head>
@@ -370,7 +393,7 @@
 
         <!-- GUIDELINES — Stacked Sections -->
         <section class="content-section" id="guidelines-section">
-            <h2 class="gd-section-header">SESSION FORMAT</h2>
+            <h2 class="gd-section-header">SESSION FORMATS</h2>
             <div class="gd-wrapper" id="gd-wrapper">
                 <h3 class="gd-subheading">Paper presentations</h3>
                 <div class="gd-card">
@@ -378,9 +401,15 @@
                         <ul class="guidelines-list">
                             <li><strong>Word Limit:</strong> Maximum 300 words (including title and keywords).</li>
                             <li><strong>File Format:</strong> MS Word Document (.doc or .docx).</li>
-                            <li><strong>Structure:</strong> Abstracts must be organized under the following headings: Objectives, Design, Model, Result, and Conclusion.</li>
-                            <li><strong>Title Page Requirements:</strong> Must include Paper Title, Author(s) Name, Designation, Institutional Affiliation, Mailing Address, Contact Number, and Email ID.</li>
-                            <li><strong>Classification:</strong> It is mandatory to specify the Theme and Sub-theme upon submission.</li>
+                            <li><strong>Structure:</strong> Abstracts must be organized under the following headings:
+                                Objectives, Design, Model, Result, and Conclusion.</li>
+                            <li><strong>Title Page Requirements:</strong> Must include Paper Title, Author(s) Name,
+                                Designation, Institutional Affiliation, Mailing Address, Contact Number, and Email ID.
+                            </li>
+                            <li><strong>Classification:</strong> It is mandatory to specify the Theme and Sub-theme upon
+                                submission.</li>
+                            <li><strong>Time Allocation:</strong> Each presenter is allocated 10–15 minutes, inclusive
+                                of Q&A.</li>
                         </ul>
                     </div>
                 </div>
@@ -388,17 +417,25 @@
                 <h3 class="gd-subheading">Panel Presentation</h3>
                 <div class="gd-card">
                     <div class="gd-card-body">
-                        <p class="mb-3">Panels consist of a moderated discussion featuring a maximum of 4 speakers on a specific theme.</p>
+                        <p class="mb-3">Panels consist of a moderated discussion featuring a maximum of 4 speakers on a
+                            specific theme.</p>
                         <ul class="guidelines-list">
-                            <li><strong>Submission Structure:</strong> The submission must be a single document including:
+                            <li><strong>Submission Structure:</strong> The submission must be a single document
+                                including:
                                 <ol class="mt-2 mb-0" style="padding-left: 20px;">
-                                    <li style="margin-bottom: 8px;"><strong>Panel Overview:</strong> A description of the theme and how the speakers' topics interrelate.</li>
-                                    <li><strong>Individual Summaries:</strong> A brief outline of the specific 10-minute contribution from each of the 4 panelists.</li>
+                                    <li style="margin-bottom: 8px;"><strong>Panel Overview:</strong> A description of
+                                        the theme and how the speakers' topics interrelate.</li>
+                                    <li><strong>Individual Summaries:</strong> A brief outline of the specific 10-minute
+                                        contribution from each of the 4 panelists.</li>
                                 </ol>
                             </li>
-                            <li><strong>Word Limit:</strong> The total text (Overview + Individual Summaries) should be within 500 words (MS Word Doc).</li>
-                            <li><strong>Title Page:</strong> Must include the Panel Title, names of all Panelists and the Chair, their designations, affiliations, and contact details for the lead coordinator.</li>
-                            <li><strong>Theme Selection:</strong> Specify the Theme and Sub-theme the panel intends to address.</li>
+                            <li><strong>Word Limit:</strong> The total text (Overview + Individual Summaries) should be
+                                within 500 words (MS Word Doc).</li>
+                            <li><strong>Title Page:</strong> Must include the Panel Title, names of all Panelists and
+                                the Chair, their designations, affiliations, and contact details for the lead
+                                coordinator.</li>
+                            <li><strong>Theme Selection:</strong> Specify the Theme and Sub-theme the panel intends to
+                                address.</li>
                         </ul>
                     </div>
                 </div>
@@ -406,13 +443,21 @@
                 <h3 class="gd-subheading">Workshop</h3>
                 <div class="gd-card">
                     <div class="gd-card-body">
-                        <p class="mb-3">Workshops are 75 minute interactive sessions focused on skill-building or practical application.</p>
+                        <p class="mb-3">Workshops are 75 minute interactive sessions focused on skill-building or
+                            practical application.</p>
                         <ul class="guidelines-list">
-                            <li><strong>Abstract Structure:</strong> The proposal should be arranged according to the following headlines: Introduction/Rationale, Learning Objectives, Target Audience, and Interactive Methodology.</li>
+                            <li><strong>Abstract Structure:</strong> The proposal should be arranged according to the
+                                following headlines: Introduction/Rationale, Learning Objectives, Target Audience, and
+                                Interactive Methodology.</li>
                             <li><strong>Word Limit:</strong> Within 300 words of text (MS Word Doc).</li>
-                            <li><strong>Title Page:</strong> Must include the Workshop Title, Facilitator(s) Name, designation, institution affiliation, mailing address, contact number, and email id.</li>
-                            <li><strong>Theme Selection:</strong> Specify the Theme and Sub-theme to which the workshop aligns.</li>
-                            <li><strong>Requirement:</strong> Must include a brief description of the activities or tools you will use to engage participants (e.g., case-work, role-play, or software demo).</li>
+                            <li><strong>Title Page:</strong> Must include the Workshop Title, Facilitator(s) Name,
+                                designation, institution affiliation, mailing address, contact number, and email id.
+                            </li>
+                            <li><strong>Theme Selection:</strong> Specify the Theme and Sub-theme to which the workshop
+                                aligns.</li>
+                            <li><strong>Requirement:</strong> Must include a brief description of the activities or
+                                tools you will use to engage participants (e.g., case-work, role-play, or software
+                                demo).</li>
                         </ul>
                     </div>
                 </div>
@@ -420,71 +465,96 @@
                 <h3 class="gd-subheading">Pecha kucha</h3>
                 <div class="gd-card">
                     <div class="gd-card-body">
-                        <p class="mb-3">Pecha Kucha is a high-energy, visual-first presentation style. The format is strictly 20 slides, each shown for exactly 20 seconds, for a total of 6 minutes and 40 seconds.</p>
+                        <p class="mb-3">Pecha Kucha is a high-energy, visual-first presentation style. The format is
+                            strictly 20 slides, each shown for exactly 20 seconds, for a total of 6 minutes and 40
+                            seconds.</p>
                         <ul class="guidelines-list">
-                            <li><strong>Submission Structure:</strong> The proposal should be arranged according to the following headlines: Context/Story, The Challenge, The Innovation/Solution, and Key Takeaway.</li>
+                            <li><strong>Submission Structure:</strong> The proposal should be arranged according to the
+                                following headlines: Context/Story, The Challenge, The Innovation/Solution, and Key
+                                Takeaway.</li>
                             <li><strong>Word Limit:</strong> Within 300 words of text (MS Word Doc).</li>
-                            <li><strong>Visual Focus:</strong> Proposals should clearly describe the visual narrative you intend to build. Since the presentation relies on imagery, outline what kind of images or visual cues will drive your 20 slides.</li>
-                            <li><strong>Title Page:</strong> Must include the Presentation Title, Author(s) Name, designation, institution affiliation, mailing address, contact number, and email id.</li>
-                            <li><strong>Theme Selection:</strong> Specify the Theme and Sub-theme to which your idea pertains.</li>
+                            <li><strong>Visual Focus:</strong> Proposals should clearly describe the visual narrative
+                                you intend to build. Since the presentation relies on imagery, outline what kind of
+                                images or visual cues will drive your 20 slides.</li>
+                            <li><strong>Title Page:</strong> Must include the Presentation Title, Author(s) Name,
+                                designation, institution affiliation, mailing address, contact number, and email id.
+                            </li>
+                            <li><strong>Theme Selection:</strong> Specify the Theme and Sub-theme to which your idea
+                                pertains.</li>
                         </ul>
                     </div>
                 </div>
 
-                <h3 class="gd-subheading" style="color: var(--accent-gold); font-size: 1.5rem; margin-top: 45px;">Special Categories for Students & Scholars</h3>
-                
-                <h4 style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 600; color: var(--primary-purple); margin-top: 25px; margin-bottom: 15px;">1. Student Presentation Track</h4>
+                <h3 class="gd-subheading" style="color: var(--accent-gold); font-size: 1.5rem; margin-top: 45px;">
+                    Special Categories for Students & Scholars</h3>
+
+                <h4
+                    style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 600; color: var(--primary-purple); margin-top: 25px; margin-bottom: 15px;">
+                    1. Student Presentation Track</h4>
                 <div class="gd-card mb-4">
                     <div class="gd-card-body">
-                        <p class="mb-4 text-muted" style="font-size: 0.95rem;"><em>Open to currently enrolled Undergraduate and Postgraduate students.</em></p>
-                        
-                        <h5 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 15px;">1.a. Student Seed Ideas</h5>
+                        <p class="mb-4 text-muted" style="font-size: 0.95rem;"><em>Open to currently enrolled
+                                Undergraduate and Postgraduate students.</em></p>
+
+                        <h5
+                            style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 15px;">
+                            1.a. Student Seed Ideas</h5>
                         <ul class="guidelines-list mb-4">
-                            <li><strong>Focus:</strong> This track is for nascent research concepts, social innovation proposals, or "work-in-progress" projects.</li>
-                            <li><strong>Guideline:</strong> Abstracts should follow the standard structure but place heavy emphasis on the Objectives (the "Why") and the Model (the "How"). Results can be "Projected" or "Preliminary."</li>
+                            <li><strong>Focus:</strong> This track is for nascent research concepts, social innovation
+                                proposals, or "work-in-progress" projects.</li>
+                            <li><strong>Guideline:</strong> Abstracts should follow the standard structure but place
+                                heavy emphasis on the Objectives (the "Why") and the Model (the "How"). Results can be
+                                "Projected" or "Preliminary."</li>
                             <li><strong>Word Limit:</strong> 300 words.</li>
                         </ul>
 
-                        <h5 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 15px;">1.b. Best Student Paper Award</h5>
+                        <h5
+                            style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 15px;">
+                            1.b. Best Student Paper Award</h5>
                         <ul class="guidelines-list mb-0">
-                            <li><strong>Focus:</strong> Competitive track for high-quality, completed research papers.</li>
-                            <li><strong>Guideline:</strong> Must follow the full abstract structure (Objectives, Design, Model, Result, Conclusion).</li>
-                            <li><strong>Criteria:</strong> Selection will be based on the rigor of the methodology and the practical implications for social work.</li>
+                            <li><strong>Focus:</strong> Competitive track for high-quality, completed research papers.
+                            </li>
+                            <li><strong>Guideline:</strong> Must follow the full abstract structure (Objectives, Design,
+                                Model, Result, Conclusion).</li>
+                            <li><strong>Criteria:</strong> Selection will be based on the rigor of the methodology and
+                                the practical implications for social work.</li>
                         </ul>
                     </div>
                 </div>
 
-                <h4 style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 600; color: var(--primary-purple); margin-top: 30px; margin-bottom: 15px;">2. PhD Scholar Track</h4>
+                <h4
+                    style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 600; color: var(--primary-purple); margin-top: 30px; margin-bottom: 15px;">
+                    2. PhD Scholar Track</h4>
                 <div class="gd-card">
                     <div class="gd-card-body">
-                        <p class="mb-4 text-muted" style="font-size: 0.95rem;"><em>Open to current PhD candidates or those who have defended their thesis within the last year.</em></p>
-                        
-                        <h5 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 15px;">2.a. PhD Best Paper Award</h5>
+                        <p class="mb-4 text-muted" style="font-size: 0.95rem;"><em>Open to current PhD candidates or
+                                those who have defended their thesis within the last year.</em></p>
+
+                        <h5
+                            style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 15px;">
+                            2.a. PhD Best Paper Award</h5>
                         <ul class="guidelines-list mb-4">
-                            <li><strong>Focus:</strong> Recognizes advanced research that contributes significantly to social work theory or policy.</li>
+                            <li><strong>Focus:</strong> Recognizes advanced research that contributes significantly to
+                                social work theory or policy.</li>
                             <li><strong>Guideline:</strong> Must follow the full abstract structure.</li>
-                            <li><strong>Criteria:</strong> Evaluated on the depth of the literature review, sophistication of research design, and the originality of the findings.</li>
+                            <li><strong>Criteria:</strong> Evaluated on the depth of the literature review,
+                                sophistication of research design, and the originality of the findings.</li>
                         </ul>
 
-                        <h5 style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 15px;">2.b. Best PhD Poster Award</h5>
+                        <h5
+                            style="font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text-dark); margin-bottom: 15px;">
+                            2.b. Best PhD Poster Award</h5>
                         <ul class="guidelines-list mb-0">
                             <li><strong>Focus:</strong> A visual showcase of doctoral research.</li>
-                            <li><strong>Guideline:</strong> Abstracts should follow the standard structure but summarize the visual flow of the poster.</li>
-                            <li><strong>Criteria:</strong> Judged on the ability to translate complex data into a clear, visually engaging format that is accessible to all conference participants.</li>
+                            <li><strong>Guideline:</strong> Abstracts should follow the standard structure but summarize
+                                the visual flow of the poster.</li>
+                            <li><strong>Criteria:</strong> Judged on the ability to translate complex data into a clear,
+                                visually engaging format that is accessible to all conference participants.</li>
                         </ul>
                     </div>
                 </div>
             </div>
         </section>
-
-        <!-- CALL FOR PAPERS -->
-        <section class="content-section" id="call-for-papers-section">
-            <h2 class="gd-section-header">CALL FOR PAPERS</h2>
-            <div class="gd-card">
-                <div class="gd-card-body">We are calling for papers <strong>(for oral and poster presentations)</strong> that bring together novel solutions to development issues through social work and social development practices. All kinds of innovations will be considered, whether methodological, theoretical, social, technological, policy, practice-based or organisational and are of local relevance and/or have the potential for large-scale replication. Lessons learned from implementing evidence-based solutions, interdisciplinary approaches, and critiques of current solutions are also welcome. Interested participants can submit proposals for a <strong>workshop (90 minutes)</strong> or a <strong>panel discussion (4 panellists maximum on a theme, excluding the chair, 10 minutes each)</strong> on the related topics.</div>
-            </div>
-        </section>
-
 
         <!-- Important Dates - COMMENTED OUT
         <section class="content-section">
