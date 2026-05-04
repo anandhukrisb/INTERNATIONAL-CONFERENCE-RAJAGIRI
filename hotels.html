@@ -71,6 +71,15 @@
             border-radius: 3px;
         }
 
+        .intro-text {
+            font-size: 1.15rem;
+            margin-bottom: 40px;
+            margin-top: 25px;
+            color: #555;
+            max-width: 100%;
+            text-align: justify;
+        }
+
         /* ================= GRID ================= */
         .hotels-grid {
             display: grid;
@@ -88,10 +97,42 @@
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            height: 500px;
+            height: 540px;
             display: flex;
             flex-direction: column;
             position: relative;
+        }
+
+        .hotel-pricing {
+            display: flex;
+            flex-direction: column;
+            margin-top: 6px;
+            gap: 2px;
+        }
+
+        .price-inr {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #C9A227;
+        }
+
+        .price-usd {
+            font-size: 0.82rem;
+            color: #888;
+        }
+
+        .hotel-distance {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #666;
+            font-size: 0.88rem;
+            margin-top: 5px;
+        }
+
+        .hotel-distance i {
+            color: #C9A227;
         }
 
         .hotel-card:hover {
@@ -101,7 +142,7 @@
 
         .hotel-image-container {
             width: 100%;
-            height: 60%;
+            height: 50%;
             overflow: hidden;
             position: relative;
         }
@@ -119,7 +160,7 @@
 
         .hotel-content {
             padding: 20px;
-            height: 40%;
+            height: 50%;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -353,26 +394,43 @@
             gap: 6px;
         }
 
-        .book-now-btn {
-            display: inline-block;
-            width: 100%;
-            background: #C9A227;
-            color: #1D0A3F;
-            text-align: center;
+        .modal-contact-info {
+            margin-top: 20px;
             padding: 15px;
-            border-radius: 50px;
-            font-weight: 700;
-            text-decoration: none;
-            transition: all 0.3s;
-            margin-top: auto;
-            text-transform: capitalize;
-            letter-spacing: normal;
+            background: rgba(201, 162, 39, 0.1);
+            border-left: 4px solid #C9A227;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
         }
 
-        .book-now-btn:hover {
-            background: #fff;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        .modal-contact-info p {
+            margin: 0 0 10px 0;
+            line-height: 1.4;
+            color: #E0E0E0;
+        }
+        
+        .modal-contact-info p:last-child {
+            margin-bottom: 0;
+        }
+
+        .modal-contact-info a {
+            color: #C9A227;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .modal-contact-info a:hover {
+            color: #FFFFFF;
+            text-decoration: underline;
+        }
+        
+        .contact-instruction {
+            font-size: 0.85rem;
+            color: #A0A0A0 !important;
+            font-style: italic;
+            margin-top: 12px !important;
         }
 
         @media (max-width: 768px) {
@@ -425,6 +483,13 @@
             .hotels-grid {
                 grid-template-columns: 1fr;
                 gap: 40px;
+            }
+
+            .intro-text {
+                font-size: 1rem;
+                text-align: left;
+                width: 100%;
+                max-width: 100%;
             }
         }
 
@@ -689,111 +754,156 @@
 
     <!-- Hotels Title Section -->
     <div class="hotels-title-section">
-        <h2 id="pageTitle">STAY HERE WHILE YOU VISIT</h2>
+        <h2 id="pageTitle">Accommodation</h2>
+        <p class="intro-text">
+            To ensure a comfortable stay for our delegates, the Organising Committee of the 11th International
+            Conference on Social Work in Health and Mental Health has partnered with premier hotels near the Rajagiri
+            Valley campus. We have negotiated exclusive discounted rates to give you convenient, affordable options
+            while you're in Kochi.
+        </p>
     </div>
 
     <!-- Hotels Grid -->
     <div class="hotels-grid">
 
-        <!-- Card 1: Hotel The Mountmist -->
-        <!-- Card 1: Hotel The Mountmist -->
-        <div class="hotel-card" data-name="Hotel The Mountmist" data-price="₹2,800" data-rating="9.2/10 (Excellent)"
-            data-book-url="https://www.themountmist.com/"
-            data-amenities="Free WiFi,Business Center,Kakkanad,Air Conditioning,24h Front Desk"
-            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4236.050848077297!2d76.33583461091672!3d10.009371490055178!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080d85d29fc803%3A0x1bb64bc4a848f60f!2sTHE%20MOUNTMIST%20APARTMENT!5e1!3m2!1sen!2sin!4v1769013344391!5m2!1sen!2sin">
+        <!-- Card 1: Crowne Plaza Kochi -->
+        <div class="hotel-card" data-name="Crowne Plaza Kochi" data-price-inr="INR 10,000 + 12% GST"
+            data-price-usd="USD 106" data-rating="N/A" data-email="alexander.johnson@crowneplaza-kochi.com,reservations@crowneplaza-kochi.com" data-phone="+918589952995"
+            data-amenities="5 Star Luxury,Swimming Pool,Spa,Restaurant,Free WiFi"
+            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d65646747.15068973!2d-1.728215900000016!3d9.933821799999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b087300463f524d%3A0x31d935bec35a2b35!2sCrowne%20Plaza%20Kochi!5e1!3m2!1sen!2sin!4v1777916933109!5m2!1sen!2sin">
+
             <div class="hotel-image-container">
-                <img src="assets/hotel/mountmist.webp" alt="Hotel Room">
+                <img src="assets/hotel/crowne-plaza.jpg" alt="Hotel Room">
             </div>
+
             <div class="hotel-content">
                 <div>
-
-                    <h3 class="hotel-title">Hotel The Mountmist</h3>
+                    <h3 class="hotel-title">Crowne Plaza Kochi</h3>
                     <div class="hotel-location-preview">
-                        <i class="bi bi-geo-alt-fill"></i> Kakkanad
+                        <i class="bi bi-geo-alt-fill"></i> Marine Drive / Kochi city
+                    </div>
+                    <div class="hotel-pricing">
+                        <span class="price-inr">INR 10,000 + 12% GST</span>
+                        <span class="price-usd">≈ USD 106</span>
+                    </div>
+                    <div class="hotel-distance">
+                        <i class="bi bi-signpost-2-fill"></i> ~13.0 km from Rajagiri Valley Campus, Kakkanad
                     </div>
                 </div>
                 <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
             </div>
         </div>
 
-        <!-- Card 2: The Nexus Hotel -->
-        <!-- Card 2: The Nexus Hotel -->
-        <div class="hotel-card" data-name="The Nexus Hotel" data-price="₹3,200" data-rating="9.0/10 (Superb)"
-            data-book-url="https://www.booking.com/hotel/in/the-nexus-kakkanad.html"
-            data-amenities="Luxury Rooms,Breakfast Included,Kakkanad,Free Parking,Pool"
-            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4236.030316712271!2d76.33598171091667!3d10.010944790053745!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080d004b030361%3A0x69a0d1444f784f5f!2sThe%20Nexus%20hotel!5e1!3m2!1sen!2sin!4v1769013366065!5m2!1sen!2sin">
-            <div class="hotel-image-container">
-                <img src="assets/hotel/nexus.webp" alt="Hotel Room">
-            </div>
-            <div class="hotel-content">
-                <div>
-
-                    <h3 class="hotel-title">The Nexus Hotel</h3>
-                    <div class="hotel-location-preview">
-                        <i class="bi bi-geo-alt-fill"></i> Kakkanad
-                    </div>
-                </div>
-                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
-            </div>
-        </div>
-
-        <!-- Card 3: Loft Business Hotel -->
-        <!-- Card 3: Loft Business Hotel -->
-        <div class="hotel-card" data-name="Loft Business Hotel" data-price="₹4,500" data-rating="9.0/10 (Superb)"
-            data-book-url="https://loftbusinesshotel.com/"
-            data-amenities="Workspace,Dining,Kakkanad,Gym,High Speed Internet"
-            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4236.020968030188!2d76.35521231091671!3d10.011661090053046!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080d82043a6b3d%3A0xb0b2a8ff2e1110cb!2sLoft%20Business%20hotel!5e1!3m2!1sen!2sin!4v1769013381822!5m2!1sen!2sin">
-            <div class="hotel-image-container">
-                <img src="assets/hotel/loft.avif" alt="Hotel Room">
-            </div>
-            <div class="hotel-content">
-                <div>
-
-                    <h3 class="hotel-title">Loft Business Hotel</h3>
-                    <div class="hotel-location-preview">
-                        <i class="bi bi-geo-alt-fill"></i> Kakkanad
-                    </div>
-                </div>
-                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
-            </div>
-        </div>
-
-        <!-- Card 4: Kochi Marriott Hotel -->
-        <!-- Card 4: Kochi Marriott Hotel -->
-        <div class="hotel-card" data-name="Kochi Marriott Hotel" data-price="₹9,500" data-rating="8.4/10 (Fantastic)"
-            data-book-url="https://www.marriott.com/en-us/hotels/cokmc-kochi-marriott-hotel/overview/"
+        <!-- Card 2: Kochi Marriott Hotel -->
+        <div class="hotel-card" data-name="Kochi Marriott Hotel" data-price-inr="INR 8,400 + 18% GST"
+            data-price-usd="USD 89" data-rating="N/A"
+            data-email="Louis.Liya@marriotthotels.com,mhrs.cokmc.reservation@marriotthotels.com" data-phone="+918589989034"
             data-amenities="5 Star Luxury,Swimming Pool,Edappally,Spa,Lulu Mall Access"
-            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4235.789279446806!2d76.30506461091697!3d10.029396990036103!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080db023f15cf9%3A0x26dfb0588126f48c!2sKochi%20Marriott%20Hotel!5e1!3m2!1sen!2sin!4v1769013401191!5m2!1sen!2sin">
+            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4005.6126879602953!2d76.3090276!3d10.0270231!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080db023f15cf9%3A0x26dfb0588126f48c!2sKochi%20Marriott%20Hotel!5e1!3m2!1sen!2sin!4v1777916954526!5m2!1sen!2sin">
+
             <div class="hotel-image-container">
-                <img src="assets/hotel/marriatt.jpg" alt="Hotel Room">
+                <img src="assets/hotel/marriot.jpg" alt="Hotel Room">
             </div>
+
             <div class="hotel-content">
                 <div>
-
                     <h3 class="hotel-title">Kochi Marriott Hotel</h3>
                     <div class="hotel-location-preview">
                         <i class="bi bi-geo-alt-fill"></i> Edappally
                     </div>
+                    <div class="hotel-pricing">
+                        <span class="price-inr">INR 8,400 + 18% GST</span>
+                        <span class="price-usd">≈ USD 89</span>
+                    </div>
+                    <div class="hotel-distance">
+                        <i class="bi bi-signpost-2-fill"></i> ~8.5 km from Rajagiri Valley Campus, Kakkanad
+                    </div>
                 </div>
                 <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
             </div>
         </div>
 
-        <!-- Card 5: Holiday Inn Cochin -->
-        <!-- Card 5: Holiday Inn Cochin -->
-        <div class="hotel-card" data-name="Holiday Inn Cochin" data-price="₹5,200" data-rating="8.4/10 (Very Good)"
-            data-book-url="https://www.ihg.com/holidayinn/hotels/us/en/cochin/coker/hoteldetail"
-            data-amenities="Free Parking,Bar & Lounge,Vennala,Pool,Fitness Center"
-            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4236.301148300907!2d76.31321241091652!3d9.990171490073458!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080d21acb3edbb%3A0xb279fc9797cc341e!2sHoliday%20Inn%20Cochin%2C%20an%20IHG%20Hotel!5e1!3m2!1sen!2sin!4v1769013421882!5m2!1sen!2sin">
+        <!-- Card 3: Holiday Inn Cochin -->
+        <div class="hotel-card" data-name="Holiday Inn Cochin" data-price-inr="INR 7,000 + 5% GST"
+            data-price-usd="USD 74" data-rating="N/A"
+            data-email="neha.roy@hicochin.com,Reservation@hicochin.com" data-phone="+918129497447"
+            data-amenities="Free Parking,Bar & Lounge,Pool,Fitness Center,Restaurant"
+            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4006.0673901188175!2d76.3157927!3d9.990171499999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080d21acb3edbb%3A0xb279fc9797cc341e!2sHoliday%20Inn%20Cochin%2C%20an%20IHG%20Hotel!5e1!3m2!1sen!2sin!4v1777916988536!5m2!1sen!2sin">
+
             <div class="hotel-image-container">
                 <img src="assets/hotel/holiday-inn.jpg" alt="Hotel Room">
             </div>
+
             <div class="hotel-content">
                 <div>
-
                     <h3 class="hotel-title">Holiday Inn Cochin</h3>
                     <div class="hotel-location-preview">
                         <i class="bi bi-geo-alt-fill"></i> Vennala
+                    </div>
+                    <div class="hotel-pricing">
+                        <span class="price-inr">INR 7,000 + 5% GST</span>
+                        <span class="price-usd">≈ USD 74</span>
+                    </div>
+                    <div class="hotel-distance">
+                        <i class="bi bi-signpost-2-fill"></i> ~10.0 km from Rajagiri Valley Campus, Kakkanad
+                    </div>
+                </div>
+                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
+            </div>
+        </div>
+
+        <!-- Card 4: Four Points by Sheraton -->
+        <div class="hotel-card" data-name="Four Points by Sheraton" data-price-inr="INR 6,000 + 5% GST"
+            data-price-usd="USD 64" data-rating="N/A"
+            data-email="Himal.Xavier@fourpoints.com,reservations.kochi@fourpoints.com" data-phone="+917593835120"
+            data-amenities="Infopark Access,Restaurant,Bar,Free WiFi,Gym"
+            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d16407965.02454536!2d56.85101165000002!3d10.007739000000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080b4e2ac0c115%3A0xa0e6cb37bfbc44c2!2sFour%20Points%20by%20Sheraton%20Kochi%20Infopark!5e1!3m2!1sen!2sin!4v1777917008569!5m2!1sen!2sin">
+
+            <div class="hotel-image-container">
+                <img src="assets/hotel/four-points.avif" alt="Hotel Room">
+            </div>
+
+            <div class="hotel-content">
+                <div>
+                    <h3 class="hotel-title">Four Points by Sheraton</h3>
+                    <div class="hotel-location-preview">
+                        <i class="bi bi-geo-alt-fill"></i> Infopark, Kakkanad
+                    </div>
+                    <div class="hotel-pricing">
+                        <span class="price-inr">INR 6,000 + 5% GST</span>
+                        <span class="price-usd">≈ USD 64</span>
+                    </div>
+                    <div class="hotel-distance">
+                        <i class="bi bi-signpost-2-fill"></i> ~2.5 km from Rajagiri Valley Campus, Kakkanad
+                    </div>
+                </div>
+                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
+            </div>
+        </div>
+
+        <!-- Card 5: Clarion Hotel Khayal -->
+        <div class="hotel-card" data-name="Clarion Hotel Khayal" data-price-inr="INR 5,500 + 5% GST"
+            data-price-usd="USD 58" data-rating="N/A"
+            data-email="sales@clarionhotelkochi.com" data-phone="+917994211022"
+            data-amenities="Events Hall,Infopark,Restaurant,24h Service,Discount"
+            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4005.908233826393!2d76.3621024!3d10.0030857!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080d001f1094a5%3A0x236fae12ace82c16!2sClarion%20Hotel%20Khayal%20Kochi%2C%20Infopark!5e1!3m2!1sen!2sin!4v1777917028172!5m2!1sen!2sin">
+
+            <div class="hotel-image-container">
+                <img src="assets/hotel/clarion.jpg" alt="Hotel Room">
+            </div>
+
+            <div class="hotel-content">
+                <div>
+                    <h3 class="hotel-title">Clarion Hotel Khayal</h3>
+                    <div class="hotel-location-preview">
+                        <i class="bi bi-geo-alt-fill"></i> Infopark, Kakkanad
+                    </div>
+                    <div class="hotel-pricing">
+                        <span class="price-inr">INR 5,500 + 5% GST</span>
+                        <span class="price-usd">≈ USD 58</span>
+                    </div>
+                    <div class="hotel-distance">
+                        <i class="bi bi-signpost-2-fill"></i> ~2.2 km from Rajagiri Valley Campus, Kakkanad
                     </div>
                 </div>
                 <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
@@ -801,82 +911,140 @@
         </div>
 
         <!-- Card 6: Novotel Kochi Infopark -->
-        <div class="hotel-card" data-name="Novotel Kochi Infopark" data-price="₹5,800" data-rating="7.2/10 (Good)"
-            data-book-url="https://www.booking.com/hotel/in/novotel-kochi-infopark.html"
-            data-amenities="Swimming Pool,Kakkanad,Infopark Access,Restaurant,Bar"
-            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4235.972009438724!2d76.36013661091675!3d10.01541149004946!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080b7c2ae9d69d%3A0xa8af3a18d451aca7!2sNovotel%20Kochi%20Infopark!5e1!3m2!1sen!2sin!4v1769013443510!5m2!1sen!2sin">
+        <div class="hotel-card" data-name="Novotel Kochi Infopark" data-price-inr="INR 5,300 + 5% GST"
+            data-price-usd="USD 56" data-rating="N/A" data-email="Jinu.BALAN@accor.com,HB283-DU@accor.com" data-phone="+917593823335"
+            data-amenities="Swimming Pool,Infopark Access,Restaurant,Bar,Free WiFi"
+            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4005.756139237672!2d76.3627169!3d10.015411499999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080b7c2ae9d69d%3A0xa8af3a18d451aca7!2sNovotel%20Kochi%20Infopark!5e1!3m2!1sen!2sin!4v1777917045032!5m2!1sen!2sin">
+
             <div class="hotel-image-container">
-                <img src="assets/hotel/novotel-1.webp" alt="Hotel Room">
+                <img src="assets/hotel/novotel.jpg" alt="Hotel Room">
             </div>
+
             <div class="hotel-content">
                 <div>
-
                     <h3 class="hotel-title">Novotel Kochi Infopark</h3>
                     <div class="hotel-location-preview">
                         <i class="bi bi-geo-alt-fill"></i> Kakkanad
                     </div>
-                </div>
-                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
-            </div>
-        </div>
-
-        <!-- Card 7: The Blooms Cochin -->
-        <!-- Card 7: The Blooms Cochin -->
-        <div class="hotel-card" data-name="The Blooms Cochin" data-price="₹3,500" data-rating="8.4/10 (Excellent)"
-            data-book-url="https://bloomscochin.in/"
-            data-amenities="Clean Rooms,Transport Assistance,Kakkanad,Free WiFi,Breakfast"
-            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4235.958514700155!2d76.35764271091679!3d10.016444990048452!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080c810e5d3109%3A0xa97cb4694e32ca33!2sThe%20Blooms%20Cochin!5e1!3m2!1sen!2sin!4v1769013464025!5m2!1sen!2sin">
-            <div class="hotel-image-container">
-                <img src="assets/hotel/blooms.webp" alt="Hotel Room">
-            </div>
-            <div class="hotel-content">
-                <div>
-
-                    <h3 class="hotel-title">The Blooms Cochin</h3>
-                    <div class="hotel-location-preview">
-                        <i class="bi bi-geo-alt-fill"></i> Kakkanad
+                    <div class="hotel-pricing">
+                        <span class="price-inr">INR 5,300 + 5% GST</span>
+                        <span class="price-usd">≈ USD 56</span>
+                    </div>
+                    <div class="hotel-distance">
+                        <i class="bi bi-signpost-2-fill"></i> ~2.4 km from Rajagiri Valley Campus, Kakkanad
                     </div>
                 </div>
                 <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
             </div>
         </div>
 
-        <!-- Card 8: Hotel Olive Eva -->
-        <!-- Card 8: Hotel Olive Eva -->
-        <div class="hotel-card" data-name="Hotel Olive Eva" data-price="₹3,000" data-rating="8.5/10 (Very Good)"
-            data-book-url="https://www.olivehotels.com/eva.php"
-            data-amenities="Concierge,Gym,Kakkanad,Breakfast,Free WiFi"
-            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4235.967352049004!2d76.36206221091678!3d10.015768190049132!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b086d7aa98fd713%3A0xc78ef1d4e33caf4c!2sHotel%20Olive%20Eva!5e1!3m2!1sen!2sin!4v1769013486469!5m2!1sen!2sin">
+        <!-- Card 7: The Renai Cochin -->
+        <div class="hotel-card" data-name="The Renai Cochin" data-price-inr="INR 4,200 + 5% GST" data-price-usd="USD 45"
+            data-rating="N/A" data-email="bdm@pghr.in" data-phone="+919846935555"
+            data-amenities="Restaurant,Free WiFi,Parking,Business Center,Air Conditioning"
+            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4005.8829642087544!2d76.3053825!3d10.0051346!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080d4704a07e61%3A0xd13d905253660fdd!2sThe%20Renai%20cochin!5e1!3m2!1sen!2sin!4v1777917058336!5m2!1sen!2sin">
+
             <div class="hotel-image-container">
-                <img src="assets/hotel/olive.avif" alt="Hotel Room">
+                <img src="assets/hotel/renai.jpg" alt="Hotel Room">
             </div>
+
             <div class="hotel-content">
                 <div>
-
-                    <h3 class="hotel-title">Hotel Olive Eva</h3>
+                    <h3 class="hotel-title">The Renai Cochin</h3>
                     <div class="hotel-location-preview">
-                        <i class="bi bi-geo-alt-fill"></i> Kakkanad
+                        <i class="bi bi-geo-alt-fill"></i> Palarivattom
+                    </div>
+                    <div class="hotel-pricing">
+                        <span class="price-inr">INR 4,200 + 5% GST</span>
+                        <span class="price-usd">≈ USD 45</span>
+                    </div>
+                    <div class="hotel-distance">
+                        <i class="bi bi-signpost-2-fill"></i> ~6.5 km from Rajagiri Valley Campus, Kakkanad
                     </div>
                 </div>
                 <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
             </div>
         </div>
 
-        <!-- Card 9: Clarion Hotel Khayal -->
-        <!-- Card 9: Clarion Hotel Khayal -->
-        <div class="hotel-card" data-name="Clarion Hotel Khayal" data-price="₹2,500" data-rating="7.0/10 (Good)"
-            data-book-url="https://www.subahotels.com/clarion-hotel-khayal-kochi/overview"
-            data-amenities="Events Hall,Infopark,Discount,Restaurant,24h Service"
-            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4236.132844965841!2d76.3621024!3d10.0030857!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080d001f1094a5%3A0x236fae12ace82c16!2sClarion%20Hotel%20Khayal%20Kochi%2C%20Infopark!5e1!3m2!1sen!2sin!4v1769013269772!5m2!1sen!2sin">
+        <!-- Card 8: Ginger Kochi, Kalamassery -->
+        <div class="hotel-card" data-name="Ginger Kochi, Kalamassery" data-price-inr="INR 4,000 + 5% GST"
+            data-price-usd="USD 43" data-rating="N/A"
+            data-email="sales.kochi@gingerhotels.com" data-phone="+917736435550"
+            data-amenities="Budget Friendly,Free WiFi,Kalamassery,Breakfast,24h Front Desk"
+            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4005.8829642087544!2d76.3053825!3d10.0051346!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080d4704a07e61%3A0xd13d905253660fdd!2sThe%20Renai%20cochin!5e1!3m2!1sen!2sin!4v1777917058336!5m2!1sen!2sin">
+
             <div class="hotel-image-container">
-                <img src="assets/hotel/clarion.jpg" alt="Hotel Room">
+                <img src="assets/hotel/ginger.jpg" alt="Hotel Room">
             </div>
+
             <div class="hotel-content">
                 <div>
-
-                    <h3 class="hotel-title">Clarion Hotel Khayal</h3>
+                    <h3 class="hotel-title">Ginger Kochi, Kalamassery</h3>
                     <div class="hotel-location-preview">
-                        <i class="bi bi-geo-alt-fill"></i> Infopark
+                        <i class="bi bi-geo-alt-fill"></i> Kalamassery
+                    </div>
+                    <div class="hotel-pricing">
+                        <span class="price-inr">INR 4,000 + 5% GST</span>
+                        <span class="price-usd">≈ USD 43</span>
+                    </div>
+                    <div class="hotel-distance">
+                        <i class="bi bi-signpost-2-fill"></i> ~9.0 km from Rajagiri Valley Campus, Kakkanad
+                    </div>
+                </div>
+                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
+            </div>
+        </div>
+
+        <!-- Card 9: Coral Reef Kakkanad -->
+        <div class="hotel-card" data-name="Coral Reef Kakkanad" data-price-inr="INR 3,450 + 5% GST"
+            data-price-usd="USD 37" data-rating="N/A" data-email="sales@coralreefhotels.in" data-phone="+919037856201"
+            data-amenities="Free WiFi,Restaurant,Kakkanad,Air Conditioning,24h Service"
+            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4005.9491249954062!2d76.3503534!3d9.999769299999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080d006206b0b9%3A0x5c7c68dfda6474af!2sCoral%20Reef%20Kakkanad!5e1!3m2!1sen!2sin!4v1777917116000!5m2!1sen!2sin">
+
+            <div class="hotel-image-container">
+                <img src="assets/hotel/coral-reef.webp" alt="Hotel Room">
+            </div>
+
+            <div class="hotel-content">
+                <div>
+                    <h3 class="hotel-title">Coral Reef Kakkanad</h3>
+                    <div class="hotel-location-preview">
+                        <i class="bi bi-geo-alt-fill"></i> Kakkanad
+                    </div>
+                    <div class="hotel-pricing">
+                        <span class="price-inr">INR 3,450 + 5% GST</span>
+                        <span class="price-usd">≈ USD 37</span>
+                    </div>
+                    <div class="hotel-distance">
+                        <i class="bi bi-signpost-2-fill"></i> ~3.5 km from Rajagiri Valley Campus, Kakkanad
+                    </div>
+                </div>
+                <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
+            </div>
+        </div>
+
+        <!-- Card 10: Hotel Park Residency Kakkanad -->
+        <div class="hotel-card" data-name="Hotel Park Residency Kakkanad" data-price-inr="INR 3,000 + 5% GST"
+            data-price-usd="USD 32" data-rating="N/A" data-email="gm@parkresidency.in,mail@parkresidency.in" data-phone="+919605004404"
+            data-amenities="Free WiFi,Restaurant,Kakkanad,Parking,24h Front Desk"
+            data-map-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4005.765602893815!2d76.3420278!3d10.014645!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080c8b42a85881%3A0xfa78faf13b1230c3!2sHotel%20Park%20Residency!5e1!3m2!1sen!2sin!4v1777917131658!5m2!1sen!2sin">
+
+            <div class="hotel-image-container">
+                <img src="assets/hotel/park-residency.jpg" alt="Hotel Room">
+            </div>
+
+            <div class="hotel-content">
+                <div>
+                    <h3 class="hotel-title">Hotel Park Residency Kakkanad</h3>
+                    <div class="hotel-location-preview">
+                        <i class="bi bi-geo-alt-fill"></i> Kakkanad
+                    </div>
+                    <div class="hotel-pricing">
+                        <span class="price-inr">INR 3,000 + 5% GST</span>
+                        <span class="price-usd">≈ USD 32</span>
+                    </div>
+                    <div class="hotel-distance">
+                        <i class="bi bi-signpost-2-fill"></i> ~3.2 km from Rajagiri Valley Campus, Kakkanad
                     </div>
                 </div>
                 <button class="read-more-btn" onclick="openHotelModal(this.closest('.hotel-card'))">Read More</button>
@@ -896,21 +1064,14 @@
             </div>
             <div class="modal-body">
                 <div class="modal-info">
-                    <div class="modal-rating" id="modalRating">
-                        <i class="bi bi-star-fill"></i>
-                        <span>9.0/10 (Superb)</span>
-                    </div>
-
-                    <div class="modal-description">
-                        This premium hotel offers world-class amenities and comfortable stays near the conference venue.
-                        Enjoy luxury accommodation with easy access to city attractions.
-                    </div>
 
                     <div class="modal-amenities" id="modalAmenities">
                         <!-- Populated by JS -->
                     </div>
 
-                    <a href="#" class="book-now-btn">Book Now</a>
+                    <div class="modal-contact-info" id="modalContactInfo" style="display: none;">
+                        <!-- Populated by JS -->
+                    </div>
                 </div>
                 <div class="modal-map-container">
                     <iframe id="modalMap" src="" loading="lazy"></iframe>
@@ -924,24 +1085,32 @@
         function openHotelModal(card) {
             const modal = document.getElementById('hotelModalOverlay');
             const title = document.getElementById('modalTitle');
-            const rating = document.querySelector('#modalRating span');
             const amenitiesContainer = document.getElementById('modalAmenities');
             const mapFrame = document.getElementById('modalMap');
-            const bookBtn = document.querySelector('.modal-info .book-now-btn');
+            const contactInfo = document.getElementById('modalContactInfo');
 
             // Populate Data
             title.innerText = card.dataset.name;
-            rating.innerText = card.dataset.rating;
             mapFrame.src = card.dataset.mapSrc;
 
-            // Update Book Now Button
-            if (card.dataset.bookUrl) {
-                bookBtn.href = card.dataset.bookUrl;
-                bookBtn.target = "_blank"; // Open in new tab
-                bookBtn.style.display = 'inline-block';
+            // Update Contact Info
+            let contactHTML = '<p style="font-weight: 700; color: #FFFFFF; margin-bottom: 12px;">Contact to Book / Enquire:</p>';
+            
+            if (card.dataset.phone) {
+                contactHTML += `<p><i class="bi bi-telephone-fill" style="color: #C9A227; margin-right: 8px;"></i> <a href="tel:${card.dataset.phone}">${card.dataset.phone}</a></p>`;
+            }
+            if (card.dataset.email) {
+                const emails = card.dataset.email.split(',');
+                const emailLinks = emails.map(e => `<a href="mailto:${e.trim()}" style="word-break: break-all;">${e.trim()}</a>`).join(', ');
+                contactHTML += `<p><i class="bi bi-envelope-fill" style="color: #C9A227; margin-right: 8px;"></i> ${emailLinks}</p>`;
+            }
+            
+            if (card.dataset.phone || card.dataset.email) {
+                contactHTML += `<p class="contact-instruction">* Click on the email or phone number to make your booking enquiry.</p>`;
+                contactInfo.innerHTML = contactHTML;
+                contactInfo.style.display = 'block';
             } else {
-                bookBtn.href = "#";
-                bookBtn.style.display = 'none';
+                contactInfo.style.display = 'none';
             }
 
             // Amenities
