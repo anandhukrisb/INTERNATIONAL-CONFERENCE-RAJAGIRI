@@ -1381,17 +1381,41 @@
         .welcome-container {
             background-color: #1d0a3f;
             border-radius: 50px;
-            padding: 100px 30px 0;
-            /* Reduced side padding */
             position: relative;
-            min-height: 500px;
-            display: flex;
-            justify-content: flex-start;
-            align-items: flex-end;
+            min-height: 600px;
             overflow: hidden;
             max-width: 95%;
             margin: 0 auto;
-            /* gap: 50px; Removed gap as image is absolute now */
+        }
+
+        .welcome-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-end;
+            padding: 100px 30px 0;
+            box-sizing: border-box;
+            opacity: 1;
+            visibility: hidden;
+            animation: fadeInWelcome 12s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .welcome-slide.slide-2 {
+            animation-delay: 6s;
+        }
+
+        @keyframes fadeInWelcome {
+            0% { visibility: hidden; z-index: 1; }
+            1% { visibility: visible; pointer-events: auto; z-index: 2; }
+            49% { visibility: visible; pointer-events: auto; z-index: 2; }
+            50% { visibility: hidden; pointer-events: none; z-index: 1; }
+            100% { visibility: hidden; pointer-events: none; z-index: 1; }
         }
 
         .welcome-header {
@@ -1440,6 +1464,16 @@
             font-weight: 300;
         }
 
+        .welcome-slide.slide-2 .welcome-content {
+            max-width: 540px !important;
+        }
+
+        .welcome-slide.slide-2 .welcome-content p {
+            font-size: 0.8rem !important;
+            line-height: 1.4 !important;
+            margin-bottom: 10px !important;
+        }
+
         /* Reveal Animation Classes - No animation on desktop */
         .reveal-on-scroll {
             opacity: 1;
@@ -1450,8 +1484,6 @@
             /* Absolute positioning for true center */
             bottom: 0px;
             left: 50%;
-            /* Exact center */
-            /* Slightly offset to visually balance or hit exact center */
             transform: translateX(-50%);
             z-index: 5;
             display: flex;
@@ -1459,12 +1491,75 @@
             justify-content: center;
         }
 
+        .ceo-animated-content {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            opacity: 1;
+            transform-origin: bottom center;
+            animation: ceoSlideAnim 12s infinite;
+            position: relative;
+        }
+
+        .welcome-slide.slide-2 .ceo-animated-content {
+            animation-delay: 6s;
+        }
+
         .ceo-image {
             height: 480px;
             /* Slightly larger presence */
             width: auto;
             display: block;
-            margin-bottom: -5px;
+            margin-bottom: -25px;
+            animation: ceoImageAnim 12s infinite;
+        }
+
+        .welcome-slide.slide-2 .ceo-image {
+            animation-delay: 6s;
+        }
+
+        @keyframes ceoImageAnim {
+            0% {
+                translate: 100vw 150px;
+                animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+            6% {
+                translate: 0 0;
+                animation-timing-function: linear;
+            }
+            44% {
+                translate: 0 0;
+                animation-timing-function: cubic-bezier(0.6, -0.28, 0.735, 0.045);
+            }
+            50% {
+                translate: -100vw 150px;
+            }
+            100% {
+                translate: -100vw 150px;
+            }
+        }
+
+        .welcome-header,
+        .welcome-content,
+        .ceo-title-bg,
+        .ceo-name {
+            opacity: 0;
+            animation: fadeInWelcomeOpacity 12s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .welcome-slide.slide-2 .welcome-header,
+        .welcome-slide.slide-2 .welcome-content,
+        .welcome-slide.slide-2 .ceo-title-bg,
+        .welcome-slide.slide-2 .ceo-name {
+            animation-delay: 6s;
+        }
+
+        @keyframes fadeInWelcomeOpacity {
+            0% { opacity: 0; }
+            6% { opacity: 1; }
+            44% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 0; }
         }
 
         .ceo-title-bg {
@@ -1521,33 +1616,31 @@
             opacity: 0;
             pointer-events: auto;
             transform-origin: bottom center;
-            animation: ceoSlideAnim 16s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            animation: ceoSlideAnim 12s infinite cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @keyframes ceoSlideAnim {
             0% {
-                opacity: 0;
-                transform: translate(50vw, 50vh) scale(0.2);
+                transform: translateX(30px);
+                animation-timing-function: ease-out;
             }
 
-            5% {
-                opacity: 1;
-                transform: translate(0, 0) scale(1);
+            6% {
+                transform: translateX(0);
+                animation-timing-function: linear;
             }
 
-            20% {
-                opacity: 1;
-                transform: translate(0, 0) scale(1);
+            44% {
+                transform: translateX(0);
+                animation-timing-function: ease-in;
             }
 
-            25% {
-                opacity: 0;
-                transform: translate(-50vw, 50vh) scale(0.2);
+            50% {
+                transform: translateX(-30px);
             }
 
             100% {
-                opacity: 0;
-                transform: translate(-50vw, 50vh) scale(0.2);
+                transform: translateX(-30px);
             }
         }
 
@@ -1800,9 +1893,10 @@
 
         /* Tablet - CEO name above image */
         @media (max-width: 1111px) {
-            .ceo-wrapper {
+            .ceo-animated-content {
                 flex-direction: column;
                 align-items: center;
+                width: 100%;
             }
 
             .ceo-name {
@@ -1830,15 +1924,25 @@
 
         @media (max-width: 1111px) {
             .welcome-container {
+                padding: 0;
+                min-height: 0;
+            }
+            .welcome-slide {
+                position: absolute !important;
+                height: auto !important;
                 flex-direction: column;
-                padding: 0 30px 0;
+                padding: 0 30px 0 !important;
                 align-items: center;
+                justify-content: flex-start;
                 gap: 0;
+            }
+            .welcome-slide.slide-2 {
+                position: relative !important;
             }
 
             .welcome-header {
                 position: static !important;
-                padding: 60px 40px 30px;
+                padding: 60px 40px 20px;
                 box-sizing: border-box;
             }
 
@@ -1896,21 +2000,26 @@
                 position: relative !important;
                 bottom: auto;
                 left: auto;
-                /* Removed transform: none to allow parallax */
                 width: 100%;
                 display: flex;
                 justify-content: center;
-                margin-top: 5px;
+                align-items: flex-end;
+                margin-top: 10px;
                 z-index: 6;
+                flex: 1;
+            }
+
+            .ceo-animated-content {
+                align-items: flex-end;
             }
 
             .ceo-image {
-                height: 400px;
+                height: 380px;
                 width: auto;
                 display: block;
                 margin-left: auto;
                 margin-right: auto;
-                /* Enable parallax transforms */
+                margin-bottom: -25px;
                 will-change: transform;
                 padding-bottom: 0;
             }
@@ -1953,6 +2062,7 @@
 
             .welcome-container {
                 padding: 0 15px 0;
+                min-height: 0;
             }
         }
 
@@ -3259,39 +3369,92 @@
         <div class="section-separator"></div>
         <section class="welcome-section">
             <div class="welcome-container">
-                <h3 class="welcome-header reveal-on-scroll">Welcome from the conference patron</h3>
                 <div class="watermark-text">#2027 ICSWHMH</div>
 
-                <div class="welcome-content reveal-on-scroll delay-1">
-                    <p>
-                        Dear Colleagues,<br>
-                        I am delighted to welcome each of you as we embark on the 11th International Conference on
-                        Social Work in Health and Mental Health (11th ICSWHMH) in January 2027. This event takes
-                        advantage of being a hybrid experience, accessible wherever you are and in the vibrant city of
-                        Kerala, India.
-                    </p>
+                <!-- Slide 1 -->
+                <div class="welcome-slide">
+                    <h3 class="welcome-header reveal-on-scroll">Welcome from the conference patron</h3>
+                    <div class="welcome-content reveal-on-scroll delay-1">
+                        <p>
+                            Dear Colleagues,<br>
+                            I am delighted to welcome each of you as we embark on the 11th International Conference on
+                            Social Work in Health and Mental Health (11th ICSWHMH) in January 2027. This event takes
+                            advantage of being a hybrid experience, accessible wherever you are and in the vibrant city of
+                            Kerala, India.
+                        </p>
+                        <p>
+                            Hosting over 600 national and international delegates, this Conference provides a unique
+                            platform to exchange insights on the current challenges and trends in the social work sector. I
+                            look forward to forging new connections, learning from leading experts, and exploring the latest
+                            ideas available.
+                        </p>
+                    </div>
 
-                    <p>
-                        Hosting over 600 national and international delegates, this Conference provides a unique
-                        platform to exchange insights on the current challenges and trends in the social work sector. I
-                        look forward to forging new connections, learning from leading experts, and exploring the latest
-                        ideas available.
-                    </p>
+                    <div class="ceo-wrapper reveal-on-scroll delay-2">
+                        <div class="ceo-title-bg" style="font-size: 3rem; line-height: 1; right: -95%; bottom: 200px;">
+                            Rajagiri College of Social Sciences (Autonomous)
+                        </div>
+                        <div class="ceo-animated-content">
+                            <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434109/new_ceo_yhmtc5.png"
+                                alt="Conference Patron" class="ceo-image">
+                            <div class="ceo-name">
+                                <h3>PROF. LYNETTE JOUBERT</h3>
+                                <p>
+                                    Professor of Social Work
+                                    <br>
+                                    University of Melbourne
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="ceo-wrapper reveal-on-scroll delay-2">
-                    <div class="ceo-title-bg" style="font-size: 3rem; line-height: 1; right: -95%; bottom: 200px;">
-                        Rajagiri College of Social Sciences (Autonomous)
-                    </div>
-                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434109/new_ceo_yhmtc5.png"
-                        alt="Conference Patron" class="ceo-image">
-                    <div class="ceo-name">
-                        <h3>PROF. LYNETTE JOUBERT</h3>
+                <!-- Slide 2 -->
+                <div class="welcome-slide slide-2">
+                    <h3 class="welcome-header reveal-on-scroll">Message from President</h3>
+                    <div class="welcome-content reveal-on-scroll delay-1">
                         <p>
-                            Professor of Social Work
-                            <br>
-                            University of Melbourne
+                            Health and mental health well-being are cornerstones of flourishing societies and are
+                            central to social work’s commitment to human rights and equitable access. The 11th
+                            International Conference on Social Work in Health and Mental Health, hosted in India,
+                            will continue the global dialogue among experts, educators, practitioners,
+                            researchers, and students on social work’s critical role in bridging health and mental
+                            health systems with people’s need for care. This space for dialogue will provide
+                            opportunities to explore the impact of global health and mental health challenges on
+                            individuals, families, and communities, and to strengthen partnerships to develop
+                            innovative solutions that advance equitable access and inclusive systems for diverse
+                            contexts.
                         </p>
+                        <p>
+                            The expected outcomes of the conference will contribute to a renewed global
+                            commitment to inclusive, culturally relevant, and community-based approaches that
+                            improve access to services and inform social work education, practice, research, and
+                            policy towards comprehensive and sustainable well-being.
+                        </p>
+                        <p>
+                            As a conference partner and committed to advancing health and mental health
+                            equity, the International Association of Schools of Social Work invites the global
+                            social work community to engage, collaborate, and contribute to co-building inclusive
+                            and sustainable futures for all.
+                        </p>
+                    </div>
+
+                    <div class="ceo-wrapper reveal-on-scroll delay-2">
+                        <div class="ceo-title-bg" style="font-size: 3rem; line-height: 1; right: -95%; bottom: 200px;">
+                            International Association of Schools of Social Work (IASSW)
+                        </div>
+                        <div class="ceo-animated-content">
+                            <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1777953239/Antoinette_Lombard_head_photo-removebg-preview_lrhkmg.png"
+                                alt="President IASSW" class="ceo-image">
+                            <div class="ceo-name">
+                                <h3>PROF ANTOINETTE LOMBARD</h3>
+                                <p>
+                                    President
+                                    <br>
+                                    International Association of Schools of Social Work (IASSW)
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

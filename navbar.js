@@ -559,6 +559,7 @@ class FloatingNavbar extends HTMLElement {
                     <li><a href="history.html">History</a></li>
                     <li><a href="themes.html">Themes</a></li>
                     <li><a href="registration.html">Registration</a></li>
+                    <li><a href="hotels.html">Accommodation</a></li>
                     <li><a href="abstract.html">Abstract Submission</a></li>
                     <li><a href="attractions.html">Attractions</a></li>
                     <li><a href="contact-us.html" class="contact-btn">Contact Us</a></li>
