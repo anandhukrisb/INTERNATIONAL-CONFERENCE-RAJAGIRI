@@ -74,7 +74,7 @@ class MainFooter extends HTMLElement {
                     left: 0;
                     width: 450px;
                     height: 160px; /* Slightly smaller */
-                    background-image: url('assets/footer_top_shape.png');
+                    background-image: url('https://res.cloudinary.com/dswfp5fwx/image/upload/v1778135020/footer_top_shape_ko01mv.png');
                     background-size: 100% 100%;
                     background-repeat: no-repeat;
                     display: flex;
