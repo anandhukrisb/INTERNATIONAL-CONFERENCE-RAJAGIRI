@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2027 ICSWHMH | International Conference</title>
-    <link rel="icon" type="image/x-icon" href="assets/Favicon-192.ico?v=2">
+    <link rel="icon" type="image/x-icon" href="https://res.cloudinary.com/dswfp5fwx/image/upload/v1778131826/Favicon-192_hdltam.ico">
     <script src="navbar.js" defer></script>
     <script src="footer.js" defer></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1511,32 +1511,20 @@
             width: auto;
             display: block;
             margin-bottom: -25px;
-            animation: ceoImageAnim 12s infinite;
+            opacity: 0;
+            animation: ceoImageFade 12s infinite;
         }
 
         .welcome-slide.slide-2 .ceo-image {
             animation-delay: 6s;
         }
 
-        @keyframes ceoImageAnim {
-            0% {
-                translate: 100vw 150px;
-                animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            }
-            6% {
-                translate: 0 0;
-                animation-timing-function: linear;
-            }
-            44% {
-                translate: 0 0;
-                animation-timing-function: cubic-bezier(0.6, -0.28, 0.735, 0.045);
-            }
-            50% {
-                translate: -100vw 150px;
-            }
-            100% {
-                translate: -100vw 150px;
-            }
+        @keyframes ceoImageFade {
+            0%   { opacity: 0; }
+            8%   { opacity: 1; }
+            44%  { opacity: 1; }
+            50%  { opacity: 0; }
+            100% { opacity: 0; }
         }
 
         .welcome-header,
