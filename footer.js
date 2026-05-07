@@ -495,7 +495,7 @@ class MainFooter extends HTMLElement {
 
                 <!-- Left Bottom: Copyright -->
                 <div class="copyright-section">
-                    <img src="assets/footer_bottom_shape.png" class="footer-shape-bottom" alt="Footer Shape">
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1778135020/footer_bottom_shape_pdp5kg.png" class="footer-shape-bottom" alt="Footer Shape">
                     <span class="copyright-text">Copyright © 2026 Rajagiri. All Rights Reserved.</span>
                 </div>
             </div>

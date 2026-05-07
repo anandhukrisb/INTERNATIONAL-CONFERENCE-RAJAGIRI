@@ -156,7 +156,7 @@ class FloatingNavbar extends HTMLElement {
                 .navbar-links {
                     margin-left: auto;
                     display: flex;
-                    gap: 15px;
+                    gap: 8px;
                     padding-right: 80px; /* Increased to avoid overlap with absolute toggle */
                     list-style: none;
                     margin-top: 0;
@@ -173,7 +173,7 @@ class FloatingNavbar extends HTMLElement {
                 .navbar-links a, .mobile-links a {
                     color: white;
                     text-decoration: none;
-                    font-size: 17px;
+                    font-size: 16px;
                     font-weight: 400;
                     transition: opacity 0.3s;
                     font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -181,7 +181,32 @@ class FloatingNavbar extends HTMLElement {
                     display: flex;
                     align-items: center;
                     height: 100%;
-                    padding: 0 5px;
+                    padding: 0 4px;
+                }
+
+                /* Scale down links progressively at narrower widths */
+                @media (max-width: 1600px) {
+                    .navbar-links {
+                        gap: 6px;
+                    }
+                    .navbar-links a {
+                        font-size: 15px;
+                        padding: 0 3px;
+                    }
+                }
+
+                @media (max-width: 1400px) {
+                    .navbar-links {
+                        gap: 4px;
+                    }
+                    .navbar-links a {
+                        font-size: 16px;
+                        padding: 0 2px;
+                    }
+                    .navbar-links a.contact-btn {
+                        padding: 10px 20px;
+                        font-size: 14px;
+                    }
                 }
 
                 .navbar-links a:hover {
@@ -631,24 +656,18 @@ class FloatingNavbar extends HTMLElement {
 
             const width = window.innerWidth;
 
-            // --- SCENARIO A: DESKTOP (> 1418px) ---
-            // STRICTLY keep everything in visible links. No hamburger.
-            if (width > 1418) {
-                // Move everything back to visible
-                while (overflowLinks.firstElementChild) {
-                    // Prepend to maintain order if we moved from end? 
-                    // Actually, let's just move everything back and let the DOM order sort itself out if we are careful.
-                    // If we move items strictly from right-to-left into overflow, we should append them back.
-                    // But we used prepend logic in mobile. Let's be safe: 
-                    // We need to restore original order.
-                    // Simplified: Just move everything to visible.
-                    visibleLinks.appendChild(overflowLinks.firstElementChild);
-                }
+            // --- SCENARIO A: DESKTOP (wide enough for all links) ---
+            // Dynamically check if all links fit instead of a fixed breakpoint.
+            // First, move everything back to visible to measure.
+            resetToVisible();
 
-                // Sort by data-index if we wanted strict ordering, but simplistic append works if we empty overflow cleanly.
-                // We need to ensure we don't mess up order. 
-                // Strategy: always move from overflow -> visible, then check space.
+            const navbarWidth = navbar.clientWidth;
+            const logoWidth = logo.getBoundingClientRect().width;
+            const totalLinksWidth = Array.from(visibleLinks.children).reduce((sum, li) => sum + li.offsetWidth + 8, 0);
+            const totalNeeded = logoWidth + totalLinksWidth + 100; // 100px safety margin
 
+            if (totalNeeded <= navbarWidth && width > 768) {
+                // Everything fits — no hamburger needed
                 toggle.style.display = 'none';
                 overflowLinks.classList.remove('active');
                 toggle.classList.remove('active');
@@ -658,7 +677,7 @@ class FloatingNavbar extends HTMLElement {
 
             // --- SCENARIO B: STRICT MOBILE (<= 768px) ---
             if (width <= 768) {
-                resetToVisible();
+                // Items are already in visible from measurement step above
                 while (visibleLinks.firstElementChild) {
                     overflowLinks.appendChild(visibleLinks.firstElementChild);
                 }
@@ -667,19 +686,15 @@ class FloatingNavbar extends HTMLElement {
                 return;
             }
 
-            // --- SCENARIO C: TABLET / SMALL DESKTOP (768px < w <= 1418px) ---
+            // --- SCENARIO C: TABLET / SMALL DESKTOP (768px < w) ---
             // Dynamic Priority+ behavior.
-
-            // 1. Reset Phase: Move everything to visible and sort
-            resetToVisible();
+            // Items are already in visible links from the measurement step above.
 
             toggle.style.display = 'none';
             overflowLinks.classList.remove('active');
             toggle.classList.remove('active');
 
-            // 2. Measure and Move Phase
-            const navbarWidth = navbar.clientWidth;
-            const logoWidth = logo.getBoundingClientRect().width;
+            // Measure and Move Phase
             const toggleReservedWidth = 50; // Width of toggle button
             const padding = 60; // Safety padding
 
@@ -692,7 +707,7 @@ class FloatingNavbar extends HTMLElement {
 
             for (let i = 0; i < visibleChildren.length; i++) {
                 const item = visibleChildren[i];
-                const itemWidth = item.offsetWidth + 15; // Width + Gap
+                const itemWidth = item.offsetWidth + 8; // Width + Gap
 
                 if (!overflowStarted) {
                     currentUsedWidth += itemWidth;
