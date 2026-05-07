@@ -547,7 +547,7 @@ class FloatingNavbar extends HTMLElement {
                     <img src="${logoSrc}" alt="Conference Logo" class="logo-base">
                     <!-- Overlays -->
                     <a href="https://rajagiri.edu/" target="_blank">
-                        <img src="assets/rajagiri_logo.png" alt="Rajagiri" class="logo-overlay rajagiri">
+                        <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1771434113/rajagiri_logo_lltueo.png" alt="Rajagiri" class="logo-overlay rajagiri">
                     </a>
                 </div>
 
