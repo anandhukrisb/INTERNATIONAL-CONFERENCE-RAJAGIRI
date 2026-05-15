@@ -157,7 +157,7 @@ class FloatingNavbar extends HTMLElement {
                     margin-left: auto;
                     display: flex;
                     gap: 8px;
-                    padding-right: 80px; /* Increased to avoid overlap with absolute toggle */
+                    padding-right: 25px; /* Right edge spacing for desktop */
                     list-style: none;
                     margin-top: 0;
                     margin-bottom: 0;
@@ -669,6 +669,7 @@ class FloatingNavbar extends HTMLElement {
             if (totalNeeded <= navbarWidth && width > 768) {
                 // Everything fits — no hamburger needed
                 toggle.style.display = 'none';
+                visibleLinks.style.paddingRight = '25px'; // Compact — no toggle to avoid
                 overflowLinks.classList.remove('active');
                 toggle.classList.remove('active');
                 isToggling = false;
@@ -726,6 +727,9 @@ class FloatingNavbar extends HTMLElement {
             // 3. Show toggle if we have items in overflow
             if (overflowLinks.children.length > 0) {
                 toggle.style.display = 'flex';
+                visibleLinks.style.paddingRight = '70px'; // Make room for hamburger button
+            } else {
+                visibleLinks.style.paddingRight = '25px'; // No toggle shown, compact padding
             }
 
             isToggling = false;
