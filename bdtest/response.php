@@ -427,7 +427,7 @@ $check_status_url = 'retrieve.php?orderid=' . urlencode($order_id);
     <script>
         // Auto-redirect to registration details after 5 seconds
         (function () {
-            var target  = '../registration.html';
+            var target  = '../registration.html?payment=success';
             var seconds = 5;
             var el      = document.getElementById('countdown');
             var timer   = setInterval(function () {
