@@ -222,6 +222,11 @@ $check_status_url = 'retrieve.php?orderid=' . urlencode($order_id);
     <title>Payment Status — ICSWHMH 2027 Conference</title>
     <meta name="description" content="Payment status for your ICSWHMH 2027 conference registration.">
     <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/x-icon" href="https://res.cloudinary.com/dswfp5fwx/image/upload/v1778131826/Favicon-192_hdltam.ico">
+
+    <!-- Real site navbar & footer web components -->
+    <script src="../navbar.js" defer></script>
+    <script src="../footer.js" defer></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -232,29 +237,20 @@ $check_status_url = 'retrieve.php?orderid=' . urlencode($order_id);
 <body class="status-page" data-status="<?= $status ?>">
 
     <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- REAL SITE NAVBAR                                        -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <floating-navbar></floating-navbar>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
     <!-- BACKGROUND LAYER                                        -->
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="bg-layer" aria-hidden="true">
-        <div class="bg-stripe"></div>
         <div class="bg-orb bg-orb--1"></div>
         <div class="bg-orb bg-orb--2"></div>
     </div>
 
     <!-- ═══════════════════════════════════════════════════════ -->
-    <!-- CONFERENCE HEADER (mini, not full navbar)              -->
-    <!-- ═══════════════════════════════════════════════════════ -->
-    <header class="status-header" role="banner">
-        <div class="status-header__inner">
-            <a href="../index.html" class="status-header__brand" aria-label="ICSWHMH 2027 — Home">
-                <span class="brand-pill">ICSWHMH</span>
-                <span class="brand-name">2027 International Conference</span>
-            </a>
-            <span class="header-badge">Secure Payment</span>
-        </div>
-    </header>
-
-    <!-- ═══════════════════════════════════════════════════════ -->
-    <!-- MAIN CONTENT                                            -->
+    <!-- MAIN CONTENT (padded below navbar)                      -->
     <!-- ═══════════════════════════════════════════════════════ -->
     <main class="status-main" id="main-content" role="main">
 
@@ -367,11 +363,11 @@ $check_status_url = 'retrieve.php?orderid=' . urlencode($order_id);
             <!-- Action buttons -->
             <div class="status-actions" role="group" aria-label="Next steps">
                 <?php if ($status === 'success'): ?>
-                    <a href="registration-details.php?orderid=<?= urlencode($order_id) ?>"
+                    <a href="../registration.html"
                        id="btn-view-details"
                        class="btn btn--primary"
                        aria-label="View your registration details">
-                        View Registration Details
+                        Go to Registration
                     </a>
                 <?php elseif ($status === 'failed'): ?>
                     <a href="../registration.html"
@@ -418,6 +414,11 @@ $check_status_url = 'retrieve.php?orderid=' . urlencode($order_id);
     </main>
 
     <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- REAL SITE FOOTER                                        -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <main-footer></main-footer>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
     <!-- SCRIPTS                                                 -->
     <!-- ═══════════════════════════════════════════════════════ -->
     <script src="payment-status.js"></script>
@@ -426,7 +427,7 @@ $check_status_url = 'retrieve.php?orderid=' . urlencode($order_id);
     <script>
         // Auto-redirect to registration details after 5 seconds
         (function () {
-            var target  = 'registration-details.php?orderid=<?= urlencode($order_id) ?>';
+            var target  = '../registration.html';
             var seconds = 5;
             var el      = document.getElementById('countdown');
             var timer   = setInterval(function () {
