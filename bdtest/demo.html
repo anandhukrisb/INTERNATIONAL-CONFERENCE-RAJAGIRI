@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BillDesk Payment UI Demo — ICSWHMH 2027</title>
+    <meta name="description" content="Interactive demo of all BillDesk payment status screens for ICSWHMH 2027 conference.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+/* ================================================================
+   DEMO SHELL — launcher page
+================================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --clr-primary:      #1D0A3F;
+    --clr-primary-75:   rgba(29,10,63,0.75);
+    --clr-primary-15:   rgba(29,10,63,0.15);
+    --clr-primary-08:   rgba(29,10,63,0.08);
+    --clr-accent:       #C9A227;
+    --clr-accent-dark:  #A8841A;
+    --clr-accent-light: rgba(201,162,39,0.18);
+    --clr-bg:           #FDFBF7;
+    --clr-text:         #24104A;
+    --clr-text-muted:   #7A6B8C;
+    --clr-subtle:       #EDE8F5;
+    --clr-white:        #FFFFFF;
+
+    --clr-success:     #0E7A3B;
+    --clr-success-bg:  rgba(14,122,59,0.10);
+    --clr-failed:      #B91C1C;
+    --clr-failed-bg:   rgba(185,28,28,0.10);
+    --clr-pending:     #92600A;
+    --clr-pending-bg:  rgba(146,96,10,0.10);
+    --clr-error:       #7C2D12;
+    --clr-error-bg:    rgba(124,45,18,0.10);
+
+    --radius-sm:   8px;
+    --radius-md:   16px;
+    --radius-lg:   24px;
+    --radius-xl:   32px;
+    --radius-full: 999px;
+
+    --shadow-sm:  0 2px 8px rgba(29,10,63,0.08);
+    --shadow-md:  0 8px 32px rgba(29,10,63,0.12);
+    --shadow-lg:  0 20px 60px rgba(29,10,63,0.18);
+    --shadow-xl:  0 32px 80px rgba(29,10,63,0.24);
+
+    --ease-out: cubic-bezier(0.16,1,0.3,1);
+    --dur-fast: 200ms;
+    --dur-std:  300ms;
+}
+
+html { font-size: 16px; }
+
+body {
+    font-family: 'Inter','Segoe UI',system-ui,sans-serif;
+    background: var(--clr-bg);
+    color: var(--clr-text);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ── Demo header ───────────────────────────────────────────── */
+.demo-header {
+    background: var(--clr-primary);
+    color: white;
+    padding: 16px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(29,10,63,0.4);
+}
+
+.demo-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-pill {
+    font-family: 'Outfit',sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--clr-primary);
+    background: var(--clr-accent);
+    padding: 3px 10px;
+    border-radius: 999px;
+}
+
+.demo-header h1 {
+    font-family: 'Outfit',sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.9);
+}
+
+.demo-tag {
+    font-size: 0.75rem;
+    color: var(--clr-accent);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid var(--clr-accent);
+    padding: 3px 10px;
+    border-radius: 999px;
+}
+
+/* ── Demo controls ─────────────────────────────────────────── */
+.demo-controls {
+    background: var(--clr-primary);
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    flex-wrap: wrap;
+}
+
+.demo-controls-label {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.5);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.trigger-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 20px;
+    border-radius: 999px;
+    font-family: 'Outfit',sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 200ms var(--ease-out);
+    letter-spacing: 0.02em;
+}
+
+.trigger-btn--success {
+    background: rgba(14,122,59,0.2);
+    color: #5DE897;
+    border-color: rgba(14,122,59,0.4);
+}
+.trigger-btn--success:hover, .trigger-btn--success.active {
+    background: #0E7A3B;
+    color: white;
+    border-color: #0E7A3B;
+}
+
+.trigger-btn--failed {
+    background: rgba(185,28,28,0.2);
+    color: #FCA5A5;
+    border-color: rgba(185,28,28,0.4);
+}
+.trigger-btn--failed:hover, .trigger-btn--failed.active {
+    background: #B91C1C;
+    color: white;
+    border-color: #B91C1C;
+}
+
+.trigger-btn--pending {
+    background: rgba(201,162,39,0.2);
+    color: #FDE68A;
+    border-color: rgba(201,162,39,0.4);
+}
+.trigger-btn--pending:hover, .trigger-btn--pending.active {
+    background: var(--clr-accent);
+    color: var(--clr-primary);
+    border-color: var(--clr-accent);
+}
+
+.trigger-btn--error {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.5);
+    border-color: rgba(255,255,255,0.15);
+}
+.trigger-btn--error:hover, .trigger-btn--error.active {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    border-color: rgba(255,255,255,0.3);
+}
+
+.trigger-btn .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+}
+
+/* ── Demo stage ────────────────────────────────────────────── */
+.demo-stage {
+    min-height: calc(100vh - 120px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 16px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Animated background */
+.bg-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.bg-stripe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 45%;
+    height: 100%;
+    background: var(--clr-primary);
+    opacity: 0.04;
+    transform: skewX(15deg) translateX(-20%);
+}
+
+.bg-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.15;
+    transition: background 600ms ease;
+}
+.bg-orb--1 {
+    width: 500px; height: 500px;
+    background: var(--clr-primary);
+    top: -120px; right: -100px;
+}
+.bg-orb--2 {
+    width: 350px; height: 350px;
+    background: var(--clr-accent);
+    bottom: -80px; left: -80px;
+}
+
+/* ── Status card ───────────────────────────────────────────── */
+.status-card {
+    position: relative;
+    z-index: 5;
+    width: 100%;
+    max-width: 500px;
+    background: var(--clr-white);
+    border-radius: var(--radius-xl);
+    padding: 40px;
+    box-shadow: var(--shadow-xl);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 24px;
+    animation: cardEnter 350ms var(--ease-out) both;
+}
+
+@keyframes cardEnter {
+    from { opacity:0; transform:scale(0.93) translateY(16px); }
+    to   { opacity:1; transform:scale(1)    translateY(0); }
+}
+
+.status-card--success { border-top: 4px solid var(--clr-success); }
+.status-card--failed  { border-top: 4px solid var(--clr-failed);  }
+.status-card--pending { border-top: 4px solid var(--clr-accent);  }
+.status-card--error   { border-top: 4px solid var(--clr-error);   }
+
+/* ── Icon ring ──────────────────────────────────────────────── */
+.status-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.status-icon svg { width: 52px; height: 52px; }
+
+.status-icon--success { background: var(--clr-success-bg); }
+.status-icon--failed  { background: var(--clr-failed-bg); }
+.status-icon--pending { background: var(--clr-pending-bg); }
+.status-icon--error   { background: var(--clr-error-bg); }
+
+/* SVG draw-on animations */
+.icon-circle {
+    stroke-dasharray: 157;
+    stroke-dashoffset: 157;
+    animation: drawCircle 500ms 150ms var(--ease-out) forwards;
+}
+.icon-path {
+    stroke-dasharray: 50;
+    stroke-dashoffset: 50;
+    animation: drawPath 350ms 650ms var(--ease-out) forwards;
+}
+.icon-clock {
+    stroke-dasharray: 40;
+    stroke-dashoffset: 40;
+    animation: drawPath 350ms 650ms var(--ease-out) forwards;
+}
+
+@keyframes drawCircle { to { stroke-dashoffset: 0; } }
+@keyframes drawPath   { to { stroke-dashoffset: 0; } }
+
+/* ── Badge ──────────────────────────────────────────────────── */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'Outfit',sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: var(--radius-full);
+}
+
+.status-badge--success { color:var(--clr-success); background:var(--clr-success-bg); }
+.status-badge--failed  { color:var(--clr-failed);  background:var(--clr-failed-bg);  }
+.status-badge--pending { color:var(--clr-pending); background:var(--clr-pending-bg); }
+.status-badge--error   { color:var(--clr-error);   background:var(--clr-error-bg);   }
+
+/* ── Typography ─────────────────────────────────────────────── */
+.status-title {
+    font-family: 'Outfit',sans-serif;
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--clr-text);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+}
+
+.status-message {
+    font-size: 0.95rem;
+    color: var(--clr-text-muted);
+    line-height: 1.65;
+    max-width: 380px;
+}
+.status-message strong { color:var(--clr-text); font-weight:600; }
+
+/* ── Transaction details ────────────────────────────────────── */
+.txn-details {
+    width: 100%;
+    background: var(--clr-subtle);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.txn-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.txn-row dt {
+    font-size: 0.78rem;
+    color: var(--clr-text-muted);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.txn-row dd {
+    font-size: 0.82rem;
+    color: var(--clr-text);
+    font-weight: 600;
+    font-family: 'Courier New',monospace;
+    text-align: right;
+    word-break: break-all;
+}
+
+/* ── Countdown notice ───────────────────────────────────────── */
+.redirect-notice {
+    font-size: 0.82rem;
+    color: var(--clr-text-muted);
+}
+.redirect-notice strong { color:var(--clr-accent-dark); font-weight:700; }
+
+/* ── Buttons ────────────────────────────────────────────────── */
+.status-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 14px 28px;
+    border-radius: var(--radius-full);
+    font-family: 'Outfit',sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    position: relative;
+    overflow: hidden;
+    transition: transform var(--dur-fast) var(--ease-out),
+                box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.btn::before {
+    content:'';
+    position:absolute; inset:0;
+    background:rgba(255,255,255,0.15);
+    z-index:0;
+    clip-path:circle(0% at 0 50%);
+    transition:clip-path 400ms var(--ease-out);
+}
+.btn:hover::before { clip-path:circle(150% at 0 50%); }
+.btn span { position:relative; z-index:1; }
+
+.btn--primary {
+    background: var(--clr-primary);
+    color: var(--clr-white);
+    box-shadow: 0 4px 20px var(--clr-primary-15);
+}
+.btn--primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px var(--clr-primary-15);
+}
+
+.btn--accent {
+    background: var(--clr-accent);
+    color: var(--clr-primary);
+    box-shadow: 0 4px 20px rgba(201,162,39,0.3);
+}
+.btn--accent:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(201,162,39,0.3);
+}
+.btn--accent::before { background:rgba(29,10,63,0.08); }
+
+.btn--outline {
+    background: transparent;
+    color: var(--clr-primary);
+    border: 2px solid var(--clr-primary-15);
+}
+.btn--outline:hover {
+    background: var(--clr-primary-08);
+    border-color: var(--clr-primary);
+    transform: translateY(-2px);
+}
+.btn--outline::before { background:var(--clr-primary-08); }
+
+/* ── Secure badge ───────────────────────────────────────────── */
+.secure-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--clr-text-muted);
+    opacity: 0.65;
+}
+
+/* ── Demo info bar ──────────────────────────────────────────── */
+.demo-info {
+    position: relative;
+    z-index: 5;
+    margin-top: 28px;
+    background: rgba(29,10,63,0.06);
+    border: 1px solid rgba(29,10,63,0.1);
+    border-radius: var(--radius-lg);
+    padding: 16px 24px;
+    max-width: 500px;
+    width: 100%;
+    font-size: 0.82rem;
+    color: var(--clr-text-muted);
+    line-height: 1.6;
+}
+.demo-info strong { color: var(--clr-text); font-weight: 600; }
+.demo-info code {
+    font-size: 0.78rem;
+    background: var(--clr-subtle);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New',monospace;
+    color: var(--clr-primary);
+}
+
+.demo-info ul { padding-left: 16px; margin-top: 8px; }
+.demo-info li { margin-bottom: 4px; }
+
+/* Responsive */
+@media (max-width: 540px) {
+    .demo-controls { padding: 14px 16px; }
+    .demo-header { padding: 14px 16px; }
+    .demo-stage { padding: 32px 12px; }
+    .status-card { padding: 28px 20px; border-radius: var(--radius-lg); }
+    .status-title { font-size: 1.4rem; }
+    .trigger-btn { font-size: 0.78rem; padding: 8px 14px; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .status-card, .icon-circle, .icon-path, .icon-clock { animation: none !important; }
+    .icon-circle, .icon-path, .icon-clock { stroke-dashoffset: 0 !important; }
+    .btn::before { transition: none; }
+}
+    </style>
+</head>
+<body>
+
+<!-- ── Demo Header ─────────────────────────────────────────── -->
+<header class="demo-header">
+    <div class="demo-header-left">
+        <span class="brand-pill">ICSWHMH</span>
+        <h1>2027 International Conference — BillDesk Payment UI Demo</h1>
+    </div>
+    <span class="demo-tag">UI Demo</span>
+</header>
+
+<!-- ── State Switcher ──────────────────────────────────────── -->
+<div class="demo-controls" role="toolbar" aria-label="Switch payment state">
+    <span class="demo-controls-label">Show state →</span>
+    <button class="trigger-btn trigger-btn--success active" onclick="showState('success')" id="btn-success" aria-pressed="true">
+        <span class="dot"></span> ✓ Success (0300)
+    </button>
+    <button class="trigger-btn trigger-btn--failed" onclick="showState('failed')" id="btn-failed" aria-pressed="false">
+        <span class="dot"></span> ✕ Failed (0399)
+    </button>
+    <button class="trigger-btn trigger-btn--pending" onclick="showState('pending')" id="btn-pending" aria-pressed="false">
+        <span class="dot"></span> ⏳ Pending (0002)
+    </button>
+    <button class="trigger-btn trigger-btn--error" onclick="showState('error')" id="btn-error" aria-pressed="false">
+        <span class="dot"></span> ⚠ Error
+    </button>
+</div>
+
+<!-- ── Background ─────────────────────────────────────────── -->
+<div class="bg-layer" aria-hidden="true">
+    <div class="bg-stripe"></div>
+    <div class="bg-orb bg-orb--1" id="bg-orb-1"></div>
+    <div class="bg-orb bg-orb--2" id="bg-orb-2"></div>
+</div>
+
+<!-- ── Demo Stage ─────────────────────────────────────────── -->
+<main class="demo-stage" id="demo-stage" role="main" aria-live="polite">
+
+    <!-- Cards are injected here by JS -->
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- JAVASCRIPT                                                  -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<script>
+// ── State definitions ──────────────────────────────────────────
+var STATES = {
+
+    success: {
+        borderColor: '#0E7A3B',
+        badge: { label: 'Registration Completed', cls: 'status-badge--success' },
+        title: 'Payment Successful',
+        message: 'Your conference registration has been completed successfully. A confirmation e-mail will be sent shortly.',
+        icon: 'success',
+        txn: {
+            'Order ID':        'REG3A1B2C3D4E5F6',
+            'Transaction ID':  'BD202703151023417842',
+            'Amount':          '₹5,000.00',
+        },
+        redirect: '5 seconds',
+        actions: [
+            { label: 'View Registration Details', cls: 'btn--primary', href: '#' }
+        ],
+        infoTitle: 'auth_status = 0300 — SUCCESS',
+        infoItems: [
+            'DB: <code>payments.status = SUCCESS</code>',
+            'DB: <code>registrations.registration_status = COMPLETED</code>',
+            'Auto-redirect to <code>registration-details.php</code> in 5 seconds',
+            'Duplicate payment guard active',
+        ],
+    },
+
+    failed: {
+        borderColor: '#B91C1C',
+        badge: { label: 'Registration Incomplete', cls: 'status-badge--failed' },
+        title: 'Payment Failed',
+        message: 'Your payment could not be completed. <strong>Card declined by issuing bank.</strong> You may retry or contact our support team.',
+        icon: 'failed',
+        txn: null,
+        redirect: null,
+        actions: [
+            { label: 'Retry Payment',       cls: 'btn--primary', href: '#' },
+            { label: 'Back to Registration', cls: 'btn--outline', href: '#' },
+        ],
+        infoTitle: 'auth_status = 0399 — FAILED',
+        infoItems: [
+            'DB: <code>payments.status = FAILED</code>',
+            'DB: <code>payments.failure_reason</code> stored from BillDesk',
+            'DB: <code>registrations.registration_status = PAYMENT_FAILED</code>',
+            'User can safely retry with a fresh payment',
+        ],
+    },
+
+    pending: {
+        borderColor: '#C9A227',
+        badge: { label: 'Pending Verification', cls: 'status-badge--pending' },
+        title: 'Payment Under Verification',
+        message: 'Your payment is currently being processed by the bank. Please do <strong>not</strong> attempt another payment. We will verify and update your status within 60 minutes.',
+        icon: 'pending',
+        txn: {
+            'Order ID':   'REG7F8A9B0C1D2E3F',
+            'Amount':     '₹5,000.00',
+        },
+        redirect: null,
+        actions: [
+            { label: 'Check Status', cls: 'btn--accent', href: '#' },
+        ],
+        infoTitle: 'auth_status = 0002 — PENDING',
+        infoItems: [
+            'DB: <code>payments.status = PENDING</code>',
+            'DB: <code>registrations.registration_status = PENDING_VERIFICATION</code>',
+            '"Check Status" button hits <code>retrieve.php?orderid=…</code>',
+            'Auto-recheck toast fires after 60 seconds on the page',
+        ],
+    },
+
+    error: {
+        borderColor: '#7C2D12',
+        badge: { label: 'Error', cls: 'status-badge--error' },
+        title: 'Something Went Wrong',
+        message: 'No transaction response received. Please do not refresh this page. If this persists, contact the conference secretariat.',
+        icon: 'error',
+        txn: null,
+        redirect: null,
+        actions: [
+            { label: 'Back to Registration', cls: 'btn--outline', href: '#' },
+        ],
+        infoTitle: 'Error state — missing / invalid response',
+        infoItems: [
+            'Logged to <code>logs/billdesk_YYYY-MM-DD.log</code>',
+            'Technical details hidden from user',
+            'User sees a safe, friendly message',
+            'Triggered on: missing POST, invalid JWS, failed decryption',
+        ],
+    },
+};
+
+// ── SVG Icons ──────────────────────────────────────────────────
+function getIcon(type) {
+    var svgs = {
+        success: '<svg viewBox="0 0 52 52" fill="none" aria-hidden="true">' +
+            '<circle class="icon-circle" cx="26" cy="26" r="24" stroke="#0E7A3B" stroke-width="2"/>' +
+            '<path class="icon-path" d="M14 26l8 8 16-16" stroke="#0E7A3B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>' +
+            '</svg>',
+        failed: '<svg viewBox="0 0 52 52" fill="none" aria-hidden="true">' +
+            '<circle class="icon-circle" cx="26" cy="26" r="24" stroke="#B91C1C" stroke-width="2"/>' +
+            '<path class="icon-path" d="M18 18l16 16M34 18L18 34" stroke="#B91C1C" stroke-width="3" stroke-linecap="round"/>' +
+            '</svg>',
+        pending: '<svg viewBox="0 0 52 52" fill="none" aria-hidden="true">' +
+            '<circle class="icon-circle" cx="26" cy="26" r="24" stroke="#C9A227" stroke-width="2"/>' +
+            '<path class="icon-clock" d="M26 16v10l6 6" stroke="#C9A227" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>' +
+            '</svg>',
+        error: '<svg viewBox="0 0 52 52" fill="none" aria-hidden="true">' +
+            '<circle class="icon-circle" cx="26" cy="26" r="24" stroke="#7C2D12" stroke-width="2"/>' +
+            '<path class="icon-path" d="M26 17v12M26 35v2" stroke="#7C2D12" stroke-width="3" stroke-linecap="round"/>' +
+            '</svg>',
+    };
+    return svgs[type] || '';
+}
+
+// ── Render card ────────────────────────────────────────────────
+function showState(stateKey) {
+    var s = STATES[stateKey];
+    if (!s) return;
+
+    // Update button active states
+    ['success','failed','pending','error'].forEach(function(k) {
+        var b = document.getElementById('btn-' + k);
+        if (b) {
+            b.classList.toggle('active', k === stateKey);
+            b.setAttribute('aria-pressed', k === stateKey ? 'true' : 'false');
+        }
+    });
+
+    // Txn detail rows
+    var txnHtml = '';
+    if (s.txn) {
+        txnHtml = '<dl class="txn-details" aria-label="Transaction details">';
+        Object.keys(s.txn).forEach(function(k) {
+            txnHtml += '<div class="txn-row"><dt>' + k + '</dt><dd>' + s.txn[k] + '</dd></div>';
+        });
+        txnHtml += '</dl>';
+    }
+
+    // Redirect notice
+    var redirectHtml = '';
+    if (s.redirect) {
+        redirectHtml = '<p class="redirect-notice" role="timer" aria-live="polite">Redirecting to your registration details in <strong id="countdown-demo">5</strong>s&hellip;</p>';
+    }
+
+    // Action buttons
+    var actionsHtml = '<div class="status-actions" role="group" aria-label="Next steps">';
+    s.actions.forEach(function(a, i) {
+        actionsHtml += '<a href="' + a.href + '" class="btn ' + a.cls + '" id="demo-btn-' + i + '" onclick="ripple(event,this);return false;"><span>' + a.label + '</span></a>';
+    });
+    actionsHtml += '</div>';
+
+    // Info box
+    var infoItemsHtml = s.infoItems.map(function(item) {
+        return '<li>' + item + '</li>';
+    }).join('');
+
+    // Assemble card
+    var cardHtml = '<div class="status-card status-card--' + stateKey + '" role="region" aria-labelledby="status-title-' + stateKey + '">' +
+        '<div class="status-icon status-icon--' + stateKey + '">' + getIcon(s.icon) + '</div>' +
+        '<div class="status-badge ' + s.badge.cls + '" role="status">' + s.badge.label + '</div>' +
+        '<h2 class="status-title" id="status-title-' + stateKey + '">' + s.title + '</h2>' +
+        '<p class="status-message">' + s.message + '</p>' +
+        txnHtml +
+        redirectHtml +
+        actionsHtml +
+        '<div class="secure-badge">' +
+            '<svg width="14" height="17" viewBox="0 0 14 17" fill="none" aria-hidden="true">' +
+                '<path d="M7 0L0 3v5c0 4.4 3 8.5 7 9.5C11 16.5 14 12.4 14 8V3L7 0z" fill="#7A6B8C" opacity=".3"/>' +
+                '<path d="M7 1.5L1.5 4v4c0 3.6 2.4 6.9 5.5 7.8 3.1-.9 5.5-4.2 5.5-7.8V4L7 1.5z" fill="#7A6B8C"/>' +
+                '<path d="M5 8l1.5 1.5L9.5 6" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>' +
+            '</svg>' +
+            'Secured by BillDesk' +
+        '</div>' +
+        '</div>' +
+        '<div class="demo-info" role="complementary" aria-label="Developer info">' +
+        '<strong>' + s.infoTitle + '</strong>' +
+        '<ul>' + infoItemsHtml + '</ul>' +
+        '</div>';
+
+    var stage = document.getElementById('demo-stage');
+    stage.innerHTML = cardHtml;
+
+    // Run countdown for success
+    if (s.redirect) {
+        var n = 5;
+        var el = document.getElementById('countdown-demo');
+        var timer = setInterval(function() {
+            n--;
+            if (el) el.textContent = n;
+            if (n <= 0) {
+                clearInterval(timer);
+                if (el) el.closest('.redirect-notice').textContent = 'Would redirect to registration-details.php (demo mode)';
+            }
+        }, 1000);
+    }
+
+    // Focus the title
+    requestAnimationFrame(function() {
+        var title = document.getElementById('status-title-' + stateKey);
+        if (title) { title.setAttribute('tabindex','-1'); title.focus(); }
+    });
+}
+
+// ── Button ripple ──────────────────────────────────────────────
+function ripple(e, btn) {
+    var rect   = btn.getBoundingClientRect();
+    var r      = document.createElement('span');
+    r.style.cssText = [
+        'position:absolute', 'border-radius:50%', 'background:rgba(255,255,255,0.35)',
+        'width:10px', 'height:10px', 'transform:scale(0)',
+        'animation:ripple 500ms ease-out forwards',
+        'left:' + (e.clientX - rect.left - 5) + 'px',
+        'top:'  + (e.clientY - rect.top  - 5) + 'px',
+        'pointer-events:none', 'z-index:1',
+    ].join(';');
+    btn.appendChild(r);
+    setTimeout(function() { r.remove(); }, 600);
+}
+
+// Inject ripple keyframe
+var s = document.createElement('style');
+s.textContent = '@keyframes ripple{to{transform:scale(30);opacity:0}}';
+document.head.appendChild(s);
+
+// ── Boot ───────────────────────────────────────────────────────
+showState('success');
+</script>
+
+</body>
+</html>
