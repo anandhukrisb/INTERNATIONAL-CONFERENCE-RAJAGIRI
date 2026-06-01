@@ -1,153 +1,176 @@
 <?php
 
-$merchant_id = 'YOUR_MERCHANT_ID';
-$client_id   = 'YOUR_CLIENT_ID';
-$enc_key     = 'YOUR_ENCRYPTION_KEY';  
-$sign_key    = 'YOUR_SIGNING_KEY';
-$enc_key_id  = 'YOUR_ENC_KEY_ID';
-$sign_key_id = 'YOUR_SIGN_KEY_ID';
-$return_url  = 'http://localhost/conference/bdtest/response.php'; // change to live URL when deploying
-$api_url     = 'https://uat1.billdesk.com/u2/payments/ve1_2/orders/create';
+require_once 'config.php';
+require_once 'billdesk_helper.php';
 
+// ── Only accept JSON requests ──────────────────────────────────
 header('Content-Type: application/json');
-
-// Set timezone to IST (required by BillDesk)
-date_default_timezone_set('Asia/Kolkata');
-
-function b64e($d) { return rtrim(strtr(base64_encode($d),'+/','-_'),'='); }
-function b64d($d) { return base64_decode(strtr($d,'-_','+/').str_repeat('=',3-(3+strlen($d))%4)); }
-
-function bd_encrypt($payload,$enc_key,$enc_key_id,$client_id){
-    $h  = b64e(json_encode(['alg'=>'dir','enc'=>'A256GCM','kid'=>$enc_key_id,'clientid'=>$client_id]));
-    $iv = random_bytes(12);
-    $tag = '';
-    $ct = openssl_encrypt(json_encode($payload),'aes-256-gcm',$enc_key,OPENSSL_RAW_DATA,$iv,$tag,$h,16);
-    if($ct === false) throw new Exception('Encryption failed — check enc_key is exactly 32 chars');
-    return implode('.', [$h,'',b64e($iv),b64e($ct),b64e($tag)]);
-}
-
-function bd_sign($jwe,$sign_key,$sign_key_id,$client_id){
-    $h = b64e(json_encode(['alg'=>'HS256','kid'=>$sign_key_id,'clientid'=>$client_id]));
-    $p = b64e($jwe);
-    return "$h.$p.".b64e(hash_hmac('sha256',"$h.$p",$sign_key,true));
-}
-
-function bd_verify($jws,$sign_key){
-    $parts = explode('.',$jws);
-    if(count($parts) !== 3) throw new Exception('Invalid JWS format');
-    [$h,$p,$s] = $parts;
-    if(!hash_equals(b64e(hash_hmac('sha256',"$h.$p",$sign_key,true)),$s))
-        throw new Exception('Signature invalid — check sign_key');
-    return b64d($p);
-}
-
-function bd_decrypt($jwe,$enc_key){
-    $parts = explode('.',$jwe);
-    if(count($parts) !== 5) throw new Exception('Invalid JWE format');
-    [$hb64,,$iv64,$ct64,$tag64] = $parts;
-    $plain = openssl_decrypt(b64d($ct64),'aes-256-gcm',$enc_key,OPENSSL_RAW_DATA,b64d($iv64),b64d($tag64),$hb64);
-    if($plain === false) throw new Exception('Decryption failed — check enc_key is exactly 32 chars');
-    return json_decode($plain,true);
-}
 
 try {
 
-    // ── Validate keys before doing anything ──────────
-    if(strlen($enc_key) !== 32)
-        throw new Exception('enc_key must be exactly 32 characters. Current length: ' . strlen($enc_key));
-    if(empty($sign_key))
-        throw new Exception('sign_key is empty');
-    if(empty($merchant_id) || $merchant_id === 'YOUR_MERCHANT_ID')
-        throw new Exception('merchant_id not set');
-    if(empty($client_id) || $client_id === 'YOUR_CLIENT_ID')
-        throw new Exception('client_id not set');
+    // ── 1. Validate Configuration ─────────────────────────────
+    bd_validate_config($merchant_id, $client_id, $enc_key, $sign_key);
 
-    // ── Generate unique Order ID & Trace ID ──────────
-    // Rules: alphanumeric only, no special chars, min 10, max 35
-    $order_id = 'TEST' . strtoupper(bin2hex(random_bytes(8)));   // e.g. TESTA1B2C3D4E5F6G7H8
-    $trace_id = 'TRC'  . strtoupper(bin2hex(random_bytes(8)));   // e.g. TRCA1B2C3D4E5F6G7H8
+    // ── 2. Read & validate POST input ─────────────────────────
+    // Expected from the registration form:
+    //   amount       — registration fee in INR (string, e.g. "5000.00")
+    //   registration_id — internal ID linking payment to registrant
+    $amount          = trim($_POST['amount']          ?? '');
+    $registration_id = trim($_POST['registration_id'] ?? '');
 
-    // ── Timestamp in IST format yyyymmddHHmmss ────────
-    $timestamp = date('YmdHis');   // e.g. 20240130105915
+    if (empty($amount) || !is_numeric($amount) || (float)$amount <= 0) {
+        throw new RuntimeException('Invalid or missing amount.');
+    }
 
-    // ── Build payload ─────────────────────────────────
+    if (empty($registration_id)) {
+        throw new RuntimeException('Missing registration_id.');
+    }
+
+    // Format amount as "XXXX.XX" (two decimal places, no comma)
+    $amount = number_format((float)$amount, 2, '.', '');
+
+    // ── 3. Generate unique IDs ────────────────────────────────
+    // Rules per BillDesk spec: alphanumeric only, 10–35 chars.
+    $order_id = 'REG' . strtoupper(bin2hex(random_bytes(8)));  // 3 + 16 = 19 chars
+    $trace_id = 'TRC' . strtoupper(bin2hex(random_bytes(8)));
+
+    // Timestamp in IST: yyyymmddHHmmss
+    $timestamp = date('YmdHis');
+
+    // ── 4. Build payload ──────────────────────────────────────
     $payload = [
         'mercid'          => $merchant_id,
         'orderid'         => $order_id,
-        'amount'          => '1.00',
-        'order_date'      => date('Y-m-d\TH:i:sP'),   // e.g. 2024-01-30T10:59:15+05:30
-        'currency'        => '356',                    // 356 = INR
+        'amount'          => $amount,
+        'order_date'      => date('Y-m-d\TH:i:sP'),   // ISO 8601 with +05:30
+        'currency'        => '356',                     // 356 = INR
         'ru'              => $return_url,
         'itemcode'        => 'DIRECT',
         'additional_info' => [
-            'additional_info1' => 'test'
+            'additional_info1' => $registration_id,    // store reg ID for lookup
         ],
         'device'          => [
             'init_channel'  => 'internet',
-            'ip'            => $_SERVER['REMOTE_ADDR'],
-            'user_agent'    => $_SERVER['HTTP_USER_AGENT'],
-            'accept_header' => 'text/html'
-        ]
+            'ip'            => $_SERVER['REMOTE_ADDR']  ?? '127.0.0.1',
+            'user_agent'    => $_SERVER['HTTP_USER_AGENT'] ?? 'Unknown',
+            'accept_header' => $_SERVER['HTTP_ACCEPT']  ?? 'text/html',
+        ],
     ];
 
-    // ── Encrypt → Sign ────────────────────────────────
-    $body = bd_sign(
-                bd_encrypt($payload, $enc_key, $enc_key_id, $client_id),
-                $sign_key, $sign_key_id, $client_id
-            );
+    bd_log('pay', 'ORDER_INIT', [
+        'order_id'        => $order_id,
+        'registration_id' => $registration_id,
+        'amount'          => $amount,
+        'trace_id'        => $trace_id,
+    ]);
 
-    // ── Call BillDesk API ─────────────────────────────
-    $ch = curl_init($api_url);
+    // ── 5. Encrypt → Sign ─────────────────────────────────────
+    $jws_body = bd_sign(
+        bd_encrypt($payload, $enc_key, $enc_key_id, $client_id),
+        $sign_key,
+        $sign_key_id,
+        $client_id
+    );
+
+    // ── 6. Call BillDesk Create Order API ────────────────────
+    $ch = curl_init($create_order_url);
+
     curl_setopt_array($ch, [
         CURLOPT_POST           => true,
-        CURLOPT_POSTFIELDS     => $body,
+        CURLOPT_POSTFIELDS     => $jws_body,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_TIMEOUT        => 30,
+        CURLOPT_CONNECTTIMEOUT => 10,
+        CURLOPT_SSL_VERIFYPEER => true,
         CURLOPT_HTTPHEADER     => [
             'Content-Type: application/jose',
             'Accept: application/jose',
             'BD-Traceid: '   . $trace_id,
-            'BD-Timestamp: ' . $timestamp   // IST yyyymmddHHmmss
-        ]
+            'BD-Timestamp: ' . $timestamp,
+        ],
     ]);
 
-    $response  = curl_exec($ch);
-    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $curl_err  = curl_error($ch);
+    $raw_response = curl_exec($ch);
+    $http_code    = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curl_error   = curl_error($ch);
     curl_close($ch);
 
-    if($curl_err)
-        throw new Exception('cURL Error: ' . $curl_err);
-
-    if($http_code === 401)
-        throw new Exception('HTTP 401 Unauthorized — Keys not active yet. Wait for BillDesk UAT setup.');
-
-    if($http_code === 400)
-        throw new Exception('HTTP 400 Bad Request — Check merchant_id, client_id and payload format.');
-
-    if($http_code !== 200)
-        throw new Exception('BillDesk returned HTTP ' . $http_code . ' → ' . $response);
-
-    // ── Verify → Decrypt response ─────────────────────
-    $order    = bd_decrypt(bd_verify($response, $sign_key), $enc_key);
-    $redirect = null;
-
-    foreach($order['links'] as $link){
-        if($link['rel'] === 'redirect'){ $redirect = $link; break; }
+    // ── 7. Handle cURL / HTTP errors ─────────────────────────
+    if (!empty($curl_error)) {
+        bd_log('pay', 'CURL_ERROR', ['error' => $curl_error, 'order_id' => $order_id]);
+        throw new RuntimeException('Network error communicating with BillDesk.');
     }
 
-    if(!$redirect)
-        throw new Exception('No redirect link in response — ' . json_encode($order));
+    if ($http_code === 400) {
+        bd_log('pay', 'HTTP_400', ['order_id' => $order_id, 'response' => $raw_response]);
+        throw new RuntimeException('BillDesk rejected the request (HTTP 400). Check merchant credentials and payload.');
+    }
 
-    // ── Return redirect params to frontend ───────────
-    echo json_encode([
-        'action_url' => $redirect['href'],
-        'bdorderid'  => $redirect['parameters']['bdorderid'],
-        'merchantid' => $redirect['parameters']['mercid'],
-        'rdata'      => $redirect['parameters']['rdata']
+    if ($http_code === 401) {
+        bd_log('pay', 'HTTP_401', ['order_id' => $order_id]);
+        throw new RuntimeException('BillDesk authorisation failed (HTTP 401). Keys may not be active yet.');
+    }
+
+    if ($http_code !== 200) {
+        bd_log('pay', 'HTTP_ERROR', ['http_code' => $http_code, 'order_id' => $order_id]);
+        throw new RuntimeException("BillDesk returned unexpected HTTP {$http_code}.");
+    }
+
+    // ── 8. Verify → Decrypt response ─────────────────────────
+    $jwe   = bd_verify($raw_response, $sign_key);
+    $order = bd_decrypt($jwe, $enc_key);
+
+    // ── 9. Extract redirect link ──────────────────────────────
+    $redirect = null;
+
+    foreach (($order['links'] ?? []) as $link) {
+        if (($link['rel'] ?? '') === 'redirect') {
+            $redirect = $link;
+            break;
+        }
+    }
+
+    if (!$redirect) {
+        bd_log('pay', 'NO_REDIRECT', ['order_id' => $order_id, 'order' => $order]);
+        throw new RuntimeException('BillDesk response did not contain a redirect URL.');
+    }
+
+    bd_log('pay', 'ORDER_CREATED', [
+        'order_id'   => $order_id,
+        'bdorderid'  => $redirect['parameters']['bdorderid'] ?? '',
+        'amount'     => $amount,
     ]);
 
-} catch(Exception $e){
+    // ── 10. Return redirect parameters to frontend JS ─────────
+    echo json_encode([
+        'success'    => true,
+        'action_url' => $redirect['href'],
+        'bdorderid'  => $redirect['parameters']['bdorderid'] ?? '',
+        'merchantid' => $redirect['parameters']['mercid']    ?? '',
+        'rdata'      => $redirect['parameters']['rdata']     ?? '',
+        'order_id'   => $order_id,
+    ], JSON_UNESCAPED_SLASHES);
+
+} catch (RuntimeException $e) {
+
+    bd_log('pay', 'ERROR', ['message' => $e->getMessage()]);
     http_response_code(500);
-    echo json_encode(['error' => $e->getMessage()]);
+
+    echo json_encode([
+        'success' => false,
+        'error'   => $e->getMessage(),
+    ]);
+
+} catch (Exception $e) {
+
+    bd_log('pay', 'UNEXPECTED_ERROR', [
+        'message' => $e->getMessage(),
+        'trace'   => $e->getTraceAsString(),
+    ]);
+    http_response_code(500);
+
+    echo json_encode([
+        'success' => false,
+        'error'   => 'An unexpected error occurred. Please try again.',
+    ]);
 }
