@@ -252,6 +252,11 @@ $amount_safe   = htmlspecialchars($amount,   ENT_QUOTES, 'UTF-8');
     <title>Payment Verification — ICSWHMH 2027 Conference</title>
     <meta name="description" content="Payment verification status for your ICSWHMH 2027 conference registration.">
     <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/x-icon" href="https://res.cloudinary.com/dswfp5fwx/image/upload/v1778131826/Favicon-192_hdltam.ico">
+
+    <!-- Real site navbar & footer web components -->
+    <script src="../navbar.js" defer></script>
+    <script src="../footer.js" defer></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -261,21 +266,14 @@ $amount_safe   = htmlspecialchars($amount,   ENT_QUOTES, 'UTF-8');
 </head>
 <body class="status-page" data-status="<?= $status ?>">
 
+    <!-- Real site navbar -->
+    <floating-navbar></floating-navbar>
+
+    <!-- Background orbs -->
     <div class="bg-layer" aria-hidden="true">
-        <div class="bg-stripe"></div>
         <div class="bg-orb bg-orb--1"></div>
         <div class="bg-orb bg-orb--2"></div>
     </div>
-
-    <header class="status-header" role="banner">
-        <div class="status-header__inner">
-            <a href="../index.html" class="status-header__brand" aria-label="ICSWHMH 2027 — Home">
-                <span class="brand-pill">ICSWHMH</span>
-                <span class="brand-name">2027 International Conference</span>
-            </a>
-            <span class="header-badge">Payment Verification</span>
-        </div>
-    </header>
 
     <main class="status-main" id="main-content" role="main">
 
@@ -406,6 +404,9 @@ $amount_safe   = htmlspecialchars($amount,   ENT_QUOTES, 'UTF-8');
         </div>
 
     </main>
+
+    <!-- Real site footer -->
+    <main-footer></main-footer>
 
     <script src="payment-status.js"></script>
 
