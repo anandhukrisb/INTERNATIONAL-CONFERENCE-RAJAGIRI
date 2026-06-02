@@ -1,0 +1,15 @@
+/* ================= LAYOUT ================= */
+.main-container {
+    max-width: 95%;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+floating-navbar {
+    display: block;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}

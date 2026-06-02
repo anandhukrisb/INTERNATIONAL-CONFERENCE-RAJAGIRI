@@ -1,0 +1,11 @@
+/* ================= GLOBAL VARIABLES ================= */
+:root {
+    --primary-purple: #1D0A3F;
+    --secondary-purple: #3d2066;
+    --accent-gold: #C9A227;
+    --bg-light: #FDFBF7;
+    --text-dark: #2D3436;
+    --text-light: #555;
+    --white: #ffffff;
+    --shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+}

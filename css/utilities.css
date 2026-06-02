@@ -1,0 +1,29 @@
+/* ================= UTILITIES ================= */
+
+/* View Transitions API */
+floating-navbar {
+    view-transition-name: navbar;
+}
+
+main-footer {
+    view-transition-name: footer;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 0.3s;
+}
+
+::view-transition-old(navbar),
+::view-transition-new(navbar),
+::view-transition-old(footer),
+::view-transition-new(footer) {
+    animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation: none !important;
+    }
+}
