@@ -1,0 +1,289 @@
+:root {
+    --primary-purple: #1d0a3f;
+    --secondary-purple: #3d2066;
+    --accent-gold: #C9A227;
+    --text-dark: #2c2c2c;
+    --text-light: #555;
+    --bg-light: #FDFBF7;
+    --white: #ffffff;
+}
+
+body {
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+/* Floating Navbar Placeholder */
+floating-navbar {
+    display: block;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+/* Hero / Title Section */
+.page-header {
+    margin-top: 85px;
+    padding-top: 60px;
+    padding-bottom: 60px;
+    text-align: center;
+    background: linear-gradient(180deg, rgba(239, 230, 222, 0.4) 0%, rgba(253, 251, 247, 0) 100%);
+}
+
+.page-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--primary-purple);
+    margin-bottom: 15px;
+    position: relative;
+    display: inline-block;
+    text-transform: uppercase;
+}
+
+.page-title::after {
+    content: "";
+    display: block;
+    width: 80px;
+    height: 5px;
+    background-color: var(--accent-gold);
+    margin: 15px auto 0;
+    border-radius: 3px;
+}
+
+.page-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-light);
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Content Sections */
+.content-section {
+    margin-bottom: 60px;
+}
+
+.section-header {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.8rem;
+    color: var(--primary-purple);
+    margin-bottom: 25px;
+    font-weight: 600;
+    border-left: 5px solid var(--accent-gold);
+    padding-left: 15px;
+}
+
+.gd-section-header {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.8rem;
+    color: var(--primary-purple);
+    margin-bottom: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.gd-section-header::after {
+    content: '';
+    display: block;
+    width: 70px;
+    height: 4px;
+    background: var(--accent-gold);
+    margin-top: 8px;
+    border-radius: 2px;
+}
+
+.info-card {
+    background: var(--white);
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(29, 10, 63, 0.05);
+    padding: 30px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.guidelines-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.guidelines-list>li {
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 15px;
+    color: var(--text-dark);
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+.guidelines-list>li::before {
+    content: "\F272";
+    /* Bootstrap Check Icon */
+    font-family: "bootstrap-icons";
+    position: absolute;
+    left: 0;
+    color: var(--accent-gold);
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+/* Tables */
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+}
+
+.custom-table th {
+    background-color: var(--primary-purple);
+    color: var(--white);
+    text-align: left;
+    padding: 15px 20px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+}
+
+.custom-table td {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    color: var(--text-dark);
+}
+
+.custom-table tr:last-child td {
+    border-bottom: none;
+}
+
+.custom-table tr:nth-child(even) {
+    background-color: #f9f9fb;
+}
+
+/* Buttons */
+.btn-action {
+    display: inline-block;
+    background-color: var(--accent-gold);
+    color: var(--primary-purple);
+    padding: 15px 40px;
+    border-radius: 50px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(201, 162, 39, 0.3);
+    border: 2px solid var(--accent-gold);
+}
+
+.btn-action:hover {
+    background-color: var(--primary-purple);
+    color: var(--accent-gold);
+    border-color: var(--primary-purple);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(29, 10, 63, 0.3);
+}
+
+.btn-outline-action {
+    display: inline-block;
+    background-color: transparent;
+    color: var(--primary-purple);
+    padding: 10px 25px;
+    border-radius: 50px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid var(--primary-purple);
+    margin-right: 15px;
+    margin-bottom: 10px;
+}
+
+.btn-outline-action:hover {
+    background-color: var(--primary-purple);
+    color: var(--white);
+    transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 2.2rem;
+    }
+
+    .page-header {
+        padding-top: 120px;
+    }
+
+    .custom-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+
+/* ===== GUIDELINES — STACKED SECTIONS ===== */
+.gd-wrapper {
+    margin-top: 0;
+}
+
+/* Subheading — per-guideline label */
+.gd-subheading {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #1d0a3f;
+    margin-top: 36px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+}
+
+/* Card — gold-accented, matches committee.html border + themes.html elevation */
+.gd-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, .05);
+    border: 1px solid rgba(0, 0, 0, .04);
+    border-left: 5px solid #c9a227;
+    padding: 28px 32px;
+    transition: transform .3s cubic-bezier(.165, .84, .44, 1),
+        box-shadow .3s ease,
+        border-left-color .3s ease;
+    margin-bottom: 12px;
+}
+
+.gd-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(201, 162, 39, .12), 0 8px 20px rgba(0, 0, 0, .06);
+    border-left-color: #b8861a;
+}
+
+.gd-card-body {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.7;
+    color: #444;
+}
+
+.gd-card-body strong {
+    font-weight: 600;
+    color: #1d0a3f;
+}
+
+@media(max-width: 576px) {
+    .gd-heading {
+        font-size: 1.5rem;
+        margin-top: 36px;
+    }
+
+    .gd-card {
+        padding: 20px 22px;
+    }
+}
