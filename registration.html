@@ -1285,8 +1285,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .gateway-modal-card h3 {
@@ -1357,9 +1362,19 @@
         }
 
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-6px); }
-            75% { transform: translateX(6px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-6px);
+            }
+
+            75% {
+                transform: translateX(6px);
+            }
         }
 
         .payment-error-box.active {
@@ -1765,548 +1780,24 @@
             <div id="step-1" class="step-container active">
 
                 <!-- Alert Banner: Registration Opening Soon -->
-                <div class="registration-alert-banner" style="background: linear-gradient(135deg, #FFF9E6 0%, #FFF3CD 100%); border-left: 5px solid var(--accent-gold); padding: 25px; border-radius: 12px; margin-bottom: 35px; display: flex; align-items: flex-start; gap: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03); border-top: 1px solid rgba(201, 162, 39, 0.1); border-right: 1px solid rgba(201, 162, 39, 0.1); border-bottom: 1px solid rgba(201, 162, 39, 0.1);">
-                    <div style="background-color: var(--accent-gold); color: #1D0A3F; width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.4rem; font-weight: bold; flex-shrink: 0; box-shadow: 0 4px 10px rgba(201, 162, 39, 0.2);">
+                <div class="registration-alert-banner"
+                    style="background: linear-gradient(135deg, #FFF9E6 0%, #FFF3CD 100%); border-left: 5px solid var(--accent-gold); padding: 25px; border-radius: 12px; margin-bottom: 35px; display: flex; align-items: flex-start; gap: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03); border-top: 1px solid rgba(201, 162, 39, 0.1); border-right: 1px solid rgba(201, 162, 39, 0.1); border-bottom: 1px solid rgba(201, 162, 39, 0.1);">
+                    <div
+                        style="background-color: var(--accent-gold); color: #1D0A3F; width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.4rem; font-weight: bold; flex-shrink: 0; box-shadow: 0 4px 10px rgba(201, 162, 39, 0.2);">
                         ⏳
                     </div>
                     <div>
-                        <h4 style="font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--primary-purple); margin-bottom: 8px; font-size: 1.15rem; letter-spacing: 0.5px;">REGISTRATION OPENING SOON</h4>
-                        <p style="font-size: 0.95rem; color: #66521A; line-height: 1.6; margin: 0; font-weight: 500; text-align: justify;">
-                            Online registration for the conference is currently being finalised. We appreciate your patience and look forward to welcoming you soon!
+                        <h4
+                            style="font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--primary-purple); margin-bottom: 8px; font-size: 1.15rem; letter-spacing: 0.5px;">
+                            REGISTRATION OPENING SOON</h4>
+                        <p
+                            style="font-size: 0.95rem; color: #66521A; line-height: 1.6; margin: 0; font-weight: 500; text-align: justify;">
+                            Online registration for the conference is currently being finalised. We appreciate your
+                            patience and look
+                            forward to welcoming you soon!
                         </p>
                     </div>
                 </div>
-
-                <!-- Abstract Submission Choice -->
-                <div class="form-row" style="margin-bottom: 25px;">
-                    <div class="form-group">
-                        <label for="abstractSubmitted" class="form-label">Have you submitted an abstract for the
-                            conference?</label>
-                        <select id="abstractSubmitted" class="form-control" onchange="handleAbstractStatusChange()"
-                            required>
-                            <option value="" disabled selected>Select abstract status...</option>
-                            <option value="yes">Yes, I have submitted an abstract</option>
-                            <option value="no">No, I have not submitted an abstract</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Email Verification Block (For Submitted Abstract) -->
-                <div id="verificationContainer" class="verification-box" style="display: none;">
-                    <h4
-                        style="font-family: 'Outfit', sans-serif; color: var(--primary-purple); margin-bottom: 12px; font-weight: 700;">
-                        Abstract Submitter Verification</h4>
-                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">Please enter the email
-                        address used for abstract submission to verify and unlock your registration.</p>
-                    <div class="verification-row">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label for="verifyEmail" class="form-label">Submission Email Address</label>
-                            <input type="email" id="verifyEmail" class="form-control"
-                                placeholder="author@icswhmh2027.org">
-                        </div>
-                        <button type="button" class="btn-verify" id="btnVerify"
-                            onclick="verifySubmissionsEmail()">Verify Email</button>
-                    </div>
-                    <div id="verifyStatus" class="verification-status"></div>
-                </div>
-
-                <!-- Remaining Registration Form (Conditionally overlay locked until verified) -->
-                <form id="registrationForm" onsubmit="submitStep1(event)" class="locked-form-overlay">
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="firstName" class="form-label">First Name</label>
-                            <input type="text" id="firstName" name="firstName" class="form-control" placeholder="Alan"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="middleName" class="form-label">Middle Name</label>
-                            <input type="text" id="middleName" name="middleName" class="form-control" placeholder="J.">
-                        </div>
-                        <div class="form-group">
-                            <label for="lastName" class="form-label">Last Name</label>
-                            <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Wake"
-                                required>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="organization" class="form-label">Organization / Institution</label>
-                            <input type="text" id="organization" name="organization" class="form-control"
-                                placeholder="University / Institution Name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email" class="form-label">Email Address</label>
-                            <input type="email" id="email" name="email" class="form-control"
-                                placeholder="alan.wake@example.com" required>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="phone" class="form-label">Phone Number</label>
-                            <input type="tel" id="phone" name="phone" class="form-control" placeholder="+91 98765 43210"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="participantType" class="form-label">Participant Category (Who are you?)</label>
-                            <select id="participantType" name="participantType" class="form-control"
-                                onchange="updateRequirementsOptions()" required>
-                                <option value="" disabled selected>Select Category</option>
-                                <option value="general">Academics / Field Practitioners (General)</option>
-                                <option value="phd">PhD Scholars</option>
-                                <option value="student">Students</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="country" class="form-label">Country (Where are you from?)</label>
-                            <select id="country" name="country" class="form-control"
-                                onchange="handleCountryChange()" required>
-                                <option value="" disabled selected>Select Country</option>
-                                <option value="Afghanistan">Afghanistan</option>
-                                <option value="Albania">Albania</option>
-                                <option value="Algeria">Algeria</option>
-                                <option value="Andorra">Andorra</option>
-                                <option value="Angola">Angola</option>
-                                <option value="Antigua and Barbuda">Antigua and Barbuda</option>
-                                <option value="Argentina">Argentina</option>
-                                <option value="Armenia">Armenia</option>
-                                <option value="Australia">Australia</option>
-                                <option value="Austria">Austria</option>
-                                <option value="Azerbaijan">Azerbaijan</option>
-                                <option value="Bahamas">Bahamas</option>
-                                <option value="Bahrain">Bahrain</option>
-                                <option value="Bangladesh">Bangladesh</option>
-                                <option value="Barbados">Barbados</option>
-                                <option value="Belarus">Belarus</option>
-                                <option value="Belgium">Belgium</option>
-                                <option value="Belize">Belize</option>
-                                <option value="Benin">Benin</option>
-                                <option value="Bhutan">Bhutan</option>
-                                <option value="Bolivia">Bolivia</option>
-                                <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
-                                <option value="Botswana">Botswana</option>
-                                <option value="Brazil">Brazil</option>
-                                <option value="Brunei">Brunei</option>
-                                <option value="Bulgaria">Bulgaria</option>
-                                <option value="Burkina Faso">Burkina Faso</option>
-                                <option value="Burundi">Burundi</option>
-                                <option value="Cabo Verde">Cabo Verde</option>
-                                <option value="Cambodia">Cambodia</option>
-                                <option value="Cameroon">Cameroon</option>
-                                <option value="Canada">Canada</option>
-                                <option value="Central African Republic">Central African Republic</option>
-                                <option value="Chad">Chad</option>
-                                <option value="Chile">Chile</option>
-                                <option value="China">China</option>
-                                <option value="Colombia">Colombia</option>
-                                <option value="Comoros">Comoros</option>
-                                <option value="Congo">Congo</option>
-                                <option value="Costa Rica">Costa Rica</option>
-                                <option value="Croatia">Croatia</option>
-                                <option value="Cuba">Cuba</option>
-                                <option value="Cyprus">Cyprus</option>
-                                <option value="Czech Republic">Czech Republic</option>
-                                <option value="Democratic Republic of the Congo">Democratic Republic of the Congo</option>
-                                <option value="Denmark">Denmark</option>
-                                <option value="Djibouti">Djibouti</option>
-                                <option value="Dominica">Dominica</option>
-                                <option value="Dominican Republic">Dominican Republic</option>
-                                <option value="Ecuador">Ecuador</option>
-                                <option value="Egypt">Egypt</option>
-                                <option value="El Salvador">El Salvador</option>
-                                <option value="Equatorial Guinea">Equatorial Guinea</option>
-                                <option value="Eritrea">Eritrea</option>
-                                <option value="Estonia">Estonia</option>
-                                <option value="Eswatini">Eswatini</option>
-                                <option value="Ethiopia">Ethiopia</option>
-                                <option value="Fiji">Fiji</option>
-                                <option value="Finland">Finland</option>
-                                <option value="France">France</option>
-                                <option value="Gabon">Gabon</option>
-                                <option value="Gambia">Gambia</option>
-                                <option value="Georgia">Georgia</option>
-                                <option value="Germany">Germany</option>
-                                <option value="Ghana">Ghana</option>
-                                <option value="Greece">Greece</option>
-                                <option value="Grenada">Grenada</option>
-                                <option value="Guatemala">Guatemala</option>
-                                <option value="Guinea">Guinea</option>
-                                <option value="Guyana">Guyana</option>
-                                <option value="Haiti">Haiti</option>
-                                <option value="Honduras">Honduras</option>
-                                <option value="Hungary">Hungary</option>
-                                <option value="Iceland">Iceland</option>
-                                <option value="India">India</option>
-                                <option value="Indonesia">Indonesia</option>
-                                <option value="Iran">Iran</option>
-                                <option value="Iraq">Iraq</option>
-                                <option value="Ireland">Ireland</option>
-                                <option value="Israel">Israel</option>
-                                <option value="Italy">Italy</option>
-                                <option value="Jamaica">Jamaica</option>
-                                <option value="Japan">Japan</option>
-                                <option value="Jordan">Jordan</option>
-                                <option value="Kazakhstan">Kazakhstan</option>
-                                <option value="Kenya">Kenya</option>
-                                <option value="Kiribati">Kiribati</option>
-                                <option value="Kuwait">Kuwait</option>
-                                <option value="Kyrgyzstan">Kyrgyzstan</option>
-                                <option value="Laos">Laos</option>
-                                <option value="Latvia">Latvia</option>
-                                <option value="Lebanon">Lebanon</option>
-                                <option value="Lesotho">Lesotho</option>
-                                <option value="Liberia">Liberia</option>
-                                <option value="Libya">Libya</option>
-                                <option value="Liechtenstein">Liechtenstein</option>
-                                <option value="Lithuania">Lithuania</option>
-                                <option value="Luxembourg">Luxembourg</option>
-                                <option value="Madagascar">Madagascar</option>
-                                <option value="Malawi">Malawi</option>
-                                <option value="Malaysia">Malaysia</option>
-                                <option value="Maldives">Maldives</option>
-                                <option value="Mali">Mali</option>
-                                <option value="Malta">Malta</option>
-                                <option value="Marshall Islands">Marshall Islands</option>
-                                <option value="Mauritania">Mauritania</option>
-                                <option value="Mauritius">Mauritius</option>
-                                <option value="Mexico">Mexico</option>
-                                <option value="Micronesia">Micronesia</option>
-                                <option value="Moldova">Moldova</option>
-                                <option value="Monaco">Monaco</option>
-                                <option value="Mongolia">Mongolia</option>
-                                <option value="Montenegro">Montenegro</option>
-                                <option value="Morocco">Morocco</option>
-                                <option value="Mozambique">Mozambique</option>
-                                <option value="Myanmar">Myanmar</option>
-                                <option value="Namibia">Namibia</option>
-                                <option value="Nauru">Nauru</option>
-                                <option value="Nepal">Nepal</option>
-                                <option value="Netherlands">Netherlands</option>
-                                <option value="New Zealand">New Zealand</option>
-                                <option value="Nicaragua">Nicaragua</option>
-                                <option value="Niger">Niger</option>
-                                <option value="Nigeria">Nigeria</option>
-                                <option value="North Korea">North Korea</option>
-                                <option value="North Macedonia">North Macedonia</option>
-                                <option value="Norway">Norway</option>
-                                <option value="Oman">Oman</option>
-                                <option value="Pakistan">Pakistan</option>
-                                <option value="Palau">Palau</option>
-                                <option value="Palestine">Palestine</option>
-                                <option value="Panama">Panama</option>
-                                <option value="Papua New Guinea">Papua New Guinea</option>
-                                <option value="Paraguay">Paraguay</option>
-                                <option value="Peru">Peru</option>
-                                <option value="Philippines">Philippines</option>
-                                <option value="Poland">Poland</option>
-                                <option value="Portugal">Portugal</option>
-                                <option value="Qatar">Qatar</option>
-                                <option value="Romania">Romania</option>
-                                <option value="Russia">Russia</option>
-                                <option value="Rwanda">Rwanda</option>
-                                <option value="Saint Kitts and Nevis">Saint Kitts and Nevis</option>
-                                <option value="Saint Lucia">Saint Lucia</option>
-                                <option value="Samoa">Samoa</option>
-                                <option value="San Marino">San Marino</option>
-                                <option value="Sao Tome and Principe">Sao Tome and Principe</option>
-                                <option value="Saudi Arabia">Saudi Arabia</option>
-                                <option value="Senegal">Senegal</option>
-                                <option value="Serbia">Serbia</option>
-                                <option value="Seychelles">Seychelles</option>
-                                <option value="Sierra Leone">Sierra Leone</option>
-                                <option value="Singapore">Singapore</option>
-                                <option value="Slovakia">Slovakia</option>
-                                <option value="Slovenia">Slovenia</option>
-                                <option value="Solomon Islands">Solomon Islands</option>
-                                <option value="Somalia">Somalia</option>
-                                <option value="South Africa">South Africa</option>
-                                <option value="South Korea">South Korea</option>
-                                <option value="South Sudan">South Sudan</option>
-                                <option value="Spain">Spain</option>
-                                <option value="Sri Lanka">Sri Lanka</option>
-                                <option value="Sudan">Sudan</option>
-                                <option value="Suriname">Suriname</option>
-                                <option value="Sweden">Sweden</option>
-                                <option value="Switzerland">Switzerland</option>
-                                <option value="Syria">Syria</option>
-                                <option value="Taiwan">Taiwan</option>
-                                <option value="Tajikistan">Tajikistan</option>
-                                <option value="Tanzania">Tanzania</option>
-                                <option value="Thailand">Thailand</option>
-                                <option value="Timor-Leste">Timor-Leste</option>
-                                <option value="Togo">Togo</option>
-                                <option value="Tonga">Tonga</option>
-                                <option value="Trinidad and Tobago">Trinidad and Tobago</option>
-                                <option value="Tunisia">Tunisia</option>
-                                <option value="Turkey">Turkey</option>
-                                <option value="Turkmenistan">Turkmenistan</option>
-                                <option value="Tuvalu">Tuvalu</option>
-                                <option value="Uganda">Uganda</option>
-                                <option value="Ukraine">Ukraine</option>
-                                <option value="United Arab Emirates">United Arab Emirates</option>
-                                <option value="United Kingdom">United Kingdom</option>
-                                <option value="United States">United States</option>
-                                <option value="Uruguay">Uruguay</option>
-                                <option value="Uzbekistan">Uzbekistan</option>
-                                <option value="Vanuatu">Vanuatu</option>
-                                <option value="Vatican City">Vatican City</option>
-                                <option value="Venezuela">Venezuela</option>
-                                <option value="Vietnam">Vietnam</option>
-                                <option value="Yemen">Yemen</option>
-                                <option value="Zambia">Zambia</option>
-                                <option value="Zimbabwe">Zimbabwe</option>
-                            </select>
-                            <input type="hidden" id="countryCategory" name="countryCategory" value="">
-                        </div>
-                        <div class="form-group">
-                            <label for="requirement" class="form-label">Required Package (What requirement do you
-                                need?)</label>
-                            <select id="requirement" name="requirement" class="form-control" required>
-                                <option value="" disabled selected>Select Package</option>
-                                <!-- Populated dynamically based on participant category -->
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group" style="margin-bottom: 25px;">
-                        <label for="dietary" class="form-label">Dietary Requirements / Special Needs</label>
-                        <textarea id="dietary" name="dietary" class="form-control" rows="3"
-                            placeholder="Please specify any dietary requirements or accessibility needs (if none, write None)..."></textarea>
-                    </div>
-
-                    <div class="checkbox-group" style="margin-bottom: 30px;">
-                        <input type="checkbox" id="terms" name="terms" required>
-                        <label for="terms" class="checkbox-label">I agree to the <a href="payment-policy.html"
-                                target="_blank" style="color: var(--primary-purple); font-weight: 600;">Terms &
-                                Conditions</a> and Payment Policy.</label>
-                    </div>
-
-                    <div style="text-align: center;">
-                        <button type="submit" class="btn-register" disabled style="background-color: #CBD5E0; color: #718096; cursor: not-allowed; opacity: 0.7; transform: none; box-shadow: none; pointer-events: none;">Proceed to Payment Details</button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- STEP 2: REVIEW & PAYMENT -->
-            <div id="step-2" class="step-container">
-                <h2 class="section-header" style="text-align: center; margin-bottom: 35px;">REVIEW REGISTRATION & FEES
-                </h2>
-
-                <!-- Payment Error Display -->
-                <div id="paymentErrorBox" class="payment-error-box">
-                    <span style="font-size: 1.2rem; line-height: 1;">⚠</span>
-                    <div>
-                        <strong style="display: block; margin-bottom: 4px;">Payment Failed</strong>
-                        <span id="paymentErrorMessage">Your simulated transaction was declined. Please try again.</span>
-                    </div>
-                </div>
-
-                <div class="invoice-card">
-                    <div class="invoice-header">
-                        <h4>REGISTRATION SUMMARY</h4>
-                        <div id="invoiceReference" style="font-weight: 600; font-size: 0.9rem; opacity: 0.9;">Ref:
-                            TEMP-ICSW-7889</div>
-                    </div>
-                    <div class="invoice-body">
-                        <!-- Demographics Review -->
-                        <h5 class="receipt-section-title">Registrant Metadata</h5>
-                        <div class="receipt-grid">
-                            <div class="receipt-item">
-                                <span class="receipt-label">Full Name</span>
-                                <span class="receipt-value" id="reviewName">Alan Wake</span>
-                            </div>
-                            <div class="receipt-item">
-                                <span class="receipt-label">Email Address</span>
-                                <span class="receipt-value" id="reviewEmail">alan.wake@example.com</span>
-                            </div>
-                            <div class="receipt-item">
-                                <span class="receipt-label">Institution / Organization</span>
-                                <span class="receipt-value" id="reviewOrganization">University of Excellence</span>
-                            </div>
-                            <div class="receipt-item">
-                                <span class="receipt-label">Phone Number</span>
-                                <span class="receipt-value" id="reviewPhone">+91 98765 43210</span>
-                            </div>
-                            <div class="receipt-item">
-                                <span class="receipt-label">Participant Type</span>
-                                <span class="receipt-value" id="reviewType">General Registration</span>
-                            </div>
-                            <div class="receipt-item">
-                                <span class="receipt-label">Country Category</span>
-                                <span class="receipt-value" id="reviewCountry">Developed Countries</span>
-                            </div>
-                            <div class="receipt-item" style="grid-column: span 2;">
-                                <span class="receipt-label">Selected Requirement</span>
-                                <span class="receipt-value" id="reviewRequirement">Early Bird In-Person</span>
-                            </div>
-                        </div>
-
-                        <!-- Price Calculations -->
-                        <h5 class="receipt-section-title">Itemized Fee Invoice</h5>
-                        <table class="invoice-table">
-                            <thead>
-                                <tr>
-                                    <th>Description</th>
-                                    <th style="text-align: right;">Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td id="invoiceItemDesc">PhD Colloquium - Offline Access Fee</td>
-                                    <td style="text-align: right; font-weight: 600;" id="invoiceBasePrice">150 USD</td>
-                                </tr>
-                                <tr class="gst-row" style="display: none !important;">
-                                    <td>Goods & Services Tax (GST) @ 18%</td>
-                                    <td style="text-align: right;" id="invoiceGstPrice">27 USD</td>
-                                </tr>
-                                <tr class="total-row">
-                                    <td>Total Amount Due</td>
-                                    <td style="text-align: right;" id="invoiceTotalPrice">177 USD</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="btn-container">
-                    <button type="button" class="btn-back" onclick="goToStep(1)">Back to Edit</button>
-                    <button type="button" class="btn-register" style="margin-top: 0;" onclick="completePayment()">Pay
-                        Now & Confirm</button>
-                </div>
-            </div>
-
-            <!-- STEP 3: CONFIRMATION SUCCESS -->
-            <div id="step-3" class="step-container">
-                <div class="success-celebration">
-                    <div class="success-icon-wrap">
-                        ✓
-                    </div>
-                    <h3>Registration Completed Successfully!</h3>
-                    <p>Your payment has been simulated and processed. Welcome to the conference!</p>
-
-                    <div class="receipt-summary-box">
-                        <div class="receipt-row">
-                            <span>Transaction Reference</span>
-                            <span id="finalTxnId">TXN-ICSW-2940284</span>
-                        </div>
-                        <div class="receipt-row">
-                            <span>Registrant</span>
-                            <span id="finalName">Alan Wake</span>
-                        </div>
-                        <div class="receipt-row">
-                            <span>Registration Category</span>
-                            <span id="finalType">PhD Scholar</span>
-                        </div>
-                        <div class="receipt-row">
-                            <span>Country / Tier</span>
-                            <span id="finalCountry">Developing Countries</span>
-                        </div>
-                        <div class="receipt-row">
-                            <span>Paid Package</span>
-                            <span id="finalRequirement">In-Person (Offline)</span>
-                        </div>
-                        <div class="receipt-row">
-                            <span>Total Paid</span>
-                            <span id="finalPricePaid">118 USD</span>
-                        </div>
-                    </div>
-
-                    <a href="index.html" class="btn-register" style="margin-top: 0;">Return to Home</a>
-                </div>
-            </div>
-        </section>
-
-        <!--
-        <section class="info-section">
-            <h2 class="section-header">MORE INFORMATION:</h2>
-
-            
-            <div class="info-strip">
-                <div class="info-header">
-                    <span>Registration Confirmation</span>
-                    <span class="icon">+</span>
-                </div>
-                <div class="info-content">
-                    <div class="info-content-inner">
-                        <p>Your completed registration and successful payment will be acknowledged via email. Your
-                            registration will only be processed if payment has been received.</p>
-                    </div>
-                </div>
-            </div>
-
-            
-            <div class="info-strip">
-                <div class="info-header">
-                    <span>Payment Options</span>
-                    <span class="icon">+</span>
-                </div>
-                <div class="info-content">
-                    <div class="info-content-inner">
-                        <p>Please note all online registrations require immediate payment by credit card. Accepted
-                            credit
-                            cards are MasterCard, Visa and American Express. Please note all transactions by credit card
-                            will appear on your statement as payment to ‘Forum Group Events'.</p>
-                    </div>
-                </div>
-            </div>
-
-            
-            <div class="info-strip">
-                <div class="info-header">
-                    <span>Cancellation/Postponement</span>
-                    <span class="icon">+</span>
-                </div>
-                <div class="info-content">
-                    <div class="info-content-inner">
-                        <p>All online bookings are non-cancellable, and any online Registration Fees paid are
-                            non-refundable.</p>
-                        <p>In-person registration cancellations will not be accepted unless made in writing to the
-                            Conference Organisers at <a href="mailto:aasw@forumgroupevents.com.au"
-                                style="color: #00779B; text-decoration: none;">aasw@forumgroupevents.com.au</a>.</p>
-
-                        <table class="cancel-table">
-                            <thead>
-                                <tr>
-                                    <th>Conditions</th>
-                                    <th>Charges Applicable</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>On or before 30 June 2024</td>
-                                    <td>100% refund less 10% administration fee</td>
-                                </tr>
-                                <tr>
-                                    <td>On or before 4 November 2024</td>
-                                    <td>50% refund less 10% administration fee</td>
-                                </tr>
-                                <tr>
-                                    <td>After 4 November 2024</td>
-                                    <td>No refund available</td>
-                                </tr>
-                                <tr>
-                                    <td>No refund will be paid following failure to attend without notice</td>
-                                    <td></td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <p>In the unlikely event that we have to cancel the event, if, for example, delegate numbers are
-                            too low to run the event, we will give you as much notice as possible, and you will be given
-                            the option of a refund or transfer to an alternative event.</p>
-                        <p>We are not liable to you for any non-attendance for any reason. If you are unable to attend
-                            the event, event presentations will be available for on-demand viewing after the Conference.
-                            Please consult the Event website or contact us for further details.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        -->
     </main>
 
     <main-footer></main-footer>
@@ -2470,13 +1961,13 @@
         };
 
         const DEVELOPED_COUNTRIES = [
-            "Andorra", "Australia", "Austria", "Belgium", "Canada", "Cyprus", 
-            "Czech Republic", "Denmark", "Estonia", "Finland", "France", 
-            "Germany", "Greece", "Hong Kong", "Iceland", "Ireland", "Israel", 
-            "Italy", "Japan", "Latvia", "Liechtenstein", "Lithuania", 
-            "Luxembourg", "Malta", "Monaco", "Netherlands", "New Zealand", 
-            "Norway", "Portugal", "San Marino", "Singapore", "Slovakia", 
-            "Slovenia", "South Korea", "Spain", "Sweden", "Switzerland", 
+            "Andorra", "Australia", "Austria", "Belgium", "Canada", "Cyprus",
+            "Czech Republic", "Denmark", "Estonia", "Finland", "France",
+            "Germany", "Greece", "Hong Kong", "Iceland", "Ireland", "Israel",
+            "Italy", "Japan", "Latvia", "Liechtenstein", "Lithuania",
+            "Luxembourg", "Malta", "Monaco", "Netherlands", "New Zealand",
+            "Norway", "Portugal", "San Marino", "Singapore", "Slovakia",
+            "Slovenia", "South Korea", "Spain", "Sweden", "Switzerland",
             "Taiwan", "United Kingdom", "United States", "Vatican City"
         ];
 
@@ -2507,6 +1998,7 @@
 
         // Handles choice of Abstract Submission Status
         function handleAbstractStatusChange() {
+            console.log('Action: handleAbstractStatusChange triggered');
             const status = document.getElementById('abstractSubmitted').value;
             const verifBox = document.getElementById('verificationContainer');
             const form = document.getElementById('registrationForm');
@@ -2546,6 +2038,7 @@
 
         // Mock verify email used in submission
         function verifySubmissionsEmail() {
+            console.log('Action: verifySubmissionsEmail triggered');
             const emailVal = document.getElementById('verifyEmail').value.trim().toLowerCase();
             const statusDiv = document.getElementById('verifyStatus');
             const btn = document.getElementById('btnVerify');
@@ -2606,6 +2099,7 @@
         }
 
         function resetVerification() {
+            console.log('Action: resetVerification triggered');
             wizardState.isVerified = false;
             document.getElementById('verifyEmail').disabled = false;
             document.getElementById('verifyEmail').value = '';
@@ -2620,6 +2114,7 @@
 
         // Dynamically updates package options dropdown based on Who they are & Where they are from
         function updateRequirementsOptions() {
+            console.log('Action: updateRequirementsOptions triggered');
             const pType = document.getElementById('participantType').value;
             const cCat = document.getElementById('countryCategory').value;
             const reqSelect = document.getElementById('requirement');
@@ -2644,6 +2139,7 @@
 
         // Transition between wizard steps smoothly
         function goToStep(step) {
+            console.log('Action: goToStep triggered for step:', step);
             // Hide all steps
             document.querySelectorAll('.step-container').forEach(container => {
                 container.classList.remove('active');
@@ -2678,6 +2174,7 @@
 
         // Step 1 Form Submission
         function submitStep1(event) {
+            console.log('Action: submitStep1 triggered');
             event.preventDefault();
             alert('Registration is temporarily closed. Please check the notice at the top of the page.');
             return false;
@@ -2722,10 +2219,10 @@
             wizardState.phone = phone;
             wizardState.participantType = pTypeSelect.options[pTypeSelect.selectedIndex].text;
             wizardState.country = countryVal;
-            
+
             // Format countryCategory readable string
             wizardState.countryCategory = cCat === 'developed' ? 'Developed Countries' : (cCat === 'national' ? 'National (India)' : 'Developing Countries');
-            
+
             wizardState.requirementIndex = reqIdx;
             wizardState.requirementLabel = selectedPackageData.label;
             wizardState.requirementCostText = selectedPackageData.value;
@@ -2761,15 +2258,12 @@
                 organization: wizardState.organization,
                 phone: wizardState.phone,
                 participantType: wizardState.participantType,
+                country: wizardState.country,
                 countryCategory: wizardState.countryCategory,
                 requiredPackage: `${wizardState.requirementLabel} (${rawCost})`,
-                dietaryRequirements: document.getElementById('dietary').value.trim() || 'None',
                 abstractSubmitted: status,
                 abstractEmail: status === 'yes' ? document.getElementById('verifyEmail').value.trim() : '',
                 baseAmount: wizardState.basePrice,
-                gstAmount: wizardState.gstPrice,
-                totalAmount: wizardState.totalPrice,
-                currency: wizardState.currency,
                 paymentStatus: 'Not Completed'
             };
 
@@ -2781,35 +2275,42 @@
                 },
                 body: JSON.stringify(payload)
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Server returned an error status: ' + response.status);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success && data.registration_id) {
-                    proceedToStep2(data.registration_id, rawCost);
-                } else {
-                    throw new Error(data.error || 'Failed to save registration details.');
-                }
-            })
-            .catch(error => {
-                console.warn('Backend save failed (API not ready yet). Details:', error.message);
-                console.log('%cSimulation Mode:%c Automatically generating a mock registration ID for preview testing.', 'font-weight:bold;color:#C9A227;', 'color:inherit;');
-                
-                // Fallback simulation: Generate temporary reference ID to let the UI work on frontend
-                const simulatedId = 'REG-' + Math.floor(100000 + Math.random() * 900000);
-                proceedToStep2(simulatedId, rawCost);
-            })
-            .finally(() => {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnText;
-            });
+                .then(async response => {
+                    let data;
+                    try {
+                        data = await response.json();
+                    } catch (e) {
+                        throw new Error('Server returned non-JSON error: ' + response.status);
+                    }
+                    if (!response.ok || !data.success) {
+                        throw new Error(data.error || 'Server returned an error status: ' + response.status);
+                    }
+                    return data;
+                })
+                .then(data => {
+                    if (data.registration_id) {
+                        proceedToStep2(data.registration_id, rawCost);
+                    } else {
+                        throw new Error('Failed to save registration details.');
+                    }
+                })
+                .catch(error => {
+                    console.warn('Backend save failed (API not ready yet). Details:', error.message);
+                    console.log('%cSimulation Mode:%c Automatically generating a mock registration ID for preview testing.', 'font-weight:bold;color:#C9A227;', 'color:inherit;');
+
+                    // Fallback simulation: Generate temporary reference ID to let the UI work on frontend
+                    const simulatedId = 'REG-' + Math.floor(100000 + Math.random() * 900000);
+                    proceedToStep2(simulatedId, rawCost);
+                })
+                .finally(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                });
         }
 
         // Proceed to Step 2 after ID is retrieved or generated
         function proceedToStep2(registrationId, rawCost) {
+            console.log('Action: proceedToStep2 triggered with ID:', registrationId);
             wizardState.registrationId = registrationId;
 
             // Populate Step 2 Review Fields
@@ -2841,14 +2342,32 @@
             goToStep(2);
         }
 
-        // Mock payment simulator and confirmation trigger
+        // Trigger Razorpay Payment Flow
         function completePayment() {
-            // Show the BillDesk payment simulator overlay modal
-            document.getElementById('gatewayModal').classList.add('active');
+            console.log('Action: completePayment triggered');
+            if (!wizardState.registrationId) {
+                alert('Registration ID not found. Please try registering again.');
+                return;
+            }
+
+            // Create a form to post to razorpay/checkout.php
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'razorpay/checkout.php';
+
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'registration_id';
+            input.value = wizardState.registrationId;
+
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
         }
 
         // Gateway response simulator and database payment status update
         function simulatePaymentResponse(status) {
+            console.log('Action: simulatePaymentResponse triggered with status:', status);
             const modal = document.getElementById('gatewayModal');
             const successBtn = modal.querySelector('.btn-gate-success');
             const failBtn = modal.querySelector('.btn-gate-fail');
@@ -2876,33 +2395,33 @@
                 },
                 body: JSON.stringify(payload)
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Server returned an error status: ' + response.status);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Server returned an error status: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        handleGatewayResponseFinish(status, txnId);
+                    } else {
+                        throw new Error(data.error || 'Failed to update database payment status.');
+                    }
+                })
+                .catch(error => {
+                    console.warn('Backend payment status update failed (API not ready yet). Details:', error.message);
+                    console.log('%cSimulation Mode:%c Completing checkout UI transition with simulated state.', 'font-weight:bold;color:#C9A227;', 'color:inherit;');
+
+                    // Fallback simulation: directly execute frontend flow
                     handleGatewayResponseFinish(status, txnId);
-                } else {
-                    throw new Error(data.error || 'Failed to update database payment status.');
-                }
-            })
-            .catch(error => {
-                console.warn('Backend payment status update failed (API not ready yet). Details:', error.message);
-                console.log('%cSimulation Mode:%c Completing checkout UI transition with simulated state.', 'font-weight:bold;color:#C9A227;', 'color:inherit;');
-                
-                // Fallback simulation: directly execute frontend flow
-                handleGatewayResponseFinish(status, txnId);
-            })
-            .finally(() => {
-                // Re-enable buttons and restore modal text for next potential test
-                successBtn.disabled = false;
-                failBtn.disabled = false;
-                modal.classList.remove('active');
-                modalText.textContent = 'You are now connected to the simulated payment portal. Please select a transaction response to proceed.';
-            });
+                })
+                .finally(() => {
+                    // Re-enable buttons and restore modal text for next potential test
+                    successBtn.disabled = false;
+                    failBtn.disabled = false;
+                    modal.classList.remove('active');
+                    modalText.textContent = 'You are now connected to the simulated payment portal. Please select a transaction response to proceed.';
+                });
         }
 
         // Finalize transaction state and transition screens
@@ -2934,7 +2453,7 @@
                 // Show failure notification in Step 2 review page
                 document.getElementById('paymentErrorMessage').textContent = 'Your simulated payment was declined or cancelled. Please verify your details or select another simulated outcome.';
                 errorBox.classList.add('active');
-                
+
                 // Scroll to top of the form section to make sure the error box is fully visible
                 document.querySelector('.registration-form-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
@@ -2945,10 +2464,13 @@
         <div class="gateway-modal-card">
             <div class="gateway-loader"></div>
             <h3>BillDesk Secure Payment Gateway</h3>
-            <p>You are now connected to the simulated payment portal. Please select a transaction response to proceed.</p>
+            <p>You are now connected to the simulated payment portal. Please select a transaction response to proceed.
+            </p>
             <div class="gateway-btn-row">
-                <button type="button" class="btn-gate-success" onclick="simulatePaymentResponse('Success')">Simulate Success</button>
-                <button type="button" class="btn-gate-fail" onclick="simulatePaymentResponse('Failed')">Simulate Failure</button>
+                <button type="button" class="btn-gate-success" onclick="simulatePaymentResponse('Success')">Simulate
+                    Success</button>
+                <button type="button" class="btn-gate-fail" onclick="simulatePaymentResponse('Failed')">Simulate
+                    Failure</button>
             </div>
         </div>
     </div>
