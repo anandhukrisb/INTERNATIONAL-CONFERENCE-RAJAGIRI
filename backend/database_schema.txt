@@ -1,0 +1,43 @@
+use icswhmh_db;
+
+-- SQL Script to create necessary tables for the Registration System
+
+-- 1. Create abstract_details table (if you don't have it already)
+-- This table is used to verify if an email has submitted an abstract.
+CREATE TABLE IF NOT EXISTS `abstract_details` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `email` VARCHAR(255) NOT NULL UNIQUE
+);
+
+-- Note: If you already have an abstract_details table, you do not need to run the above command.
+-- Ensure the column containing the email is named `email` or adjust the PHP code accordingly.
+
+-- 2. Create user_registrations table
+-- This table stores all the information collected during the registration process.
+CREATE TABLE IF NOT EXISTS `user_registrations` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `registration_id` VARCHAR(50) NOT NULL UNIQUE, -- For the REG-123456 format
+    `first_name` VARCHAR(100) NOT NULL,
+    `middle_name` VARCHAR(100) DEFAULT NULL,
+    `last_name` VARCHAR(100) NOT NULL,
+    `email` VARCHAR(255) NOT NULL,
+    `organization` VARCHAR(255) NOT NULL,
+    `phone` VARCHAR(50) NOT NULL,
+    `participant_category` VARCHAR(100) NOT NULL,
+    `country` VARCHAR(100) NOT NULL,
+    `country_category` VARCHAR(100) NOT NULL,
+    `package` VARCHAR(255) NOT NULL,
+    `abstract_submitted` ENUM('yes', 'no') DEFAULT 'no',
+    `abstract_email` VARCHAR(255) DEFAULT NULL,
+    `base_amount` DECIMAL(10, 2) NOT NULL,
+    `payment_status` ENUM('Not Completed', 'Completed', 'Failed') DEFAULT 'Not Completed',
+    `transaction_id` VARCHAR(100) DEFAULT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX `idx_email` (`email`),
+    INDEX `idx_transaction_id` (`transaction_id`)
+);
+
+-- 3. (Optional) Insert some dummy data into abstract_details for testing the "Verify Email" button
+INSERT INTO `abstract_details` (`email`) VALUES ('author@icswhmh2027.org');
+INSERT INTO `abstract_details` (`email`) VALUES ('test@example.com');
