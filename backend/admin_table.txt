@@ -1,0 +1,13 @@
+-- Admin Table Schema
+CREATE TABLE IF NOT EXISTS `admin_users` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `email` VARCHAR(255) NOT NULL UNIQUE,
+    `password` VARCHAR(255) NOT NULL, -- Passwords should be stored as hashes (e.g., using PHP's password_hash)
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Example insert for default admin
+-- The password here should be hashed in production. 
+-- For testing, if you use a plain text password 'admin123', the bcrypt hash might look like this:
+-- INSERT INTO `admin_users` (`email`, `password`) VALUES ('admin@example.com', '$2y$10$YOUR_HASHED_PASSWORD_HERE');

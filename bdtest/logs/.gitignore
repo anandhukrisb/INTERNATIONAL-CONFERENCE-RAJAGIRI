@@ -1,3 +1,0 @@
-# Protect all log files from being committed to version control.
-# BillDesk logs may contain sensitive transaction details.
-*.log
