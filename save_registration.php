@@ -128,6 +128,50 @@ try {
         error_log("save_registration.php: Registration inserted successfully. ID: " . $dbId);
     }
 
+    // Send confirmation email with Registration ID using PHPMailer
+    require_once __DIR__ . '/backend/PHPMailer/src/Exception.php';
+    require_once __DIR__ . '/backend/PHPMailer/src/PHPMailer.php';
+    require_once __DIR__ . '/backend/PHPMailer/src/SMTP.php';
+
+    $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
+
+    try {
+        // Server settings
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.gmail.com';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = $env['SMTP_USER'] ?? '';
+        $mail->Password   = $env['SMTP_PASS'] ?? '';
+        $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
+
+        // Recipients
+        $mail->setFrom($env['SMTP_USER'] ?? 'icswhmh2027@rajagiri.edu', 'ICSWHMH Organizing Team');
+        $mail->addAddress($email, "$firstName $lastName");
+        $mail->addReplyTo($env['SMTP_USER'] ?? 'icswhmh2027@rajagiri.edu', 'ICSWHMH Support');
+
+        // Content
+        $mail->isHTML(false);
+        $mail->Subject = 'Your Registration ID for ICSWHMH';
+        
+        $message = "Dear $firstName $lastName,\n\n";
+        $message .= "Thank you for starting your registration for ICSWHMH.\n\n";
+        $message .= "Here are your registration details:\n";
+        $message .= "- Registration ID: $registrationId\n";
+        $message .= "- Participant Type: $participantType\n";
+        $message .= "- Package Selected: $package\n";
+        $message .= "- Base Amount: $baseAmount\n\n";
+        $message .= "Please keep this Registration ID safe. You can use it to track your registration or complete your payment if it was interrupted.\n\n";
+        $message .= "Best Regards,\nICSWHMH Organizing Team";
+
+        $mail->Body = $message;
+
+        $mail->send();
+        error_log("save_registration.php: Registration email sent via PHPMailer to " . $email);
+    } catch (Exception $e) {
+        error_log("save_registration.php: Failed to send registration email to $email. Mailer Error: {$mail->ErrorInfo}");
+    }
+
     // 6. Return success response
     echo json_encode([
         'success' => true,

@@ -4,13 +4,13 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
     header("Location: login.php");
     exit;
 }
-require_once __DIR__ . '/../backend/db.php';
 
 $search = trim($_GET['search'] ?? '');
 $filter_status = $_GET['status'] ?? '';
 $sort = $_GET['sort'] ?? 'date_desc';
 
 try {
+    require_once __DIR__ . '/../backend/db.php';
     $query = "SELECT * FROM user_registrations WHERE 1=1";
     $params = [];
 
@@ -106,7 +106,7 @@ try {
         }
         .container {
             padding: 40px;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 120px auto 40px auto;
             min-height: calc(100vh - 440px);
         }
@@ -131,25 +131,31 @@ try {
             border-collapse: collapse;
             font-family: 'Inter', sans-serif;
             font-size: 0.95rem;
+            white-space: nowrap;
         }
         th, td {
-            padding: 15px 20px;
+            padding: 16px 24px;
             text-align: left;
             border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
         }
         th {
             background-color: #f8fafc;
-            color: #64748b;
-            font-weight: 600;
+            color: #475569;
+            font-weight: 700;
             text-transform: uppercase;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             letter-spacing: 0.05em;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #fafbfc;
         }
         tr:last-child td {
             border-bottom: none;
         }
-        tr:hover {
-            background-color: #f8fafc;
+        tbody tr:hover {
+            background-color: #f1f5f9;
         }
         .badge {
             padding: 6px 12px;
