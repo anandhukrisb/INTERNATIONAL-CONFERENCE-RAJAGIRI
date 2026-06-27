@@ -1,10 +1,14 @@
 <?php
 session_start();
-require_once __DIR__ . '/../backend/db.php';
-
 $error = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+try {
+    require_once __DIR__ . '/../backend/db.php';
+} catch (Exception $e) {
+    $error = "Database connection failed.";
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
 

@@ -5,8 +5,8 @@ $reg_status = '';
 $txn_id = '';
 
 if ($reg_id !== '') {
-    require_once __DIR__ . '/backend/db.php';
     try {
+        require_once __DIR__ . '/backend/db.php';
         $stmt = $pdo->prepare("SELECT * FROM user_registrations WHERE registration_id = :reg_id LIMIT 1");
         $stmt->execute([':reg_id' => $reg_id]);
         $fetched_user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -1800,11 +1800,22 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
                     </div>
                 </div>
 
+                <div style="background-color: #FFF3CD; border-left: 4px solid #D69E2E; padding: 12px 15px; margin-bottom: 20px; border-radius: 4px;">
+                    <p style="margin: 0; color: #975A16; font-size: 0.9rem; display: flex; align-items: flex-start; gap: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-top: 2px; flex-shrink: 0;"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>
+                        <span><strong>Important:</strong> Please safely copy and save your Registration ID (<?= htmlspecialchars($reg_id) ?>) for future reference and to check your payment status later.</span>
+                    </p>
+                </div>
+
                 <div class="invoice-card">
                     <div class="invoice-header">
                         <h4>REGISTRATION SUMMARY</h4>
-                        <div id="invoiceReference" style="font-weight: 600; font-size: 0.9rem; opacity: 0.9;">Ref:
-                            <?= htmlspecialchars($reg_id) ?></div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div id="invoiceReference" style="font-weight: 600; font-size: 0.9rem; opacity: 0.9;">Ref: <?= htmlspecialchars($reg_id) ?></div>
+                            <button type="button" onclick="copyRegId('<?= htmlspecialchars($reg_id, ENT_QUOTES) ?>')" style="background: none; border: none; cursor: pointer; color: white; opacity: 0.8; padding: 0; display: flex; align-items: center; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'" title="Copy Registration ID">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/></svg>
+                            </button>
+                        </div>
                     </div>
                     <div class="invoice-body">
                         <!-- Demographics Review -->
@@ -1868,7 +1879,6 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
                 </div>
 
                 <div class="btn-container">
-                    <button type="button" class="btn-back" onclick="window.location.href='registration.php'">Back to Edit</button>
                     <button type="button" class="btn-register" style="margin-top: 0;" onclick="completePayment()">Pay
                         Now & Confirm</button>
                 </div>
@@ -1923,7 +1933,7 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
                     <h3 style="color: #D32F2F;">Payment Failed</h3>
                     <p>Your payment was declined or cancelled. Please try again.</p>
 
-                    <a href="view_transaction.php" class="btn-register" style="margin-top: 20px; background-color: #D32F2F;">Try Again</a>
+                    <a href="/view_transaction.php" class="btn-register" style="margin-top: 20px; background-color: #D32F2F;">Try Again</a>
                 </div>
             </div>
         </section>
@@ -2021,6 +2031,13 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
+        // Copy to clipboard helper
+        function copyRegId(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Registration ID copied to clipboard!");
+            });
+        }
+
         // Global state for wizard data
         let wizardState = {
             registrationId: <?= json_encode($fetched_user['registration_id'] ?? '') ?>,

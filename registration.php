@@ -6,8 +6,8 @@ $txn_id = $_GET['txn_id'] ?? '';
 
 $fetched_user = null;
 if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
-    require_once __DIR__ . '/backend/db.php';
     try {
+        require_once __DIR__ . '/backend/db.php';
         $stmt = $pdo->prepare("SELECT * FROM user_registrations WHERE registration_id = :reg_id LIMIT 1");
         $stmt->execute([':reg_id' => $reg_id]);
         $fetched_user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -724,12 +724,18 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
 
         .form-control {
             padding: 12px 15px;
-            border: 1px solid #ddd;
+            border: 2px solid #A0AEC0;
             border-radius: 8px;
             font-family: 'Inter', sans-serif;
             font-size: 1rem;
             transition: border-color 0.3s, box-shadow 0.3s;
             background-color: #f9f9fb;
+            box-sizing: border-box;
+        }
+
+        .form-control::placeholder {
+            color: #CBD5E0;
+            opacity: 1; /* Firefox sets opacity < 1 by default */
         }
 
         .form-control:focus {
@@ -737,6 +743,10 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             border-color: var(--primary-purple);
             box-shadow: 0 0 0 3px rgba(29, 10, 63, 0.1);
             background-color: #fff;
+        }
+
+        #firstName, #middleName, #lastName {
+            text-transform: capitalize;
         }
 
         select.form-control {
@@ -1790,6 +1800,30 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                             onclick="checkInitialEmail()">Proceed</button>
                     </div>
                     <div id="initialCheckStatus" class="verification-status"></div>
+                    
+                    <!-- OTP Verification Container -->
+                    <div id="otpContainer" style="display: none; margin-top: 15px; border-top: 1px dashed var(--accent-gold); padding-top: 15px;">
+                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">
+                            Please enter the 6-digit OTP sent to your email.
+                        </p>
+                        
+                        <div style="background-color: #EBF8FF; border-left: 4px solid #3182CE; padding: 12px 15px; margin-bottom: 20px; border-radius: 4px;">
+                            <p style="margin: 0; color: #2B6CB0; font-size: 0.85rem; display: flex; align-items: flex-start; gap: 8px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-top: 2px; flex-shrink: 0;"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>
+                                <span><strong>Didn't receive the email?</strong><br>Kindly check your spam folder, or verify that the email address you entered is correct.</span>
+                            </p>
+                        </div>
+                        <div class="verification-row">
+                            <div class="form-group" style="margin-bottom: 0; flex: 1;">
+                                <input type="text" id="otpInput" class="form-control" placeholder="XXXXXX" maxlength="6">
+                            </div>
+                            <button type="button" class="btn-verify" id="btnVerifyOTP" onclick="submitOTP()" style="background-color: var(--accent-gold); color: #1D0A3F;">Verify OTP</button>
+                        </div>
+                        <div id="otpStatus" class="verification-status"></div>
+                        <div style="margin-top: 10px; font-size: 0.85rem; text-align: right;">
+                            <a href="#" onclick="resendOTP(); return false;" style="color: var(--primary-purple); font-weight: 600; text-decoration: underline;">Resend OTP</a>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Remaining Registration Form (Conditionally overlay locked until verified) -->
@@ -2294,47 +2328,72 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                 const res = await fetch(`backend/check_email.php?email=${encodeURIComponent(emailVal)}`);
                 const data = await res.json();
                 
+                if (!data.success) {
+                    throw new Error(data.error || 'Server error occurred while checking email.');
+                }
+                
                 if (data.is_registered) {
-                    statusDiv.innerHTML = '<span style="color: #C53030;">⚠ This email is already registered. Registration not allowed.</span>';
-                    statusDiv.className = 'verification-status error';
+                    const statusText = data.payment_status || 'Pending';
+                    
+                    let statusColor = '#D69E2E'; // Default (e.g., Pending -> Orange)
+                    let buttonText = 'Check Details / Pay Again &rarr;';
+                    
+                    if (statusText === 'Completed') {
+                        statusColor = '#2F855A'; // Green
+                        buttonText = 'Check Registration Details &rarr;';
+                    } else if (statusText === 'Failed' || statusText.toLowerCase() === 'not completed') {
+                        statusColor = '#C53030'; // Red
+                    }
+                    
+                    statusDiv.innerHTML = `
+                        <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+                            <div style="color: #C53030; font-weight: 600;">
+                                ⚠ This email is already registered.
+                            </div>
+                            <div style="background: #F7FAFC; padding: 15px; border-radius: 8px; border: 1px solid #E2E8F0; text-align: left;">
+                                <div style="margin-bottom: 8px; color: #4A5568;">Payment Status: <strong style="color: ${statusColor}; text-transform: uppercase;">${statusText}</strong></div>
+                                <div style="font-size: 0.9rem; color: #718096; margin-bottom: 15px;">You can view your transaction history or complete pending payments from the Check Status page.</div>
+                                <a href="view_transaction.php" style="display: inline-block; background-color: var(--primary-purple); color: white; padding: 10px 20px; border-radius: 50px; text-decoration: none; font-size: 0.9rem; font-family: 'Outfit', sans-serif; font-weight: 600; text-align: center; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='var(--accent-gold)'; this.style.color='var(--primary-purple)';" onmouseout="this.style.backgroundColor='var(--primary-purple)'; this.style.color='white';">${buttonText}</a>
+                            </div>
+                        </div>
+                    `;
+                    statusDiv.className = 'verification-status'; 
+                    statusDiv.style.display = 'block';
+                    
                     btn.disabled = false;
-                    btn.innerHTML = 'Proceed';
+                    btn.innerHTML = 'Check Another';
                     form.classList.add('locked-form-overlay');
                     form.classList.remove('unlocked-form');
                     return;
                 }
 
-                // If not registered, proceed
-                wizardState.isVerified = true;
-                wizardState.email = emailVal;
-                wizardState.abstractSubmitted = data.has_abstract ? 'yes' : 'no';
+                // If not registered, trigger OTP send
+                statusDiv.innerHTML = 'Sending OTP to your email...';
+                const otpRes = await fetch('backend/send_otp.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: emailVal })
+                });
+                const otpData = await otpRes.json();
 
-                let successMessage = '✓ You can now proceed with your registration.';
-                if (data.has_abstract) {
-                    successMessage = '✓ Verified Abstract Submitter! You can now proceed.';
+                if (!otpData.success) {
+                    throw new Error(otpData.error || 'Failed to send OTP.');
                 }
 
+                // Show OTP input container
+                wizardState.pendingEmail = emailVal;
+                wizardState.pendingAbstract = data.has_abstract ? 'yes' : 'no';
+                
+                document.getElementById('checkEmail').readOnly = true;
+                btn.style.display = 'none'; // Hide proceed button
+                
                 statusDiv.innerHTML = `
-                    <span class="verified-badge">✓ Success</span>
-                    <span style="color: #2F855A; margin-left: 10px;">${successMessage}</span>
+                    <span class="verified-badge" style="background-color: #EBF8FF; color: #2B6CB0;">✓ OTP Sent Successfully</span>
                 `;
                 statusDiv.className = 'verification-status success';
-                statusDiv.style.color = '#2F855A';
-
-                // Populate main form email and make readonly
-                const mainEmail = document.getElementById('email');
-                mainEmail.value = emailVal;
-                mainEmail.readOnly = true;
-
-                // Unlock registration form
-                form.classList.remove('locked-form-overlay');
-                form.classList.add('unlocked-form');
-
-                // Disable the check block
-                document.getElementById('checkEmail').readOnly = true;
-                btn.disabled = true;
-                btn.style.backgroundColor = '#CBD5E0';
-                btn.style.color = '#718096';
+                statusDiv.style.display = 'block';
+                
+                document.getElementById('otpContainer').style.display = 'block';
                 btn.innerHTML = 'Verified';
 
             } catch (error) {
@@ -2346,7 +2405,97 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             }
         }
 
-        // Updates the Requirement Package dropdown based on Tier & Participant Type
+        async function submitOTP() {
+            const otpVal = document.getElementById('otpInput').value.trim();
+            const otpStatusDiv = document.getElementById('otpStatus');
+            const btnVerifyOTP = document.getElementById('btnVerifyOTP');
+            
+            if (!otpVal || otpVal.length < 6) {
+                otpStatusDiv.innerHTML = '<span style="color: #C53030;">⚠ Please enter a valid 6-digit OTP.</span>';
+                otpStatusDiv.className = 'verification-status error';
+                otpStatusDiv.style.display = 'flex';
+                return;
+            }
+
+            btnVerifyOTP.disabled = true;
+            btnVerifyOTP.innerHTML = 'Verifying...';
+            otpStatusDiv.style.display = 'none';
+
+            try {
+                const res = await fetch('backend/verify_otp.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: wizardState.pendingEmail, otp: otpVal })
+                });
+                const data = await res.json();
+                
+                if (!data.success) {
+                    throw new Error(data.error || 'Invalid OTP.');
+                }
+
+                // OTP Verified! Unlock form
+                wizardState.isVerified = true;
+                wizardState.email = wizardState.pendingEmail;
+                wizardState.abstractSubmitted = wizardState.pendingAbstract;
+
+                otpStatusDiv.innerHTML = `
+                    <span class="verified-badge">✓ Email Verified</span>
+                    <span style="color: #2F855A; margin-left: 10px;">You can now proceed.</span>
+                `;
+                otpStatusDiv.className = 'verification-status success';
+                otpStatusDiv.style.color = '#2F855A';
+                otpStatusDiv.style.display = 'block';
+
+                btnVerifyOTP.innerHTML = 'Verified';
+                btnVerifyOTP.style.backgroundColor = '#CBD5E0';
+                btnVerifyOTP.style.color = '#718096';
+                document.getElementById('otpInput').readOnly = true;
+
+                // Populate main form email and make readonly
+                const mainEmail = document.getElementById('email');
+                mainEmail.value = wizardState.email;
+                mainEmail.readOnly = true;
+
+                // Unlock registration form
+                const form = document.getElementById('registrationForm');
+                form.classList.remove('locked-form-overlay');
+                form.classList.add('unlocked-form');
+                
+            } catch (error) {
+                btnVerifyOTP.disabled = false;
+                btnVerifyOTP.innerHTML = 'Verify OTP';
+                otpStatusDiv.innerHTML = `<span style="color: #C53030;">⚠ ${error.message}</span>`;
+                otpStatusDiv.className = 'verification-status error';
+                otpStatusDiv.style.display = 'flex';
+            }
+        }
+
+        async function resendOTP() {
+            const otpStatusDiv = document.getElementById('otpStatus');
+            otpStatusDiv.innerHTML = 'Resending OTP...';
+            otpStatusDiv.className = 'verification-status';
+            otpStatusDiv.style.display = 'block';
+            otpStatusDiv.style.color = 'var(--text-muted)';
+            
+            try {
+                const otpRes = await fetch('backend/send_otp.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: wizardState.pendingEmail })
+                });
+                const otpData = await otpRes.json();
+
+                if (!otpData.success) {
+                    throw new Error(otpData.error || 'Failed to resend OTP.');
+                }
+                otpStatusDiv.innerHTML = `<span style="color: #2B6CB0;">✓ A new OTP was sent to your email.</span>`;
+            } catch (error) {
+                otpStatusDiv.innerHTML = `<span style="color: #C53030;">⚠ ${error.message}</span>`;
+                otpStatusDiv.className = 'verification-status error';
+            }
+        }
+
+        // Dynamically updates package options dropdown based on Who they are & Where they are fromType
         function updateRequirementsOptions() {
             console.log('Action: updateRequirementsOptions triggered');
             const pType = document.getElementById('participantType').value;
@@ -2415,9 +2564,10 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             // Read abstract submitted status from global state
             const status = wizardState.abstractSubmitted || 'no';
 
-            const firstName = document.getElementById('firstName').value.trim();
-            const middleName = document.getElementById('middleName').value.trim();
-            const lastName = document.getElementById('lastName').value.trim();
+            const capitalize = (s) => s.replace(/\b\w/g, c => c.toUpperCase());
+            const firstName = capitalize(document.getElementById('firstName').value.trim());
+            const middleName = capitalize(document.getElementById('middleName').value.trim());
+            const lastName = capitalize(document.getElementById('lastName').value.trim());
             const email = document.getElementById('email').value.trim();
             const organization = document.getElementById('organization').value.trim();
             const phone = document.getElementById('phone').value.trim();

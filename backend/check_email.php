@@ -16,9 +16,11 @@ try {
         exit;
     }
 
-    $stmtReg = $pdo->prepare("SELECT COUNT(*) FROM user_registrations WHERE email = :email");
+    $stmtReg = $pdo->prepare("SELECT payment_status FROM user_registrations WHERE email = :email LIMIT 1");
     $stmtReg->execute([':email' => $email]);
-    $isRegistered = $stmtReg->fetchColumn() > 0;
+    $regRow = $stmtReg->fetch(PDO::FETCH_ASSOC);
+    $isRegistered = $regRow !== false;
+    $paymentStatus = $isRegistered ? $regRow['payment_status'] : null;
 
     $stmtAbs = $pdo->prepare("SELECT COUNT(*) FROM abstract_details WHERE email = :email");
     $stmtAbs->execute([':email' => $email]);
@@ -27,6 +29,7 @@ try {
     echo json_encode([
         'success' => true,
         'is_registered' => $isRegistered,
+        'payment_status' => $paymentStatus,
         'has_abstract' => $hasAbstract
     ]);
 
