@@ -2207,7 +2207,6 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
 
         // Handles Country selection to determine tier (Developed, Developing, National)
         function handleCountryChange() {
-            console.log('Action: handleCountryChange triggered');
             const countrySelect = document.getElementById('country');
             const countryVal = countrySelect.value;
             const cCatInput = document.getElementById('countryCategory');
@@ -2226,7 +2225,6 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
 
         // Initial Email Verification
         async function checkInitialEmail() {
-            console.log('Action: checkInitialEmail triggered');
             const emailVal = document.getElementById('checkEmail').value.trim().toLowerCase();
             const statusDiv = document.getElementById('initialCheckStatus');
             const btn = document.getElementById('btnCheckEmail');
@@ -2422,7 +2420,6 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
 
         // Dynamically updates package options dropdown based on Who they are & Where they are fromType
         function updateRequirementsOptions() {
-            console.log('Action: updateRequirementsOptions triggered');
             const pType = document.getElementById('participantType').value;
             const cCat = document.getElementById('countryCategory').value;
             const reqSelect = document.getElementById('requirement');
@@ -2447,7 +2444,6 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
 
         // Navigate between steps
         function goToStep(stepNumber) {
-            console.log('Action: goToStep triggered for step:', stepNumber);
             // Hide all steps
             document.querySelectorAll('.step-container').forEach(container => {
                 container.classList.remove('active');
@@ -2483,7 +2479,6 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
 
         // Submission for Step 1
         async function submitStep1(event) {
-            console.log('Action: submitStep1 triggered');
             event.preventDefault();
 
             // Read abstract submitted status from global state
@@ -2612,18 +2607,15 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                 }
             })
             .catch(error => {
-                console.warn('Backend save failed (API not ready yet). Details:', error.message);
-                console.log('%cSimulation Mode:%c Automatically generating a mock registration ID for preview testing.', 'font-weight:bold;color:#C9A227;', 'color:inherit;');
-                
-                // Fallback simulation: Generate temporary reference ID to let the UI work on frontend
-                const simulatedId = 'REG-' + Math.floor(100000 + Math.random() * 900000);
-                window.location.href = 'process_payment.php?reg_id=' + simulatedId;
+                console.error('Registration Error:', error.message);
+                alert('An error occurred while saving your registration. Please try again later.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
             });
         }
 
         // Proceed to Step 2 after ID is retrieved or generated
         function proceedToStep2(registrationId, rawCost) {
-            console.log('Action: proceedToStep2 triggered with ID:', registrationId);
             wizardState.registrationId = registrationId;
 
             // Populate Step 2 Review Fields
@@ -2658,7 +2650,6 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
 
         // Final UI cleanup based on payment outcome
         function handleGatewayResponseFinish(status, txnId) {
-            console.log('Action: handleGatewayResponseFinish triggered with status:', status);
             const errorBox = document.getElementById('paymentErrorBox');
 
             if (status === 'Success') {

@@ -92,8 +92,8 @@ file_put_contents($log_file, "Proceeding to update DB for Reg ID: $registration_
 if ($event === 'payment.captured' || $event === 'payment.authorized' || $event === 'order.paid') {
     $current_status = ($event === 'payment.captured' || $event === 'order.paid') ? 'captured' : 'authorized';
 
-    // 1. Log the attempt with the accurate status
-    $insert_attempt_sql = "INSERT INTO payment_attempts (razorpay_order_id, razorpay_payment_id, status) 
+    // 1. Log the attempt securely and efficiently (INSERT IGNORE relies on DB UNIQUE constraint to block duplicates)
+    $insert_attempt_sql = "INSERT IGNORE INTO payment_attempts (razorpay_order_id, razorpay_payment_id, status) 
         VALUES ('$order_id_db', '$payment_id_db', '$current_status')";
     mysqli_query($db_conn, $insert_attempt_sql);
 
