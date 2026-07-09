@@ -8,9 +8,10 @@ try {
     $error = "We are currently experiencing database issues. Please try again later.";
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
-    $registration_id = $_POST['registration_id'] ?? '';
-    $dob = $_POST['dob'] ?? '';
+$registration_id = $_REQUEST['registration_id'] ?? '';
+$dob = $_REQUEST['dob'] ?? '';
+
+if (!empty($registration_id) && !empty($dob) && empty($error)) {
 
     if (!empty($registration_id) && !empty($dob)) {
         try {
@@ -160,16 +161,16 @@ function renderHistoryItem($item) {
                         Your Registration ID was sent to your email address when you first signed up. Please check your inbox (or spam folder) to find it.
                     </p>
                 </div>
-                <form method="POST" action="">
+                <form method="GET" action="">
                     <div class="form-group">
                         <label for="registration_id" class="form-label">Registration ID</label>
-                        <input type="text" id="registration_id" name="registration_id" class="form-control" required placeholder="REG-XXXXXX" value="<?php echo htmlspecialchars($_POST['registration_id'] ?? ''); ?>">
+                        <input type="text" id="registration_id" name="registration_id" class="form-control" required placeholder="REG-XXXXXX" value="<?php echo htmlspecialchars($_REQUEST['registration_id'] ?? ''); ?>">
                     </div>
                     <div class="form-group">
                         <label for="dob" class="form-label">Date of Birth</label>
-                        <input type="date" id="dob" name="dob" class="form-control" required value="<?php echo htmlspecialchars($_POST['dob'] ?? ''); ?>">
+                        <input type="date" id="dob" name="dob" class="form-control" required value="<?php echo htmlspecialchars($_REQUEST['dob'] ?? ''); ?>">
                     </div>
-                    <button type="submit" class="btn-action" style="width: 100%; border: none; cursor: pointer;">View Details</button>
+                    <button type="submit" class="btn-action" style="width: 100%; border: none; cursor: pointer;" onclick="if(this.form.checkValidity()){this.disabled=true; this.innerHTML=spinnerSvg + ' Fetching Details...'; this.form.submit();}">View Details</button>
                 </form>
             </div>
         <?php else: ?>
@@ -203,7 +204,7 @@ function renderHistoryItem($item) {
                             <?php if ($status !== 'Completed'): ?>
                             <form method="GET" action="process_payment.php" style="margin: 0 0 10px 0; display: flex; justify-content: flex-end;">
                                 <input type="hidden" name="reg_id" value="<?php echo htmlspecialchars($user_details['registration_id']); ?>">
-                                <button type="submit" class="btn-action" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 20px; font-size: 0.9rem; border-radius: 50px; text-decoration: none; border: none; cursor: pointer; margin: 0;">
+                                <button type="submit" class="btn-action" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 20px; font-size: 0.9rem; border-radius: 50px; text-decoration: none; border: none; cursor: pointer; margin: 0;" onclick="this.disabled=true; this.innerHTML=spinnerSvg + ' Redirecting...'; this.form.submit();">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
                                     Pay Again
                                 </button>
@@ -310,6 +311,15 @@ function renderHistoryItem($item) {
     <main-footer></main-footer>
 
     <script>
+    const spinnerSvg = '<svg style="animation: spin 1s linear infinite; margin-right: 8px; width: 18px; height: 18px; display: inline-block; vertical-align: text-bottom;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity: 0.25;"></circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" style="opacity: 0.75;"></path></svg>';
+
+    // Fix back button cache issue
+    window.addEventListener("pageshow", function(event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
+
     function toggleHistory(btn) {
         const drawer = document.getElementById('historyDrawer');
         if (drawer.classList.contains('open')) {
