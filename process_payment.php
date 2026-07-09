@@ -1268,44 +1268,6 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
         }
 
         /* ================= PAYMENT SIMULATION MODAL ================= */
-        .gateway-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(29, 10, 63, 0.4);
-            backdrop-filter: blur(8px);
-            z-index: 10000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .gateway-modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .gateway-modal-card {
-            background-color: #fff;
-            width: 90%;
-            max-width: 500px;
-            border-radius: 16px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-            padding: 40px 30px;
-            text-align: center;
-            transform: scale(0.9);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border-top: 5px solid var(--accent-gold);
-        }
-
-        .gateway-modal-overlay.active .gateway-modal-card {
-            transform: scale(1);
-        }
 
         .gateway-loader {
             width: 60px;
@@ -1322,58 +1284,7 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
             100% { transform: rotate(360deg); }
         }
 
-        .gateway-modal-card h3 {
-            font-family: 'Outfit', sans-serif;
-            color: var(--primary-purple);
-            font-size: 1.4rem;
-            margin-bottom: 10px;
-        }
 
-        .gateway-modal-card p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-bottom: 30px;
-        }
-
-        .gateway-btn-row {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-        }
-
-        .btn-gate-success {
-            background-color: #2F855A;
-            color: #fff;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-gate-success:hover {
-            background-color: #22543D;
-            transform: translateY(-2px);
-        }
-
-        .btn-gate-fail {
-            background-color: #C53030;
-            color: #fff;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-gate-fail:hover {
-            background-color: #9B2C2C;
-            transform: translateY(-2px);
-        }
 
         /* ================= FAILURE STATUS DISPLAY ================= */
         .payment-error-box {
@@ -2156,12 +2067,15 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
                             
                             const verifyData = await verifyRes.json();
                             
-                            if (verifyData.success) {
-                                handleGatewayResponseFinish('Success', response.razorpay_payment_id);
-                            } else {
-                                alert(verifyData.error || 'Payment verification failed');
-                                handleGatewayResponseFinish('Failed', '');
-                            }
+                            // Artificial delay to show processing loader
+                            setTimeout(() => {
+                                if (verifyData.success) {
+                                    handleGatewayResponseFinish('Success', response.razorpay_payment_id);
+                                } else {
+                                    alert(verifyData.error || 'Payment verification failed');
+                                    handleGatewayResponseFinish('Failed', '');
+                                }
+                            }, 2500);
                         } catch (err) {
                             alert('An error occurred during verification.');
                             handleGatewayResponseFinish('Failed', '');
@@ -2199,67 +2113,6 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
             }
         }
 
-        // Gateway response simulator and database payment status update
-        function simulatePaymentResponse(status) {
-            console.log('Action: simulatePaymentResponse triggered with status:', status);
-            const modal = document.getElementById('gatewayModal');
-            const successBtn = modal.querySelector('.btn-gate-success');
-            const failBtn = modal.querySelector('.btn-gate-fail');
-            const modalText = modal.querySelector('p');
-
-            // Disable buttons and show loading state
-            successBtn.disabled = true;
-            failBtn.disabled = true;
-            modalText.textContent = 'Processing simulated transaction response with database...';
-
-            const txnId = status === 'Success' ? 'TXN-ICSW-' + Math.floor(1000000 + Math.random() * 9000000) : '';
-            const dbStatus = status === 'Success' ? 'Completed' : 'Failed';
-
-            // Show loading view immediately
-            showView('view-loading');
-
-            const payload = {
-                registrationId: '<?= htmlspecialchars($reg_id, ENT_QUOTES) ?>',
-                paymentStatus: dbStatus,
-                transactionId: txnId
-            };
-
-            // Call backend update endpoint
-            fetch('update_payment_status.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Server returned an error status: ' + response.status);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    handleGatewayResponseFinish(status, txnId);
-                } else {
-                    throw new Error(data.error || 'Failed to update database payment status.');
-                }
-            })
-            .catch(error => {
-                console.warn('Backend payment status update failed (API not ready yet). Details:', error.message);
-                console.log('%cSimulation Mode:%c Completing checkout UI transition with simulated state.', 'font-weight:bold;color:#C9A227;', 'color:inherit;');
-                
-                // Fallback simulation: directly execute frontend flow
-                handleGatewayResponseFinish(status, txnId);
-            })
-            .finally(() => {
-                // Re-enable buttons and restore modal text for next potential test
-                successBtn.disabled = false;
-                failBtn.disabled = false;
-                modal.classList.remove('active');
-                modalText.textContent = 'You are now connected to the simulated payment portal. Please select a transaction response to proceed.';
-            });
-        }
 
         // Final UI cleanup based on payment outcome
         function handleGatewayResponseFinish(status, txnId) {
@@ -2316,18 +2169,7 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
     </script>
     <?php endif; ?>
 
-    <!-- Payment Simulation Modal -->
-    <div id="gatewayModal" class="gateway-modal-overlay">
-        <div class="gateway-modal-card">
-            <div class="gateway-loader"></div>
-            <h3>BillDesk Secure Payment Gateway</h3>
-            <p>You are now connected to the simulated payment portal. Please select a transaction response to proceed.</p>
-            <div class="gateway-btn-row">
-                <button type="button" class="btn-gate-success" onclick="simulatePaymentResponse('Success')">Simulate Success</button>
-                <button type="button" class="btn-gate-fail" onclick="simulatePaymentResponse('Failed')">Simulate Failure</button>
-            </div>
-        </div>
-    </div>
+
 </body>
 
 </html>
