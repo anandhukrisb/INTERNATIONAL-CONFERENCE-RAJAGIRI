@@ -1953,6 +1953,15 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
+        // Fix back button cache issue
+        window.addEventListener("pageshow", function(event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
+
+        const spinnerSvg = '<svg style="animation: spin 1s linear infinite; margin-right: 8px; width: 18px; height: 18px; display: inline-block; vertical-align: text-bottom;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity: 0.25;"></circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" style="opacity: 0.75;"></path></svg>';
+
         // Copy to clipboard helper
         function copyRegId(text) {
             navigator.clipboard.writeText(text).then(() => {
@@ -1988,6 +1997,7 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
             console.log('Action: completePayment triggered');
             const phpRegId = '<?= htmlspecialchars($reg_id, ENT_QUOTES) ?>';
             const btn = document.querySelector('.btn-register');
+            let originalBtnText = '';
             
             if (!phpRegId) {
                 alert('Registration ID not found. Please try registering again.');
@@ -1996,7 +2006,11 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
 
             try {
                 // Disable button
-                if (btn) btn.disabled = true;
+                if (btn) {
+                    originalBtnText = btn.innerHTML;
+                    btn.disabled = true;
+                    btn.innerHTML = spinnerSvg + 'Processing...';
+                }
                 
                 // 1. Create order
                 const createRes = await fetch('razorpay/create_order.php', {
@@ -2029,6 +2043,10 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
                     },
                     modal: {
                         ondismiss: async function() {
+                            if (btn) {
+                                btn.disabled = false;
+                                btn.innerHTML = originalBtnText;
+                            }
                             try {
                                 await fetch('razorpay/log_failure.php', {
                                     method: 'POST',
@@ -2108,8 +2126,10 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
 
             } catch (err) {
                 alert(err.message);
-            } finally {
-                if (btn) btn.disabled = false;
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalBtnText;
+                }
             }
         }
 
