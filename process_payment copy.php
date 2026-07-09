@@ -1,20 +1,35 @@
 <?php
-// Handle redirect back from Razorpay
-$reg_status = $_GET['status'] ?? '';
 $reg_id = $_GET['reg_id'] ?? '';
-$txn_id = $_GET['txn_id'] ?? '';
-
 $fetched_user = null;
-if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
+$reg_status = '';
+$txn_id = '';
+
+if ($reg_id !== '') {
     try {
         require_once __DIR__ . '/backend/db.php';
         $stmt = $pdo->prepare("SELECT * FROM user_registrations WHERE registration_id = :reg_id LIMIT 1");
         $stmt->execute([':reg_id' => $reg_id]);
         $fetched_user = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($fetched_user) {
+            if (($fetched_user['payment_status'] ?? '') === 'Completed') {
+                $reg_status = 'success';
+                $txn_id = $fetched_user['transaction_id'] ?? '';
+            }
+        }
     } catch (Exception $e) {
-        // Ignore DB error, it will just load normally
+        // Ignore DB error
     }
 }
+
+if (!$fetched_user) {
+    echo "Invalid Registration ID or Registration not found.";
+    exit;
+}
+
+$rawCost = $fetched_user['package'];
+$baseAmount = $fetched_user['base_amount'];
+$currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== false || strtolower($fetched_user['country_category']) === 'national') ? 'INR' : 'USD';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -724,18 +739,12 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
 
         .form-control {
             padding: 12px 15px;
-            border: 2px solid #A0AEC0;
+            border: 1px solid #ddd;
             border-radius: 8px;
             font-family: 'Inter', sans-serif;
             font-size: 1rem;
             transition: border-color 0.3s, box-shadow 0.3s;
             background-color: #f9f9fb;
-            box-sizing: border-box;
-        }
-
-        .form-control::placeholder {
-            color: #CBD5E0;
-            opacity: 1; /* Firefox sets opacity < 1 by default */
         }
 
         .form-control:focus {
@@ -743,10 +752,6 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             border-color: var(--primary-purple);
             box-shadow: 0 0 0 3px rgba(29, 10, 63, 0.1);
             background-color: #fff;
-        }
-
-        #firstName, #middleName, #lastName {
-            text-transform: capitalize;
         }
 
         select.form-control {
@@ -1692,474 +1697,261 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
         <section class="registration-form-section">
             <!-- Wizard Progress Indicator Removed for Simplicity -->
 
-            <!-- STEP 1: REGISTRATION -->
-            <div id="step-1" class="step-container active">
-
-                <!-- Initial Email Check Block -->
-                <div id="initialEmailCheckContainer" class="verification-box" style="margin-bottom: 25px;">
-                    <h4
-                        style="font-family: 'Outfit', sans-serif; color: var(--primary-purple); margin-bottom: 12px; font-weight: 700;">
-                        Start Registration</h4>
-                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">Please enter your email address to begin. We will check your abstract submission status.</p>
-                    <div class="verification-row">
-                        <div class="form-group" style="margin-bottom: 0; flex: 1;">
-                            <label for="checkEmail" class="form-label">Email Address</label>
-                            <input type="email" id="checkEmail" class="form-control"
-                                placeholder="you@example.com">
-                        </div>
-                        <button type="button" class="btn-verify" id="btnCheckEmail"
-                            onclick="checkInitialEmail()">Proceed</button>
+            <!-- LOADING STATE -->
+            <div id="view-loading" class="step-container <?= ($reg_status !== '') ? 'active' : '' ?>">
+                <div class="success-celebration" style="border-top-color: var(--accent-gold);">
+                    <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+                        <div class="gateway-loader" style="width: 50px; height: 50px; display: block; margin: 0;"></div>
                     </div>
-                    <div id="initialCheckStatus" class="verification-status"></div>
-                    
-                    <!-- OTP Verification Container -->
-                    <div id="otpContainer" style="display: none; margin-top: 15px; border-top: 1px dashed var(--accent-gold); padding-top: 15px;">
-                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">
-                            Please enter the 6-digit OTP sent to your email.
-                        </p>
-                        
-                        <div style="background-color: #EBF8FF; border-left: 4px solid #3182CE; padding: 12px 15px; margin-bottom: 20px; border-radius: 4px;">
-                            <p style="margin: 0; color: #2B6CB0; font-size: 0.85rem; display: flex; align-items: flex-start; gap: 8px;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-top: 2px; flex-shrink: 0;"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>
-                                <span><strong>Didn't receive the email?</strong><br>Kindly check your spam folder, or verify that the email address you entered is correct.</span>
-                            </p>
-                        </div>
-                        <div class="verification-row">
-                            <div class="form-group" style="margin-bottom: 0; flex: 1;">
-                                <input type="text" id="otpInput" class="form-control" placeholder="XXXXXX" maxlength="6">
-                            </div>
-                            <button type="button" class="btn-verify" id="btnVerifyOTP" onclick="submitOTP()" style="background-color: var(--accent-gold); color: #1D0A3F;">Verify OTP</button>
-                        </div>
-                        <div id="otpStatus" class="verification-status"></div>
-                        <div id="resendOtpContainer" style="margin-top: 10px; font-size: 0.85rem; text-align: right;">
-                            <a href="#" onclick="resendOTP(); return false;" style="color: var(--primary-purple); font-weight: 600; text-decoration: underline;">Resend OTP</a>
-                        </div>
+                    <h3 style="color: var(--primary-purple);">Processing...</h3>
+                    <p>Please wait while we retrieve your transaction data.</p>
+                </div>
+            </div>
+
+            <!-- STEP 1: REGISTRATION -->
+            <div id="view-review" class="step-container <?= ($reg_status === '') ? 'active' : '' ?>">
+                <h2 class="section-header" style="text-align: center; margin-bottom: 35px;">REVIEW REGISTRATION & FEES
+                </h2>
+
+                <!-- Payment Error Display -->
+                <div id="paymentErrorBox" class="payment-error-box">
+                    <span style="font-size: 1.2rem; line-height: 1;">⚠</span>
+                    <div>
+                        <strong style="display: block; margin-bottom: 4px;">Payment Failed</strong>
+                        <span id="paymentErrorMessage">Your simulated transaction was declined. Please try again.</span>
                     </div>
                 </div>
 
-                <!-- Remaining Registration Form (Conditionally overlay locked until verified) -->
-                <form id="registrationForm" onsubmit="submitStep1(event)" class="locked-form-overlay">
+                <div style="background-color: #FFF3CD; border-left: 4px solid #D69E2E; padding: 12px 15px; margin-bottom: 20px; border-radius: 4px;">
+                    <p style="margin: 0; color: #975A16; font-size: 0.9rem; display: flex; align-items: flex-start; gap: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="margin-top: 2px; flex-shrink: 0;"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>
+                        <span><strong>Important:</strong> Please safely copy and save your Registration ID (<?= htmlspecialchars($reg_id) ?>) for future reference and to check your payment status later.</span>
+                    </p>
+                </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="firstName" class="form-label">First Name</label>
-                            <input type="text" id="firstName" name="firstName" class="form-control" placeholder="Alan"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="middleName" class="form-label">Middle Name</label>
-                            <input type="text" id="middleName" name="middleName" class="form-control" placeholder="J.">
-                        </div>
-                        <div class="form-group">
-                            <label for="lastName" class="form-label">Last Name</label>
-                            <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Wake"
-                                required>
+                <div class="invoice-card">
+                    <div class="invoice-header">
+                        <h4>REGISTRATION SUMMARY</h4>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div id="invoiceReference" style="font-weight: 600; font-size: 0.9rem; opacity: 0.9;">Ref: <?= htmlspecialchars($reg_id) ?></div>
+                            <button type="button" onclick="copyRegId('<?= htmlspecialchars($reg_id, ENT_QUOTES) ?>')" style="background: none; border: none; cursor: pointer; color: white; opacity: 0.8; padding: 0; display: flex; align-items: center; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'" title="Copy Registration ID">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/></svg>
+                            </button>
                         </div>
                     </div>
+                    <div class="invoice-body">
+                        <!-- Demographics Review -->
+                        <h5 class="receipt-section-title">Registrant Metadata</h5>
+                        <div class="receipt-grid">
+                            <div class="receipt-item">
+                                <span class="receipt-label">Full Name</span>
+                                <span class="receipt-value" id="reviewName"><?= htmlspecialchars(trim(($fetched_user['first_name'] ?? '') . ' ' . ($fetched_user['middle_name'] ?? '') . ' ' . ($fetched_user['last_name'] ?? ''))) ?></span>
+                            </div>
+                            <div class="receipt-item">
+                                <span class="receipt-label">Email Address</span>
+                                <span class="receipt-value" id="reviewEmail"><?= htmlspecialchars($fetched_user['email'] ?? '') ?></span>
+                            </div>
+                            <div class="receipt-item">
+                                <span class="receipt-label">Institution / Organization</span>
+                                <span class="receipt-value" id="reviewOrganization"><?= htmlspecialchars($fetched_user['organization'] ?? '') ?></span>
+                            </div>
+                            <div class="receipt-item">
+                                <span class="receipt-label">Phone Number</span>
+                                <span class="receipt-value" id="reviewPhone"><?= htmlspecialchars($fetched_user['phone'] ?? '') ?></span>
+                            </div>
+                            <div class="receipt-item">
+                                <span class="receipt-label">Participant Type</span>
+                                <span class="receipt-value" id="reviewType"><?= htmlspecialchars($fetched_user['participant_category'] ?? '') ?></span>
+                            </div>
+                            <div class="receipt-item">
+                                <span class="receipt-label">Country Category</span>
+                                <span class="receipt-value" id="reviewCountry"><?= htmlspecialchars($fetched_user['country_category'] ?? '') ?></span>
+                            </div>
+                            <div class="receipt-item" style="grid-column: span 2;">
+                                <span class="receipt-label">Selected Requirement</span>
+                                <span class="receipt-value" id="reviewRequirement"><?= htmlspecialchars($fetched_user['package'] ?? '') ?></span>
+                            </div>
+                        </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="organization" class="form-label">Organization / Institution</label>
-                            <input type="text" id="organization" name="organization" class="form-control"
-                                placeholder="University / Institution Name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email" class="form-label">Email Address</label>
-                            <input type="email" id="email" name="email" class="form-control"
-                                placeholder="alan.wake@example.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="dob" class="form-label">Date of Birth</label>
-                            <input type="date" id="dob" name="dob" class="form-control" required>
-                        </div>
+                        <!-- Price Calculations -->
+                        <h5 class="receipt-section-title">Itemized Fee Invoice</h5>
+                        <table class="invoice-table">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th style="text-align: right;">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td id="invoiceItemDesc"><?= htmlspecialchars($fetched_user["participant_category"]) ?> Package: <?= htmlspecialchars($fetched_user["package"]) ?> Access</td>
+                                    <td style="text-align: right; font-weight: 600;" id="invoiceBasePrice"><?= htmlspecialchars(number_format($baseAmount)) ?> <?= htmlspecialchars($currency) ?></td>
+                                </tr>
+                                <tr class="gst-row" style="display: none !important;">
+                                    <td>Goods & Services Tax (GST) @ 18%</td>
+                                    <td style="text-align: right;" id="invoiceGstPrice">0 <?= htmlspecialchars($currency) ?></td>
+                                </tr>
+                                <tr class="total-row">
+                                    <td>Total Amount Due</td>
+                                    <td style="text-align: right;" id="invoiceTotalPrice"><?= htmlspecialchars(number_format($baseAmount)) ?> <?= htmlspecialchars($currency) ?></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
+                </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="phone" class="form-label">Phone Number</label>
-                            <input type="tel" id="phone" name="phone" class="form-control" placeholder="+91 98765 43210"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="participantType" class="form-label">Participant Category (Who are you?)</label>
-                            <select id="participantType" name="participantType" class="form-control"
-                                onchange="updateRequirementsOptions()" required>
-                                <option value="" disabled selected>Select Category</option>
-                                <option value="general">Academics / Field Practitioners (General)</option>
-                                <option value="phd">PhD Scholars</option>
-                                <option value="student">Students</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="country" class="form-label">Country (Where are you from?)</label>
-                            <select id="country" name="country" class="form-control"
-                                onchange="handleCountryChange()" required>
-                                <option value="" disabled selected>Select Country</option>
-                                <option value="Afghanistan">Afghanistan</option>
-                                <option value="Albania">Albania</option>
-                                <option value="Algeria">Algeria</option>
-                                <option value="Andorra">Andorra</option>
-                                <option value="Angola">Angola</option>
-                                <option value="Antigua and Barbuda">Antigua and Barbuda</option>
-                                <option value="Argentina">Argentina</option>
-                                <option value="Armenia">Armenia</option>
-                                <option value="Australia">Australia</option>
-                                <option value="Austria">Austria</option>
-                                <option value="Azerbaijan">Azerbaijan</option>
-                                <option value="Bahamas">Bahamas</option>
-                                <option value="Bahrain">Bahrain</option>
-                                <option value="Bangladesh">Bangladesh</option>
-                                <option value="Barbados">Barbados</option>
-                                <option value="Belarus">Belarus</option>
-                                <option value="Belgium">Belgium</option>
-                                <option value="Belize">Belize</option>
-                                <option value="Benin">Benin</option>
-                                <option value="Bhutan">Bhutan</option>
-                                <option value="Bolivia">Bolivia</option>
-                                <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
-                                <option value="Botswana">Botswana</option>
-                                <option value="Brazil">Brazil</option>
-                                <option value="Brunei">Brunei</option>
-                                <option value="Bulgaria">Bulgaria</option>
-                                <option value="Burkina Faso">Burkina Faso</option>
-                                <option value="Burundi">Burundi</option>
-                                <option value="Cabo Verde">Cabo Verde</option>
-                                <option value="Cambodia">Cambodia</option>
-                                <option value="Cameroon">Cameroon</option>
-                                <option value="Canada">Canada</option>
-                                <option value="Central African Republic">Central African Republic</option>
-                                <option value="Chad">Chad</option>
-                                <option value="Chile">Chile</option>
-                                <option value="China">China</option>
-                                <option value="Colombia">Colombia</option>
-                                <option value="Comoros">Comoros</option>
-                                <option value="Congo">Congo</option>
-                                <option value="Costa Rica">Costa Rica</option>
-                                <option value="Croatia">Croatia</option>
-                                <option value="Cuba">Cuba</option>
-                                <option value="Cyprus">Cyprus</option>
-                                <option value="Czech Republic">Czech Republic</option>
-                                <option value="Democratic Republic of the Congo">Democratic Republic of the Congo</option>
-                                <option value="Denmark">Denmark</option>
-                                <option value="Djibouti">Djibouti</option>
-                                <option value="Dominica">Dominica</option>
-                                <option value="Dominican Republic">Dominican Republic</option>
-                                <option value="Ecuador">Ecuador</option>
-                                <option value="Egypt">Egypt</option>
-                                <option value="El Salvador">El Salvador</option>
-                                <option value="Equatorial Guinea">Equatorial Guinea</option>
-                                <option value="Eritrea">Eritrea</option>
-                                <option value="Estonia">Estonia</option>
-                                <option value="Eswatini">Eswatini</option>
-                                <option value="Ethiopia">Ethiopia</option>
-                                <option value="Fiji">Fiji</option>
-                                <option value="Finland">Finland</option>
-                                <option value="France">France</option>
-                                <option value="Gabon">Gabon</option>
-                                <option value="Gambia">Gambia</option>
-                                <option value="Georgia">Georgia</option>
-                                <option value="Germany">Germany</option>
-                                <option value="Ghana">Ghana</option>
-                                <option value="Greece">Greece</option>
-                                <option value="Grenada">Grenada</option>
-                                <option value="Guatemala">Guatemala</option>
-                                <option value="Guinea">Guinea</option>
-                                <option value="Guyana">Guyana</option>
-                                <option value="Haiti">Haiti</option>
-                                <option value="Honduras">Honduras</option>
-                                <option value="Hungary">Hungary</option>
-                                <option value="Iceland">Iceland</option>
-                                <option value="India">India</option>
-                                <option value="Indonesia">Indonesia</option>
-                                <option value="Iran">Iran</option>
-                                <option value="Iraq">Iraq</option>
-                                <option value="Ireland">Ireland</option>
-                                <option value="Israel">Israel</option>
-                                <option value="Italy">Italy</option>
-                                <option value="Jamaica">Jamaica</option>
-                                <option value="Japan">Japan</option>
-                                <option value="Jordan">Jordan</option>
-                                <option value="Kazakhstan">Kazakhstan</option>
-                                <option value="Kenya">Kenya</option>
-                                <option value="Kiribati">Kiribati</option>
-                                <option value="Kuwait">Kuwait</option>
-                                <option value="Kyrgyzstan">Kyrgyzstan</option>
-                                <option value="Laos">Laos</option>
-                                <option value="Latvia">Latvia</option>
-                                <option value="Lebanon">Lebanon</option>
-                                <option value="Lesotho">Lesotho</option>
-                                <option value="Liberia">Liberia</option>
-                                <option value="Libya">Libya</option>
-                                <option value="Liechtenstein">Liechtenstein</option>
-                                <option value="Lithuania">Lithuania</option>
-                                <option value="Luxembourg">Luxembourg</option>
-                                <option value="Madagascar">Madagascar</option>
-                                <option value="Malawi">Malawi</option>
-                                <option value="Malaysia">Malaysia</option>
-                                <option value="Maldives">Maldives</option>
-                                <option value="Mali">Mali</option>
-                                <option value="Malta">Malta</option>
-                                <option value="Marshall Islands">Marshall Islands</option>
-                                <option value="Mauritania">Mauritania</option>
-                                <option value="Mauritius">Mauritius</option>
-                                <option value="Mexico">Mexico</option>
-                                <option value="Micronesia">Micronesia</option>
-                                <option value="Moldova">Moldova</option>
-                                <option value="Monaco">Monaco</option>
-                                <option value="Mongolia">Mongolia</option>
-                                <option value="Montenegro">Montenegro</option>
-                                <option value="Morocco">Morocco</option>
-                                <option value="Mozambique">Mozambique</option>
-                                <option value="Myanmar">Myanmar</option>
-                                <option value="Namibia">Namibia</option>
-                                <option value="Nauru">Nauru</option>
-                                <option value="Nepal">Nepal</option>
-                                <option value="Netherlands">Netherlands</option>
-                                <option value="New Zealand">New Zealand</option>
-                                <option value="Nicaragua">Nicaragua</option>
-                                <option value="Niger">Niger</option>
-                                <option value="Nigeria">Nigeria</option>
-                                <option value="North Korea">North Korea</option>
-                                <option value="North Macedonia">North Macedonia</option>
-                                <option value="Norway">Norway</option>
-                                <option value="Oman">Oman</option>
-                                <option value="Pakistan">Pakistan</option>
-                                <option value="Palau">Palau</option>
-                                <option value="Palestine">Palestine</option>
-                                <option value="Panama">Panama</option>
-                                <option value="Papua New Guinea">Papua New Guinea</option>
-                                <option value="Paraguay">Paraguay</option>
-                                <option value="Peru">Peru</option>
-                                <option value="Philippines">Philippines</option>
-                                <option value="Poland">Poland</option>
-                                <option value="Portugal">Portugal</option>
-                                <option value="Qatar">Qatar</option>
-                                <option value="Romania">Romania</option>
-                                <option value="Russia">Russia</option>
-                                <option value="Rwanda">Rwanda</option>
-                                <option value="Saint Kitts and Nevis">Saint Kitts and Nevis</option>
-                                <option value="Saint Lucia">Saint Lucia</option>
-                                <option value="Samoa">Samoa</option>
-                                <option value="San Marino">San Marino</option>
-                                <option value="Sao Tome and Principe">Sao Tome and Principe</option>
-                                <option value="Saudi Arabia">Saudi Arabia</option>
-                                <option value="Senegal">Senegal</option>
-                                <option value="Serbia">Serbia</option>
-                                <option value="Seychelles">Seychelles</option>
-                                <option value="Sierra Leone">Sierra Leone</option>
-                                <option value="Singapore">Singapore</option>
-                                <option value="Slovakia">Slovakia</option>
-                                <option value="Slovenia">Slovenia</option>
-                                <option value="Solomon Islands">Solomon Islands</option>
-                                <option value="Somalia">Somalia</option>
-                                <option value="South Africa">South Africa</option>
-                                <option value="South Korea">South Korea</option>
-                                <option value="South Sudan">South Sudan</option>
-                                <option value="Spain">Spain</option>
-                                <option value="Sri Lanka">Sri Lanka</option>
-                                <option value="Sudan">Sudan</option>
-                                <option value="Suriname">Suriname</option>
-                                <option value="Sweden">Sweden</option>
-                                <option value="Switzerland">Switzerland</option>
-                                <option value="Syria">Syria</option>
-                                <option value="Taiwan">Taiwan</option>
-                                <option value="Tajikistan">Tajikistan</option>
-                                <option value="Tanzania">Tanzania</option>
-                                <option value="Thailand">Thailand</option>
-                                <option value="Timor-Leste">Timor-Leste</option>
-                                <option value="Togo">Togo</option>
-                                <option value="Tonga">Tonga</option>
-                                <option value="Trinidad and Tobago">Trinidad and Tobago</option>
-                                <option value="Tunisia">Tunisia</option>
-                                <option value="Turkey">Turkey</option>
-                                <option value="Turkmenistan">Turkmenistan</option>
-                                <option value="Tuvalu">Tuvalu</option>
-                                <option value="Uganda">Uganda</option>
-                                <option value="Ukraine">Ukraine</option>
-                                <option value="United Arab Emirates">United Arab Emirates</option>
-                                <option value="United Kingdom">United Kingdom</option>
-                                <option value="United States">United States</option>
-                                <option value="Uruguay">Uruguay</option>
-                                <option value="Uzbekistan">Uzbekistan</option>
-                                <option value="Vanuatu">Vanuatu</option>
-                                <option value="Vatican City">Vatican City</option>
-                                <option value="Venezuela">Venezuela</option>
-                                <option value="Vietnam">Vietnam</option>
-                                <option value="Yemen">Yemen</option>
-                                <option value="Zambia">Zambia</option>
-                                <option value="Zimbabwe">Zimbabwe</option>
-                            </select>
-                            <input type="hidden" id="countryCategory" name="countryCategory" value="">
-                        </div>
-                        <div class="form-group">
-                            <label for="requirement" class="form-label">Required Package (What requirement do you
-                                need?)</label>
-                            <select id="requirement" name="requirement" class="form-control" required>
-                                <option value="" disabled selected>Select Package</option>
-                                <!-- Populated dynamically based on participant category -->
-                            </select>
-                        </div>
-                    </div>
-
-
-                    <div class="checkbox-group" style="margin-bottom: 30px;">
-                        <input type="checkbox" id="terms" name="terms" required>
-                        <label for="terms" class="checkbox-label">I agree to the <a href="payment-policy.html"
-                                target="_blank" style="color: var(--primary-purple); font-weight: 600;">Terms &
-                                Conditions</a> and Payment Policy.</label>
-                    </div>
-
-                    <div style="text-align: center;">
-                        <button type="submit" class="btn-register">Proceed to Payment Details</button>
-                    </div>
-                </form>
+                <div class="btn-container">
+                    <button type="button" class="btn-register" style="margin-top: 0;" onclick="completePayment()">Pay
+                        Now & Confirm</button>
+                </div>
             </div>
 
-            <!-- STEP 2: REVIEW & PAYMENT -->
+            <!-- STEP 3: CONFIRMATION SUCCESS -->
+            <div id="view-success" class="step-container">
+                <div class="success-celebration">
+                    <div class="success-icon-wrap">
+                        ✓
+                    </div>
+                    <h3>Registration Completed Successfully!</h3>
+                    <p>Your payment has been simulated and processed. Welcome to the conference!</p>
+
+                    <div class="receipt-summary-box">
+                        <div class="receipt-row">
+                            <span>Transaction Reference</span>
+                            <span id="finalTxnId"><?= htmlspecialchars($txn_id ?: 'Pending') ?></span>
+                        </div>
+                        <div class="receipt-row">
+                            <span>Registrant</span>
+                            <span id="finalName"><?= htmlspecialchars(trim(($fetched_user['first_name'] ?? '') . ' ' . ($fetched_user['middle_name'] ?? '') . ' ' . ($fetched_user['last_name'] ?? ''))) ?></span>
+                        </div>
+                        <div class="receipt-row">
+                            <span>Registration Category</span>
+                            <span id="finalType"><?= htmlspecialchars($fetched_user['participant_category'] ?? '') ?></span>
+                        </div>
+                        <div class="receipt-row">
+                            <span>Country / Tier</span>
+                            <span id="finalCountry"><?= htmlspecialchars($fetched_user['country_category'] ?? '') ?></span>
+                        </div>
+                        <div class="receipt-row">
+                            <span>Paid Package</span>
+                            <span id="finalRequirement"><?= htmlspecialchars($fetched_user['package'] ?? '') ?></span>
+                        </div>
+                        <div class="receipt-row">
+                            <span>Total Paid</span>
+                            <span id="finalPricePaid"><?= htmlspecialchars(number_format($baseAmount)) ?> <?= htmlspecialchars($currency) ?></span>
+                        </div>
+                    </div>
+
+                    <a href="index.html" class="btn-register" style="margin-top: 0;">Return to Home</a>
+                </div>
+            </div>
+
+            <!-- STEP 4: FAILURE STATE -->
+            <div id="view-failed" class="step-container">
+                <div class="success-celebration" style="border-top-color: #D32F2F;">
+                    <div class="success-icon-wrap" style="background-color: #ffebee; color: #D32F2F;">
+                        ✕
+                    </div>
+                    <h3 style="color: #D32F2F;">Payment Failed</h3>
+                    <p>Your payment was declined or cancelled. Please try again.</p>
+
+                    <a href="/view_transaction.php" class="btn-register" style="margin-top: 20px; background-color: #D32F2F;">Try Again</a>
+                </div>
+            </div>
+        </section>
+
+        <!--
+        <section class="info-section">
+            <h2 class="section-header">MORE INFORMATION:</h2>
+
             
+            <div class="info-strip">
+                <div class="info-header">
+                    <span>Registration Confirmation</span>
+                    <span class="icon">+</span>
+                </div>
+                <div class="info-content">
+                    <div class="info-content-inner">
+                        <p>Your completed registration and successful payment will be acknowledged via email. Your
+                            registration will only be processed if payment has been received.</p>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="info-strip">
+                <div class="info-header">
+                    <span>Payment Options</span>
+                    <span class="icon">+</span>
+                </div>
+                <div class="info-content">
+                    <div class="info-content-inner">
+                        <p>Please note all online registrations require immediate payment by credit card. Accepted
+                            credit
+                            cards are MasterCard, Visa and American Express. Please note all transactions by credit card
+                            will appear on your statement as payment to ‘Forum Group Events'.</p>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="info-strip">
+                <div class="info-header">
+                    <span>Cancellation/Postponement</span>
+                    <span class="icon">+</span>
+                </div>
+                <div class="info-content">
+                    <div class="info-content-inner">
+                        <p>All online bookings are non-cancellable, and any online Registration Fees paid are
+                            non-refundable.</p>
+                        <p>In-person registration cancellations will not be accepted unless made in writing to the
+                            Conference Organisers at <a href="mailto:aasw@forumgroupevents.com.au"
+                                style="color: #00779B; text-decoration: none;">aasw@forumgroupevents.com.au</a>.</p>
+
+                        <table class="cancel-table">
+                            <thead>
+                                <tr>
+                                    <th>Conditions</th>
+                                    <th>Charges Applicable</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>On or before 30 June 2024</td>
+                                    <td>100% refund less 10% administration fee</td>
+                                </tr>
+                                <tr>
+                                    <td>On or before 4 November 2024</td>
+                                    <td>50% refund less 10% administration fee</td>
+                                </tr>
+                                <tr>
+                                    <td>After 4 November 2024</td>
+                                    <td>No refund available</td>
+                                </tr>
+                                <tr>
+                                    <td>No refund will be paid following failure to attend without notice</td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p>In the unlikely event that we have to cancel the event, if, for example, delegate numbers are
+                            too low to run the event, we will give you as much notice as possible, and you will be given
+                            the option of a refund or transfer to an alternative event.</p>
+                        <p>We are not liable to you for any non-attendance for any reason. If you are unable to attend
+                            the event, event presentations will be available for on-demand viewing after the Conference.
+                            Please consult the Event website or contact us for further details.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        -->
+    
     </main>
 
     <main-footer></main-footer>
 
-    <script>
-        function toggleAccordion(icon) {
-            const strip = icon.closest('.info-strip');
-            const content = strip.querySelector('.info-content');
-            const isExpanded = strip.classList.contains('expanded');
-
-            if (isExpanded) {
-                // Close
-                content.style.maxHeight = content.scrollHeight + "px";
-                content.offsetHeight; // force reflow
-                content.style.maxHeight = "0";
-                strip.classList.remove('expanded');
-                icon.textContent = "+";
-            } else {
-                // Open
-                strip.classList.add('expanded');
-                content.style.maxHeight = content.scrollHeight + "px";
-                icon.textContent = "−";
-
-                content.addEventListener("transitionend", function handler() {
-                    if (strip.classList.contains("expanded")) {
-                        content.style.maxHeight = "none";
-                    }
-                    content.removeEventListener("transitionend", handler);
-                });
-            }
-        }
-
-        document.querySelectorAll('.info-header').forEach(header => {
-            header.addEventListener('click', () => toggleAccordion(header));
-
-            // Set initial state for expanded sections
-            const strip = header.parentElement;
-            if (strip.classList.contains('expanded')) {
-                const content = strip.querySelector('.info-content');
-                content.style.maxHeight = 'none';
-                content.style.opacity = '1';
-            }
-        });
-    </script>
-
-    <script>
-        const feeData = {
-            general: {
-                developed: [
-                    { label: "Early Bird", value: "350 USD" },
-                    { label: "Regular", value: "400 USD" },
-                    { label: "Spot Registration", value: "500 USD" },
-                    { label: "Online (Recorded/Live Stream main)", value: "250 USD" }
-                ],
-                developing: [
-                    { label: "Early Bird", value: "220 USD" },
-                    { label: "Regular", value: "250 USD" },
-                    { label: "Spot Registration", value: "300 USD" },
-                    { label: "Online (Recorded/Live Stream main)", value: "175 USD" }
-                ],
-                national: [
-                    { label: "Early Bird", value: "3,000 INR" },
-                    { label: "Regular", value: "3,500 INR" },
-                    { label: "Spot Registration", value: "4,500 INR" },
-                    { label: "Online (Recorded/Live Stream main)", value: "2,000 INR" }
-                ]
-            },
-            phd: {
-                developed: [
-                    { label: "In-Person (Offline)", value: "150 USD" },
-                    { label: "Online (Recorded)", value: "100 USD" }
-                ],
-                developing: [
-                    { label: "In-Person (Offline)", value: "100 USD" },
-                    { label: "Online (Recorded)", value: "75 USD" }
-                ],
-                national: [
-                    { label: "In-Person (Offline)", value: "1,200 INR" },
-                    { label: "Online (Recorded)", value: "600 INR" }
-                ]
-            },
-            student: {
-                developed: [
-                    { label: "In-Person (Offline)", value: "100 USD" },
-                    { label: "Online (Recorded)", value: "50 USD" }
-                ],
-                developing: [
-                    { label: "In-Person (Offline)", value: "75 USD" },
-                    { label: "Online (Recorded)", value: "40 USD" }
-                ],
-                national: [
-                    // { label: "In-Person (Offline)", value: "1,000 INR" },
-                    // { label: "Online (Recorded)", value: "500 INR" }
-                    { label: "In-Person (Offline)", value: "1 INR" },
-                    { label: "Online (Recorded)", value: "1 INR" }
-                ]
-            }
-        };
-
-        function showFeeTab(tab) {
-            document.querySelectorAll('.fee-toggle-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.fee-tab-content').forEach(content => content.classList.remove('active'));
-
-            if (tab === 'all') {
-                document.getElementById('btn-view-all').classList.add('active');
-                document.getElementById('fee-view-all').classList.add('active');
-            } else {
-                document.getElementById('btn-filter').classList.add('active');
-                document.getElementById('fee-view-filter').classList.add('active');
-                updateFeeFilter();
-            }
-        }
-
-        function updateFeeFilter() {
-            const participant = document.getElementById('filter-participant').value;
-            const category = document.getElementById('filter-category').value;
-            const resultContainer = document.getElementById('filtered-fee-result');
-
-            const data = feeData[participant][category];
-            let html = `<h4 style="margin-bottom: 15px; color: var(--primary-purple); font-family: 'Outfit', sans-serif;">Your Applicable Fees</h4>`;
-
-            data.forEach(item => {
-                html += `
-                    <div class="result-card">
-                        <div class="result-label">${item.label}</div>
-                        <div class="result-value">${item.value}</div>
-                    </div>
-                `;
-            });
-
-            resultContainer.innerHTML = html;
-        }
-
-        // Initialize filter on load if needed
-        document.addEventListener('DOMContentLoaded', () => {
-            updateFeeFilter();
-        });
-    </script>
-
-    <!-- Multi-Step Wizard and Price Calculations Logic -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
         // Fix back button cache issue
         window.addEventListener("pageshow", function(event) {
@@ -2170,489 +1962,175 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
 
         const spinnerSvg = '<svg style="animation: spin 1s linear infinite; margin-right: 8px; width: 18px; height: 18px; display: inline-block; vertical-align: text-bottom;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity: 0.25;"></circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" style="opacity: 0.75;"></path></svg>';
 
+        // Copy to clipboard helper
+        function copyRegId(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Registration ID copied to clipboard!");
+            });
+        }
+
         // Global state for wizard data
         let wizardState = {
-            abstractSubmitted: '',
-            isVerified: false,
-            firstName: '',
-            middleName: '',
-            lastName: '',
-            email: '',
-            organization: '',
-            phone: '',
-            dob: '',
-            participantType: '',
-            country: '',
-            countryCategory: '',
-            requirementIndex: -1,
-            requirementLabel: '',
-            requirementCostText: '',
-            currency: 'USD',
-            basePrice: 0,
-            gstPrice: 0,
-            totalPrice: 0,
-            transactionId: ''
+            registrationId: <?= json_encode($fetched_user['registration_id'] ?? '') ?>,
+            firstName: <?= json_encode($fetched_user['first_name'] ?? '') ?>,
+            middleName: <?= json_encode($fetched_user['middle_name'] ?? '') ?>,
+            lastName: <?= json_encode($fetched_user['last_name'] ?? '') ?>,
+            participantType: <?= json_encode($fetched_user['participant_category'] ?? '') ?>,
+            countryCategory: <?= json_encode($fetched_user['country_category'] ?? '') ?>,
+            requirementLabel: <?= json_encode($fetched_user['package'] ?? '') ?>,
+            totalPrice: <?= json_encode((float)($fetched_user['base_amount'] ?? 0)) ?>,
+            currency: (<?= json_encode($fetched_user['country_category'] ?? '') ?> === 'National (India)' || <?= json_encode($fetched_user['country_category'] ?? '') ?> === 'national') ? 'INR' : 'USD'
         };
 
-        const DEVELOPED_COUNTRIES = [
-            "Andorra", "Australia", "Austria", "Belgium", "Canada", "Cyprus", 
-            "Czech Republic", "Denmark", "Estonia", "Finland", "France", 
-            "Germany", "Greece", "Hong Kong", "Iceland", "Ireland", "Israel", 
-            "Italy", "Japan", "Latvia", "Liechtenstein", "Lithuania", 
-            "Luxembourg", "Malta", "Monaco", "Netherlands", "New Zealand", 
-            "Norway", "Portugal", "San Marino", "Singapore", "Slovakia", 
-            "Slovenia", "South Korea", "Spain", "Sweden", "Switzerland", 
-            "Taiwan", "United Kingdom", "United States", "Vatican City"
-        ];
-
-        // Handles Country selection to determine tier (Developed, Developing, National)
-        function handleCountryChange() {
-            console.log('Action: handleCountryChange triggered');
-            const countrySelect = document.getElementById('country');
-            const countryVal = countrySelect.value;
-            const cCatInput = document.getElementById('countryCategory');
-
-            if (countryVal === 'India') {
-                cCatInput.value = 'national';
-            } else if (DEVELOPED_COUNTRIES.includes(countryVal)) {
-                cCatInput.value = 'developed';
-            } else {
-                cCatInput.value = 'developing';
-            }
-
-            // Trigger dynamic fee options update
-            updateRequirementsOptions();
-        }
-
-        // Initial Email Verification
-        async function checkInitialEmail() {
-            console.log('Action: checkInitialEmail triggered');
-            const emailVal = document.getElementById('checkEmail').value.trim().toLowerCase();
-            const statusDiv = document.getElementById('initialCheckStatus');
-            const btn = document.getElementById('btnCheckEmail');
-            const form = document.getElementById('registrationForm');
-
-            if (!emailVal) {
-                statusDiv.innerHTML = '<span style="color: #C53030;">⚠ Please enter an email address.</span>';
-                statusDiv.className = 'verification-status error';
-                statusDiv.style.display = 'flex';
-                return;
-            }
-
-            btn.disabled = true;
-            const originalBtnText = btn.innerHTML;
-            btn.innerHTML = spinnerSvg + 'Checking...';
-            statusDiv.innerHTML = 'Checking database...';
-            statusDiv.className = 'verification-status';
-            statusDiv.style.display = 'flex';
-            statusDiv.style.color = 'var(--text-muted)';
-
-            try {
-                const res = await fetch(`backend/check_email.php?email=${encodeURIComponent(emailVal)}`);
-                const data = await res.json();
-                
-                if (!data.success) {
-                    throw new Error(data.error || 'Server error occurred while checking email.');
-                }
-                
-                if (data.is_registered) {
-                    const statusText = data.payment_status || 'Pending';
-                    
-                    let statusColor = '#D69E2E'; // Default (e.g., Pending -> Orange)
-                    let buttonText = 'Check Details / Pay Again &rarr;';
-                    
-                    if (statusText === 'Completed') {
-                        statusColor = '#2F855A'; // Green
-                        buttonText = 'Check Registration Details &rarr;';
-                    } else if (statusText === 'Failed' || statusText.toLowerCase() === 'not completed') {
-                        statusColor = '#C53030'; // Red
-                    }
-                    
-                    statusDiv.innerHTML = `
-                        <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
-                            <div style="color: #C53030; font-weight: 600;">
-                                ⚠ This email is already registered.
-                            </div>
-                            <div style="background: #F7FAFC; padding: 15px; border-radius: 8px; border: 1px solid #E2E8F0; text-align: left;">
-                                <div style="margin-bottom: 8px; color: #4A5568;">Payment Status: <strong style="color: ${statusColor}; text-transform: uppercase;">${statusText}</strong></div>
-                                <div style="font-size: 0.9rem; color: #718096; margin-bottom: 15px;">You can view your transaction history or complete pending payments from the Check Status page.</div>
-                                <a href="view_transaction.php" style="display: inline-block; background-color: var(--primary-purple); color: white; padding: 10px 20px; border-radius: 50px; text-decoration: none; font-size: 0.9rem; font-family: 'Outfit', sans-serif; font-weight: 600; text-align: center; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='var(--accent-gold)'; this.style.color='var(--primary-purple)';" onmouseout="this.style.backgroundColor='var(--primary-purple)'; this.style.color='white';">${buttonText}</a>
-                            </div>
-                        </div>
-                    `;
-                    statusDiv.className = 'verification-status'; 
-                    statusDiv.style.display = 'block';
-                    
-                    btn.disabled = false;
-                    btn.innerHTML = 'Check Another';
-                    form.classList.add('locked-form-overlay');
-                    form.classList.remove('unlocked-form');
-                    return;
-                }
-
-                // If not registered, trigger OTP send
-                statusDiv.innerHTML = 'Sending OTP to your email...';
-                const otpRes = await fetch('backend/send_otp.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: emailVal })
-                });
-                const otpData = await otpRes.json();
-
-                if (!otpData.success) {
-                    throw new Error(otpData.error || 'Failed to send OTP.');
-                }
-
-                // Show OTP input container
-                wizardState.pendingEmail = emailVal;
-                wizardState.pendingAbstract = data.has_abstract ? 'yes' : 'no';
-                
-                document.getElementById('checkEmail').readOnly = true;
-                btn.style.display = 'none'; // Hide proceed button
-                
-                statusDiv.innerHTML = `
-                    <span class="verified-badge" style="background-color: #EBF8FF; color: #2B6CB0;">✓ OTP Sent Successfully</span>
-                `;
-                statusDiv.className = 'verification-status success';
-                statusDiv.style.display = 'block';
-                
-                document.getElementById('otpContainer').style.display = 'block';
-                btn.innerHTML = 'Verified';
-
-            } catch (error) {
-                statusDiv.innerHTML = '<span style="color: #C53030;">⚠ Error checking email. Please try again later.</span>';
-                statusDiv.className = 'verification-status error';
-                btn.disabled = false;
-                btn.innerHTML = originalBtnText;
-                console.error(error);
-            }
-        }
-
-        async function submitOTP() {
-            const otpVal = document.getElementById('otpInput').value.trim();
-            const otpStatusDiv = document.getElementById('otpStatus');
-            const btnVerifyOTP = document.getElementById('btnVerifyOTP');
-            
-            if (!otpVal || otpVal.length < 6) {
-                otpStatusDiv.innerHTML = '<span style="color: #C53030;">⚠ Please enter a valid 6-digit OTP.</span>';
-                otpStatusDiv.className = 'verification-status error';
-                otpStatusDiv.style.display = 'flex';
-                return;
-            }
-
-            const originalBtnText = btnVerifyOTP.innerHTML;
-            btnVerifyOTP.disabled = true;
-            btnVerifyOTP.innerHTML = spinnerSvg + 'Verifying...';
-            otpStatusDiv.style.display = 'none';
-
-            try {
-                const res = await fetch('backend/verify_otp.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: wizardState.pendingEmail, otp: otpVal })
-                });
-                const data = await res.json();
-                
-                if (!data.success) {
-                    throw new Error(data.error || 'Invalid OTP.');
-                }
-
-                // OTP Verified! Unlock form
-                wizardState.isVerified = true;
-                wizardState.email = wizardState.pendingEmail;
-                wizardState.abstractSubmitted = wizardState.pendingAbstract;
-
-                otpStatusDiv.innerHTML = `
-                    <span class="verified-badge">✓ Email Verified</span>
-                    <span style="color: #2F855A; margin-left: 10px;">You can now proceed.</span>
-                `;
-                otpStatusDiv.className = 'verification-status success';
-                otpStatusDiv.style.color = '#2F855A';
-                otpStatusDiv.style.display = 'block';
-
-                btnVerifyOTP.innerHTML = 'Verified';
-                btnVerifyOTP.style.backgroundColor = '#CBD5E0';
-                btnVerifyOTP.style.color = '#718096';
-                document.getElementById('otpInput').readOnly = true;
-                document.getElementById('resendOtpContainer').style.display = 'none';
-
-                // Populate main form email and make readonly
-                const mainEmail = document.getElementById('email');
-                mainEmail.value = wizardState.email;
-                mainEmail.readOnly = true;
-
-                // Unlock registration form
-                const form = document.getElementById('registrationForm');
-                form.classList.remove('locked-form-overlay');
-                form.classList.add('unlocked-form');
-                
-            } catch (error) {
-                btnVerifyOTP.disabled = false;
-                btnVerifyOTP.innerHTML = originalBtnText;
-                otpStatusDiv.innerHTML = `<span style="color: #C53030;">⚠ ${error.message}</span>`;
-                otpStatusDiv.className = 'verification-status error';
-                otpStatusDiv.style.display = 'flex';
-            }
-        }
-
-        async function resendOTP() {
-            const otpStatusDiv = document.getElementById('otpStatus');
-            otpStatusDiv.innerHTML = 'Resending OTP...';
-            otpStatusDiv.className = 'verification-status';
-            otpStatusDiv.style.display = 'block';
-            otpStatusDiv.style.color = 'var(--text-muted)';
-            
-            try {
-                const otpRes = await fetch('backend/send_otp.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: wizardState.pendingEmail })
-                });
-                const otpData = await otpRes.json();
-
-                if (!otpData.success) {
-                    throw new Error(otpData.error || 'Failed to resend OTP.');
-                }
-                otpStatusDiv.innerHTML = `<span style="color: #2B6CB0;">✓ A new OTP was sent to your email.</span>`;
-            } catch (error) {
-                otpStatusDiv.innerHTML = `<span style="color: #C53030;">⚠ ${error.message}</span>`;
-                otpStatusDiv.className = 'verification-status error';
-            }
-        }
-
-        // Dynamically updates package options dropdown based on Who they are & Where they are fromType
-        function updateRequirementsOptions() {
-            console.log('Action: updateRequirementsOptions triggered');
-            const pType = document.getElementById('participantType').value;
-            const cCat = document.getElementById('countryCategory').value;
-            const reqSelect = document.getElementById('requirement');
-
-            // Clear options
-            reqSelect.innerHTML = '<option value="" disabled selected>Select Package</option>';
-
-            if (!pType || !cCat) return;
-
-            // Fetch from the pre-existing feeData object from registration.html
-            const data = feeData[pType][cCat];
-
-            if (data && data.length > 0) {
-                data.forEach((item, index) => {
-                    const opt = document.createElement('option');
-                    opt.value = index;
-                    opt.textContent = `${item.label} (${item.value})`;
-                    reqSelect.appendChild(opt);
-                });
-            }
-        }
-
-        // Navigate between steps
-        function goToStep(stepNumber) {
-            console.log('Action: goToStep triggered for step:', stepNumber);
-            // Hide all steps
+        // Navigate between views
+        function showView(viewId) {
+            console.log('Action: showView triggered for:', viewId);
             document.querySelectorAll('.step-container').forEach(container => {
                 container.classList.remove('active');
             });
-
-            // Show active step
-            document.getElementById(`step-${stepNumber}`).classList.add('active');
-
-            // Update progress track
-            const line = document.getElementById('progressLine');
-            const steps = document.querySelectorAll('.progress-step');
-
-            if (line) {
-                steps.forEach(s => {
-                    const sNum = parseInt(s.dataset.step);
-                    if (sNum < stepNumber) {
-                        s.classList.add('completed');
-                        s.classList.remove('active');
-                    } else if (sNum === stepNumber) {
-                        s.classList.add('active');
-                        s.classList.remove('completed');
-                    } else {
-                        s.classList.remove('active', 'completed');
-                    }
-                });
-                // Slide progress bar width
-                line.style.width = ((stepNumber - 1) * 50) + '%';
-            }
-
-            // Scroll smoothly to form section top
+            document.getElementById(viewId).classList.add('active');
             document.querySelector('.registration-form-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        // Submission for Step 1
-        async function submitStep1(event) {
-            console.log('Action: submitStep1 triggered');
-            event.preventDefault();
-
-            // Read abstract submitted status from global state
-            const status = wizardState.abstractSubmitted || 'no';
-
-            const capitalize = (s) => s.replace(/\b\w/g, c => c.toUpperCase());
-            const firstName = capitalize(document.getElementById('firstName').value.trim());
-            const middleName = capitalize(document.getElementById('middleName').value.trim());
-            const lastName = capitalize(document.getElementById('lastName').value.trim());
-            const email = document.getElementById('email').value.trim();
-            const organization = document.getElementById('organization').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            const dob = document.getElementById('dob').value.trim();
-            const pTypeSelect = document.getElementById('participantType');
-            const countrySelect = document.getElementById('country');
-            const cCatInput = document.getElementById('countryCategory');
-            const reqSelect = document.getElementById('requirement');
-
-            const pType = pTypeSelect.value;
-            const countryVal = countrySelect.value;
-            const cCat = cCatInput.value;
-            const reqIdx = parseInt(reqSelect.value);
-
-            if (!firstName || !lastName || !email || !organization || !phone || !dob || !pType || !countryVal || !cCat || isNaN(reqIdx)) {
-                alert('Please fill out all required fields before proceeding.');
+        // Trigger Razorpay Payment Flow natively
+        async function completePayment() {
+            console.log('Action: completePayment triggered');
+            const phpRegId = '<?= htmlspecialchars($reg_id, ENT_QUOTES) ?>';
+            const btn = document.querySelector('.btn-register');
+            let originalBtnText = '';
+            
+            if (!phpRegId) {
+                alert('Registration ID not found. Please try registering again.');
                 return;
             }
 
-            // Show checking status on submit button
-            const submitBtn = event.target.querySelector('button[type="submit"]');
-            const originalBtnText = submitBtn.innerHTML;
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = spinnerSvg + 'Checking...';
-
-            // (Email check removed from here since it happens before unlocking the form)
-            
-            // Restore button text before the rest of the flow modifies it again
-            submitBtn.innerHTML = originalBtnText;
-            submitBtn.disabled = false;
-
-            // Pre-existing feeData retrieval
-            const selectedPackageData = feeData[pType][cCat][reqIdx];
-
-            // Save state
-            wizardState.firstName = firstName;
-            wizardState.middleName = middleName;
-            wizardState.lastName = lastName;
-            wizardState.email = email;
-            wizardState.organization = organization;
-            wizardState.phone = phone;
-            wizardState.dob = dob;
-            wizardState.participantType = pTypeSelect.options[pTypeSelect.selectedIndex].text;
-            wizardState.country = countryVal;
-            
-            // Format countryCategory readable string
-            wizardState.countryCategory = cCat === 'developed' ? 'Developed Countries' : (cCat === 'national' ? 'National (India)' : 'Developing Countries');
-            
-            wizardState.requirementIndex = reqIdx;
-            wizardState.requirementLabel = selectedPackageData.label;
-            wizardState.requirementCostText = selectedPackageData.value;
-
-            // Price analysis
-            const rawCost = selectedPackageData.value; // e.g. "350 USD" or "3,000 INR"
-            const numPart = rawCost.replace(/[^0-9]/g, '');
-            const baseAmount = parseInt(numPart);
-            const isINR = rawCost.includes('INR');
-
-            wizardState.currency = isINR ? 'INR' : 'USD';
-            wizardState.basePrice = baseAmount;
-
-            // Taxes removed — only show and save the real rate
-            wizardState.gstPrice = 0;
-            wizardState.totalPrice = baseAmount;
-
-            // Show saving status on submit button
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = spinnerSvg + 'Saving details...';
-
-            // Hide any previous payment error (element moved to step 2)
-            // document.getElementById('paymentErrorBox').classList.remove('active');
-
-            // Construct payload for database
-            const payload = {
-                firstName: wizardState.firstName,
-                middleName: wizardState.middleName,
-                lastName: wizardState.lastName,
-                email: wizardState.email,
-                organization: wizardState.organization,
-                phone: wizardState.phone,
-                dob: wizardState.dob,
-                participantType: wizardState.participantType,
-                country: wizardState.country,
-                countryCategory: wizardState.countryCategory,
-                requiredPackage: `${wizardState.requirementLabel} (${rawCost})`,
-                abstractSubmitted: status,
-                abstractEmail: status === 'yes' ? document.getElementById('verifyEmail').value.trim() : '',
-                baseAmount: wizardState.basePrice,
-                paymentStatus: 'Not Completed'
-            };
-
-            // Call backend endpoint to save registrant details to the database with status 'Not Completed'
-            fetch('save_registration.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            })
-            .then(async response => {
-                let data;
-                try {
-                    data = await response.json();
-                } catch (e) {
-                    throw new Error('Server returned non-JSON error: ' + response.status);
+            try {
+                // Disable button
+                if (btn) {
+                    originalBtnText = btn.innerHTML;
+                    btn.disabled = true;
+                    btn.innerHTML = spinnerSvg + 'Processing...';
                 }
-                if (!response.ok || !data.success) {
-                    throw new Error(data.error || 'Server returned an error status: ' + response.status);
-                }
-                return data;
-            })
-            .then(data => {
-                if (data.registration_id) {
-                    window.location.href = 'process_payment.php?reg_id=' + data.registration_id;
-                } else {
-                    throw new Error('Failed to save registration details.');
-                }
-            })
-            .catch(error => {
-                console.warn('Backend save failed (API not ready yet). Details:', error.message);
-                console.log('%cSimulation Mode:%c Automatically generating a mock registration ID for preview testing.', 'font-weight:bold;color:#C9A227;', 'color:inherit;');
                 
-                // Fallback simulation: Generate temporary reference ID to let the UI work on frontend
-                const simulatedId = 'REG-' + Math.floor(100000 + Math.random() * 900000);
-                window.location.href = 'process_payment.php?reg_id=' + simulatedId;
-            });
-        }
+                // 1. Create order
+                const createRes = await fetch('razorpay/create_order.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ registration_id: phpRegId })
+                });
+                
+                const orderData = await createRes.json();
+                
+                if (!orderData.success) {
+                    throw new Error(orderData.error || 'Failed to create order');
+                }
 
-        // Proceed to Step 2 after ID is retrieved or generated
-        function proceedToStep2(registrationId, rawCost) {
-            console.log('Action: proceedToStep2 triggered with ID:', registrationId);
-            wizardState.registrationId = registrationId;
+                // 2. Open Razorpay Checkout
+                const options = {
+                    key: orderData.key,
+                    amount: orderData.amount,
+                    currency: orderData.currency,
+                    name: 'Checkout',
+                    description: 'Payment',
+                    order_id: orderData.order_id,
+                    prefill: {
+                        name: orderData.name,
+                        email: orderData.email,
+                        contact: orderData.phone
+                    },
+                    theme: {
+                        color: '#0b74de'
+                    },
+                    modal: {
+                        ondismiss: async function() {
+                            if (btn) {
+                                btn.disabled = false;
+                                btn.innerHTML = originalBtnText;
+                            }
+                            try {
+                                await fetch('razorpay/log_failure.php', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        registration_id: phpRegId,
+                                        razorpay_order_id: orderData.order_id,
+                                        razorpay_payment_id: '',
+                                        error_description: 'User cancelled payment'
+                                    })
+                                });
+                            } catch (e) {
+                                console.error('Failed to log payment cancellation:', e);
+                            }
+                            // The user just closed the window, we don't necessarily want to force them to the fail screen
+                            // so they can try again if they want, but if you want to show failure:
+                            // handleGatewayResponseFinish('Failed', '');
+                        }
+                    },
+                    handler: async function (response) {
+                        // Show loading screen immediately while verifying payment
+                        showView('view-loading');
+                        
+                        // 3. Verify Payment
+                        try {
+                            const verifyRes = await fetch('razorpay/verify_ajax.php', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    registration_id: phpRegId,
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_signature: response.razorpay_signature
+                                })
+                            });
+                            
+                            const verifyData = await verifyRes.json();
+                            
+                            // Artificial delay to show processing loader
+                            setTimeout(() => {
+                                if (verifyData.success) {
+                                    handleGatewayResponseFinish('Success', response.razorpay_payment_id);
+                                } else {
+                                    alert(verifyData.error || 'Payment verification failed');
+                                    handleGatewayResponseFinish('Failed', '');
+                                }
+                            }, 2500);
+                        } catch (err) {
+                            alert('An error occurred during verification.');
+                            handleGatewayResponseFinish('Failed', '');
+                        }
+                    }
+                };
 
-            // Populate Step 2 Review Fields
-            const fullName = wizardState.middleName ? `${wizardState.firstName} ${wizardState.middleName} ${wizardState.lastName}` : `${wizardState.firstName} ${wizardState.lastName}`;
-            document.getElementById('reviewName').textContent = fullName;
-            document.getElementById('reviewEmail').textContent = wizardState.email;
-            document.getElementById('reviewOrganization').textContent = wizardState.organization;
-            document.getElementById('reviewPhone').textContent = wizardState.phone;
-            document.getElementById('reviewType').textContent = wizardState.participantType;
-            document.getElementById('reviewCountry').textContent = wizardState.countryCategory;
-            document.getElementById('reviewRequirement').textContent = `${wizardState.requirementLabel} (${rawCost})`;
+                const rzp = new window.Razorpay(options);
+                
+                rzp.on('payment.failed', async function (response){
+                    try {
+                        await fetch('razorpay/log_failure.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                registration_id: phpRegId,
+                                razorpay_order_id: response.error.metadata ? response.error.metadata.order_id : orderData.order_id,
+                                razorpay_payment_id: response.error.metadata ? response.error.metadata.payment_id : '',
+                                error_description: response.error.description
+                            })
+                        });
+                    } catch (e) {
+                        console.error('Failed to log payment failure:', e);
+                    }
+                    alert('Payment failed: ' + response.error.description);
+                    handleGatewayResponseFinish('Failed', '');
+                });
+                
+                rzp.open();
 
-            // Populate Invoice Reference with registration ID
-            document.getElementById('invoiceReference').textContent = 'Ref: ' + registrationId;
-
-            // Invoice table populating
-            const desc = `${wizardState.participantType} Package: ${wizardState.requirementLabel} Access`;
-            document.getElementById('invoiceItemDesc').textContent = desc;
-
-            const formatCost = (val) => {
-                return val.toLocaleString('en-US') + ' ' + wizardState.currency;
-            };
-
-            document.getElementById('invoiceBasePrice').textContent = formatCost(wizardState.basePrice);
-            document.getElementById('invoiceGstPrice').textContent = formatCost(wizardState.gstPrice);
-            document.getElementById('invoiceTotalPrice').textContent = formatCost(wizardState.totalPrice);
-
-            // Navigate to Step 2
-            goToStep(2);
+            } catch (err) {
+                alert(err.message);
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalBtnText;
+                }
+            }
         }
 
 
@@ -2685,10 +2163,10 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                 errorBox.classList.remove('active');
 
                 // Smoothly move to Step 3
-                goToStep(3);
+                showView('view-success');
             } else {
                 // Show failure UI
-                goToStep(4);
+                showView('view-failed');
             }
         }
     </script>
@@ -2696,27 +2174,17 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
     <?php if ($fetched_user && $reg_status === 'success'): ?>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Reconstruct minimal wizardState for Step 3 rendering
-            wizardState.registrationId = <?= json_encode($fetched_user['registration_id']) ?>;
-            wizardState.firstName = <?= json_encode($fetched_user['first_name']) ?>;
-            wizardState.middleName = <?= json_encode($fetched_user['middle_name']) ?>;
-            wizardState.lastName = <?= json_encode($fetched_user['last_name']) ?>;
-            wizardState.participantType = <?= json_encode($fetched_user['participant_category']) ?>;
-            wizardState.countryCategory = <?= json_encode($fetched_user['country_category']) ?>;
-            wizardState.requirementLabel = <?= json_encode($fetched_user['package']) ?>;
-            wizardState.totalPrice = <?= json_encode($fetched_user['base_amount']) ?>;
-            
-            // Determine currency
-            const cCat = wizardState.countryCategory;
-            wizardState.currency = (cCat === 'National (India)' || cCat === 'national') ? 'INR' : 'USD';
-
-            handleGatewayResponseFinish('Success', <?= json_encode($txn_id) ?>);
+            setTimeout(() => {
+                handleGatewayResponseFinish('Success', <?= json_encode($txn_id) ?>);
+            }, 800);
         });
     </script>
     <?php elseif ($fetched_user && $reg_status === 'failed'): ?>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            goToStep(4);
+            setTimeout(() => {
+                showView('view-failed');
+            }, 800);
         });
     </script>
     <?php endif; ?>
