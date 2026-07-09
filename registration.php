@@ -1820,7 +1820,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                             <button type="button" class="btn-verify" id="btnVerifyOTP" onclick="submitOTP()" style="background-color: var(--accent-gold); color: #1D0A3F;">Verify OTP</button>
                         </div>
                         <div id="otpStatus" class="verification-status"></div>
-                        <div style="margin-top: 10px; font-size: 0.85rem; text-align: right;">
+                        <div id="resendOtpContainer" style="margin-top: 10px; font-size: 0.85rem; text-align: right;">
                             <a href="#" onclick="resendOTP(); return false;" style="color: var(--primary-purple); font-weight: 600; text-decoration: underline;">Resend OTP</a>
                         </div>
                     </div>
@@ -2450,6 +2450,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                 btnVerifyOTP.style.backgroundColor = '#CBD5E0';
                 btnVerifyOTP.style.color = '#718096';
                 document.getElementById('otpInput').readOnly = true;
+                document.getElementById('resendOtpContainer').style.display = 'none';
 
                 // Populate main form email and make readonly
                 const mainEmail = document.getElementById('email');

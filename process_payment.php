@@ -1786,8 +1786,19 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
         <section class="registration-form-section">
             <!-- Wizard Progress Indicator Removed for Simplicity -->
 
+            <!-- LOADING STATE -->
+            <div id="view-loading" class="step-container <?= ($reg_status !== '') ? 'active' : '' ?>">
+                <div class="success-celebration" style="border-top-color: var(--accent-gold);">
+                    <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+                        <div class="gateway-loader" style="width: 50px; height: 50px; display: block; margin: 0;"></div>
+                    </div>
+                    <h3 style="color: var(--primary-purple);">Processing...</h3>
+                    <p>Please wait while we retrieve your transaction data.</p>
+                </div>
+            </div>
+
             <!-- STEP 1: REGISTRATION -->
-            <div id="view-review" class="step-container active">
+            <div id="view-review" class="step-container <?= ($reg_status === '') ? 'active' : '' ?>">
                 <h2 class="section-header" style="text-align: center; margin-bottom: 35px;">REVIEW REGISTRATION & FEES
                 </h2>
 
@@ -2127,6 +2138,9 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
                         }
                     },
                     handler: async function (response) {
+                        // Show loading screen immediately while verifying payment
+                        showView('view-loading');
+                        
                         // 3. Verify Payment
                         try {
                             const verifyRes = await fetch('razorpay/verify_ajax.php', {
@@ -2200,6 +2214,9 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
 
             const txnId = status === 'Success' ? 'TXN-ICSW-' + Math.floor(1000000 + Math.random() * 9000000) : '';
             const dbStatus = status === 'Success' ? 'Completed' : 'Failed';
+
+            // Show loading view immediately
+            showView('view-loading');
 
             const payload = {
                 registrationId: '<?= htmlspecialchars($reg_id, ENT_QUOTES) ?>',
@@ -2284,13 +2301,17 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
     <?php if ($fetched_user && $reg_status === 'success'): ?>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            handleGatewayResponseFinish('Success', <?= json_encode($txn_id) ?>);
+            setTimeout(() => {
+                handleGatewayResponseFinish('Success', <?= json_encode($txn_id) ?>);
+            }, 800);
         });
     </script>
     <?php elseif ($fetched_user && $reg_status === 'failed'): ?>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            showView('view-failed');
+            setTimeout(() => {
+                showView('view-failed');
+            }, 800);
         });
     </script>
     <?php endif; ?>
