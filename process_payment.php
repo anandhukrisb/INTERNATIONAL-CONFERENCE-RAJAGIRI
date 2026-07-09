@@ -1984,7 +1984,6 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
 
         // Navigate between views
         function showView(viewId) {
-            console.log('Action: showView triggered for:', viewId);
             document.querySelectorAll('.step-container').forEach(container => {
                 container.classList.remove('active');
             });
@@ -1994,7 +1993,6 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
 
         // Trigger Razorpay Payment Flow natively
         async function completePayment() {
-            console.log('Action: completePayment triggered');
             const phpRegId = '<?= htmlspecialchars($reg_id, ENT_QUOTES) ?>';
             const btn = document.querySelector('.btn-register');
             let originalBtnText = '';
@@ -2136,7 +2134,6 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
 
         // Final UI cleanup based on payment outcome
         function handleGatewayResponseFinish(status, txnId) {
-            console.log('Action: handleGatewayResponseFinish triggered with status:', status);
             const errorBox = document.getElementById('paymentErrorBox');
 
             if (status === 'Success') {

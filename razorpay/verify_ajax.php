@@ -98,8 +98,8 @@ $status_db = mysqli_real_escape_string($db_conn, 'Completed');
 $currency_db = mysqli_real_escape_string($db_conn, $payment->currency ?? '');
 
 try {
-    // 1. Log the attempt
-    $insert_attempt_sql = "INSERT INTO payment_attempts (razorpay_order_id, razorpay_payment_id, status) 
+    // 1. Log the attempt securely and efficiently (INSERT IGNORE relies on DB UNIQUE constraint to block duplicates)
+    $insert_attempt_sql = "INSERT IGNORE INTO payment_attempts (razorpay_order_id, razorpay_payment_id, status) 
         VALUES ('$order_id_db', '$payment_id_db', 'captured')";
     mysqli_query($db_conn, $insert_attempt_sql);
 

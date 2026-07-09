@@ -29,10 +29,16 @@ if (!empty($registration_id) && !empty($dob) && empty($error)) {
                         pa.status as attempt_status,
                         po.status as order_status,
                         pa.error_description,
-                        COALESCE(pa.created_at, po.created_at) as event_time
+                        MAX(COALESCE(pa.created_at, po.created_at)) as event_time
                     FROM payment_orders po
                     LEFT JOIN payment_attempts pa ON po.razorpay_order_id = pa.razorpay_order_id
                     WHERE po.registration_id = :reg_id
+                    GROUP BY 
+                        po.razorpay_order_id,
+                        pa.razorpay_payment_id,
+                        pa.status,
+                        po.status,
+                        pa.error_description
                     ORDER BY event_time DESC
                 ");
                 $stmtHistory->execute([':reg_id' => $user_details['registration_id']]);
@@ -47,11 +53,11 @@ if (!empty($registration_id) && !empty($dob) && empty($error)) {
 }
 
 function renderHistoryItem($item) {
-    $statusText = 'Created';
+    $statusText = 'Initiated';
     $statusClass = 'h-status-created';
     
     if ($item['attempt_status'] === 'captured' || $item['order_status'] === 'paid') {
-        $statusText = 'Captured';
+        $statusText = 'Completed';
         $statusClass = 'h-status-captured';
     } elseif ($item['attempt_status'] === 'failed' || $item['order_status'] === 'failed') {
         $statusText = 'Failed';
@@ -59,14 +65,14 @@ function renderHistoryItem($item) {
     }
 
     $time = date('M d, Y h:i A', strtotime($item['event_time']));
-    $paymentIdText = $item['razorpay_payment_id'] ? " | Pay ID: " . htmlspecialchars($item['razorpay_payment_id']) : "";
+    $paymentIdText = $item['razorpay_payment_id'] ? " | Ref No: " . htmlspecialchars($item['razorpay_payment_id']) : "";
     $errorText = $item['error_description'] ? "<div style='color:#C53030; font-size: 0.85rem; margin-top: 5px;'>" . htmlspecialchars($item['error_description']) . "</div>" : "";
 
     return "
     <div class=\"history-item\">
         <div class=\"history-time\">{$time}</div>
         <div class=\"history-details\">
-            <strong>Order ID:</strong> " . htmlspecialchars($item['razorpay_order_id']) . "{$paymentIdText}
+            <strong>Transaction Ref:</strong> " . htmlspecialchars($item['razorpay_order_id']) . "{$paymentIdText}
             {$errorText}
         </div>
         <div class=\"history-status {$statusClass}\">{$statusText}</div>
