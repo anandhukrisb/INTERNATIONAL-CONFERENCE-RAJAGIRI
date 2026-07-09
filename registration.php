@@ -2200,8 +2200,10 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                     { label: "Online (Recorded)", value: "40 USD" }
                 ],
                 national: [
-                    { label: "In-Person (Offline)", value: "1,000 INR" },
-                    { label: "Online (Recorded)", value: "500 INR" }
+                    // { label: "In-Person (Offline)", value: "1,000 INR" },
+                    // { label: "Online (Recorded)", value: "500 INR" }
+                    { label: "In-Person (Offline)", value: "1 INR" },
+                    { label: "Online (Recorded)", value: "1 INR" }
                 ]
             }
         };
