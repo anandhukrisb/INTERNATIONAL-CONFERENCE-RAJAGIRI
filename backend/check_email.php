@@ -1,8 +1,8 @@
 <?php
-// backend/check_email.php
+
 header('Content-Type: application/json');
 
-// Disable display_errors so HTML warnings don't break the JSON response
+
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
 

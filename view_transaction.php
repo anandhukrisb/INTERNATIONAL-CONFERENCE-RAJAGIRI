@@ -99,7 +99,7 @@ function renderHistoryItem($item) {
         .form-control:focus { outline: none; border-color: var(--primary-purple); box-shadow: 0 0 0 3px rgba(66, 32, 114, 0.1); }
         .error-msg { color: #C53030; background: #FFF5F5; border: 1px solid #FEB2B2; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-weight: 500; display: flex; align-items: center; gap: 10px; }
         
-        /* Details Section Styles */
+        
         .status-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 25px; margin-bottom: 25px; border-bottom: 1px solid #eee; flex-wrap: wrap; gap: 15px; }
         .status-badge { display: inline-block; padding: 8px 16px; border-radius: 50px; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
         .status-Completed { background: #E6FFFA; color: #234E52; border: 1px solid #81E6D9; }
@@ -120,7 +120,7 @@ function renderHistoryItem($item) {
         .detail-label { font-size: 0.8rem; color: #6c757d; text-transform: uppercase; font-weight: 700; letter-spacing: 0.8px; margin-bottom: 6px; }
         .detail-value { font-size: 1.05rem; color: #212529; font-weight: 600; word-break: break-word; }
 
-        /* History Drawer Styles */
+        
         .history-container { background: #f8f9fa; border-radius: 10px; border-left: 4px solid var(--primary-purple); overflow: hidden; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         .history-item { padding: 15px 20px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .history-item:last-child { border-bottom: none; }
@@ -170,7 +170,7 @@ function renderHistoryItem($item) {
                 <form method="GET" action="">
                     <div class="form-group">
                         <label for="registration_id" class="form-label">Registration ID</label>
-                        <input type="text" id="registration_id" name="registration_id" class="form-control" required placeholder="REG-XXXXXX" value="<?php echo htmlspecialchars($_REQUEST['registration_id'] ?? ''); ?>">
+                        <input type="text" id="registration_id" name="registration_id" class="form-control" required placeholder="ICSW270101-A1B2" value="<?php echo htmlspecialchars($_REQUEST['registration_id'] ?? ''); ?>">
                     </div>
                     <div class="form-group">
                         <label for="dob" class="form-label">Date of Birth</label>
@@ -181,7 +181,7 @@ function renderHistoryItem($item) {
             </div>
         <?php else: ?>
             <div class="form-card" style="padding: 0; overflow: hidden;">
-                <!-- Status Header -->
+                
                 <div style="padding: 30px; background: linear-gradient(to right, rgba(66, 32, 114, 0.05), rgba(212, 175, 55, 0.05)); border-bottom: 1px solid #eee;">
                     <div class="status-header" style="margin: 0; padding: 0; border: none;">
                         <div>
@@ -225,7 +225,7 @@ function renderHistoryItem($item) {
                 </div>
 
                 <div style="padding: 30px;">
-                    <!-- Transaction History Section -->
+                    
                     <?php if (!empty($history_records)): ?>
                     <div class="info-section">
                         <h4 class="info-section-title">
@@ -235,7 +235,7 @@ function renderHistoryItem($item) {
                         
                         <div class="history-container">
                             <?php 
-                                // Show the most recent one (index 0)
+                                
                                 echo renderHistoryItem($history_records[0]); 
                             ?>
                             
@@ -255,7 +255,7 @@ function renderHistoryItem($item) {
                     </div>
                     <?php endif; ?>
 
-                    <!-- Personal Info Section -->
+                    
                     <div class="info-section">
                         <h4 class="info-section-title">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
@@ -281,7 +281,7 @@ function renderHistoryItem($item) {
                         </div>
                     </div>
 
-                    <!-- Registration Details Section -->
+                    
                     <div class="info-section">
                         <h4 class="info-section-title">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
@@ -319,7 +319,7 @@ function renderHistoryItem($item) {
     <script>
     const spinnerSvg = '<svg style="animation: spin 1s linear infinite; margin-right: 8px; width: 18px; height: 18px; display: inline-block; vertical-align: text-bottom;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity: 0.25;"></circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" style="opacity: 0.75;"></path></svg>';
 
-    // Fix back button cache issue
+    
     window.addEventListener("pageshow", function(event) {
         if (event.persisted) {
             window.location.reload();

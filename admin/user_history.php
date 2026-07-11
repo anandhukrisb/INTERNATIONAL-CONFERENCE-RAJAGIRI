@@ -14,7 +14,7 @@ $reg_id = $_GET['reg_id'];
 try {
     require_once __DIR__ . '/../backend/db.php';
     
-    // Fetch user details
+    
     $stmtUser = $pdo->prepare("SELECT * FROM user_registrations WHERE registration_id = :reg_id");
     $stmtUser->execute([':reg_id' => $reg_id]);
     $user = $stmtUser->fetch(PDO::FETCH_ASSOC);
@@ -23,7 +23,7 @@ try {
         die("User not found.");
     }
 
-    // Fetch transaction history
+    
     $query = "
         SELECT 
             po.razorpay_order_id,
@@ -41,7 +41,7 @@ try {
     $stmtHistory->execute([':reg_id' => $reg_id]);
     $historyRaw = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
     
-    // Deduplicate history by order_id and calculate total attempts
+    
     $uniqueHistory = [];
     $totalAttempts = 0;
     
@@ -53,15 +53,15 @@ try {
         $pid = $row['razorpay_payment_id'] ?? '';
         $oid = $row['razorpay_order_id'];
         
-        // Group by Payment ID if it exists, otherwise fall back to Order ID.
-        // This ensures distinct payment attempts (failures vs successes) on the same order are shown,
-        // but webhook duplicates for the exact same payment ID are merged.
+        
+        
+        
         $uniqueKey = $pid ? $pid : $oid;
         
         if (!isset($uniqueHistory[$uniqueKey])) {
             $uniqueHistory[$uniqueKey] = $row;
         } else {
-            // Prefer successful statuses over failed/pending ones when deduplicating
+            
             $currentStatus = strtolower($uniqueHistory[$uniqueKey]['attempt_status'] ?? '');
             $newStatus = strtolower($row['attempt_status'] ?? '');
             
@@ -74,7 +74,7 @@ try {
         }
     }
     
-    // Re-index and sort by date descending
+    
     $history = array_values($uniqueHistory);
     usort($history, function($a, $b) {
         return strtotime($b['event_date']) - strtotime($a['event_date']);
@@ -91,7 +91,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User History - <?php echo htmlspecialchars($reg_id); ?></title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
-    <script src="../navbar.js" defer></script>
+
     <script src="../footer.js" defer></script>
     <style>
         :root {
@@ -110,7 +110,7 @@ try {
         .container {
             padding: 40px;
             max-width: 1200px;
-            margin: 120px auto 40px auto;
+            margin: 20px auto 40px auto;
             min-height: calc(100vh - 440px);
         }
         h1 { 
@@ -227,13 +227,33 @@ try {
         .btn-back svg {
             margin-right: 8px;
         }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
+    <script>
+        const spinnerSvg = '<svg style="animation: spin 1s linear infinite; margin-right: 8px; width: 18px; height: 18px; display: inline-block; vertical-align: text-bottom;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity: 0.25;"><\/circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" style="opacity: 0.75;"><\/path><\/svg>';
+        
+        function showLinkLoading(link, text) {
+            if (!link.hasAttribute('data-original-text')) {
+                link.setAttribute('data-original-text', link.innerHTML);
+            }
+            link.style.pointerEvents = 'none';
+            link.innerHTML = spinnerSvg + text;
+        }
+
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted) {
+                document.querySelectorAll('[data-original-text]').forEach(function(el) {
+                    el.innerHTML = el.getAttribute('data-original-text');
+                    el.style.pointerEvents = 'auto';
+                });
+            }
+        });
+    </script>
 </head>
 <body>
-    <floating-navbar base-path="../"></floating-navbar>
 
     <div class="container">
-        <a href="dashboard.php" class="btn-back">
+        <a href="dashboard.php" onclick="showLinkLoading(this, 'Returning...')" class="btn-back">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
             Back to Dashboard
         </a>
@@ -251,7 +271,7 @@ try {
                 <div class="summary-grid">
                     <div class="summary-item">
                         <div class="summary-label">Name</div>
-                        <div class="summary-value"><?php echo htmlspecialchars(trim($user['first_name'] . ' ' . $user['last_name'])); ?></div>
+                        <div class="summary-value"><?php echo htmlspecialchars(trim($user['first_name'] . ' ' . (!empty($user['middle_name']) ? $user['middle_name'] . ' ' : '') . $user['last_name'])); ?></div>
                     </div>
                     <div class="summary-item">
                         <div class="summary-label">Registration ID</div>
@@ -302,7 +322,7 @@ try {
                                                     $displayStatus = '✅ Successful';
                                                     $statusClass = 'status-captured';
                                                 } elseif ($row['attempt_status'] === 'failed') {
-                                                    // Check if it's a cancellation or just failed
+                                                    
                                                     if (stripos($row['error_description'], 'cancel') !== false) {
                                                         $displayStatus = '❌ Cancelled';
                                                         $statusClass = 'status-failed';
@@ -314,7 +334,7 @@ try {
                                                     $displayStatus = '⏳ Initiated';
                                                     $statusClass = 'status-created';
                                                 } else {
-                                                    $displayStatus = '⏳ Pending'; // Fallback for other non-final states
+                                                    $displayStatus = '⏳ Pending'; 
                                                     $statusClass = 'status-created';
                                                 }
                                             ?>

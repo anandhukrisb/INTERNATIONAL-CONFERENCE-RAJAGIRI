@@ -1,15 +1,15 @@
 <?php
-// backend/send_otp.php
+
 header('Content-Type: application/json');
 
-// Disable display_errors so HTML warnings don't break the JSON response
+
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
 
 session_start();
 
 try {
-    // 1. Get POST payload
+    
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
     
@@ -20,17 +20,17 @@ try {
         exit;
     }
 
-    // 2. Generate OTP and store in session
+    
     $otp = rand(100000, 999999);
     $_SESSION['verification_otp_' . $email] = [
         'otp' => $otp,
-        'expires' => time() + (10 * 60) // 10 minutes from now
+        'expires' => time() + (10 * 60) 
     ];
 
-    // 3. Load DB settings for SMTP credentials
+    
     require_once __DIR__ . '/db.php';
     
-    // 4. Send email using PHPMailer
+    
     require_once __DIR__ . '/PHPMailer/src/Exception.php';
     require_once __DIR__ . '/PHPMailer/src/PHPMailer.php';
     require_once __DIR__ . '/PHPMailer/src/SMTP.php';
@@ -70,12 +70,10 @@ try {
 
         echo json_encode(['success' => true, 'message' => 'OTP sent successfully']);
     } catch (Exception $e) {
-        error_log("send_otp.php: Failed to send OTP to $email. Mailer Error: {$mail->ErrorInfo}");
         echo json_encode(['success' => false, 'error' => 'Failed to send OTP email. Please check your email configuration.']);
     }
 
 } catch (Exception $e) {
-    error_log("send_otp.php: " . $e->getMessage());
     http_response_code(500);
     echo json_encode(['success' => false, 'error' => 'An unexpected server error occurred.']);
 }

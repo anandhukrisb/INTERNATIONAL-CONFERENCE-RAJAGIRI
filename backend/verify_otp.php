@@ -1,5 +1,5 @@
 <?php
-// backend/verify_otp.php
+
 header('Content-Type: application/json');
 
 ini_set('display_errors', 0);
@@ -39,14 +39,13 @@ try {
         exit;
     }
 
-    // OTP is valid!
-    // Clear the OTP from session so it can't be reused
+    
+    
     unset($_SESSION[$sessionKey]);
 
     echo json_encode(['success' => true, 'message' => 'Email successfully verified.']);
 
 } catch (Exception $e) {
-    error_log("verify_otp.php: " . $e->getMessage());
     http_response_code(500);
     echo json_encode(['success' => false, 'error' => 'An unexpected server error occurred.']);
 }

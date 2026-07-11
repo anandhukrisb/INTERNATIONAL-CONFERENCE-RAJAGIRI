@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
             $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($admin) {
-                // Check if password matches hash
+                
                 if (password_verify($password, $admin['password'])) {
                     $_SESSION['admin_logged_in'] = true;
                     $_SESSION['admin_id'] = $admin['id'];
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
                     header("Location: dashboard.php");
                     exit;
                 } 
-                // Fallback: If the user manually inserted plain text password, hash it automatically
+                
                 else if ($admin['password'] === $password) {
                     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
                     $update_stmt = $pdo->prepare("UPDATE admin_users SET password = :hash WHERE id = :id");
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
     <title>Admin Login - ICSWHMH 2027</title>
     <link rel="icon" type="image/x-icon" href="https://res.cloudinary.com/dswfp5fwx/image/upload/v1778131826/Favicon-192_hdltam.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
-    <script src="../navbar.js" defer></script>
+
     <script src="../footer.js" defer></script>
     <style>
         :root {
@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
             justify-content: center;
             align-items: center;
             min-height: calc(100vh - 280px);
-            padding: 120px 20px 60px 20px;
+            padding: 20px 20px 60px 20px;
             box-sizing: border-box;
         }
         .login-card {
@@ -173,10 +173,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
             font-weight: 500;
             text-align: center;
         }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
+    <script>
+        const spinnerSvg = '<svg style="animation: spin 1s linear infinite; margin-right: 8px; width: 18px; height: 18px; display: inline-block; vertical-align: text-bottom;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity: 0.25;"><\/circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" style="opacity: 0.75;"><\/path><\/svg>';
+        function handleFormSubmit(event) {
+            const btn = event.target.querySelector('button[type="submit"]');
+            if (btn) {
+                if (!btn.hasAttribute('data-original-text')) {
+                    btn.setAttribute('data-original-text', btn.innerHTML);
+                }
+                btn.style.pointerEvents = 'none';
+                btn.innerHTML = spinnerSvg + 'Signing In...';
+            }
+        }
+
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted) {
+                document.querySelectorAll('[data-original-text]').forEach(function(el) {
+                    el.innerHTML = el.getAttribute('data-original-text');
+                    el.style.pointerEvents = 'auto';
+                });
+            }
+        });
+    </script>
 </head>
 <body>
-    <floating-navbar base-path="../"></floating-navbar>
     <div class="main-wrapper">
         <div class="login-card">
             <div class="login-header">
@@ -189,7 +211,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
             <div class="error-msg"><?php echo htmlspecialchars($error); ?></div>
         <?php endif; ?>
 
-        <form method="POST" action="">
+        <form method="POST" action="" onsubmit="handleFormSubmit(event)">
             <div class="form-group">
                 <label for="email" class="form-label">Email Address</label>
                 <input type="email" id="email" name="email" class="form-control" required placeholder="admin@example.com" value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>">
