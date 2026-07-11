@@ -1,5 +1,5 @@
 <?php
-// Handle redirect back from Razorpay
+
 $reg_status = $_GET['status'] ?? '';
 $reg_id = $_GET['reg_id'] ?? '';
 $txn_id = $_GET['txn_id'] ?? '';
@@ -12,7 +12,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
         $stmt->execute([':reg_id' => $reg_id]);
         $fetched_user = $stmt->fetch(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
-        // Ignore DB error, it will just load normally
+        
     }
 }
 ?>
@@ -29,7 +29,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
     <script src="navbar.js" defer></script>
     <script src="footer.js" defer></script>
 
-    <!-- Google Fonts -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -37,7 +37,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
         rel="stylesheet">
 
     <style>
-        /* ================= GLOBAL STYLES ================= */
+        
         :root {
             --primary-purple: #1D0A3F;
             --accent-gold: #C9A227;
@@ -73,7 +73,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             padding: 0 20px;
         }
 
-        /* ================= TITLE SECTION ================= */
+        
         .title-section {
             margin-top: 150px;
             margin-bottom: 60px;
@@ -99,7 +99,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             border-radius: 2px;
         }
 
-        /* ================= CONTENT SECTIONS ================= */
+        
         .intro-text {
             font-size: 1.15rem;
             margin-bottom: 40px;
@@ -116,7 +116,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             font-weight: 600;
         }
 
-        /* ================= INCLUSIONS GRID ================= */
+        
         .inclusions-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
@@ -155,7 +155,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
 
         .inclusion-list li::before {
             content: "\F272";
-            /* Bootstrap Icon Check */
+            
             font-family: "bootstrap-icons";
             position: absolute;
             left: 0;
@@ -163,7 +163,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             font-weight: bold;
         }
 
-        /* ================= PRICING TABLE ================= */
+        
         .pricing-section {
             margin-bottom: 60px;
             overflow-x: auto;
@@ -210,7 +210,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             color: var(--primary-purple);
         }
 
-        /* ================= INFO SECTIONS (ACCORDION STYLE) ================= */
+        
         .info-section {
             margin-bottom: 80px;
         }
@@ -220,7 +220,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             background: var(--white);
             border: 1px solid #ddd;
             border-radius: 10px;
-            /* Slight rounding like in image */
+            
             overflow: hidden;
         }
 
@@ -247,7 +247,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             color: var(--text-muted);
             font-size: 1rem;
             max-height: 0;
-            /* Changed to 0 by default for consistency with JS-driven open */
+            
             opacity: 0;
             transition: max-height 0.3s ease-out, opacity 0.3s ease, padding 0.3s ease;
             overflow: hidden;
@@ -256,7 +256,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
 
         .info-strip.expanded .info-content {
             max-height: 1000px;
-            /* Fallback */
+            
             opacity: 1;
             padding-top: 0;
             padding-bottom: 0;
@@ -274,7 +274,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             margin-bottom: 0;
         }
 
-        /* Cancellation Table */
+        
         .cancel-table {
             width: 100%;
             border-collapse: collapse;
@@ -343,13 +343,13 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
 
 
 
-        /* ================= BOOTSTRAP ICONS FALLBACK ================= */
+        
         @font-face {
             font-family: "bootstrap-icons";
             src: url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/fonts/bootstrap-icons.woff2?24ad65009a63aa365fd148d0a1b9b395") format("woff2");
         }
 
-        /* ================= MOBILE RESPONSIVENESS ================= */
+        
         @media (max-width: 768px) {
             * {
                 max-width: 100%;
@@ -456,7 +456,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             }
         }
 
-        /* ================= FEE GUIDELINES STYLES ================= */
+        
         .fee-guidelines-section {
             margin: 0 auto 50px auto;
             max-width: 1050px;
@@ -525,7 +525,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             margin-top: 0;
         }
 
-        /* Modern Pricing Cards */
+        
         .pricing-cards-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -692,7 +692,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             }
         }
 
-        /* ================= FORM STYLES ================= */
+        
         .registration-form-section {
             margin-bottom: 80px;
             background: #fff;
@@ -735,7 +735,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
 
         .form-control::placeholder {
             color: #CBD5E0;
-            opacity: 1; /* Firefox sets opacity < 1 by default */
+            opacity: 1; 
         }
 
         .form-control:focus {
@@ -789,7 +789,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             }
         }
 
-        /* ================= STICKY SIDEBAR BUTTON ================= */
+        
         .sticky-sidebar-buttons {
             position: fixed;
             top: 170px;
@@ -856,7 +856,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             }
         }
 
-        /* ================= WIZARD & PROGRESS BAR ================= */
+        
         .wizard-progress {
             display: flex;
             justify-content: space-between;
@@ -886,7 +886,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             transform: translateY(-50%);
             height: 4px;
             width: 0%;
-            /* Dynamic based on steps */
+            
             z-index: 2;
             transition: width 0.4s ease;
         }
@@ -942,7 +942,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             color: var(--accent-gold);
         }
 
-        /* ================= STEP CONTAINERS ================= */
+        
         .step-container {
             display: none;
             animation: slideIn 0.5s ease forwards;
@@ -964,7 +964,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             }
         }
 
-        /* ================= VERIFICATION BOX ================= */
+        
         .verification-box {
             background: linear-gradient(135deg, rgba(29, 10, 63, 0.02) 0%, rgba(201, 162, 39, 0.05) 100%);
             border: 1px dashed var(--accent-gold);
@@ -1054,7 +1054,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             pointer-events: auto !important;
         }
 
-        /* ================= REVIEW RECEIPT & INVOICE ================= */
+        
         .invoice-card {
             background-color: #fff;
             border: 1px solid #E2E8F0;
@@ -1184,7 +1184,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             transform: translateY(-2px);
         }
 
-        /* ================= SUCCESS CELEBRATION ================= */
+        
         .success-celebration {
             text-align: center;
             padding: 40px 20px;
@@ -1262,7 +1262,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             font-weight: 600;
         }
 
-        /* ================= PAYMENT SIMULATION MODAL ================= */
+        
 
         .gateway-loader {
             width: 60px;
@@ -1281,7 +1281,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
 
 
 
-        /* ================= FAILURE STATUS DISPLAY ================= */
+        
         .payment-error-box {
             background-color: #FFF5F5;
             border: 1px solid #FEB2B2;
@@ -1312,7 +1312,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
 
     <floating-navbar></floating-navbar>
 
-    <!-- Sticky Sidebar Buttons -->
+    
     <div class="sticky-sidebar-buttons">
         <a href="view_transaction.php" class="sidebar-btn">Check Details</a>
     </div>
@@ -1323,7 +1323,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             <h2 id="pageTitle">REGISTRATION</h2>
         </div>
 
-        <!-- Fee Guidelines Section -->
+        
         <section class="fee-guidelines-section" style="display: none !important;">
             <h2 class="section-header" style="text-align: center; margin-bottom: 30px;">FEE GUIDELINES</h2>
             <div class="fee-toggle-container">
@@ -1332,14 +1332,14 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                 <button class="fee-toggle-btn" id="btn-filter" onclick="showFeeTab('filter')">Find My Fee</button>
             </div>
 
-            <!-- View All Tab -->
+            
             <div id="fee-view-all" class="fee-tab-content active">
 
                 <h3 class="fee-table-title"
                     style="text-align: center; margin-bottom: 30px; font-size: 1.6rem; font-weight: 700;">General
                     Registration</h3>
                 <div class="pricing-cards-container">
-                    <!-- Developed -->
+                    
                     <div class="pricing-card">
                         <div class="pricing-card-header">
                             <div class="pricing-category">Developed Countries</div>
@@ -1362,7 +1362,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                         </ul>
                     </div>
 
-                    <!-- Developing -->
+                    
                     <div class="pricing-card accent">
                         <div class="pricing-card-header">
                             <div class="pricing-category">Developing Countries</div>
@@ -1385,7 +1385,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                         </ul>
                     </div>
 
-                    <!-- National -->
+                    
                     <div class="pricing-card">
                         <div class="pricing-card-header">
                             <div class="pricing-category">National (India)</div>
@@ -1415,7 +1415,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                         style="font-size: 1.05rem; color: var(--text-muted); font-weight: 500; display: block; margin-top: 5px;">(One-day
                         Colloquium)</span></h3>
                 <div class="pricing-cards-container">
-                    <!-- Developed -->
+                    
                     <div class="pricing-card">
                         <div class="pricing-card-header">
                             <div class="pricing-category">Developed Countries</div>
@@ -1430,7 +1430,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                         </ul>
                     </div>
 
-                    <!-- Developing -->
+                    
                     <div class="pricing-card accent">
                         <div class="pricing-card-header">
                             <div class="pricing-category">Developing Countries</div>
@@ -1445,7 +1445,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                         </ul>
                     </div>
 
-                    <!-- National -->
+                    
                     <div class="pricing-card">
                         <div class="pricing-card-header">
                             <div class="pricing-category">National (India)</div>
@@ -1467,7 +1467,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                         style="font-size: 1.05rem; color: var(--text-muted); font-weight: 500; display: block; margin-top: 5px;">(One-day
                         International Summit)</span></h3>
                 <div class="pricing-cards-container">
-                    <!-- Developed -->
+                    
                     <div class="pricing-card">
                         <div class="pricing-card-header">
                             <div class="pricing-category">Developed Countries</div>
@@ -1482,7 +1482,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                         </ul>
                     </div>
 
-                    <!-- Developing -->
+                    
                     <div class="pricing-card accent">
                         <div class="pricing-card-header">
                             <div class="pricing-category">Developing Countries</div>
@@ -1497,7 +1497,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                         </ul>
                     </div>
 
-                    <!-- National -->
+                    
                     <div class="pricing-card">
                         <div class="pricing-card-header">
                             <div class="pricing-category">National (India)</div>
@@ -1515,7 +1515,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
 
             </div>
 
-            <!-- Filter Tab -->
+            
             <div id="fee-view-filter" class="fee-tab-content">
                 <div class="fee-filter-controls">
                     <div class="form-group">
@@ -1536,166 +1536,28 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                     </div>
                 </div>
                 <div id="filtered-fee-result" class="filtered-fee-result">
-                    <!-- Results populated by JS -->
+                    
                 </div>
             </div>
         </section>
 
-        <!--
-        <section class="intro-section">
-            <p class="intro-text">
-                Welcome to the registration page for the 11th International Conference for Social Work in Health and
-                Mental Health. All persons intending to attend the Conference must complete an online Registration Form.
-            </p>
-            <p class="intro-text">
-                Please read the below registration information before you complete the Registration Form. Should you
-                experience any difficulties please contact the Conference Managers at
-                <a href="mailto:icswhmh2027@rajagiri.edu"
-                    style="color: var(--accent-gold); text-decoration: none;">icswhmh2027@rajagiri.edu</a>.
-            </p>
-        </section>
-        -->
+        
 
-        <!-- Pricing Section -->
-        <!-- Pricing Section -->
-        <!--
-        <section class="pricing-section">
-            <h2 class="section-header">REGISTRATION FEES</h2>
-            <p class="intro-text">
-                Registration for the conference will be available on the official conference website.
-            </p>
+        
+        
+        
 
-            <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-                <table class="pricing-table">
-                    <thead>
-                        <tr>
-                            <th rowspan="2">Type of Participant</th>
-                            <th rowspan="2">Country</th>
-                            <th colspan="3" style="text-align: center;">Registration Type</th>
-                            <th rowspan="2">Spot</th>
-                        </tr>
-                        <tr>
-                            <th style="text-align: center;">Regular</th>
-                            <th style="text-align: center;">Early Bird</th>
-                            <th style="text-align: center;">Day Registration**</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        
-                        <tr>
-                            <td rowspan="3" style="font-weight: 600; vertical-align: middle;">Academics / Field
-                                Practitioners</td>
-                            <td>From Developed Countries</td>
-                            <td class="price-tag">400 USD</td>
-                            <td class="price-tag">350 USD</td>
-                            <td class="price-tag">150 USD</td>
-                            <td class="price-tag">500 USD</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>From Developing Countries</td>
-                            <td class="price-tag">250 USD</td>
-                            <td class="price-tag">220 USD</td>
-                            <td class="price-tag">150 USD</td>
-                            <td class="price-tag">300 USD</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>National Participants</td>
-                            <td class="price-tag">3500 INR</td>
-                            <td class="price-tag">3000 INR</td>
-                            <td class="price-tag">1500 INR</td>
-                            <td class="price-tag">4500 INR</td>
-                        </tr>
 
-                        
-                        <tr>
-                            <td rowspan="3" style="font-weight: 600; vertical-align: middle;">Students / PhD Scholars
-                            </td>
-                            <td>From Developed Countries</td>
-                            <td class="price-tag">300 USD</td>
-                            <td class="price-tag">275 USD</td>
-                            <td class="price-tag">150 USD</td>
-                            <td class="price-tag">350 USD</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>From Developing Countries</td>
-                            <td class="price-tag">200 USD</td>
-                            <td class="price-tag">175 USD</td>
-                            <td class="price-tag">150 USD</td>
-                            <td class="price-tag">250 USD</td>
-                        </tr>
-                        
-                        <tr>
-                            <td>National Participants</td>
-                            <td class="price-tag">2500 INR</td>
-                            <td class="price-tag">2000 INR</td>
-                            <td class="price-tag">1500 INR</td>
-                            <td class="price-tag">3000 INR</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        
+        
+        
+        <section class="registration-form-section">
+            
 
             
-            <div
-                style="margin-top: 30px; padding: 25px; background: #fff9e6; border-left: 4px solid var(--accent-gold); border-radius: 8px;">
-                <p style="margin-bottom: 15px; font-size: 0.95rem; line-height: 1.6; color: var(--text-dark);">
-                    <strong>Notes:</strong>
-                </p>
-                <ul style="margin-left: 20px; color: var(--text-muted); font-size: 0.95rem; line-height: 1.8;">
-                    <li style="margin-bottom: 10px;">All rates are excluding GST. <strong>18% GST rates are
-                            applicable.</strong></li>
-                    <li style="margin-bottom: 10px;"><strong>*Full conference registration fees</strong> include access
-                        to all conference sessions, conference kits, networking events, coffee breaks, lunches,
-                        conference dinners, and electronic proceedings.</li>
-                    <li><strong>**Day registration fees</strong> include access to conference sessions, coffee breaks,
-                        and lunch for any single day.</li>
-                </ul>
-            </div>
-        </section>
-        -->
-
-
-        <!-- What's Included Section -->
-        <!-- What's Included Section -->
-        <!--
-        <section class="info-section" style="margin-top: 60px; margin-bottom: 60px;">
-            <h2 class="section-header">WHAT'S INCLUDED</h2>
-            <div class="inclusions-grid">
-                <div class="inclusion-card">
-                    <h3>Full Conference Registration*</h3>
-                    <ul class="inclusion-list">
-                        <li>Access to all conference sessions</li>
-                        <li>Conference kit</li>
-                        <li>Networking events</li>
-                        <li>Daily coffee breaks</li>
-                        <li>Conference lunches</li>
-                        <li>Conference dinners</li>
-                        <li>Electronic proceedings</li>
-                    </ul>
-                </div>
-                <div class="inclusion-card">
-                    <h3>Day Registration**</h3>
-                    <ul class="inclusion-list">
-                        <li>Access to conference sessions (single day)</li>
-                        <li>Coffee breaks</li>
-                        <li>Lunch for the selected day</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        -->
-        <section class="registration-form-section">
-            <!-- Wizard Progress Indicator Removed for Simplicity -->
-
-            <!-- STEP 1: REGISTRATION -->
             <div id="step-1" class="step-container active">
 
-                <!-- Initial Email Check Block -->
+                
                 <div id="initialEmailCheckContainer" class="verification-box" style="margin-bottom: 25px;">
                     <h4
                         style="font-family: 'Outfit', sans-serif; color: var(--primary-purple); margin-bottom: 12px; font-weight: 700;">
@@ -1703,7 +1565,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                     <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">Please enter your email address to begin. We will check your abstract submission status.</p>
                     <div class="verification-row">
                         <div class="form-group" style="margin-bottom: 0; flex: 1;">
-                            <label for="checkEmail" class="form-label">Email Address</label>
+                            <label for="checkEmail" class="form-label">Email Address <span style="color: red;">*</span></label>
                             <input type="email" id="checkEmail" class="form-control"
                                 placeholder="you@example.com">
                         </div>
@@ -1712,7 +1574,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                     </div>
                     <div id="initialCheckStatus" class="verification-status"></div>
                     
-                    <!-- OTP Verification Container -->
+                    
                     <div id="otpContainer" style="display: none; margin-top: 15px; border-top: 1px dashed var(--accent-gold); padding-top: 15px;">
                         <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">
                             Please enter the 6-digit OTP sent to your email.
@@ -1737,12 +1599,13 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                     </div>
                 </div>
 
-                <!-- Remaining Registration Form (Conditionally overlay locked until verified) -->
+                
+                <p style="color: red; font-size: 0.9em; margin-bottom: 15px;">* Fields are mandatory</p>
                 <form id="registrationForm" onsubmit="submitStep1(event)" class="locked-form-overlay">
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="firstName" class="form-label">First Name</label>
+                            <label for="firstName" class="form-label">First Name <span style="color: red;">*</span></label>
                             <input type="text" id="firstName" name="firstName" class="form-control" placeholder="Alan"
                                 required>
                         </div>
@@ -1751,7 +1614,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                             <input type="text" id="middleName" name="middleName" class="form-control" placeholder="J.">
                         </div>
                         <div class="form-group">
-                            <label for="lastName" class="form-label">Last Name</label>
+                            <label for="lastName" class="form-label">Last Name <span style="color: red;">*</span></label>
                             <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Wake"
                                 required>
                         </div>
@@ -1759,29 +1622,29 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="organization" class="form-label">Organization / Institution</label>
+                            <label for="organization" class="form-label">Organization / Institution <span style="color: red;">*</span></label>
                             <input type="text" id="organization" name="organization" class="form-control"
                                 placeholder="University / Institution Name" required>
                         </div>
                         <div class="form-group">
-                            <label for="email" class="form-label">Email Address</label>
+                            <label for="email" class="form-label">Email Address <span style="color: red;">*</span></label>
                             <input type="email" id="email" name="email" class="form-control"
                                 placeholder="alan.wake@example.com" required>
                         </div>
                         <div class="form-group">
-                            <label for="dob" class="form-label">Date of Birth</label>
+                            <label for="dob" class="form-label">Date of Birth <span style="color: red;">*</span></label>
                             <input type="date" id="dob" name="dob" class="form-control" required>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="phone" class="form-label">Phone Number</label>
+                            <label for="phone" class="form-label">Phone Number <span style="color: red;">*</span></label>
                             <input type="tel" id="phone" name="phone" class="form-control" placeholder="+91 98765 43210"
                                 required>
                         </div>
                         <div class="form-group">
-                            <label for="participantType" class="form-label">Participant Category (Who are you?)</label>
+                            <label for="participantType" class="form-label">Participant Category (Who are you?) <span style="color: red;">*</span></label>
                             <select id="participantType" name="participantType" class="form-control"
                                 onchange="updateRequirementsOptions()" required>
                                 <option value="" disabled selected>Select Category</option>
@@ -1794,7 +1657,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="country" class="form-label">Country (Where are you from?)</label>
+                            <label for="country" class="form-label">Country (Where are you from?) <span style="color: red;">*</span></label>
                             <select id="country" name="country" class="form-control"
                                 onchange="handleCountryChange()" required>
                                 <option value="" disabled selected>Select Country</option>
@@ -1996,10 +1859,10 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                         </div>
                         <div class="form-group">
                             <label for="requirement" class="form-label">Required Package (What requirement do you
-                                need?)</label>
+                                need?) <span style="color: red;">*</span></label>
                             <select id="requirement" name="requirement" class="form-control" required>
                                 <option value="" disabled selected>Select Package</option>
-                                <!-- Populated dynamically based on participant category -->
+                                
                             </select>
                         </div>
                     </div>
@@ -2018,7 +1881,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                 </form>
             </div>
 
-            <!-- STEP 2: REVIEW & PAYMENT -->
+            
             
     </main>
 
@@ -2031,14 +1894,14 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             const isExpanded = strip.classList.contains('expanded');
 
             if (isExpanded) {
-                // Close
+                
                 content.style.maxHeight = content.scrollHeight + "px";
-                content.offsetHeight; // force reflow
+                content.offsetHeight; 
                 content.style.maxHeight = "0";
                 strip.classList.remove('expanded');
                 icon.textContent = "+";
             } else {
-                // Open
+                
                 strip.classList.add('expanded');
                 content.style.maxHeight = content.scrollHeight + "px";
                 icon.textContent = "−";
@@ -2055,7 +1918,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
         document.querySelectorAll('.info-header').forEach(header => {
             header.addEventListener('click', () => toggleAccordion(header));
 
-            // Set initial state for expanded sections
+            
             const strip = header.parentElement;
             if (strip.classList.contains('expanded')) {
                 const content = strip.querySelector('.info-content');
@@ -2111,8 +1974,8 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                     { label: "Online (Recorded)", value: "40 USD" }
                 ],
                 national: [
-                    // { label: "In-Person (Offline)", value: "1,000 INR" },
-                    // { label: "Online (Recorded)", value: "500 INR" }
+                    
+                    
                     { label: "In-Person (Offline)", value: "1 INR" },
                     { label: "Online (Recorded)", value: "1 INR" }
                 ]
@@ -2153,15 +2016,15 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             resultContainer.innerHTML = html;
         }
 
-        // Initialize filter on load if needed
+        
         document.addEventListener('DOMContentLoaded', () => {
             updateFeeFilter();
         });
     </script>
 
-    <!-- Multi-Step Wizard and Price Calculations Logic -->
+    
     <script>
-        // Fix back button cache issue
+        
         window.addEventListener("pageshow", function(event) {
             if (event.persisted) {
                 window.location.reload();
@@ -2170,7 +2033,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
 
         const spinnerSvg = '<svg style="animation: spin 1s linear infinite; margin-right: 8px; width: 18px; height: 18px; display: inline-block; vertical-align: text-bottom;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity: 0.25;"></circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" style="opacity: 0.75;"></path></svg>';
 
-        // Global state for wizard data
+        
         let wizardState = {
             abstractSubmitted: '',
             isVerified: false,
@@ -2205,7 +2068,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             "Taiwan", "United Kingdom", "United States", "Vatican City"
         ];
 
-        // Handles Country selection to determine tier (Developed, Developing, National)
+        
         function handleCountryChange() {
             const countrySelect = document.getElementById('country');
             const countryVal = countrySelect.value;
@@ -2219,11 +2082,11 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                 cCatInput.value = 'developing';
             }
 
-            // Trigger dynamic fee options update
+            
             updateRequirementsOptions();
         }
 
-        // Initial Email Verification
+        
         async function checkInitialEmail() {
             const emailVal = document.getElementById('checkEmail').value.trim().toLowerCase();
             const statusDiv = document.getElementById('initialCheckStatus');
@@ -2256,14 +2119,14 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                 if (data.is_registered) {
                     const statusText = data.payment_status || 'Pending';
                     
-                    let statusColor = '#D69E2E'; // Default (e.g., Pending -> Orange)
+                    let statusColor = '#D69E2E'; 
                     let buttonText = 'Check Details / Pay Again &rarr;';
                     
                     if (statusText === 'Completed') {
-                        statusColor = '#2F855A'; // Green
+                        statusColor = '#2F855A'; 
                         buttonText = 'Check Registration Details &rarr;';
                     } else if (statusText === 'Failed' || statusText.toLowerCase() === 'not completed') {
-                        statusColor = '#C53030'; // Red
+                        statusColor = '#C53030'; 
                     }
                     
                     statusDiv.innerHTML = `
@@ -2288,7 +2151,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                     return;
                 }
 
-                // If not registered, trigger OTP send
+                
                 statusDiv.innerHTML = 'Sending OTP to your email...';
                 const otpRes = await fetch('backend/send_otp.php', {
                     method: 'POST',
@@ -2301,12 +2164,12 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                     throw new Error(otpData.error || 'Failed to send OTP.');
                 }
 
-                // Show OTP input container
+                
                 wizardState.pendingEmail = emailVal;
                 wizardState.pendingAbstract = data.has_abstract ? 'yes' : 'no';
                 
                 document.getElementById('checkEmail').readOnly = true;
-                btn.style.display = 'none'; // Hide proceed button
+                btn.style.display = 'none'; 
                 
                 statusDiv.innerHTML = `
                     <span class="verified-badge" style="background-color: #EBF8FF; color: #2B6CB0;">✓ OTP Sent Successfully</span>
@@ -2355,7 +2218,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                     throw new Error(data.error || 'Invalid OTP.');
                 }
 
-                // OTP Verified! Unlock form
+                
                 wizardState.isVerified = true;
                 wizardState.email = wizardState.pendingEmail;
                 wizardState.abstractSubmitted = wizardState.pendingAbstract;
@@ -2374,12 +2237,12 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                 document.getElementById('otpInput').readOnly = true;
                 document.getElementById('resendOtpContainer').style.display = 'none';
 
-                // Populate main form email and make readonly
+                
                 const mainEmail = document.getElementById('email');
                 mainEmail.value = wizardState.email;
                 mainEmail.readOnly = true;
 
-                // Unlock registration form
+                
                 const form = document.getElementById('registrationForm');
                 form.classList.remove('locked-form-overlay');
                 form.classList.add('unlocked-form');
@@ -2418,18 +2281,18 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             }
         }
 
-        // Dynamically updates package options dropdown based on Who they are & Where they are fromType
+        
         function updateRequirementsOptions() {
             const pType = document.getElementById('participantType').value;
             const cCat = document.getElementById('countryCategory').value;
             const reqSelect = document.getElementById('requirement');
 
-            // Clear options
+            
             reqSelect.innerHTML = '<option value="" disabled selected>Select Package</option>';
 
             if (!pType || !cCat) return;
 
-            // Fetch from the pre-existing feeData object from registration.html
+            
             const data = feeData[pType][cCat];
 
             if (data && data.length > 0) {
@@ -2442,17 +2305,17 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             }
         }
 
-        // Navigate between steps
+        
         function goToStep(stepNumber) {
-            // Hide all steps
+            
             document.querySelectorAll('.step-container').forEach(container => {
                 container.classList.remove('active');
             });
 
-            // Show active step
+            
             document.getElementById(`step-${stepNumber}`).classList.add('active');
 
-            // Update progress track
+            
             const line = document.getElementById('progressLine');
             const steps = document.querySelectorAll('.progress-step');
 
@@ -2469,19 +2332,19 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                         s.classList.remove('active', 'completed');
                     }
                 });
-                // Slide progress bar width
+                
                 line.style.width = ((stepNumber - 1) * 50) + '%';
             }
 
-            // Scroll smoothly to form section top
+            
             document.querySelector('.registration-form-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        // Submission for Step 1
+        
         async function submitStep1(event) {
             event.preventDefault();
 
-            // Read abstract submitted status from global state
+            
             const status = wizardState.abstractSubmitted || 'no';
 
             const capitalize = (s) => s.replace(/\b\w/g, c => c.toUpperCase());
@@ -2507,22 +2370,22 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                 return;
             }
 
-            // Show checking status on submit button
+            
             const submitBtn = event.target.querySelector('button[type="submit"]');
             const originalBtnText = submitBtn.innerHTML;
             submitBtn.disabled = true;
             submitBtn.innerHTML = spinnerSvg + 'Checking...';
 
-            // (Email check removed from here since it happens before unlocking the form)
             
-            // Restore button text before the rest of the flow modifies it again
+            
+            
             submitBtn.innerHTML = originalBtnText;
             submitBtn.disabled = false;
 
-            // Pre-existing feeData retrieval
+            
             const selectedPackageData = feeData[pType][cCat][reqIdx];
 
-            // Save state
+            
             wizardState.firstName = firstName;
             wizardState.middleName = middleName;
             wizardState.lastName = lastName;
@@ -2533,15 +2396,15 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             wizardState.participantType = pTypeSelect.options[pTypeSelect.selectedIndex].text;
             wizardState.country = countryVal;
             
-            // Format countryCategory readable string
+            
             wizardState.countryCategory = cCat === 'developed' ? 'Developed Countries' : (cCat === 'national' ? 'National (India)' : 'Developing Countries');
             
             wizardState.requirementIndex = reqIdx;
             wizardState.requirementLabel = selectedPackageData.label;
             wizardState.requirementCostText = selectedPackageData.value;
 
-            // Price analysis
-            const rawCost = selectedPackageData.value; // e.g. "350 USD" or "3,000 INR"
+            
+            const rawCost = selectedPackageData.value; 
             const numPart = rawCost.replace(/[^0-9]/g, '');
             const baseAmount = parseInt(numPart);
             const isINR = rawCost.includes('INR');
@@ -2549,18 +2412,18 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             wizardState.currency = isINR ? 'INR' : 'USD';
             wizardState.basePrice = baseAmount;
 
-            // Taxes removed — only show and save the real rate
+            
             wizardState.gstPrice = 0;
             wizardState.totalPrice = baseAmount;
 
-            // Show saving status on submit button
+            
             submitBtn.disabled = true;
             submitBtn.innerHTML = spinnerSvg + 'Saving details...';
 
-            // Hide any previous payment error (element moved to step 2)
-            // document.getElementById('paymentErrorBox').classList.remove('active');
+            
+            
 
-            // Construct payload for database
+            
             const payload = {
                 firstName: wizardState.firstName,
                 middleName: wizardState.middleName,
@@ -2579,7 +2442,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                 paymentStatus: 'Not Completed'
             };
 
-            // Call backend endpoint to save registrant details to the database with status 'Not Completed'
+            
             fetch('save_registration.php', {
                 method: 'POST',
                 headers: {
@@ -2614,11 +2477,11 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             });
         }
 
-        // Proceed to Step 2 after ID is retrieved or generated
+        
         function proceedToStep2(registrationId, rawCost) {
             wizardState.registrationId = registrationId;
 
-            // Populate Step 2 Review Fields
+            
             const fullName = wizardState.middleName ? `${wizardState.firstName} ${wizardState.middleName} ${wizardState.lastName}` : `${wizardState.firstName} ${wizardState.lastName}`;
             document.getElementById('reviewName').textContent = fullName;
             document.getElementById('reviewEmail').textContent = wizardState.email;
@@ -2628,10 +2491,10 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             document.getElementById('reviewCountry').textContent = wizardState.countryCategory;
             document.getElementById('reviewRequirement').textContent = `${wizardState.requirementLabel} (${rawCost})`;
 
-            // Populate Invoice Reference with registration ID
+            
             document.getElementById('invoiceReference').textContent = 'Ref: ' + registrationId;
 
-            // Invoice table populating
+            
             const desc = `${wizardState.participantType} Package: ${wizardState.requirementLabel} Access`;
             document.getElementById('invoiceItemDesc').textContent = desc;
 
@@ -2643,19 +2506,19 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             document.getElementById('invoiceGstPrice').textContent = formatCost(wizardState.gstPrice);
             document.getElementById('invoiceTotalPrice').textContent = formatCost(wizardState.totalPrice);
 
-            // Navigate to Step 2
+            
             goToStep(2);
         }
 
 
-        // Final UI cleanup based on payment outcome
+        
         function handleGatewayResponseFinish(status, txnId) {
             const errorBox = document.getElementById('paymentErrorBox');
 
             if (status === 'Success') {
                 wizardState.transactionId = txnId;
 
-                // Populate Step 3 Success Receipt
+                
                 document.getElementById('finalTxnId').textContent = txnId;
                 const fullName = wizardState.middleName ? `${wizardState.firstName} ${wizardState.middleName} ${wizardState.lastName}` : `${wizardState.firstName} ${wizardState.lastName}`;
                 document.getElementById('finalName').textContent = fullName;
@@ -2667,18 +2530,18 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                     if (typeof val === 'number') {
                         return val.toLocaleString('en-US') + ' ' + wizardState.currency;
                     }
-                    // Fallback if it's already a string from PHP
+                    
                     return val + ' ' + wizardState.currency;
                 };
                 document.getElementById('finalPricePaid').textContent = formatCost(wizardState.totalPrice);
 
-                // Hide any prior failure error box
+                
                 errorBox.classList.remove('active');
 
-                // Smoothly move to Step 3
+                
                 goToStep(3);
             } else {
-                // Show failure UI
+                
                 goToStep(4);
             }
         }
@@ -2687,7 +2550,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
     <?php if ($fetched_user && $reg_status === 'success'): ?>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Reconstruct minimal wizardState for Step 3 rendering
+            
             wizardState.registrationId = <?= json_encode($fetched_user['registration_id']) ?>;
             wizardState.firstName = <?= json_encode($fetched_user['first_name']) ?>;
             wizardState.middleName = <?= json_encode($fetched_user['middle_name']) ?>;
@@ -2697,7 +2560,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             wizardState.requirementLabel = <?= json_encode($fetched_user['package']) ?>;
             wizardState.totalPrice = <?= json_encode($fetched_user['base_amount']) ?>;
             
-            // Determine currency
+            
             const cCat = wizardState.countryCategory;
             wizardState.currency = (cCat === 'National (India)' || cCat === 'national') ? 'INR' : 'USD';
 

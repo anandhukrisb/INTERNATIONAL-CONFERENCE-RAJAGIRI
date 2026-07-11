@@ -83,15 +83,24 @@ try {
     } else {
         // 5b. Generate a unique registration ID and INSERT
         do {
-            $bytes = random_bytes(4);
-            // Convert to hex, uppercase, and take exactly 6 characters
-            $randomString = substr(strtoupper(bin2hex($bytes)), 0, 6);
-            $registrationId = 'REG-' . $randomString;
+            $midnight = strtotime('today');
+            $now = microtime(true);
+            $millisecondsSinceMidnight = (int)(($now - $midnight) * 1000);
+            $base36_ms = strtoupper(base_convert($millisecondsSinceMidnight, 10, 36));
+            
+            $registrationId = 'ICSW' . date('ymd') . '-' . $base36_ms;
 
             // Check if it exists
             $stmtCheckId = $pdo->prepare("SELECT id FROM user_registrations WHERE registration_id = :reg_id");
             $stmtCheckId->execute([':reg_id' => $registrationId]);
-        } while ($stmtCheckId->fetch());
+            
+            if ($stmtCheckId->fetch()) {
+                // If it exists (extremely rare collision), wait 1 millisecond and retry
+                usleep(1000);
+            } else {
+                break;
+            }
+        } while (true);
 
         error_log("save_registration.php: Generated secure unique registration_id = $registrationId");
         

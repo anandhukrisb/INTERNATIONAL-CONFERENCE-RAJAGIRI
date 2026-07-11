@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `abstract_details` (
 -- This table stores all the information collected during the registration process.
 CREATE TABLE IF NOT EXISTS `user_registrations` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `registration_id` VARCHAR(50) NOT NULL UNIQUE, -- For the REG-123456 format
+    `registration_id` VARCHAR(50) NOT NULL UNIQUE, -- For the ICSWYYMMDD-XXXXX format
     `first_name` VARCHAR(100) NOT NULL,
     `middle_name` VARCHAR(100) DEFAULT NULL,
     `last_name` VARCHAR(100) NOT NULL,

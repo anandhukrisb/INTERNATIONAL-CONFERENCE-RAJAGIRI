@@ -1,7 +1,7 @@
 <?php
-// backend/db.php
 
-// Parse the .env file
+
+
 $env = parse_ini_file(__DIR__ . '/../.env');
 
 $host = $env['DB_HOST'] ?? 'localhost';
@@ -12,17 +12,16 @@ $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db_name;charset=$charset";
 $options = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION, // Throws exceptions on errors
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,       // Fetches associative arrays by default
-    PDO::ATTR_EMULATE_PREPARES   => false,                  // Uses native prepared statements for security
+    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION, 
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,       
+    PDO::ATTR_EMULATE_PREPARES   => false,                  
 ];
 
 try {
     $pdo = new PDO($dsn, $username, $password, $options);
 } catch (\PDOException $e) {
-    // Log the actual error privately
-    error_log("Database connection failed: " . $e->getMessage());
-    // Throw a generic exception
+    
+    
     throw new Exception("Database connection failed. Please contact the administrator.");
 }
 ?>

@@ -11,7 +11,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     exit;
 }
 
-// Read JSON payload
+
 $json = file_get_contents('php://input');
 $data = json_decode($json, true);
 $registration_id = isset($data['registration_id']) ? trim((string)$data['registration_id']) : '';
@@ -39,7 +39,7 @@ $amount_raw = $row['base_amount'];
 $country_category = strtolower($row['country_category'] ?? '');
 $currency = (strpos($country_category, 'india') !== false || $country_category === 'national') ? 'INR' : 'USD';
 
-// Amount needs to be converted to paise
+
 function amount_to_paise(string $amount_inr): ?int
 {
     $amount_inr = trim(str_replace([',', ' '], '', $amount_inr));
@@ -89,7 +89,7 @@ if ($razorpay_order_id === '') {
 }
 
 try {
-    // Log the order creation in our tracking table
+    
     $order_id_db = mysqli_real_escape_string($db_conn, $razorpay_order_id);
     $amount_db = (float)($amount_paise / 100);
     $currency_db = mysqli_real_escape_string($db_conn, $currency);
@@ -98,8 +98,7 @@ try {
         VALUES ('$reg_id_db', '$order_id_db', $amount_db, '$currency_db', 'created')";
     mysqli_query($db_conn, $insert_order_sql);
 } catch (Throwable $e) {
-    // We don't necessarily want to fail the checkout if tracking fails, but we can log it.
-    error_log("Failed to insert payment_orders: " . $e->getMessage());
+    
 }
 
 echo json_encode([

@@ -8,6 +8,12 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 $search = trim($_GET['search'] ?? '');
 $filter_status = $_GET['status'] ?? '';
 $sort = $_GET['sort'] ?? 'date_desc';
+$date_from = $_GET['date_from'] ?? '';
+$date_to = $_GET['date_to'] ?? '';
+
+$page = max(1, intval($_GET['page'] ?? 1));
+$limit = 20;
+$offset = ($page - 1) * $limit;
 
 try {
     require_once __DIR__ . '/../backend/db.php';
@@ -24,6 +30,22 @@ try {
         $params[':status'] = $filter_status;
     }
 
+    if (!empty($date_from)) {
+        $query .= " AND DATE(created_at) >= :date_from";
+        $params[':date_from'] = $date_from;
+    }
+
+    if (!empty($date_to)) {
+        $query .= " AND DATE(created_at) <= :date_to";
+        $params[':date_to'] = $date_to;
+    }
+
+    $countQuery = str_replace("SELECT *", "SELECT COUNT(*)", $query);
+    $countStmt = $pdo->prepare($countQuery);
+    $countStmt->execute($params);
+    $total_records = $countStmt->fetchColumn();
+    $total_pages = ceil($total_records / $limit);
+
     switch ($sort) {
         case 'date_asc':
             $query .= " ORDER BY created_at ASC";
@@ -38,6 +60,11 @@ try {
         default:
             $query .= " ORDER BY created_at DESC";
             break;
+    }
+
+    $is_export = (isset($_GET['export']) && $_GET['export'] === 'csv');
+    if (!$is_export) {
+        $query .= " LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
     }
 
     $stmt = $pdo->prepare($query);
@@ -88,7 +115,7 @@ try {
     <title>Admin Dashboard - ICSWHMH 2027</title>
     <link rel="icon" type="image/x-icon" href="https://res.cloudinary.com/dswfp5fwx/image/upload/v1778131826/Favicon-192_hdltam.ico">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
-    <script src="../navbar.js" defer></script>
+
     <script src="../footer.js" defer></script>
     <style>
         :root {
@@ -107,7 +134,7 @@ try {
         .container {
             padding: 40px;
             max-width: 1400px;
-            margin: 120px auto 40px auto;
+            margin: 20px auto 40px auto;
             min-height: calc(100vh - 440px);
         }
         h1 { 
@@ -262,11 +289,41 @@ try {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            margin-left: auto; /* Pushes it to the right */
+            margin-left: auto; 
         }
         .btn-export:hover {
             background: #059669;
         }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+        }
+        .page-link {
+            padding: 8px 16px;
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            color: var(--primary-purple);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .page-link:hover {
+            background: #f1f5f9;
+            border-color: var(--primary-purple);
+        }
+        .page-info {
+            font-size: 0.95rem;
+            color: #475569;
+            font-weight: 500;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
         @media (max-width: 600px) {
             .btn-export {
                 margin-left: 0;
@@ -274,32 +331,82 @@ try {
             }
         }
     </style>
+    <script>
+        const spinnerSvg = '<svg style="animation: spin 1s linear infinite; margin-right: 8px; width: 18px; height: 18px; display: inline-block; vertical-align: text-bottom;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity: 0.25;"><\/circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" style="opacity: 0.75;"><\/path><\/svg>';
+        
+        function showLinkLoading(link, text) {
+            if (!link.hasAttribute('data-original-text')) {
+                link.setAttribute('data-original-text', link.innerHTML);
+            }
+            link.style.pointerEvents = 'none';
+            link.innerHTML = spinnerSvg + text;
+        }
+
+        function handleFormSubmit(event) {
+            const btn = event.submitter;
+            if (btn && btn.name !== 'export') {
+                if (!btn.hasAttribute('data-original-text')) {
+                    btn.setAttribute('data-original-text', btn.innerHTML);
+                }
+                btn.style.pointerEvents = 'none';
+                btn.innerHTML = spinnerSvg + 'Searching...';
+            } else if (btn && btn.name === 'export') {
+                const originalText = btn.innerHTML;
+                btn.style.pointerEvents = 'none';
+                btn.innerHTML = spinnerSvg + 'Exporting...';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.pointerEvents = 'auto';
+                }, 2000);
+            }
+        }
+
+        
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted) {
+                document.querySelectorAll('[data-original-text]').forEach(function(el) {
+                    el.innerHTML = el.getAttribute('data-original-text');
+                    el.style.pointerEvents = 'auto';
+                });
+            }
+        });
+    </script>
 </head>
 <body>
-    <floating-navbar base-path="../"></floating-navbar>
 
     <div class="container">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h1>Dashboard</h1>
             <div>
                 <span style="margin-right: 15px; font-weight: 500;">Welcome, <?php echo htmlspecialchars($_SESSION['admin_email']); ?></span>
-                <a href="logout.php" style="background: var(--accent-gold); color: var(--primary-purple); font-weight: 600; padding: 10px 20px; border-radius: 6px; text-decoration: none; display: inline-block;">Log Out</a>
+                <a href="logout.php" onclick="showLinkLoading(this, 'Logging Out...')" style="background: var(--accent-gold); color: var(--primary-purple); font-weight: 600; padding: 10px 20px; border-radius: 6px; text-decoration: none; display: inline-block;">Log Out</a>
             </div>
         </div>
         <div class="card">
-            <!-- Search & Filter Controls -->
-            <form method="GET" action="" class="filter-form">
+            
+            <form method="GET" action="" class="filter-form" onsubmit="handleFormSubmit(event)">
                 
                 <div style="display: flex; gap: 20px; width: 100%; justify-content: space-between; flex-wrap: wrap;">
                     
-                    <!-- Search Field (Dynamic) -->
+                    
                     <div class="filter-group" style="flex: 2; min-width: 300px;">
-                        <label for="search">Dynamic Search</label>
-                        <input type="text" id="search" name="search" class="filter-control" placeholder="Type to search instantly across all columns..." value="<?php echo htmlspecialchars($search); ?>" onkeyup="filterTable()">
+                        <label for="search">Search</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="search" name="search" class="filter-control" style="flex: 1;" placeholder="Search name, email, ID... (Press Enter)" value="<?php echo htmlspecialchars($search); ?>">
+                            <button type="submit" class="btn-filter" style="height: 42px;">Search</button>
+                        </div>
                     </div>
 
-                    <!-- Filter & Sort (Server-side) -->
+                    
                     <div style="display: flex; gap: 15px; flex-wrap: wrap; flex: 3; justify-content: flex-end;">
+                        <div class="filter-group" style="min-width: 140px; flex: unset;">
+                            <label for="date_from">Date From</label>
+                            <input type="date" id="date_from" name="date_from" class="filter-control" value="<?php echo htmlspecialchars($date_from); ?>" onchange="this.form.submit()">
+                        </div>
+                        <div class="filter-group" style="min-width: 140px; flex: unset;">
+                            <label for="date_to">Date To</label>
+                            <input type="date" id="date_to" name="date_to" class="filter-control" value="<?php echo htmlspecialchars($date_to); ?>" onchange="this.form.submit()">
+                        </div>
                         <div class="filter-group" style="min-width: 160px; flex: unset;">
                             <label for="status">Payment Status</label>
                             <select id="status" name="status" class="filter-control" onchange="this.form.submit()">
@@ -319,8 +426,8 @@ try {
                             </select>
                         </div>
 
-                        <?php if(!empty($search) || !empty($filter_status) || $sort !== 'date_desc'): ?>
-                            <a href="dashboard.php" class="btn-filter btn-clear" style="height: 42px;">Clear</a>
+                        <?php if(!empty($search) || !empty($filter_status) || !empty($date_from) || !empty($date_to) || $sort !== 'date_desc'): ?>
+                            <a href="dashboard.php" onclick="showLinkLoading(this, 'Clearing...')" class="btn-filter btn-clear" style="height: 42px;">Clear</a>
                         <?php endif; ?>
                         
                         <button type="submit" name="export" value="csv" class="btn-filter btn-export" style="height: 42px;">
@@ -368,7 +475,7 @@ try {
                                 ?>
                                 <tr>
                                     <td><strong style="color: var(--primary-purple);"><?php echo htmlspecialchars($reg['registration_id']); ?></strong></td>
-                                    <td><?php echo htmlspecialchars(trim($reg['first_name'] . ' ' . $reg['last_name'])); ?></td>
+                                    <td><?php echo htmlspecialchars(trim($reg['first_name'] . ' ' . (!empty($reg['middle_name']) ? $reg['middle_name'] . ' ' : '') . $reg['last_name'])); ?></td>
                                     <td>
                                         <div style="font-size: 0.9em;"><?php echo htmlspecialchars($reg['email']); ?></div>
                                         <div style="font-size: 0.85em; color: #64748b; margin-top: 3px;"><?php echo htmlspecialchars($reg['phone']); ?></div>
@@ -379,7 +486,7 @@ try {
                                     <td><span class="badge <?php echo $badgeClass; ?>"><?php echo htmlspecialchars($status); ?></span></td>
                                     <td style="color: #64748b; font-size: 0.85em;"><?php echo date('M d, Y', strtotime($reg['created_at'])); ?></td>
                                     <td>
-                                        <a href="user_history.php?reg_id=<?php echo urlencode($reg['registration_id']); ?>" style="display: inline-block; padding: 6px 12px; background-color: var(--primary-purple); color: white; text-decoration: none; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">View History</a>
+                                        <a href="user_history.php?reg_id=<?php echo urlencode($reg['registration_id']); ?>" onclick="showLinkLoading(this, 'Opening...')" style="display: inline-block; padding: 6px 12px; background-color: var(--primary-purple); color: white; text-decoration: none; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">View History</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -391,46 +498,30 @@ try {
                     </tbody>
                 </table>
             </div>
+
+            <?php if (isset($total_pages) && $total_pages > 1): ?>
+            <div class="pagination">
+                <?php
+                    $qsParams = $_GET;
+                    unset($qsParams['page']);
+                    $baseQs = http_build_query($qsParams);
+                    $baseQs = $baseQs ? '&' . $baseQs : '';
+                ?>
+                <?php if ($page > 1): ?>
+                    <a href="?page=<?php echo ($page - 1) . $baseQs; ?>" onclick="showLinkLoading(this, 'Loading...')" class="page-link">Previous</a>
+                <?php endif; ?>
+                
+                <span class="page-info">Page <?php echo $page; ?> of <?php echo $total_pages; ?> (<?php echo $total_records; ?> total)</span>
+                
+                <?php if ($page < $total_pages): ?>
+                    <a href="?page=<?php echo ($page + 1) . $baseQs; ?>" onclick="showLinkLoading(this, 'Loading...')" class="page-link">Next</a>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
+
             <?php endif; ?>
         </div>
     </div>
     <main-footer base-path="../"></main-footer>
-
-    <script>
-        function filterTable() {
-            let input = document.getElementById("search");
-            let filter = input.value.toLowerCase();
-            let table = document.getElementById("registrationsTable");
-            let tr = table.getElementsByTagName("tr");
-
-            for (let i = 1; i < tr.length; i++) { // Skip header row
-                let tdArray = tr[i].getElementsByTagName("td");
-                let rowMatch = false;
-                
-                for (let j = 0; j < tdArray.length; j++) {
-                    if (tdArray[j]) {
-                        let txtValue = tdArray[j].textContent || tdArray[j].innerText;
-                        if (txtValue.toLowerCase().indexOf(filter) > -1) {
-                            rowMatch = true;
-                            break;
-                        }
-                    }
-                }
-                
-                if (rowMatch) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
-                }
-            }
-        }
-
-        // Prevent form submission on enter key in search field
-        document.getElementById('search').addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-            }
-        });
-    </script>
 </body>
 </html>
