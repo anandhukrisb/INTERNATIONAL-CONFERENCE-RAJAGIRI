@@ -43,45 +43,16 @@ try {
     $baseAmount = $data['baseAmount'] ?? 0;
     $paymentStatus = $data['paymentStatus'] ?? 'Not Completed';
 
-    // 4. Check if the email already exists to update instead of insert
+    // 4. Check if the email already exists to prevent duplicate registrations and data overwriting
     $stmtCheck = $pdo->prepare("SELECT registration_id, id FROM user_registrations WHERE email = :email LIMIT 1");
     $stmtCheck->execute([':email' => $email]);
     $existing = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
     if ($existing) {
-        $registrationId = $existing['registration_id'];
-        $dbId = $existing['id'];
-        
-        // 5a. Prepare UPDATE statement
-        $sql = "UPDATE user_registrations SET 
-            first_name = :fname, middle_name = :mname, last_name = :lname, 
-            organization = :org, phone = :phone, date_of_birth = :dob, 
-            participant_category = :ptype, country = :country, country_category = :ccat,
-            package = :pkg, abstract_submitted = :absub, abstract_email = :abemail, 
-            base_amount = :baseamt, payment_status = :paystat
-            WHERE email = :email";
-            
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([
-            ':fname' => $firstName,
-            ':mname' => $middleName,
-            ':lname' => $lastName,
-            ':org' => $organization,
-            ':phone' => $phone,
-            ':dob' => $dob,
-            ':ptype' => $participantType,
-            ':country' => $country,
-            ':ccat' => $countryCategory,
-            ':pkg' => $package,
-            ':absub' => $abstractSubmitted,
-            ':abemail' => $abstractEmail,
-            ':baseamt' => $baseAmount,
-            ':paystat' => $paymentStatus,
-            ':email' => $email
-        ]);
-        error_log("save_registration.php: Registration updated successfully. ID: " . $dbId);
-    } else {
-        // 5b. Generate a unique registration ID and INSERT
+        throw new Exception("This email is already registered.");
+    }
+
+    // 5. Generate a unique registration ID and INSERT
         do {
             $midnight = strtotime('today');
             $now = microtime(true);
@@ -135,8 +106,6 @@ try {
         ]);
         $dbId = $pdo->lastInsertId();
         error_log("save_registration.php: Registration inserted successfully. ID: " . $dbId);
-    }
-
     // Send confirmation email with Registration ID using PHPMailer
     require_once __DIR__ . '/backend/PHPMailer/src/Exception.php';
     require_once __DIR__ . '/backend/PHPMailer/src/PHPMailer.php';

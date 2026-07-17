@@ -208,6 +208,11 @@ try {
             color: #b91c1c;
             border: 1px solid #fecaca;
         }
+        .badge-refunded {
+            background-color: #f3f4f6;
+            color: #4b5563;
+            border: 1px solid #d1d5db;
+        }
         .amount-pending {
             color: #c2410c;
             font-weight: 600;
@@ -361,7 +366,36 @@ try {
             }
         }
 
-        
+        function approveRefund(regId, btn) {
+            if (confirm('Are you sure you want to approve the refund for ' + regId + '?')) {
+                const originalText = btn.innerHTML;
+                btn.style.pointerEvents = 'none';
+                btn.innerHTML = spinnerSvg + 'Approving...';
+                
+                fetch('process_refund.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ registration_id: regId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Refund approved successfully.');
+                        window.location.reload();
+                    } else {
+                        alert('Error: ' + (data.error || 'Failed to approve refund'));
+                        btn.innerHTML = originalText;
+                        btn.style.pointerEvents = 'auto';
+                    }
+                })
+                .catch(error => {
+                    alert('An error occurred.');
+                    btn.innerHTML = originalText;
+                    btn.style.pointerEvents = 'auto';
+                });
+            }
+        }
+
         window.addEventListener('pageshow', function (event) {
             if (event.persisted) {
                 document.querySelectorAll('[data-original-text]').forEach(function(el) {
@@ -471,6 +505,9 @@ try {
                                     } elseif ($status === 'Failed') {
                                         $badgeClass = 'badge-failed';
                                         $amountClass = 'amount-failed';
+                                    } elseif ($status === 'Refund Approved' || $status === 'Refunded') {
+                                        $badgeClass = 'badge-refunded';
+                                        $amountClass = 'amount-failed';
                                     }
                                 ?>
                                 <tr>
@@ -486,7 +523,12 @@ try {
                                     <td><span class="badge <?php echo $badgeClass; ?>"><?php echo htmlspecialchars($status); ?></span></td>
                                     <td style="color: #64748b; font-size: 0.85em;"><?php echo date('M d, Y', strtotime($reg['created_at'])); ?></td>
                                     <td>
-                                        <a href="user_history.php?reg_id=<?php echo urlencode($reg['registration_id']); ?>" onclick="showLinkLoading(this, 'Opening...')" style="display: inline-block; padding: 6px 12px; background-color: var(--primary-purple); color: white; text-decoration: none; border-radius: 4px; font-size: 0.8rem; font-weight: 600;">View History</a>
+                                        <div style="display: flex; gap: 8px;">
+                                            <a href="user_history.php?reg_id=<?php echo urlencode($reg['registration_id']); ?>" onclick="showLinkLoading(this, 'Opening...')" style="display: inline-block; padding: 6px 12px; background-color: var(--primary-purple); color: white; text-decoration: none; border-radius: 4px; font-size: 0.8rem; font-weight: 600; white-space: nowrap;">View History</a>
+                                            <?php if ($status === 'Completed'): ?>
+                                                <button onclick="approveRefund('<?php echo htmlspecialchars($reg['registration_id']); ?>', this)" style="display: inline-block; padding: 6px 12px; background-color: #dc2626; color: white; text-decoration: none; border: none; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer; white-space: nowrap;">Approve Refund</button>
+                                            <?php endif; ?>
+                                        </div>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

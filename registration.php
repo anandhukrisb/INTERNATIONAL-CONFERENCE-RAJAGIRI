@@ -1,21 +1,4 @@
-<?php
 
-$reg_status = $_GET['status'] ?? '';
-$reg_id = $_GET['reg_id'] ?? '';
-$txn_id = $_GET['txn_id'] ?? '';
-
-$fetched_user = null;
-if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
-    try {
-        require_once __DIR__ . '/backend/db.php';
-        $stmt = $pdo->prepare("SELECT * FROM user_registrations WHERE registration_id = :reg_id LIMIT 1");
-        $stmt->execute([':reg_id' => $reg_id]);
-        $fetched_user = $stmt->fetch(PDO::FETCH_ASSOC);
-    } catch (Exception $e) {
-        
-    }
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -856,115 +839,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             }
         }
 
-        
-        .wizard-progress {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            margin: 0 auto 50px auto;
-            max-width: 600px;
-        }
 
-        .wizard-progress::before {
-            content: "";
-            background-color: #E2E8F0;
-            position: absolute;
-            top: 50%;
-            left: 0;
-            transform: translateY(-50%);
-            height: 4px;
-            width: 100%;
-            z-index: 1;
-        }
-
-        .progress-line {
-            background-color: var(--accent-gold);
-            position: absolute;
-            top: 50%;
-            left: 0;
-            transform: translateY(-50%);
-            height: 4px;
-            width: 0%;
-            
-            z-index: 2;
-            transition: width 0.4s ease;
-        }
-
-        .progress-step {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #fff;
-            border: 3px solid #E2E8F0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 3;
-            font-weight: 700;
-            font-family: 'Outfit', sans-serif;
-            color: #718096;
-            transition: all 0.4s ease;
-            position: relative;
-            background-clip: padding-box;
-        }
-
-        .progress-step.active {
-            border-color: var(--primary-purple);
-            color: var(--primary-purple);
-            background-color: #fff;
-            box-shadow: 0 0 15px rgba(29, 10, 63, 0.2);
-        }
-
-        .progress-step.completed {
-            border-color: var(--accent-gold);
-            background-color: var(--accent-gold);
-            color: #1D0A3F;
-        }
-
-        .progress-step::after {
-            content: attr(data-label);
-            position: absolute;
-            top: 48px;
-            font-size: 0.8rem;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
-            white-space: nowrap;
-            color: #718096;
-            transition: color 0.4s ease;
-        }
-
-        .progress-step.active::after {
-            color: var(--primary-purple);
-        }
-
-        .progress-step.completed::after {
-            color: var(--accent-gold);
-        }
-
-        
-        .step-container {
-            display: none;
-            animation: slideIn 0.5s ease forwards;
-        }
-
-        .step-container.active {
-            display: block;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        
         .verification-box {
             background: linear-gradient(135deg, rgba(29, 10, 63, 0.02) 0%, rgba(201, 162, 39, 0.05) 100%);
             border: 1px dashed var(--accent-gold);
@@ -1052,257 +927,6 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
         .unlocked-form {
             opacity: 1 !important;
             pointer-events: auto !important;
-        }
-
-        
-        .invoice-card {
-            background-color: #fff;
-            border: 1px solid #E2E8F0;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.02);
-            overflow: hidden;
-            margin-bottom: 30px;
-        }
-
-        .invoice-header {
-            background: var(--primary-purple);
-            color: var(--white);
-            padding: 20px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .invoice-header h4 {
-            font-family: 'Outfit', sans-serif;
-            font-weight: 700;
-            font-size: 1.25rem;
-            letter-spacing: 0.5px;
-        }
-
-        .invoice-body {
-            padding: 30px;
-        }
-
-        .receipt-section-title {
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
-            font-size: 1rem;
-            color: var(--primary-purple);
-            border-bottom: 2px solid #F7FAFC;
-            padding-bottom: 8px;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .receipt-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px 30px;
-            margin-bottom: 30px;
-        }
-
-        .receipt-item {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .receipt-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            font-weight: 500;
-            margin-bottom: 2px;
-        }
-
-        .receipt-value {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-
-        .invoice-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        .invoice-table th,
-        .invoice-table td {
-            padding: 12px 15px;
-            text-align: left;
-        }
-
-        .invoice-table th {
-            background-color: #F8FAFC;
-            color: var(--primary-purple);
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
-            font-size: 0.9rem;
-            border-bottom: 1px solid #E2E8F0;
-        }
-
-        .invoice-table td {
-            border-bottom: 1px solid #EDF2F7;
-            font-size: 0.95rem;
-        }
-
-        .invoice-table tr.total-row td {
-            border-bottom: none;
-            border-top: 2px solid var(--primary-purple);
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--primary-purple);
-        }
-
-        .invoice-table tr.gst-row td {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-
-        .btn-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 15px;
-            margin-top: 30px;
-        }
-
-        .btn-back {
-            background-color: #EDF2F7;
-            color: var(--text-dark);
-            border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-back:hover {
-            background-color: #E2E8F0;
-            transform: translateY(-2px);
-        }
-
-        
-        .success-celebration {
-            text-align: center;
-            padding: 40px 20px;
-        }
-
-        .success-icon-wrap {
-            width: 80px;
-            height: 80px;
-            background-color: #C6F6D5;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 auto 30px auto;
-            color: #22543D;
-            font-size: 2.5rem;
-            animation: popCheck 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-        }
-
-        @keyframes popCheck {
-            0% {
-                transform: scale(0);
-                opacity: 0;
-            }
-
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .success-celebration h3 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.8rem;
-            color: var(--primary-purple);
-            margin-bottom: 15px;
-        }
-
-        .success-celebration p {
-            color: var(--text-muted);
-            margin-bottom: 30px;
-            font-size: 1.05rem;
-        }
-
-        .receipt-summary-box {
-            background-color: #F8FAFC;
-            border: 1px solid #E2E8F0;
-            border-radius: 12px;
-            max-width: 500px;
-            margin: 0 auto 40px auto;
-            padding: 25px;
-            text-align: left;
-        }
-
-        .receipt-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px dashed #E2E8F0;
-            font-size: 0.95rem;
-        }
-
-        .receipt-row:last-child {
-            border-bottom: none;
-            font-weight: 700;
-            color: var(--primary-purple);
-            font-size: 1.05rem;
-        }
-
-        .receipt-row span:first-child {
-            color: var(--text-muted);
-        }
-
-        .receipt-row span:last-child {
-            font-weight: 600;
-        }
-
-        
-
-        .gateway-loader {
-            width: 60px;
-            height: 60px;
-            border: 4px solid #E2E8F0;
-            border-top: 4px solid var(--primary-purple);
-            border-radius: 50%;
-            margin: 0 auto 25px auto;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-
-
-        
-        .payment-error-box {
-            background-color: #FFF5F5;
-            border: 1px solid #FEB2B2;
-            border-radius: 8px;
-            padding: 18px;
-            margin-bottom: 25px;
-            display: none;
-            align-items: flex-start;
-            gap: 12px;
-            text-align: left;
-            animation: shake 0.4s ease-in-out;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-6px); }
-            75% { transform: translateX(6px); }
-        }
-
-        .payment-error-box.active {
-            display: flex;
         }
     </style>
 
@@ -1555,7 +1179,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             
 
             
-            <div id="step-1" class="step-container active">
+            <div id="registration-form-wrapper">
 
                 
                 <div id="initialEmailCheckContainer" class="verification-box" style="margin-bottom: 25px;">
@@ -1601,7 +1225,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
 
                 
                 <p style="color: red; font-size: 0.9em; margin-bottom: 15px;">* Fields are mandatory</p>
-                <form id="registrationForm" onsubmit="submitStep1(event)" class="locked-form-overlay">
+                <form id="registrationForm" onsubmit="submitRegistration(event)" class="locked-form-overlay">
 
                     <div class="form-row">
                         <div class="form-group">
@@ -2034,7 +1658,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
         const spinnerSvg = '<svg style="animation: spin 1s linear infinite; margin-right: 8px; width: 18px; height: 18px; display: inline-block; vertical-align: text-bottom;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity: 0.25;"></circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" style="opacity: 0.75;"></path></svg>';
 
         
-        let wizardState = {
+        let registrationState = {
             abstractSubmitted: '',
             isVerified: false,
             firstName: '',
@@ -2165,8 +1789,8 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                 }
 
                 
-                wizardState.pendingEmail = emailVal;
-                wizardState.pendingAbstract = data.has_abstract ? 'yes' : 'no';
+                registrationState.pendingEmail = emailVal;
+                registrationState.pendingAbstract = data.has_abstract ? 'yes' : 'no';
                 
                 document.getElementById('checkEmail').readOnly = true;
                 btn.style.display = 'none'; 
@@ -2210,7 +1834,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                 const res = await fetch('backend/verify_otp.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: wizardState.pendingEmail, otp: otpVal })
+                    body: JSON.stringify({ email: registrationState.pendingEmail, otp: otpVal })
                 });
                 const data = await res.json();
                 
@@ -2219,9 +1843,9 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                 }
 
                 
-                wizardState.isVerified = true;
-                wizardState.email = wizardState.pendingEmail;
-                wizardState.abstractSubmitted = wizardState.pendingAbstract;
+                registrationState.isVerified = true;
+                registrationState.email = registrationState.pendingEmail;
+                registrationState.abstractSubmitted = registrationState.pendingAbstract;
 
                 otpStatusDiv.innerHTML = `
                     <span class="verified-badge">✓ Email Verified</span>
@@ -2239,7 +1863,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
 
                 
                 const mainEmail = document.getElementById('email');
-                mainEmail.value = wizardState.email;
+                mainEmail.value = registrationState.email;
                 mainEmail.readOnly = true;
 
                 
@@ -2267,7 +1891,7 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
                 const otpRes = await fetch('backend/send_otp.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: wizardState.pendingEmail })
+                    body: JSON.stringify({ email: registrationState.pendingEmail })
                 });
                 const otpData = await otpRes.json();
 
@@ -2306,46 +1930,13 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
         }
 
         
-        function goToStep(stepNumber) {
-            
-            document.querySelectorAll('.step-container').forEach(container => {
-                container.classList.remove('active');
-            });
-
-            
-            document.getElementById(`step-${stepNumber}`).classList.add('active');
-
-            
-            const line = document.getElementById('progressLine');
-            const steps = document.querySelectorAll('.progress-step');
-
-            if (line) {
-                steps.forEach(s => {
-                    const sNum = parseInt(s.dataset.step);
-                    if (sNum < stepNumber) {
-                        s.classList.add('completed');
-                        s.classList.remove('active');
-                    } else if (sNum === stepNumber) {
-                        s.classList.add('active');
-                        s.classList.remove('completed');
-                    } else {
-                        s.classList.remove('active', 'completed');
-                    }
-                });
-                
-                line.style.width = ((stepNumber - 1) * 50) + '%';
-            }
-
-            
-            document.querySelector('.registration-form-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
 
         
-        async function submitStep1(event) {
+        async function submitRegistration(event) {
             event.preventDefault();
 
             
-            const status = wizardState.abstractSubmitted || 'no';
+            const status = registrationState.abstractSubmitted || 'no';
 
             const capitalize = (s) => s.replace(/\b\w/g, c => c.toUpperCase());
             const firstName = capitalize(document.getElementById('firstName').value.trim());
@@ -2386,22 +1977,22 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             const selectedPackageData = feeData[pType][cCat][reqIdx];
 
             
-            wizardState.firstName = firstName;
-            wizardState.middleName = middleName;
-            wizardState.lastName = lastName;
-            wizardState.email = email;
-            wizardState.organization = organization;
-            wizardState.phone = phone;
-            wizardState.dob = dob;
-            wizardState.participantType = pTypeSelect.options[pTypeSelect.selectedIndex].text;
-            wizardState.country = countryVal;
+            registrationState.firstName = firstName;
+            registrationState.middleName = middleName;
+            registrationState.lastName = lastName;
+            registrationState.email = email;
+            registrationState.organization = organization;
+            registrationState.phone = phone;
+            registrationState.dob = dob;
+            registrationState.participantType = pTypeSelect.options[pTypeSelect.selectedIndex].text;
+            registrationState.country = countryVal;
             
             
-            wizardState.countryCategory = cCat === 'developed' ? 'Developed Countries' : (cCat === 'national' ? 'National (India)' : 'Developing Countries');
+            registrationState.countryCategory = cCat === 'developed' ? 'Developed Countries' : (cCat === 'national' ? 'National (India)' : 'Developing Countries');
             
-            wizardState.requirementIndex = reqIdx;
-            wizardState.requirementLabel = selectedPackageData.label;
-            wizardState.requirementCostText = selectedPackageData.value;
+            registrationState.requirementIndex = reqIdx;
+            registrationState.requirementLabel = selectedPackageData.label;
+            registrationState.requirementCostText = selectedPackageData.value;
 
             
             const rawCost = selectedPackageData.value; 
@@ -2409,12 +2000,12 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             const baseAmount = parseInt(numPart);
             const isINR = rawCost.includes('INR');
 
-            wizardState.currency = isINR ? 'INR' : 'USD';
-            wizardState.basePrice = baseAmount;
+            registrationState.currency = isINR ? 'INR' : 'USD';
+            registrationState.basePrice = baseAmount;
 
             
-            wizardState.gstPrice = 0;
-            wizardState.totalPrice = baseAmount;
+            registrationState.gstPrice = 0;
+            registrationState.totalPrice = baseAmount;
 
             
             submitBtn.disabled = true;
@@ -2425,20 +2016,20 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
 
             
             const payload = {
-                firstName: wizardState.firstName,
-                middleName: wizardState.middleName,
-                lastName: wizardState.lastName,
-                email: wizardState.email,
-                organization: wizardState.organization,
-                phone: wizardState.phone,
-                dob: wizardState.dob,
-                participantType: wizardState.participantType,
-                country: wizardState.country,
-                countryCategory: wizardState.countryCategory,
-                requiredPackage: `${wizardState.requirementLabel} (${rawCost})`,
+                firstName: registrationState.firstName,
+                middleName: registrationState.middleName,
+                lastName: registrationState.lastName,
+                email: registrationState.email,
+                organization: registrationState.organization,
+                phone: registrationState.phone,
+                dob: registrationState.dob,
+                participantType: registrationState.participantType,
+                country: registrationState.country,
+                countryCategory: registrationState.countryCategory,
+                requiredPackage: `${registrationState.requirementLabel} (${rawCost})`,
                 abstractSubmitted: status,
                 abstractEmail: status === 'yes' ? document.getElementById('verifyEmail').value.trim() : '',
-                baseAmount: wizardState.basePrice,
+                baseAmount: registrationState.basePrice,
                 paymentStatus: 'Not Completed'
             };
 
@@ -2477,105 +2068,9 @@ if ($reg_id !== '' && ($reg_status === 'success' || $reg_status === 'failed')) {
             });
         }
 
-        
-        function proceedToStep2(registrationId, rawCost) {
-            wizardState.registrationId = registrationId;
-
-            
-            const fullName = wizardState.middleName ? `${wizardState.firstName} ${wizardState.middleName} ${wizardState.lastName}` : `${wizardState.firstName} ${wizardState.lastName}`;
-            document.getElementById('reviewName').textContent = fullName;
-            document.getElementById('reviewEmail').textContent = wizardState.email;
-            document.getElementById('reviewOrganization').textContent = wizardState.organization;
-            document.getElementById('reviewPhone').textContent = wizardState.phone;
-            document.getElementById('reviewType').textContent = wizardState.participantType;
-            document.getElementById('reviewCountry').textContent = wizardState.countryCategory;
-            document.getElementById('reviewRequirement').textContent = `${wizardState.requirementLabel} (${rawCost})`;
-
-            
-            document.getElementById('invoiceReference').textContent = 'Ref: ' + registrationId;
-
-            
-            const desc = `${wizardState.participantType} Package: ${wizardState.requirementLabel} Access`;
-            document.getElementById('invoiceItemDesc').textContent = desc;
-
-            const formatCost = (val) => {
-                return val.toLocaleString('en-US') + ' ' + wizardState.currency;
-            };
-
-            document.getElementById('invoiceBasePrice').textContent = formatCost(wizardState.basePrice);
-            document.getElementById('invoiceGstPrice').textContent = formatCost(wizardState.gstPrice);
-            document.getElementById('invoiceTotalPrice').textContent = formatCost(wizardState.totalPrice);
-
-            
-            goToStep(2);
-        }
 
 
-        
-        function handleGatewayResponseFinish(status, txnId) {
-            const errorBox = document.getElementById('paymentErrorBox');
-
-            if (status === 'Success') {
-                wizardState.transactionId = txnId;
-
-                
-                document.getElementById('finalTxnId').textContent = txnId;
-                const fullName = wizardState.middleName ? `${wizardState.firstName} ${wizardState.middleName} ${wizardState.lastName}` : `${wizardState.firstName} ${wizardState.lastName}`;
-                document.getElementById('finalName').textContent = fullName;
-                document.getElementById('finalType').textContent = wizardState.participantType;
-                document.getElementById('finalCountry').textContent = wizardState.countryCategory;
-                document.getElementById('finalRequirement').textContent = wizardState.requirementLabel;
-
-                const formatCost = (val) => {
-                    if (typeof val === 'number') {
-                        return val.toLocaleString('en-US') + ' ' + wizardState.currency;
-                    }
-                    
-                    return val + ' ' + wizardState.currency;
-                };
-                document.getElementById('finalPricePaid').textContent = formatCost(wizardState.totalPrice);
-
-                
-                errorBox.classList.remove('active');
-
-                
-                goToStep(3);
-            } else {
-                
-                goToStep(4);
-            }
-        }
     </script>
-    
-    <?php if ($fetched_user && $reg_status === 'success'): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            
-            wizardState.registrationId = <?= json_encode($fetched_user['registration_id']) ?>;
-            wizardState.firstName = <?= json_encode($fetched_user['first_name']) ?>;
-            wizardState.middleName = <?= json_encode($fetched_user['middle_name']) ?>;
-            wizardState.lastName = <?= json_encode($fetched_user['last_name']) ?>;
-            wizardState.participantType = <?= json_encode($fetched_user['participant_category']) ?>;
-            wizardState.countryCategory = <?= json_encode($fetched_user['country_category']) ?>;
-            wizardState.requirementLabel = <?= json_encode($fetched_user['package']) ?>;
-            wizardState.totalPrice = <?= json_encode($fetched_user['base_amount']) ?>;
-            
-            
-            const cCat = wizardState.countryCategory;
-            wizardState.currency = (cCat === 'National (India)' || cCat === 'national') ? 'INR' : 'USD';
-
-            handleGatewayResponseFinish('Success', <?= json_encode($txn_id) ?>);
-        });
-    </script>
-    <?php elseif ($fetched_user && $reg_status === 'failed'): ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            goToStep(4);
-        });
-    </script>
-    <?php endif; ?>
-
-
 </body>
 
 </html>
