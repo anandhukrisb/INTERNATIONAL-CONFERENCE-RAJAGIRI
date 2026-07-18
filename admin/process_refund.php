@@ -57,7 +57,21 @@ try {
     
     // Process Refund via Razorpay API
     $api = new \Razorpay\Api\Api(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET);
-    $api->payment->fetch($payment_id)->refund();
+    $refund = $api->payment->fetch($payment_id)->refund();
+    
+    // Insert into payment_refunds table to track it
+    $refund_id = $refund->id;
+    $amount_refunded = $refund->amount / 100;
+    $status = $refund->status;
+
+    $stmtRefund = $pdo->prepare("INSERT INTO payment_refunds (registration_id, razorpay_payment_id, razorpay_refund_id, amount, status) VALUES (:reg_id, :pay_id, :ref_id, :amount, :status)");
+    $stmtRefund->execute([
+        ':reg_id' => $reg_id,
+        ':pay_id' => $payment_id,
+        ':ref_id' => $refund_id,
+        ':amount' => $amount_refunded,
+        ':status' => $status
+    ]);
     
     // Update the status to 'Refund Approved'
     $stmt = $pdo->prepare("UPDATE user_registrations SET payment_status = 'Refund Approved' WHERE registration_id = :reg_id AND payment_status = 'Completed'");

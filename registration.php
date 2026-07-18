@@ -1095,7 +1095,8 @@
                     <div class="pricing-card">
                         <div class="pricing-card-header">
                             <div class="pricing-category">Developed Countries</div>
-                            <div class="pricing-main-price">100 USD</div>
+                            <!-- <div class="pricing-main-price">100 USD</div> -->
+                            <div class="pricing-main-price">1 USD</div>
                             <div class="pricing-main-label">In-Person (Offline)</div>
                         </div>
                         <ul class="pricing-features">
@@ -1590,7 +1591,8 @@
             },
             student: {
                 developed: [
-                    { label: "In-Person (Offline)", value: "100 USD" },
+                    // { label: "In-Person (Offline)", value: "100 USD" },
+                    { label: "In-Person (Offline)", value: "1 USD" },
                     { label: "Online (Recorded)", value: "50 USD" }
                 ],
                 developing: [
