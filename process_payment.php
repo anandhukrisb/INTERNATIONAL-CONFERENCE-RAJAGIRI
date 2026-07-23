@@ -28,7 +28,8 @@ if (!$fetched_user) {
 }
 
 $rawCost = $fetched_user['package'];
-$baseAmount = $fetched_user['base_amount'];
+$baseAmount = (float)($fetched_user['base_amount'] ?? 0);
+$formattedAmount = ($baseAmount == (int)$baseAmount) ? number_format($baseAmount) : number_format($baseAmount, 2);
 $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== false || strtolower($fetched_user['country_category']) === 'national') ? 'INR' : 'USD';
 ?>
 <!DOCTYPE html>
@@ -1785,7 +1786,7 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
                             <tbody>
                                 <tr>
                                     <td id="invoiceItemDesc"><?= htmlspecialchars($fetched_user["participant_category"]) ?> Package: <?= htmlspecialchars($fetched_user["package"]) ?> Access</td>
-                                    <td style="text-align: right; font-weight: 600;" id="invoiceBasePrice"><?= htmlspecialchars(number_format($baseAmount)) ?> <?= htmlspecialchars($currency) ?></td>
+                                    <td style="text-align: right; font-weight: 600;" id="invoiceBasePrice"><?= htmlspecialchars($formattedAmount) ?> <?= htmlspecialchars($currency) ?></td>
                                 </tr>
                                 <tr class="gst-row" style="display: none !important;">
                                     <td>Goods & Services Tax (GST) @ 18%</td>
@@ -1793,7 +1794,7 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
                                 </tr>
                                 <tr class="total-row">
                                     <td>Total Amount Due</td>
-                                    <td style="text-align: right;" id="invoiceTotalPrice"><?= htmlspecialchars(number_format($baseAmount)) ?> <?= htmlspecialchars($currency) ?></td>
+                                    <td style="text-align: right;" id="invoiceTotalPrice"><?= htmlspecialchars($formattedAmount) ?> <?= htmlspecialchars($currency) ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1838,7 +1839,7 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
                         </div>
                         <div class="receipt-row">
                             <span>Total Paid</span>
-                            <span id="finalPricePaid"><?= htmlspecialchars(number_format($baseAmount)) ?> <?= htmlspecialchars($currency) ?></span>
+                            <span id="finalPricePaid"><?= htmlspecialchars($formattedAmount) ?> <?= htmlspecialchars($currency) ?></span>
                         </div>
                     </div>
 
