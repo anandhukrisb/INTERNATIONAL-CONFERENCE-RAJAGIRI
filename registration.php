@@ -1592,7 +1592,7 @@
             student: {
                 developed: [
                     // { label: "In-Person (Offline)", value: "100 USD" },
-                    { label: "In-Person (Offline)", value: "1 USD" },
+                    { label: "In-Person (Offline)", value: "0.6 USD" },
                     { label: "Online (Recorded)", value: "50 USD" }
                 ],
                 developing: [
@@ -1998,8 +1998,8 @@
 
             
             const rawCost = selectedPackageData.value; 
-            const numPart = rawCost.replace(/[^0-9]/g, '');
-            const baseAmount = parseInt(numPart);
+            const numPart = rawCost.replace(/[^0-9.]/g, '');
+            const baseAmount = parseFloat(numPart);
             const isINR = rawCost.includes('INR');
 
             registrationState.currency = isINR ? 'INR' : 'USD';
