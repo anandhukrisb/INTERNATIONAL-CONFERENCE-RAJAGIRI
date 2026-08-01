@@ -45,14 +45,26 @@ if (!empty($registration_id) && !empty($dob) && empty($error)) {
                 $history_records = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
 
                 $cooldown_seconds_left = 0;
-                if (!empty($history_records)) {
-                    $latest_attempt = $history_records[0];
-                    if (($latest_attempt['attempt_status'] === 'failed' || $latest_attempt['order_status'] === 'failed') && !empty($latest_attempt['event_time'])) {
-                        $time_since_failure = time() - strtotime($latest_attempt['event_time']);
+                try {
+                    $stmtCooldown = $pdo->prepare("
+                        SELECT 
+                            UNIX_TIMESTAMP(MAX(COALESCE(pa.created_at, po.created_at))) as last_failed_ts
+                        FROM payment_orders po
+                        LEFT JOIN payment_attempts pa ON po.razorpay_order_id = pa.razorpay_order_id
+                        WHERE po.registration_id = :reg_id
+                          AND (pa.status = 'failed' OR po.status = 'failed')
+                    ");
+                    $stmtCooldown->execute([':reg_id' => $user_details['registration_id']]);
+                    $cooldownRow = $stmtCooldown->fetch(PDO::FETCH_ASSOC);
+                    if (!empty($cooldownRow['last_failed_ts'])) {
+                        $last_failed_ts = (int)$cooldownRow['last_failed_ts'];
+                        $time_since_failure = time() - $last_failed_ts;
                         if ($time_since_failure >= 0 && $time_since_failure < 180) {
                             $cooldown_seconds_left = 180 - $time_since_failure;
                         }
                     }
+                } catch (Exception $e) {
+                    // Ignore cooldown query error
                 }
             }
         } catch (Exception $e) {
