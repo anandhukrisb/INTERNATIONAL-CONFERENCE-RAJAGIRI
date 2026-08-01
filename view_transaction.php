@@ -43,6 +43,17 @@ if (!empty($registration_id) && !empty($dob) && empty($error)) {
                 ");
                 $stmtHistory->execute([':reg_id' => $user_details['registration_id']]);
                 $history_records = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
+
+                $cooldown_seconds_left = 0;
+                if (!empty($history_records)) {
+                    $latest_attempt = $history_records[0];
+                    if (($latest_attempt['attempt_status'] === 'failed' || $latest_attempt['order_status'] === 'failed') && !empty($latest_attempt['event_time'])) {
+                        $time_since_failure = time() - strtotime($latest_attempt['event_time']);
+                        if ($time_since_failure >= 0 && $time_since_failure < 180) {
+                            $cooldown_seconds_left = 180 - $time_since_failure;
+                        }
+                    }
+                }
             }
         } catch (Exception $e) {
             $error = "An error occurred while fetching your details. Please try again later.";
@@ -208,13 +219,32 @@ function renderHistoryItem($item) {
                             <div class="value" style="margin-bottom: 10px;"><?php echo $currencySymbol . htmlspecialchars(number_format($user_details['base_amount'], 2)); ?></div>
                             
                             <?php if ($status !== 'Completed'): ?>
-                            <form method="GET" action="process_payment.php" style="margin: 0 0 10px 0; display: flex; justify-content: flex-end;">
-                                <input type="hidden" name="reg_id" value="<?php echo htmlspecialchars($user_details['registration_id']); ?>">
-                                <button type="submit" class="btn-action" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 20px; font-size: 0.9rem; border-radius: 50px; text-decoration: none; border: none; cursor: pointer; margin: 0;" onclick="this.disabled=true; this.innerHTML=spinnerSvg + ' Redirecting...'; this.form.submit();">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
-                                    Pay Again
-                                </button>
-                            </form>
+                            <div style="display: flex; flex-direction: column; align-items: flex-end; margin-bottom: 10px;">
+                                <?php if (!empty($cooldown_seconds_left) && $cooldown_seconds_left > 0): ?>
+                                <div id="cooldownBanner" style="background-color: #FFF5F5; border-left: 4px solid #E53E3E; border-radius: 8px; padding: 12px 15px; margin-bottom: 12px; max-width: 380px; text-align: left; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                                    <div style="display: flex; align-items: center; gap: 8px; color: #C53030; font-weight: 700; font-size: 0.88rem;">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                                        Payment Cooldown Active
+                                    </div>
+                                    <div style="font-size: 0.82rem; color: #742A2A; margin-top: 5px; line-height: 1.4;">
+                                        A payment attempt recently failed. To prevent duplicate charges, please wait before retrying.
+                                    </div>
+                                    <div style="font-weight: 700; margin-top: 8px; font-family: monospace; font-size: 0.9rem; color: #9B2C2C; background: #FED7D7; padding: 4px 8px; border-radius: 4px; display: inline-block;">
+                                        Retry in: <span id="cooldownTimerDisplay">--:--</span>
+                                    </div>
+                                </div>
+                                <?php endif; ?>
+
+                                <form method="GET" action="process_payment.php" style="margin: 0;">
+                                    <input type="hidden" name="reg_id" value="<?php echo htmlspecialchars($user_details['registration_id']); ?>">
+                                    <button type="submit" id="payAgainBtn" class="btn-action" 
+                                        <?php if (!empty($cooldown_seconds_left) && $cooldown_seconds_left > 0) echo 'disabled style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 20px; font-size: 0.9rem; border-radius: 50px; text-decoration: none; border: none; margin: 0; opacity: 0.55; cursor: not-allowed; background-color: #a0aec0;"'; else echo 'style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 20px; font-size: 0.9rem; border-radius: 50px; text-decoration: none; border: none; cursor: pointer; margin: 0;"'; ?>
+                                        onclick="if(!this.disabled){this.disabled=true; this.innerHTML=spinnerSvg + ' Redirecting...'; this.form.submit();}">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                                        <span id="payAgainBtnText"><?php echo (!empty($cooldown_seconds_left) && $cooldown_seconds_left > 0) ? 'Pay Again (Locked)' : 'Pay Again'; ?></span>
+                                    </button>
+                                </form>
+                            </div>
                             <?php endif; ?>
 
                             <div style="font-size: 0.85rem; color: #64748b; font-family: monospace; background: #f1f5f9; padding: 6px 10px; border-radius: 6px; display: inline-block;">
@@ -335,6 +365,48 @@ function renderHistoryItem($item) {
             drawer.classList.add('open');
             btn.innerText = 'Hide History ▴';
         }
+    }
+
+    let cooldownSeconds = <?php echo (int)($cooldown_seconds_left ?? 0); ?>;
+    if (cooldownSeconds > 0) {
+        const payBtn = document.getElementById('payAgainBtn');
+        const payBtnText = document.getElementById('payAgainBtnText');
+        const timerDisplay = document.getElementById('cooldownTimerDisplay');
+        const cooldownBanner = document.getElementById('cooldownBanner');
+
+        function runCooldownTimer() {
+            if (cooldownSeconds <= 0) {
+                if (payBtn) {
+                    payBtn.disabled = false;
+                    payBtn.style.opacity = '1';
+                    payBtn.style.cursor = 'pointer';
+                    payBtn.style.backgroundColor = '';
+                }
+                if (payBtnText) {
+                    payBtnText.textContent = 'Pay Again';
+                }
+                if (cooldownBanner) {
+                    cooldownBanner.style.display = 'none';
+                }
+                return;
+            }
+
+            const mins = Math.floor(cooldownSeconds / 60);
+            const secs = cooldownSeconds % 60;
+            const formatted = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+
+            if (timerDisplay) {
+                timerDisplay.textContent = formatted;
+            }
+            if (payBtnText) {
+                payBtnText.textContent = 'Retry in ' + formatted;
+            }
+
+            cooldownSeconds--;
+            setTimeout(runCooldownTimer, 1000);
+        }
+
+        runCooldownTimer();
     }
     </script>
 </body>
