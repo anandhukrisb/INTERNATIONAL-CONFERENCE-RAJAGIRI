@@ -76,9 +76,31 @@ try {
         header('Content-Disposition: attachment; filename=registrations_' . date('Y-m-d') . '.csv');
         $output = fopen('php://output', 'w');
         
-        fputcsv($output, ['Registration ID', 'First Name', 'Middle Name', 'Last Name', 'Email', 'Organization', 'Phone', 'Participant Category', 'Country', 'Country Category', 'Package', 'Abstract Submitted', 'Base Amount', 'Payment Status', 'Transaction ID', 'Registration Date']);
+        fputcsv($output, ['Registration ID', 'First Name', 'Middle Name', 'Last Name', 'Email', 'Organization', 'Phone', 'Participant Category', 'Country', 'Country Category', 'Package', 'Abstract Submitted', 'Base Amount', 'Currency', 'Payment Status', 'Transaction ID', 'Registration Date']);
         
         foreach ($registrations as $row) {
+            $rowCurrency = 'INR';
+            if (!empty($row['currency'])) {
+                $c = strtoupper(trim($row['currency']));
+                if ($c === 'USD' || $c === '$') {
+                    $rowCurrency = 'USD';
+                } elseif ($c === 'INR' || $c === '₹') {
+                    $rowCurrency = 'INR';
+                }
+            } else {
+                $countryCat = strtolower($row['country_category'] ?? '');
+                $country = strtolower($row['country'] ?? '');
+                $pkg = strtolower($row['package'] ?? '');
+
+                if (strpos($pkg, 'usd') !== false || strpos($countryCat, 'international') !== false || strpos($countryCat, 'foreign') !== false) {
+                    $rowCurrency = 'USD';
+                } elseif (strpos($countryCat, 'india') !== false || $countryCat === 'national' || strpos($country, 'india') !== false) {
+                    $rowCurrency = 'INR';
+                } else {
+                    $rowCurrency = 'USD';
+                }
+            }
+
             fputcsv($output, [
                 $row['registration_id'],
                 $row['first_name'],
@@ -93,6 +115,7 @@ try {
                 $row['package'],
                 $row['abstract_submitted'],
                 $row['base_amount'],
+                $rowCurrency,
                 $row['payment_status'],
                 $row['transaction_id'],
                 $row['created_at']
@@ -509,6 +532,28 @@ try {
                                         $badgeClass = 'badge-refunded';
                                         $amountClass = 'amount-failed';
                                     }
+
+                                    $currencySymbol = '₹';
+                                    if (!empty($reg['currency'])) {
+                                        $c = strtoupper(trim($reg['currency']));
+                                        if ($c === 'USD' || $c === '$') {
+                                            $currencySymbol = '$';
+                                        } elseif ($c === 'INR' || $c === '₹') {
+                                            $currencySymbol = '₹';
+                                        }
+                                    } else {
+                                        $countryCat = strtolower($reg['country_category'] ?? '');
+                                        $country = strtolower($reg['country'] ?? '');
+                                        $pkg = strtolower($reg['package'] ?? '');
+
+                                        if (strpos($pkg, 'usd') !== false || strpos($countryCat, 'international') !== false || strpos($countryCat, 'foreign') !== false) {
+                                            $currencySymbol = '$';
+                                        } elseif (strpos($countryCat, 'india') !== false || $countryCat === 'national' || strpos($country, 'india') !== false) {
+                                            $currencySymbol = '₹';
+                                        } else {
+                                            $currencySymbol = '$';
+                                        }
+                                    }
                                 ?>
                                 <tr>
                                     <td><strong style="color: var(--primary-purple);"><?php echo htmlspecialchars($reg['registration_id']); ?></strong></td>
@@ -519,7 +564,7 @@ try {
                                     </td>
                                     <td><?php echo htmlspecialchars($reg['participant_category']); ?></td>
                                     <td><?php echo htmlspecialchars($reg['package']); ?></td>
-                                    <td class="<?php echo $amountClass; ?>">₹<?php echo number_format($reg['base_amount'], 2); ?></td>
+                                    <td class="<?php echo $amountClass; ?>"><?php echo $currencySymbol . number_format($reg['base_amount'], 2); ?></td>
                                     <td><span class="badge <?php echo $badgeClass; ?>"><?php echo htmlspecialchars($status); ?></span></td>
                                     <td style="color: #64748b; font-size: 0.85em;"><?php echo date('M d, Y', strtotime($reg['created_at'])); ?></td>
                                     <td>
