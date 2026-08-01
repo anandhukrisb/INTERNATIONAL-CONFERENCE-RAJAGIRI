@@ -22,6 +22,31 @@ if ($reg_id !== '') {
     }
 }
 
+$cooldown_seconds_left = 0;
+if ($fetched_user && $reg_status !== 'success') {
+    try {
+        $stmtCooldown = $pdo->prepare("
+            SELECT 
+                UNIX_TIMESTAMP(MAX(COALESCE(pa.created_at, po.created_at))) as last_failed_ts
+            FROM payment_orders po
+            LEFT JOIN payment_attempts pa ON po.razorpay_order_id = pa.razorpay_order_id
+            WHERE po.registration_id = :reg_id
+              AND (pa.status = 'failed' OR po.status = 'failed')
+        ");
+        $stmtCooldown->execute([':reg_id' => $reg_id]);
+        $cooldownRow = $stmtCooldown->fetch(PDO::FETCH_ASSOC);
+        if (!empty($cooldownRow['last_failed_ts'])) {
+            $last_failed_ts = (int)$cooldownRow['last_failed_ts'];
+            $time_since_failure = time() - $last_failed_ts;
+            if ($time_since_failure >= 0 && $time_since_failure < 180) {
+                $cooldown_seconds_left = 180 - $time_since_failure;
+            }
+        }
+    } catch (Exception $e) {
+        // Ignore DB error
+    }
+}
+
 if (!$fetched_user) {
     echo "Invalid Registration ID or Registration not found.";
     exit;
@@ -1800,9 +1825,25 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
                     </div>
                 </div>
 
+                <?php if (!empty($cooldown_seconds_left) && $cooldown_seconds_left > 0): ?>
+                <div id="processCooldownBanner" style="background-color: #FFF5F5; border-left: 4px solid #E53E3E; border-radius: 8px; padding: 15px; margin-bottom: 20px; text-align: left; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    <div style="display: flex; align-items: center; gap: 8px; color: #C53030; font-weight: 700; font-size: 0.95rem;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                        Payment Cooldown Active
+                    </div>
+                    <div style="font-size: 0.88rem; color: #742A2A; margin-top: 6px; line-height: 1.5;">
+                        A payment attempt recently failed. To prevent duplicate charges, please wait before retrying.
+                    </div>
+                    <div style="font-weight: 700; margin-top: 10px; font-family: monospace; font-size: 0.95rem; color: #9B2C2C; background: #FED7D7; padding: 6px 12px; border-radius: 4px; display: inline-block;">
+                        Retry in: <span id="processCooldownTimerDisplay">--:--</span>
+                    </div>
+                </div>
+                <?php endif; ?>
+
                 <div class="btn-container">
-                    <button type="button" class="btn-register" style="margin-top: 0;" onclick="completePayment()">Pay
-                        Now & Confirm</button>
+                    <button type="button" id="payNowBtn" class="btn-register" style="margin-top: 0; <?php if (!empty($cooldown_seconds_left) && $cooldown_seconds_left > 0) echo 'opacity: 0.55; cursor: not-allowed; background-color: #a0aec0;'; ?>" <?php if (!empty($cooldown_seconds_left) && $cooldown_seconds_left > 0) echo 'disabled'; ?> onclick="completePayment()">
+                        <span id="payNowBtnText"><?php echo (!empty($cooldown_seconds_left) && $cooldown_seconds_left > 0) ? 'Pay Now (Locked)' : 'Pay Now & Confirm'; ?></span>
+                    </button>
                 </div>
             </div>
 
@@ -2165,6 +2206,49 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
                 // Show failure UI
                 showView('view-failed');
             }
+        }
+
+        // Live Cooldown Timer logic for process_payment.php
+        let processCooldownSeconds = <?php echo (int)($cooldown_seconds_left ?? 0); ?>;
+        if (processCooldownSeconds > 0) {
+            const payNowBtn = document.getElementById('payNowBtn');
+            const payNowBtnText = document.getElementById('payNowBtnText');
+            const processTimerDisplay = document.getElementById('processCooldownTimerDisplay');
+            const processCooldownBanner = document.getElementById('processCooldownBanner');
+
+            function runProcessCooldownTimer() {
+                if (processCooldownSeconds <= 0) {
+                    if (payNowBtn) {
+                        payNowBtn.disabled = false;
+                        payNowBtn.style.opacity = '1';
+                        payNowBtn.style.cursor = 'pointer';
+                        payNowBtn.style.backgroundColor = '';
+                    }
+                    if (payNowBtnText) {
+                        payNowBtnText.textContent = 'Pay Now & Confirm';
+                    }
+                    if (processCooldownBanner) {
+                        processCooldownBanner.style.display = 'none';
+                    }
+                    return;
+                }
+
+                const mins = Math.floor(processCooldownSeconds / 60);
+                const secs = processCooldownSeconds % 60;
+                const formatted = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+
+                if (processTimerDisplay) {
+                    processTimerDisplay.textContent = formatted;
+                }
+                if (payNowBtnText) {
+                    payNowBtnText.textContent = 'Retry in ' + formatted;
+                }
+
+                processCooldownSeconds--;
+                setTimeout(runProcessCooldownTimer, 1000);
+            }
+
+            runProcessCooldownTimer();
         }
     </script>
     
