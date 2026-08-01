@@ -34,6 +34,34 @@ if ($res === false || mysqli_num_rows($res) === 0) {
 }
 
 $row = mysqli_fetch_assoc($res);
+
+// Check if a payment attempt recently failed for this registration_id (within 3 minutes / 180 seconds)
+$check_cooldown_sql = "
+    SELECT 
+        UNIX_TIMESTAMP(MAX(COALESCE(pa.created_at, po.created_at))) as last_failed_ts
+    FROM payment_orders po
+    LEFT JOIN payment_attempts pa ON po.razorpay_order_id = pa.razorpay_order_id
+    WHERE po.registration_id = '$reg_id_db'
+      AND (pa.status = 'failed' OR po.status = 'failed')
+";
+$cooldown_res = mysqli_query($db_conn, $check_cooldown_sql);
+if ($cooldown_res && $cooldown_row = mysqli_fetch_assoc($cooldown_res)) {
+    if (!empty($cooldown_row['last_failed_ts'])) {
+        $last_failed_ts = (int)$cooldown_row['last_failed_ts'];
+        $time_diff = time() - $last_failed_ts;
+        if ($time_diff >= 0 && $time_diff < 180) {
+            $seconds_left = 180 - $time_diff;
+            http_response_code(429);
+            echo json_encode([
+                'success' => false,
+                'error' => "A payment attempt recently failed. To prevent duplicate charges, please wait " . $seconds_left . " seconds before trying again.",
+                'cooldown_seconds' => $seconds_left
+            ]);
+            exit;
+        }
+    }
+}
+
 $amount_raw = $row['base_amount'];
 
 $country_category = strtolower($row['country_category'] ?? '');
