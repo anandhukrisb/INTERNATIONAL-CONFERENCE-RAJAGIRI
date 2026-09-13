@@ -15,6 +15,8 @@ if ($reg_id !== '') {
             if (($fetched_user['payment_status'] ?? '') === 'Completed') {
                 $reg_status = 'success';
                 $txn_id = $fetched_user['transaction_id'] ?? '';
+            } elseif (isset($_GET['status']) && $_GET['status'] === 'failed') {
+                $reg_status = 'failed';
             }
         }
     } catch (Exception $e) {
@@ -1951,7 +1953,8 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
 
     <main-footer></main-footer>
 
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <!-- Project's native Payment Gateway (Razorpay) - Commented out for Vortex integration -->
+    <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script> -->
     <script>
         // Fix back button cache issue
         window.addEventListener("pageshow", function(event) {
@@ -1991,7 +1994,10 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
             document.querySelector('.registration-form-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        // Trigger Razorpay Payment Flow natively
+        /* 
+        ====================================================================
+        PROJECT PAYMENT GATEWAY (RAZORPAY) - COMMENTED OUT FOR VORTEX GATEWAY
+        ====================================================================
         async function completePayment() {
             const phpRegId = '<?= htmlspecialchars($reg_id, ENT_QUOTES) ?>';
             const btn = document.querySelector('.btn-register');
@@ -2059,16 +2065,10 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
                             } catch (e) {
                                 console.error('Failed to log payment cancellation:', e);
                             }
-                            // The user just closed the window, we don't necessarily want to force them to the fail screen
-                            // so they can try again if they want, but if you want to show failure:
-                            // handleGatewayResponseFinish('Failed', '');
                         }
                     },
                     handler: async function (response) {
-                        // Show loading screen immediately while verifying payment
                         showView('view-loading');
-                        
-                        // 3. Verify Payment
                         try {
                             const verifyRes = await fetch('razorpay/verify_ajax.php', {
                                 method: 'POST',
@@ -2083,7 +2083,6 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
                             
                             const verifyData = await verifyRes.json();
                             
-                            // Artificial delay to show processing loader
                             setTimeout(() => {
                                 if (verifyData.success) {
                                     handleGatewayResponseFinish('Success', response.razorpay_payment_id);
@@ -2121,6 +2120,51 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
                 });
                 
                 rzp.open();
+
+            } catch (err) {
+                alert(err.message);
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalBtnText;
+                }
+            }
+        }
+        */
+
+        // Vortex Gateway Integration
+        async function completePayment() {
+            const phpRegId = '<?= htmlspecialchars($reg_id, ENT_QUOTES) ?>';
+            const btn = document.querySelector('.btn-register');
+            let originalBtnText = '';
+            
+            if (!phpRegId) {
+                alert('Registration ID not found. Please try registering again.');
+                return;
+            }
+
+            try {
+                // Disable button
+                if (btn) {
+                    originalBtnText = btn.innerHTML;
+                    btn.disabled = true;
+                    btn.innerHTML = spinnerSvg + 'Processing...';
+                }
+                
+                // 1. Initialize Vortex Payment
+                const initRes = await fetch('backend/init_vortex_payment.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ registration_id: phpRegId })
+                });
+                
+                const initData = await initRes.json();
+                
+                if (!initData.success) {
+                    throw new Error(initData.error || 'Failed to initialize payment gateway.');
+                }
+
+                // 2. Redirect to Vortex Hosted Checkout Page
+                window.location.href = initData.payment_url;
 
             } catch (err) {
                 alert(err.message);

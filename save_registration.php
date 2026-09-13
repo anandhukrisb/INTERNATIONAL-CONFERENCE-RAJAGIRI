@@ -6,6 +6,8 @@ header('Content-Type: application/json');
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
 
+session_start();
+
 try {
     error_log("save_registration.php: Script started.");
     // 1. Get database connection using PDO
@@ -25,23 +27,35 @@ try {
     $firstName = $data['firstName'] ?? '';
     $middleName = $data['middleName'] ?? null;
     $lastName = $data['lastName'] ?? '';
-    $email = $data['email'] ?? '';
+    $email = strtolower(trim($data['email'] ?? ''));
     $organization = $data['organization'] ?? '';
     $phone = $data['phone'] ?? '';
     $dob = $data['dob'] ?? null;
     $participantType = $data['participantType'] ?? '';
-    $countryCategory = $data['countryCategory'] ?? ''; // not in DB, wait, actually countryCategory is in DB
-    $country = $_POST['country'] ?? ''; // Wait, the JS payload does not pass 'country'
-    // Let me check what the JS payload passes. It didn't pass 'country' but 'countryCategory'.
-    // Let's modify the JS payload to include 'country' in registration.php and registration.html later if needed,
-    // or just assume we'll fix the payload.
-    // For now, I will extract 'country' from $data if it exists, else 'Unknown'.
+    $countryCategory = $data['countryCategory'] ?? '';
     $country = $data['country'] ?? 'Unknown';
     $package = $data['requiredPackage'] ?? '';
     $abstractSubmitted = $data['abstractSubmitted'] ?? 'no';
     $abstractEmail = $data['abstractEmail'] ?? null;
-    $baseAmount = $data['baseAmount'] ?? 0;
-    $paymentStatus = $data['paymentStatus'] ?? 'Not Completed';
+    $clientBaseAmount = (float)($data['baseAmount'] ?? 0);
+    $paymentStatus = 'Not Completed';
+
+    // Verify session OTP authentication
+    $verifiedSessionEmail = strtolower(trim($_SESSION['verified_email'] ?? ''));
+    if (empty($email) || empty($verifiedSessionEmail) || $email !== $verifiedSessionEmail) {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'error' => 'Email address has not been verified via OTP.']);
+        exit;
+    }
+
+    // Recalculate / validate base amount from package text to prevent price tampering
+    preg_match('/(\d+[\d,]*)\s*(USD|INR)/i', $package, $matches);
+    if (!empty($matches[1])) {
+        $extractedAmount = (float)str_replace(',', '', $matches[1]);
+        $baseAmount = $extractedAmount;
+    } else {
+        $baseAmount = $clientBaseAmount;
+    }
 
     // 4. Check if the email already exists to prevent duplicate registrations and data overwriting
     $stmtCheck = $pdo->prepare("SELECT registration_id, id FROM user_registrations WHERE email = :email LIMIT 1");

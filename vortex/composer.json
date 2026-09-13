@@ -1,0 +1,6 @@
+{
+    "require": {
+        "razorpay/razorpay": "^2.9",
+        "vlucas/phpdotenv": "^5.6"
+    }
+}

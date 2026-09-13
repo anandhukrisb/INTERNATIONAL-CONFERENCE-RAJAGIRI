@@ -885,6 +885,40 @@
             transform: none;
         }
 
+        .verification-buttons-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+            align-items: flex-start;
+        }
+
+        .btn-check-details-inline {
+            background-color: var(--accent-gold, #C9A227);
+            color: #1D0A3F;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 180px;
+            text-decoration: none;
+            box-sizing: border-box;
+        }
+
+        .btn-check-details-inline:hover {
+            background-color: var(--primary-purple, #1D0A3F);
+            color: #FFFFFF;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
         .verification-status {
             margin-top: 12px;
             font-size: 0.9rem;
@@ -936,10 +970,7 @@
 
     <floating-navbar></floating-navbar>
 
-    
-    <div class="sticky-sidebar-buttons">
-        <a href="view_transaction.php" class="sidebar-btn">Check Details</a>
-    </div>
+
 
     <main class="main-container">
 
@@ -1188,14 +1219,15 @@
                         style="font-family: 'Outfit', sans-serif; color: var(--primary-purple); margin-bottom: 12px; font-weight: 700;">
                         Start Registration</h4>
                     <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">Please enter your email address to begin. We will check your abstract submission status.</p>
-                    <div class="verification-row">
-                        <div class="form-group" style="margin-bottom: 0; flex: 1;">
-                            <label for="checkEmail" class="form-label">Email Address <span style="color: red;">*</span></label>
-                            <input type="email" id="checkEmail" class="form-control"
-                                placeholder="you@example.com">
-                        </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label for="checkEmail" class="form-label">Email Address <span style="color: red;">*</span></label>
+                        <input type="email" id="checkEmail" class="form-control"
+                            placeholder="you@example.com">
+                    </div>
+                    <div class="verification-buttons-group">
                         <button type="button" class="btn-verify" id="btnCheckEmail"
-                            onclick="checkInitialEmail()">Proceed</button>
+                            onclick="checkInitialEmail()" style="min-width: 180px;">Proceed</button>
+                        <a href="view_transaction.php" class="btn-check-details-inline">Check Details</a>
                     </div>
                     <div id="initialCheckStatus" class="verification-status"></div>
                     
@@ -1591,8 +1623,7 @@
             },
             student: {
                 developed: [
-                    // { label: "In-Person (Offline)", value: "100 USD" },
-                    { label: "In-Person (Offline)", value: "1 USD" },
+                    { label: "In-Person (Offline)", value: "100 USD" },
                     { label: "Online (Recorded)", value: "50 USD" }
                 ],
                 developing: [
@@ -1600,10 +1631,8 @@
                     { label: "Online (Recorded)", value: "40 USD" }
                 ],
                 national: [
-                    
-                    
-                    { label: "In-Person (Offline)", value: "1 INR" },
-                    { label: "Online (Recorded)", value: "1 INR" }
+                    { label: "In-Person (Offline)", value: "1,200 INR" },
+                    { label: "Online (Recorded)", value: "600 INR" }
                 ]
             }
         };
@@ -2030,7 +2059,7 @@
                 countryCategory: registrationState.countryCategory,
                 requiredPackage: `${registrationState.requirementLabel} (${rawCost})`,
                 abstractSubmitted: status,
-                abstractEmail: status === 'yes' ? document.getElementById('verifyEmail').value.trim() : '',
+                abstractEmail: status === 'yes' ? registrationState.email : '',
                 baseAmount: registrationState.basePrice,
                 paymentStatus: 'Not Completed'
             };

@@ -2,11 +2,15 @@
 
 
 
-$env = parse_ini_file(__DIR__ . '/../.env');
+$env_path = __DIR__ . '/../.env';
+$env = file_exists($env_path) ? @parse_ini_file($env_path) : [];
+if (!is_array($env)) {
+    $env = [];
+}
 
-$host = $env['DB_HOST'] ?? 'localhost';
-$db_name = $env['DB_NAME'] ?? '';
-$username = $env['DB_USER'] ?? '';
+$host = $env['DB_HOST'] ?? '127.0.0.1';
+$db_name = $env['DB_NAME'] ?? 'icswhmh_db';
+$username = $env['DB_USER'] ?? 'icsw_user';
 $password = $env['DB_PASSWORD'] ?? '';
 $charset = 'utf8mb4';
 
@@ -19,9 +23,8 @@ $options = [
 
 try {
     $pdo = new PDO($dsn, $username, $password, $options);
-} catch (\PDOException $e) {
-    
-    
+} catch (\Throwable $e) {
+    error_log("Database connection error: " . $e->getMessage());
     throw new Exception("Database connection failed. Please contact the administrator.");
 }
 ?>
