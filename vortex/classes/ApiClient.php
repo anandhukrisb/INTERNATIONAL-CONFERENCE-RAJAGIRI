@@ -401,7 +401,7 @@ class ApiClient
     {
         try {
             $limit = max(1, min((int) $limit, 200));
-            $query = "SELECT id, client_name, api_key, is_active, created_at
+            $query = "SELECT id, client_name, api_key, api_secret, webhook_url, webhook_secret, is_active, created_at
                       FROM api_clients
                       ORDER BY id DESC
                       LIMIT " . $limit;
@@ -417,6 +417,77 @@ class ApiClient
         } catch (\Throwable $e) {
             Logger::error('Unexpected error fetching API clients: ' . $e->getMessage());
             return [];
+        }
+    }
+
+
+    /**
+     * --------------------------------------------------------
+     * Update Webhook Configuration
+     * --------------------------------------------------------
+     * Sets the webhook_url for a client.
+     * If a URL is provided, a new webhook_secret is auto-generated.
+     * If URL is empty, both URL and secret are cleared.
+     *
+     * @param int    $clientId
+     * @param string $webhookUrl  (empty string to clear)
+     * @return array
+     * --------------------------------------------------------
+     */
+    public function updateWebhook(int $clientId, string $webhookUrl): array
+    {
+        try {
+            if ($clientId <= 0) {
+                return ['success' => false, 'message' => 'Invalid client ID.'];
+            }
+
+            // Validate URL format (allow empty to clear)
+            $webhookUrl = trim($webhookUrl);
+            if ($webhookUrl !== '' && !filter_var($webhookUrl, FILTER_VALIDATE_URL)) {
+                return ['success' => false, 'message' => 'Invalid webhook URL format.'];
+            }
+
+            if ($webhookUrl === '') {
+                // Clear webhook configuration
+                $stmt = $this->db->prepare(
+                    "UPDATE api_clients SET webhook_url = NULL, webhook_secret = NULL WHERE id = ?"
+                );
+                $stmt->execute([$clientId]);
+
+                Logger::info('Webhook cleared for client ID: ' . $clientId);
+
+                return [
+                    'success'        => true,
+                    'message'        => 'Webhook configuration cleared.',
+                    'data'           => ['webhook_url' => null, 'webhook_secret' => null]
+                ];
+            }
+
+            // Generate a new webhook secret
+            $webhookSecret = bin2hex(random_bytes(24));  // 48-char hex secret
+
+            $stmt = $this->db->prepare(
+                "UPDATE api_clients SET webhook_url = ?, webhook_secret = ? WHERE id = ?"
+            );
+            $stmt->execute([$webhookUrl, $webhookSecret, $clientId]);
+
+            Logger::info('Webhook updated for client ID: ' . $clientId);
+
+            return [
+                'success'        => true,
+                'message'        => 'Webhook URL updated successfully.',
+                'data'           => [
+                    'webhook_url'    => $webhookUrl,
+                    'webhook_secret' => $webhookSecret
+                ]
+            ];
+
+        } catch (\PDOException $e) {
+            Logger::error('Webhook update database error: ' . $e->getMessage());
+            return ['success' => false, 'message' => 'Database error while updating webhook.'];
+        } catch (\Throwable $e) {
+            Logger::error('Webhook update unexpected error: ' . $e->getMessage());
+            return ['success' => false, 'message' => 'Unexpected error while updating webhook.'];
         }
     }
 
