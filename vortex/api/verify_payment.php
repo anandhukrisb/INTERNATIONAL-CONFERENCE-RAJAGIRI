@@ -133,8 +133,6 @@ try {
                 'Payment already verified.',
                 [
                     'vortex_transaction_id' => $transaction['vortex_transaction_id'],
-                    'razorpay_order_id'     => $transaction['razorpay_order_id'],
-                    'razorpay_payment_id'   => $transaction['razorpay_payment_id'],
                     'payment_status'        => 'SUCCESS',
                     'status_code'           => 200,
                     'amount'                => (float) $transaction['amount'],

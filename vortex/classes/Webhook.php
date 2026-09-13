@@ -486,6 +486,8 @@ class Webhook
 
                     $this->db->commit();
 
+                    $this->dispatchClientWebhook($transaction['vortex_transaction_id'], $targetStatus, $transaction['api_client_id']);
+
                     Logger::info(
                         "Webhook processed successfully. Event: {$eventName}, "
                         . "Vortex Tx: {$transaction['vortex_transaction_id']}, "
@@ -542,6 +544,60 @@ class Webhook
                 'status' => 'FAILED',
                 'message' => 'Webhook processing failed.'
             ];
+        }
+    }
+
+    /**
+     * --------------------------------------------------------
+     * Dispatch Client Webhook
+     * --------------------------------------------------------
+     * Sends an asynchronous POST request to the API Client's registered webhook URL.
+     * 
+     * @param string $vortexTxnId
+     * @param string $status
+     * @param int $apiClientId
+     * --------------------------------------------------------
+     */
+    private function dispatchClientWebhook($vortexTxnId, $status, $apiClientId)
+    {
+        try {
+            $stmt = $this->db->prepare("SELECT webhook_url, webhook_secret FROM api_clients WHERE id = ?");
+            $stmt->execute([$apiClientId]);
+            $client = $stmt->fetch();
+
+            if (!$client || empty($client['webhook_url']) || empty($client['webhook_secret'])) {
+                return; // No webhook configured for this client
+            }
+
+            $payload = json_encode([
+                'vortex_transaction_id' => $vortexTxnId,
+                'status' => $status,
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+
+            $signature = hash_hmac('sha256', $payload, $client['webhook_secret']);
+
+            $ch = curl_init($client['webhook_url']);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Content-Type: application/json',
+                'X-Vortex-Signature: ' . $signature
+            ]);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 5); // 5 second timeout so we don't block Razorpay
+            
+            if (strpos($client['webhook_url'], 'localhost') !== false) {
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            }
+
+            curl_exec($ch);
+            curl_close($ch);
+            
+            Logger::info("Client webhook dispatched for transaction {$vortexTxnId} to {$client['webhook_url']}");
+        } catch (\Throwable $e) {
+            Logger::error("Failed to dispatch client webhook for transaction {$vortexTxnId}: " . $e->getMessage());
         }
     }
 }

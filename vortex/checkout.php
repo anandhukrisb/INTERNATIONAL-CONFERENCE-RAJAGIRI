@@ -554,9 +554,7 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
                         status_code: 200,
                         date_time: nowIso,
                         amount: amountFormatted,
-                        currency: currency,
-                        razorpay_order_id: responseContext.razorpay_order_id || null,
-                        razorpay_payment_id: responseContext.razorpay_payment_id || null
+                        currency: currency
                     });
 
                     setTimeout(() => {
@@ -573,9 +571,7 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
                         status_code: 400,
                         date_time: nowIso,
                         amount: amountFormatted,
-                        currency: currency,
-                        razorpay_order_id: responseContext.razorpay_order_id || null,
-                        razorpay_payment_id: responseContext.razorpay_payment_id || null
+                        currency: currency
                     });
 
                     setTimeout(() => {
@@ -644,9 +640,7 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
                             status_code: 200,
                             date_time: nowIso,
                             amount: amountFormatted,
-                            currency: currency,
-                            razorpay_order_id: response.razorpay_order_id || null,
-                            razorpay_payment_id: response.razorpay_payment_id || null
+                            currency: currency
                         });
                         window.location.href = finalRedirect;
                     } else if (verifyResponse.status === 400 && verifyData.message === 'Payment verification failed.') {
@@ -658,9 +652,7 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
                             status_code: 400,
                             date_time: nowIso,
                             amount: amountFormatted,
-                            currency: currency,
-                            razorpay_order_id: response.razorpay_order_id || null,
-                            razorpay_payment_id: response.razorpay_payment_id || null
+                            currency: currency
                         });
                         setTimeout(() => {
                             window.location.href = finalRedirect;
