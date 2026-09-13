@@ -22,38 +22,10 @@ if (!empty($registration_id) && !empty($dob) && empty($error)) {
             if (!$user_details) {
                 $error = "No registration found with the provided Registration ID and Date of Birth.";
             } else {
-                $stmtHistory = $pdo->prepare("
-                    SELECT 
-                        po.razorpay_order_id,
-                        pa.razorpay_payment_id,
-                        pa.status as attempt_status,
-                        po.status as order_status,
-                        pa.error_description,
-                        MAX(COALESCE(pa.created_at, po.created_at)) as event_time
-                    FROM payment_orders po
-                    LEFT JOIN payment_attempts pa ON po.razorpay_order_id = pa.razorpay_order_id
-                    WHERE po.registration_id = :reg_id
-                    GROUP BY 
-                        po.razorpay_order_id,
-                        pa.razorpay_payment_id,
-                        pa.status,
-                        po.status,
-                        pa.error_description
-                    ORDER BY event_time DESC
-                ");
-                $stmtHistory->execute([':reg_id' => $user_details['registration_id']]);
-                $history_records = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
-
+                // Legacy payment history queries removed.
+                // Payment attempts and cooldowns are now securely managed by the Vortex Gateway API.
+                $history_records = [];
                 $cooldown_seconds_left = 0;
-                if (!empty($history_records)) {
-                    $latest_attempt = $history_records[0];
-                    if (($latest_attempt['attempt_status'] === 'failed' || $latest_attempt['order_status'] === 'failed') && !empty($latest_attempt['event_time'])) {
-                        $time_since_failure = time() - strtotime($latest_attempt['event_time']);
-                        if ($time_since_failure >= 0 && $time_since_failure < 180) {
-                            $cooldown_seconds_left = 180 - $time_since_failure;
-                        }
-                    }
-                }
             }
         } catch (Exception $e) {
             $error = "An error occurred while fetching your details. Please try again later.";

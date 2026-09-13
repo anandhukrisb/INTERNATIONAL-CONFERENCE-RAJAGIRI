@@ -22,10 +22,10 @@ if (empty($reg_id)) {
 
 try {
     require_once __DIR__ . '/../backend/db.php';
-    require_once __DIR__ . '/../razorpay/config.php';
+    $env = parse_ini_file(__DIR__ . '/../.env');
     
     // Ensure the registration is 'Completed'
-    $stmt = $pdo->prepare("SELECT payment_status FROM user_registrations WHERE registration_id = :reg_id");
+    $stmt = $pdo->prepare("SELECT payment_status, transaction_id, base_amount FROM user_registrations WHERE registration_id = :reg_id");
     $stmt->execute([':reg_id' => $reg_id]);
     $reg = $stmt->fetch();
     
@@ -34,56 +34,56 @@ try {
         exit;
     }
     
-    // Fetch the successful payment_id
-    $query = "
-        SELECT pa.razorpay_payment_id 
-        FROM payment_orders po
-        JOIN payment_attempts pa ON po.razorpay_order_id = pa.razorpay_order_id
-        WHERE po.registration_id = :reg_id 
-        AND po.status = 'paid'
-        AND pa.razorpay_payment_id IS NOT NULL
-        ORDER BY po.id DESC LIMIT 1
-    ";
-    $stmt = $pdo->prepare($query);
-    $stmt->execute([':reg_id' => $reg_id]);
-    $payment = $stmt->fetch();
-    
-    if (!$payment || empty($payment['razorpay_payment_id'])) {
-        echo json_encode(['success' => false, 'error' => 'No successful Razorpay payment found for this registration.']);
+    if (empty($reg['transaction_id'])) {
+        echo json_encode(['success' => false, 'error' => 'No Vortex transaction ID found for this registration.']);
         exit;
     }
     
-    $payment_id = $payment['razorpay_payment_id'];
+    $vortexTxnId = $reg['transaction_id'];
     
-    // Process Refund via Razorpay API
-    $api = new \Razorpay\Api\Api(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET);
-    $refund = $api->payment->fetch($payment_id)->refund();
+    // Call Vortex API to create refund
+    $vortexApiUrl = rtrim($env['VORTEX_API_URL'], '/') . '/create_refund.php';
+    $vortexApiKey = $env['VORTEX_API_KEY'] ?? $env['KEY'] ?? '';
+    $vortexApiSecret = $env['VORTEX_API_SECRET'] ?? $env['SECRET'] ?? '';
     
-    // Insert into payment_refunds table to track it
-    $refund_id = $refund->id;
-    $amount_refunded = $refund->amount / 100;
-    $status = $refund->status;
-
-    $stmtRefund = $pdo->prepare("INSERT INTO payment_refunds (registration_id, razorpay_payment_id, razorpay_refund_id, amount, status) VALUES (:reg_id, :pay_id, :ref_id, :amount, :status)");
-    $stmtRefund->execute([
-        ':reg_id' => $reg_id,
-        ':pay_id' => $payment_id,
-        ':ref_id' => $refund_id,
-        ':amount' => $amount_refunded,
-        ':status' => $status
+    $payload = [
+        'api_key' => $vortexApiKey,
+        'api_secret' => $vortexApiSecret,
+        'vortex_transaction_id' => $vortexTxnId,
+        'amount' => $reg['base_amount'] // Full refund by default
+    ];
+    
+    $ch = curl_init($vortexApiUrl);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'Accept: application/json'
     ]);
     
-    // Update the status to 'Refund Approved'
-    $stmt = $pdo->prepare("UPDATE user_registrations SET payment_status = 'Refund Approved' WHERE registration_id = :reg_id AND payment_status = 'Completed'");
-    $stmt->execute([':reg_id' => $reg_id]);
+    if (strpos($vortexApiUrl, 'localhost') !== false) {
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    }
     
-    if ($stmt->rowCount() > 0) {
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    
+    $result = json_decode($response, true);
+    
+    if ($httpCode === 200 && isset($result['status']) && $result['status'] === 'success') {
+        // Update the status to 'Refund Approved'
+        $stmt = $pdo->prepare("UPDATE user_registrations SET payment_status = 'Refund Approved' WHERE registration_id = :reg_id");
+        $stmt->execute([':reg_id' => $reg_id]);
+        
         echo json_encode(['success' => true]);
     } else {
-        echo json_encode(['success' => false, 'error' => 'Could not update local status.']);
+        $errorMsg = $result['message'] ?? 'Unknown error from Vortex Gateway';
+        echo json_encode(['success' => false, 'error' => 'Refund failed: ' . $errorMsg]);
     }
-} catch (\Razorpay\Api\Errors\Error $e) {
-    echo json_encode(['success' => false, 'error' => 'Razorpay API Error: ' . $e->getMessage()]);
+
 } catch (PDOException $e) {
     echo json_encode(['success' => false, 'error' => 'Database error']);
 } catch (Exception $e) {
