@@ -4,447 +4,405 @@
  * payment_details.php
  * ------------------------------------------------------------
  * Project : Vortex Unified Payment Gateway
- * Purpose : View comprehensive transaction details for admin.
+ * Purpose : Comprehensive Search & Inspection for every detail of a Vortex Transaction by vortexId.
  * ------------------------------------------------------------
  */
 
 require_once __DIR__ . '/../../classes/Database.php';
 require_once __DIR__ . '/../../classes/Logger.php';
 
-$txnParam = trim((string)($_GET['id'] ?? $_GET['txn_id'] ?? $_GET['vortex_transaction_id'] ?? ''));
+$pageTitle = "Vortex Transaction Details & Search";
+$activeNav = "payments";
 
-$transaction = null;
-$errorMessage = null;
+$txnParam = trim((string)($_GET['vortex_transaction_id'] ?? $_GET['id'] ?? $_GET['txn_id'] ?? $_GET['q'] ?? ''));
 
-if ($txnParam === '') {
-    $errorMessage = 'No transaction identifier specified.';
-} else {
+$transaction     = null;
+$apiClient       = null;
+$event           = null;
+$webhookLogs     = [];
+$refundLogs      = [];
+$sessionLogs     = [];
+$errorMessage    = null;
+$allSearchResults= [];
+
+if ($txnParam !== '') {
     try {
         $db = Database::getInstance()->getConnection();
 
-        // Secure prepared statement to fetch transaction details
-        $query = "SELECT t.id,
-                         t.vortex_transaction_id,
-                         t.event_id,
-                         t.api_client_id,
-                         t.customer_email,
-                         t.customer_mobile,
-                         t.amount,
-                         t.currency,
-                         t.razorpay_order_id,
-                         t.razorpay_payment_id,
-                         t.razorpay_signature,
-                         t.status,
-                         t.created_at,
-                         t.updated_at,
-                         e.event_name,
-                         c.client_name
-                  FROM transactions t
-                  LEFT JOIN events e ON t.event_id = e.event_id
-                  LEFT JOIN api_clients c ON t.api_client_id = c.id
-                  WHERE t.vortex_transaction_id = ?
-                     OR t.id = ?
-                  LIMIT 1";
-
-        $stmt = $db->prepare($query);
+        // 1. Fetch Primary Transaction Record
         $numericId = is_numeric($txnParam) ? (int)$txnParam : 0;
-        $stmt->execute([$txnParam, $numericId]);
-        $transaction = $stmt->fetch();
+        $queryTx = "SELECT t.*, e.event_name, e.department, c.client_name, c.api_key, c.webhook_url
+                    FROM transactions t
+                    LEFT JOIN events e ON t.event_id = e.event_id
+                    LEFT JOIN api_clients c ON t.api_client_id = c.id
+                    WHERE t.vortex_transaction_id = :param
+                       OR t.id = :num
+                       OR t.razorpay_order_id = :param
+                       OR t.razorpay_payment_id = :param
+                       OR t.customer_email = :param
+                    ORDER BY t.id DESC";
 
-        if (!$transaction) {
-            $errorMessage = 'Transaction not found for identifier: ' . htmlspecialchars($txnParam);
-            Logger::error("Admin payment details lookup failed for ID: " . $txnParam);
+        $stmtTx = $db->prepare($queryTx);
+        $stmtTx->execute(['param' => $txnParam, 'num' => $numericId]);
+        $allSearchResults = $stmtTx->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!empty($allSearchResults)) {
+            // Take the exact or most relevant match
+            $transaction = $allSearchResults[0];
+            $vortexTxId  = $transaction['vortex_transaction_id'];
+            $txDbId      = $transaction['id'];
+            $rzpOrder    = $transaction['razorpay_order_id'] ?? '';
+            $rzpPayment  = $transaction['razorpay_payment_id'] ?? '';
+
+            // 2. Fetch Full API Client Details
+            if (!empty($transaction['api_client_id'])) {
+                $stmtC = $db->prepare("SELECT id, client_name, api_key, webhook_url, is_active, created_at FROM api_clients WHERE id = ?");
+                $stmtC->execute([$transaction['api_client_id']]);
+                $apiClient = $stmtC->fetch(PDO::FETCH_ASSOC);
+            }
+
+            // 3. Fetch Full Event Details
+            if (!empty($transaction['event_id'])) {
+                $stmtE = $db->prepare("SELECT * FROM events WHERE event_id = ? OR id = ?");
+                $stmtE->execute([$transaction['event_id'], is_numeric($transaction['event_id']) ? (int)$transaction['event_id'] : 0]);
+                $event = $stmtE->fetch(PDO::FETCH_ASSOC);
+            }
+
+            // 4. Fetch Webhook Logs for this transaction/order/payment
+            try {
+                $stmtWh = $db->prepare("SELECT * FROM webhooks 
+                                        WHERE (order_id IS NOT NULL AND order_id != '' AND order_id = :order_id)
+                                           OR (payment_id IS NOT NULL AND payment_id != '' AND payment_id = :payment_id)
+                                           OR payload LIKE :like_vortex
+                                        ORDER BY id DESC");
+                $stmtWh->execute([
+                    'order_id'   => $rzpOrder,
+                    'payment_id' => $rzpPayment,
+                    'like_vortex'=> "%" . $vortexTxId . "%"
+                ]);
+                $webhookLogs = $stmtWh->fetchAll(PDO::FETCH_ASSOC);
+            } catch (\Throwable $e) {
+                $webhookLogs = [];
+            }
+
+            // 5. Fetch Refund History
+            try {
+                $stmtRef = $db->prepare("SELECT * FROM refunds WHERE transaction_id = :vtx_id OR transaction_id = :db_id ORDER BY id DESC");
+                $stmtRef->execute([
+                    'vtx_id' => $vortexTxId,
+                    'db_id'  => (string)$txDbId
+                ]);
+                $refundLogs = $stmtRef->fetchAll(PDO::FETCH_ASSOC);
+            } catch (\Throwable $e) {
+                $refundLogs = [];
+            }
+
+            // 6. Fetch Checkout Sessions
+            try {
+                $stmtSess = $db->prepare("SELECT * FROM checkout_sessions WHERE transaction_id = :vtx_id OR transaction_id = :db_id ORDER BY id DESC");
+                $stmtSess->execute([
+                    'vtx_id' => $vortexTxId,
+                    'db_id'  => (string)$txDbId
+                ]);
+                $sessionLogs = $stmtSess->fetchAll(PDO::FETCH_ASSOC);
+            } catch (\Throwable $e) {
+                $sessionLogs = [];
+            }
+
+        } else {
+            $errorMessage = "No record found matching identifier: \"" . htmlspecialchars($txnParam) . "\"";
         }
-    } catch (\PDOException $e) {
-        Logger::error("Admin payment details database error: " . $e->getMessage());
-        $errorMessage = 'A database error occurred while retrieving transaction details.';
     } catch (\Throwable $e) {
-        Logger::error("Admin payment details unexpected error: " . $e->getMessage());
-        $errorMessage = 'An unexpected error occurred while retrieving transaction details.';
+        Logger::error("Search payment details error: " . $e->getMessage());
+        $errorMessage = "A database query error occurred: " . htmlspecialchars($e->getMessage());
     }
 }
+
+require_once __DIR__ . '/../includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transaction Details - Vortex Admin</title>
-    <style>
-        :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --sidebar-bg: #0f172a;
-            --sidebar-hover: #1e293b;
-            --sidebar-text: #94a3b8;
-            --bg-main: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
-            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+<!-- Search Bar Header Banner -->
+<div class="section-card">
+    <div class="section-header">
+        <h2>🔍 Search Transaction by Vortex ID</h2>
+        <a href="../dashboard.php" class="btn btn-secondary btn-sm">← Back to Dashboard</a>
+    </div>
+    <div class="section-body">
+        <form action="payment_details.php" method="GET" style="display: flex; gap: 12px; max-width: 700px;">
+            <input type="text" name="vortex_transaction_id" class="form-control" style="flex: 1; font-family: var(--font-mono);" 
+                   placeholder="Enter Vortex Transaction ID (e.g. VTX_SIM_123, VTX_66E3...)" 
+                   value="<?= htmlspecialchars($txnParam) ?>" required>
+            <button type="submit" class="btn btn-primary">Search Details</button>
+        </form>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">
+            * You can search by Vortex Transaction ID (`VTX_...`), Database ID, Razorpay Order ID (`order_...`), Razorpay Payment ID (`pay_...`), or Customer Email.
+        </p>
+    </div>
+</div>
 
-        body {
-            font-family: var(--font-family);
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            display: flex;
-            min-height: 100vh;
-        }
+<?php if ($errorMessage): ?>
+    <div class="alert alert-danger">
+        <strong>✕ Search Result:</strong> <?= $errorMessage ?>
+    </div>
+<?php elseif ($transaction): ?>
 
-        /* Sidebar Styling */
-        .sidebar {
-            width: 260px;
-            background-color: var(--sidebar-bg);
-            color: var(--sidebar-text);
-            display: flex;
-            flex-direction: column;
-            flex-shrink: 0;
-        }
-
-        .sidebar-brand {
-            padding: 24px 20px;
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .sidebar-nav {
-            padding: 20px 0;
-            flex: 1;
-        }
-
-        .sidebar-nav a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 24px;
-            color: var(--sidebar-text);
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-
-        .sidebar-nav a:hover {
-            background-color: var(--sidebar-hover);
-            color: #ffffff;
-        }
-
-        .sidebar-nav a.active {
-            background-color: var(--primary);
-            color: #ffffff;
-        }
-
-        /* Main Container */
-        .main-wrapper {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
-
-        header.top-bar {
-            background-color: #ffffff;
-            border-bottom: 1px solid var(--border-color);
-            padding: 16px 32px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .header-title h1 {
-            font-size: 1.3rem;
-            font-weight: 700;
-        }
-
-        .btn-back {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: #ffffff;
-            border: 1px solid var(--border-color);
-            color: #334155;
-            font-size: 0.9rem;
-            font-weight: 600;
-            text-decoration: none;
-            border-radius: 6px;
-            transition: all 0.15s ease;
-        }
-
-        .btn-back:hover {
-            background: #f1f5f9;
-            color: var(--primary);
-        }
-
-        .content {
-            padding: 32px;
-            max-width: 1100px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-            margin-bottom: 24px;
-        }
-
-        .card-header {
-            padding: 18px 24px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: #ffffff;
-        }
-
-        .card-header h2 {
-            font-size: 1.15rem;
-            font-weight: 600;
-        }
-
-        .card-body {
-            padding: 24px;
-        }
-
-        /* Detail List */
-        .detail-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 24px;
-        }
-
-        @media (max-width: 768px) {
-            .detail-grid {
-                grid-template-columns: 1fr;
-            }
-            .sidebar {
-                width: 70px;
-            }
-            .sidebar-brand span:first-child, .sidebar-nav span {
-                display: none;
-            }
-        }
-
-        .detail-item {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            border-bottom: 1px solid #f1f5f9;
-            padding-bottom: 12px;
-        }
-
-        .detail-label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .detail-value {
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: var(--text-main);
-            word-break: break-all;
-        }
-
-        .mono {
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-            font-size: 0.88rem;
-            color: #1e293b;
-            background-color: #f1f5f9;
-            padding: 3px 8px;
-            border-radius: 4px;
-            display: inline-block;
-        }
-
-        .badge-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 12px;
-            border-radius: 9999px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .badge-success {
-            background-color: #dcfce7;
-            color: #166534;
-        }
-
-        .badge-failed {
-            background-color: #fee2e2;
-            color: #991b1b;
-        }
-
-        .badge-pending {
-            background-color: #fef3c7;
-            color: #92400e;
-        }
-
-        .alert-error {
-            background-color: #fee2e2;
-            border: 1px solid #fecaca;
-            color: #991b1b;
-            padding: 16px 20px;
-            border-radius: 8px;
-            margin-bottom: 24px;
-            font-size: 0.95rem;
-        }
-    </style>
-</head>
-<body>
-
-    <aside class="sidebar">
-        <div class="sidebar-brand">
-            <span>⚡ Vortex Admin</span>
-        </div>
-        <nav class="sidebar-nav">
-            <a href="../dashboard.php">
-                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
-                </svg>
-                <span>Dashboard</span>
-            </a>
-            <a href="../dashboard.php#payments-section" class="active">
-                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
-                </svg>
-                <span>Payments</span>
-            </a>
-        </nav>
-    </aside>
-
-    <div class="main-wrapper">
-        <header class="top-bar">
-            <div class="header-title">
-                <h1>Payment Transaction Details</h1>
+    <!-- Multiple Results Picker (if search returned multiple rows) -->
+    <?php if (count($allSearchResults) > 1): ?>
+        <div class="alert alert-warning">
+            <strong>Multiple Matches Found (<?= count($allSearchResults) ?>):</strong> Select the specific transaction below to inspect.
+            <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
+                <?php foreach ($allSearchResults as $sr): ?>
+                    <a href="payment_details.php?vortex_transaction_id=<?= urlencode($sr['vortex_transaction_id']) ?>" class="btn btn-secondary btn-sm">
+                        <?= htmlspecialchars($sr['vortex_transaction_id']) ?> (<?= htmlspecialchars($sr['status']) ?> - ₹<?= number_format($sr['amount'], 2) ?>)
+                    </a>
+                <?php endforeach; ?>
             </div>
-            <a href="../dashboard.php#payments-section" class="btn-back">
-                ← Back to Dashboard
-            </a>
-        </header>
+        </div>
+    <?php endif; ?>
 
-        <main class="content">
-            <?php if ($errorMessage): ?>
-                <div class="alert-error">
-                    <strong>✕ Error:</strong> <?php echo htmlspecialchars($errorMessage); ?>
-                </div>
-            <?php elseif ($transaction): ?>
-                <div class="card">
-                    <div class="card-header">
-                        <h2>Vortex Transaction #<?php echo (int)$transaction['id']; ?></h2>
-                        <div>
-                            <?php
-                                $st = strtoupper((string)$transaction['status']);
-                                if ($st === 'SUCCESS') {
-                                    echo '<span class="badge-status badge-success">✓ SUCCESS</span>';
-                                } elseif ($st === 'FAILED') {
-                                    echo '<span class="badge-status badge-failed">✕ FAILED</span>';
-                                } else {
-                                    echo '<span class="badge-status badge-pending">⏳ ' . htmlspecialchars($st) . '</span>';
-                                }
-                            ?>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="detail-grid">
-                            <div class="detail-item">
-                                <span class="detail-label">Vortex Transaction ID</span>
-                                <span class="detail-value mono"><?php echo htmlspecialchars($transaction['vortex_transaction_id']); ?></span>
-                            </div>
-
-                            <div class="detail-item">
-                                <span class="detail-label">Payment Status</span>
-                                <span class="detail-value"><strong><?php echo htmlspecialchars($transaction['status']); ?></strong></span>
-                            </div>
-
-                            <div class="detail-item">
-                                <span class="detail-label">Amount</span>
-                                <span class="detail-value" style="font-size: 1.15rem; font-weight: 700; color: #047857;">
-                                    <?php echo htmlspecialchars($transaction['currency'] ?? 'INR'); ?> <?php echo number_format((float)$transaction['amount'], 2); ?>
-                                </span>
-                            </div>
-
-                            <div class="detail-item">
-                                <span class="detail-label">Currency</span>
-                                <span class="detail-value"><?php echo htmlspecialchars($transaction['currency'] ?? 'INR'); ?></span>
-                            </div>
-
-                            <div class="detail-item">
-                                <span class="detail-label">Event ID</span>
-                                <span class="detail-value mono"><?php echo htmlspecialchars($transaction['event_id']); ?></span>
-                            </div>
-
-                            <div class="detail-item">
-                                <span class="detail-label">Event Name</span>
-                                <span class="detail-value"><?php echo htmlspecialchars($transaction['event_name'] ?? 'N/A'); ?></span>
-                            </div>
-
-                            <div class="detail-item">
-                                <span class="detail-label">API Client Name (App)</span>
-                                <span class="detail-value"><?php echo htmlspecialchars($transaction['client_name'] ?? ('Client #' . $transaction['api_client_id'])); ?></span>
-                            </div>
-
-                            <div class="detail-item">
-                                <span class="detail-label">Customer Name</span>
-                                <span class="detail-value"><?php echo 'N/A (Not Collected)'; ?></span>
-                            </div>
-
-                            <div class="detail-item">
-                                <span class="detail-label">Customer Email</span>
-                                <span class="detail-value"><?php echo htmlspecialchars($transaction['customer_email']); ?></span>
-                            </div>
-
-                            <div class="detail-item">
-                                <span class="detail-label">Customer Mobile</span>
-                                <span class="detail-value"><?php echo htmlspecialchars($transaction['customer_mobile']); ?></span>
-                            </div>
-
-                            <div class="detail-item">
-                                <span class="detail-label">Razorpay Order ID</span>
-                                <span class="detail-value mono"><?php echo htmlspecialchars($transaction['razorpay_order_id'] ?? 'N/A'); ?></span>
-                            </div>
-
-                            <div class="detail-item">
-                                <span class="detail-label">Razorpay Payment ID</span>
-                                <span class="detail-value mono"><?php echo htmlspecialchars($transaction['razorpay_payment_id'] ?? 'N/A'); ?></span>
-                            </div>
-
-                            <div class="detail-item">
-                                <span class="detail-label">Created Date</span>
-                                <span class="detail-value"><?php echo htmlspecialchars($transaction['created_at']); ?></span>
-                            </div>
-
-                            <div class="detail-item">
-                                <span class="detail-label">Updated Date</span>
-                                <span class="detail-value"><?php echo htmlspecialchars($transaction['updated_at'] ?? 'N/A'); ?></span>
-                            </div>
-                        </div>
+    <!-- 1. Primary Transaction Overview -->
+    <div class="section-card">
+        <div class="section-header">
+            <h2>Transaction Master Overview: <span class="font-mono"><?= htmlspecialchars($transaction['vortex_transaction_id']) ?></span></h2>
+            <div>
+                <?php
+                    $st = strtoupper((string)$transaction['status']);
+                    if ($st === 'SUCCESS') echo '<span class="badge badge-success">✓ SUCCESS</span>';
+                    elseif ($st === 'FAILED') echo '<span class="badge badge-danger">✕ FAILED</span>';
+                    elseif ($st === 'REFUNDED') echo '<span class="badge badge-refunded">↩ REFUNDED</span>';
+                    else echo '<span class="badge badge-pending">⏳ ' . htmlspecialchars($st) . '</span>';
+                ?>
+            </div>
+        </div>
+        <div class="section-body">
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="detail-label">Vortex Transaction ID</span>
+                    <div class="copy-wrapper" style="margin-top: 2px;">
+                        <span class="detail-value font-mono" style="color: var(--primary); font-size: 1.05rem;"><?= htmlspecialchars($transaction['vortex_transaction_id']) ?></span>
+                        <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($transaction['vortex_transaction_id'], ENT_QUOTES) ?>', this)" title="Copy Vortex Transaction ID">📋 Copy</button>
                     </div>
                 </div>
-            <?php endif; ?>
-        </main>
+                <div class="detail-item">
+                    <span class="detail-label">Database Record ID</span>
+                    <span class="detail-value font-mono">#<?= (int)$transaction['id'] ?></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Transaction Amount</span>
+                    <span class="detail-value" style="font-size: 1.2rem; font-weight: 700; color: var(--success-text);">
+                        <?= htmlspecialchars($transaction['currency'] ?? 'INR') ?> ₹<?= number_format((float)$transaction['amount'], 2) ?>
+                    </span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Payment Status</span>
+                    <span class="detail-value"><strong><?= htmlspecialchars($transaction['status']) ?></strong></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Customer Email</span>
+                    <span class="detail-value"><?= htmlspecialchars($transaction['customer_email'] ?: 'N/A') ?></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Customer Mobile</span>
+                    <span class="detail-value"><?= htmlspecialchars($transaction['customer_mobile'] ?: 'N/A') ?></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Date Created</span>
+                    <span class="detail-value"><?= htmlspecialchars($transaction['created_at']) ?></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Last Updated</span>
+                    <span class="detail-value"><?= htmlspecialchars($transaction['updated_at'] ?? $transaction['created_at']) ?></span>
+                </div>
+            </div>
+        </div>
     </div>
 
-</body>
-</html>
+    <!-- 2. Gateway Integration & Processor Details -->
+    <div class="section-card">
+        <div class="section-header">
+            <h2>💳 Payment Processor (Razorpay) Details</h2>
+        </div>
+        <div class="section-body">
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="detail-label">Razorpay Order ID</span>
+                    <div class="copy-wrapper" style="margin-top: 2px;">
+                        <span class="detail-value font-mono"><?= htmlspecialchars($transaction['razorpay_order_id'] ?? 'N/A') ?></span>
+                        <?php if (!empty($transaction['razorpay_order_id'])): ?>
+                            <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($transaction['razorpay_order_id'], ENT_QUOTES) ?>', this)" title="Copy Order ID">📋 Copy</button>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Razorpay Payment ID</span>
+                    <div class="copy-wrapper" style="margin-top: 2px;">
+                        <span class="detail-value font-mono"><?= htmlspecialchars($transaction['razorpay_payment_id'] ?? 'N/A') ?></span>
+                        <?php if (!empty($transaction['razorpay_payment_id'])): ?>
+                            <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($transaction['razorpay_payment_id'], ENT_QUOTES) ?>', this)" title="Copy Payment ID">📋 Copy</button>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <div class="detail-item" style="grid-column: span 2;">
+                    <span class="detail-label">Razorpay Signature</span>
+                    <span class="detail-value font-mono" style="word-break: break-all; font-size: 0.8rem; background: #f8fafc;">
+                        <?= htmlspecialchars($transaction['razorpay_signature'] ?? 'N/A') ?>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Merchant & Event Association Details -->
+    <div class="section-card">
+        <div class="section-header">
+            <h2>🏢 Merchant & Event Context</h2>
+        </div>
+        <div class="section-body">
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="detail-label">API Client (Merchant Name)</span>
+                    <span class="detail-value"><strong><?= htmlspecialchars($transaction['client_name'] ?? 'Default Client') ?></strong> (ID: #<?= (int)$transaction['api_client_id'] ?>)</span>
+                    <?php if (!empty($transaction['api_key'])): ?>
+                        <div class="copy-wrapper" style="margin-top: 4px;">
+                            <span style="font-size:0.75rem; color:var(--text-muted);">Key:</span>
+                            <span class="detail-value font-mono" style="font-size:0.82rem;"><?= htmlspecialchars($transaction['api_key']) ?></span>
+                            <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($transaction['api_key'], ENT_QUOTES) ?>', this)" title="Copy API Key">📋 Copy</button>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Client Webhook URL</span>
+                    <span class="detail-value font-mono" style="font-size: 0.82rem;"><?= htmlspecialchars($transaction['webhook_url'] ?? 'Not Configured') ?></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Event Name</span>
+                    <span class="detail-value"><?= htmlspecialchars($transaction['event_name'] ?? 'N/A') ?></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Event Code / ID</span>
+                    <div class="copy-wrapper" style="margin-top: 2px;">
+                        <span class="detail-value font-mono"><?= htmlspecialchars($transaction['event_id']) ?></span>
+                        <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($transaction['event_id'], ENT_QUOTES) ?>', this)" title="Copy Event ID">📋 Copy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Webhook Payload Log Details -->
+    <div class="section-card">
+        <div class="section-header">
+            <h2>📡 Associated Webhook Callbacks (<?= count($webhookLogs) ?>)</h2>
+        </div>
+        <div class="section-body">
+            <?php if (empty($webhookLogs)): ?>
+                <p style="color: var(--text-muted);">No recorded webhook events for this transaction.</p>
+            <?php else: ?>
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Event Type</th>
+                                <th>Payment / Order ID</th>
+                                <th>Status</th>
+                                <th>Received At</th>
+                                <th>Raw Payload</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($webhookLogs as $wh): ?>
+                                <tr>
+                                    <td>#<?= $wh['id'] ?></td>
+                                    <td><span class="font-mono"><?= htmlspecialchars($wh['event_type']) ?></span></td>
+                                    <td>
+                                        <span class="font-mono"><?= htmlspecialchars($wh['payment_id'] ?? $wh['order_id'] ?? 'N/A') ?></span>
+                                    </td>
+                                    <td>
+                                        <span class="badge <?= $wh['status'] === 'PROCESSED' ? 'badge-success' : 'badge-pending' ?>">
+                                            <?= htmlspecialchars($wh['status']) ?>
+                                        </span>
+                                    </td>
+                                    <td><?= htmlspecialchars($wh['created_at']) ?></td>
+                                    <td>
+                                        <details>
+                                            <summary style="cursor: pointer; color: var(--primary); font-weight: 600;">View JSON</summary>
+                                            <pre class="json-viewer" style="margin-top: 8px;"><?= htmlspecialchars($wh['payload']) ?></pre>
+                                        </details>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- 5. Refund History -->
+    <?php if (!empty($refundLogs)): ?>
+        <div class="section-card">
+            <div class="section-header">
+                <h2>↩ Refund Records (<?= count($refundLogs) ?>)</h2>
+            </div>
+            <div class="section-body">
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Refund ID</th>
+                                <th>Razorpay Refund ID</th>
+                                <th>Amount</th>
+                                <th>Reason</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($refundLogs as $rf): ?>
+                                <tr>
+                                    <td>#<?= $rf['id'] ?></td>
+                                    <td><span class="font-mono"><?= htmlspecialchars($rf['razorpay_refund_id'] ?? 'N/A') ?></span></td>
+                                    <td style="font-weight: 700; color: var(--danger-text);">₹<?= number_format($rf['amount'], 2) ?></td>
+                                    <td><?= htmlspecialchars($rf['reason'] ?? 'N/A') ?></td>
+                                    <td><span class="badge badge-refunded"><?= htmlspecialchars($rf['status']) ?></span></td>
+                                    <td><?= htmlspecialchars($rf['created_at']) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <!-- 6. Raw JSON Data Copy Option -->
+    <div class="section-card">
+        <div class="section-header">
+            <h2>📄 Raw Transaction Diagnostic JSON</h2>
+            <button class="btn btn-secondary btn-sm" onclick="copyToClipboard('raw-json-box')">📋 Copy JSON</button>
+        </div>
+        <div class="section-body">
+            <pre class="json-viewer" id="raw-json-box"><?= htmlspecialchars(json_encode([
+                'transaction' => $transaction,
+                'api_client'  => $apiClient,
+                'event'       => $event,
+                'webhooks'    => $webhookLogs,
+                'refunds'     => $refundLogs,
+                'sessions'    => $sessionLogs
+            ], JSON_PRETTY_PRINT)) ?></pre>
+        </div>
+    </div>
+
+<?php else: ?>
+    <div class="section-card">
+        <div class="section-body" style="text-align: center; padding: 48px 24px;">
+            <h3 style="margin-bottom: 8px;">Enter a Vortex ID to Inspect All Details</h3>
+            <p style="color: var(--text-muted); max-width: 500px; margin: 0 auto 24px auto;">
+                Use the search box above or type a Vortex Transaction ID (`VTX_...`) to retrieve all associated transaction details, Razorpay signatures, API client keys, and webhook logs.
+            </p>
+        </div>
+    </div>
+<?php endif; ?>
+
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>
