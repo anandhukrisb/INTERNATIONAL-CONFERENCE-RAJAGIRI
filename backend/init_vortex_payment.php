@@ -80,7 +80,8 @@ try {
     $result = json_decode($response, true);
     
     if ($httpCode !== 200 || !($result['success'] ?? false)) {
-        throw new Exception($result['error'] ?? "Failed to create Vortex payment order.");
+        $apiError = $result['error'] ?? "Failed to create Vortex payment order. HTTP: {$httpCode}. Response: " . strip_tags($response);
+        throw new Exception($apiError);
     }
     
     // 5. Update user_registrations with transaction ID (optional but good practice)
