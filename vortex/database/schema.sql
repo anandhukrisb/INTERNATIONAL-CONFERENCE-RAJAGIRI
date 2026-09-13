@@ -14,13 +14,16 @@ CREATE TABLE IF NOT EXISTS events (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 2. API Clients Table (External apps using this gateway)
-CREATE TABLE IF NOT EXISTS api_clients (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    client_name VARCHAR(150) NOT NULL,
-    api_key VARCHAR(64) NOT NULL UNIQUE,
-    api_secret VARCHAR(64) NOT NULL UNIQUE,
-    is_active TINYINT(1) DEFAULT 1,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS `api_clients` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `client_name` VARCHAR(150) NOT NULL,
+  `api_key` VARCHAR(64) NOT NULL UNIQUE,
+  `api_secret` VARCHAR(64) NOT NULL UNIQUE,
+  `webhook_url` VARCHAR(255) NULL,
+  `webhook_secret` VARCHAR(64) NULL,
+  `is_active` TINYINT(1) DEFAULT 1,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 3. Transactions Table (Razorpay order & payment records)
