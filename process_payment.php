@@ -20,7 +20,7 @@ if ($reg_id !== '') {
             }
         }
     } catch (Exception $e) {
-        // Ignore DB error
+        // Ignore DB error 
     }
 }
 
