@@ -4,7 +4,7 @@ session_start();
 
 $env = parse_ini_file(__DIR__ . '/../.env');
 
-$vortexApiUrl = rtrim($env['VORTEX_API_URL'], '/') . '/verify_payment.php';
+$vortexApiUrl = rtrim($env['VORTEX_API_URL'], '/') . '/get_payment_status.php';
 $vortexApiKey = $env['VORTEX_API_KEY'];
 $vortexApiSecret = $env['VORTEX_API_SECRET'];
 
