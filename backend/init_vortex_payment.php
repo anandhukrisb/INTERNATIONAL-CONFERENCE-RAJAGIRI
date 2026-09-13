@@ -79,8 +79,8 @@ try {
     
     $result = json_decode($response, true);
     
-    if ($httpCode !== 200 || !($result['success'] ?? false)) {
-        $apiError = $result['error'] ?? "Failed to create Vortex payment order. HTTP: {$httpCode}. Response: " . strip_tags($response);
+    if ($httpCode !== 200 || !isset($result['status']) || $result['status'] !== 'success') {
+        $apiError = $result['message'] ?? "Failed to create Vortex payment order. HTTP: {$httpCode}. Response: " . strip_tags($response);
         throw new Exception($apiError);
     }
     

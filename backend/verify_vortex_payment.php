@@ -55,7 +55,7 @@ try {
     
     $result = json_decode($response, true);
     
-    if ($httpCode === 200 && ($result['success'] ?? false) && $result['data']['payment_status'] === 'SUCCESS') {
+    if ($httpCode === 200 && isset($result['status']) && $result['status'] === 'success' && $result['data']['payment_status'] === 'SUCCESS') {
         // Payment is verified as SUCCESS
         $stmtUpdate = $pdo->prepare("UPDATE user_registrations SET payment_status = 'Completed' WHERE registration_id = :reg_id");
         $stmtUpdate->execute([':reg_id' => $regId]);
