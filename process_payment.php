@@ -368,25 +368,28 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
 
         /* ================= MOBILE RESPONSIVENESS ================= */
         @media (max-width: 768px) {
-            * {
+            img, video, canvas, svg {
                 max-width: 100%;
+                height: auto;
             }
 
             .main-container {
-                padding: 0 15px;
+                padding: 0 16px;
                 width: 100%;
-                max-width: 100vw;
+                max-width: 100%;
                 box-sizing: border-box;
             }
 
             .title-section {
-                margin-top: 120px;
+                margin-top: 100px;
+                margin-bottom: 30px;
                 text-align: center;
                 width: 100%;
             }
 
             #pageTitle {
-                font-size: 2rem;
+                font-size: 1.85rem;
+                line-height: 1.25;
             }
 
             #pageTitle::after {
@@ -394,14 +397,16 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
             }
 
             .intro-text {
-                font-size: 1rem;
+                font-size: 0.95rem;
+                line-height: 1.6;
                 text-align: left;
                 width: 100%;
                 max-width: 100%;
             }
 
             .section-header {
-                font-size: 1.5rem;
+                font-size: 1.4rem;
+                line-height: 1.3;
             }
 
             .inclusions-grid {
@@ -411,7 +416,7 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
             }
 
             .inclusion-card {
-                padding: 25px;
+                padding: 22px 18px;
                 width: 100%;
                 box-sizing: border-box;
             }
@@ -420,18 +425,23 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
                 width: 100%;
-                margin-left: -15px;
-                margin-right: -15px;
-                padding: 0 15px;
+                margin-left: -16px;
+                margin-right: -16px;
+                padding: 0 16px;
+            }
+
+            .pricing-cards-container {
+                grid-template-columns: 1fr;
+                gap: 16px;
             }
 
             .pricing-table {
-                min-width: 600px;
+                min-width: 550px;
             }
 
             .pricing-table th,
             .pricing-table td {
-                padding: 12px 15px;
+                padding: 10px 12px;
                 font-size: 0.85rem;
             }
 
@@ -455,21 +465,25 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
             }
 
             .info-header {
-                font-size: 1rem;
-                padding: 12px 20px;
+                font-size: 0.95rem;
+                padding: 12px 16px;
             }
 
             .info-content {
-                padding: 0 20px;
+                padding: 0 16px;
             }
 
             .info-content-inner {
-                padding: 20px 0;
+                padding: 16px 0;
             }
 
             .btn-register {
-                padding: 14px 35px;
-                font-size: 0.9rem;
+                width: 100%;
+                padding: 15px 20px;
+                font-size: 1rem;
+                border-radius: 10px;
+                display: block;
+                box-sizing: border-box;
             }
         }
 
@@ -763,6 +777,7 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
             background-repeat: no-repeat;
             background-position: right 15px center;
             background-size: 12px;
+            padding-right: 38px;
         }
 
         .checkbox-group {
@@ -788,11 +803,37 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
         @media (max-width: 768px) {
             .form-row {
                 flex-direction: column;
-                gap: 15px;
+                gap: 16px;
+                margin-bottom: 16px;
             }
 
             .registration-form-section {
-                padding: 25px;
+                padding: 24px 18px;
+                margin-bottom: 40px;
+                border-radius: 12px;
+            }
+
+            .form-control {
+                font-size: 16px; /* Prevents auto-zoom on iOS */
+                min-height: 48px;
+                padding: 12px 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .registration-form-section {
+                padding: 18px 14px;
+                margin-bottom: 30px;
+                border-radius: 10px;
+            }
+
+            .title-section {
+                margin-top: 85px;
+                margin-bottom: 20px;
+            }
+
+            #pageTitle {
+                font-size: 1.6rem;
             }
         }
 
@@ -852,14 +893,17 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
         @media (max-width: 768px) {
             .sticky-sidebar-buttons {
                 top: auto;
-                bottom: 20px;
-                right: 20px;
+                bottom: 15px;
+                right: 15px;
+                z-index: 1000;
             }
 
             .sidebar-btn {
-                border-radius: 8px;
-                min-width: 120px;
+                border-radius: 25px;
+                min-width: auto;
+                padding: 10px 18px;
                 font-size: 0.85rem;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
             }
         }
 
@@ -1311,6 +1355,126 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
         .payment-error-box.active {
             display: flex;
         }
+
+        /* ================= MOBILE STYLES FOR INVOICE & REVIEW ================= */
+        @media (max-width: 768px) {
+            .invoice-card {
+                border-radius: 10px;
+                margin-bottom: 24px;
+            }
+
+            .invoice-header {
+                padding: 16px 18px;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .invoice-header h4 {
+                font-size: 1.1rem;
+            }
+
+            .invoice-body {
+                padding: 20px 16px;
+            }
+
+            .receipt-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+                margin-bottom: 24px;
+            }
+
+            .receipt-item[style*="grid-column"] {
+                grid-column: span 1 !important;
+            }
+
+            .receipt-value {
+                word-break: break-word;
+            }
+
+            .invoice-table th,
+            .invoice-table td {
+                padding: 10px 10px;
+                font-size: 0.88rem;
+            }
+
+            .invoice-table tr.total-row td {
+                font-size: 1rem;
+                padding-top: 14px;
+            }
+
+            .btn-container {
+                flex-direction: column;
+                gap: 12px;
+                margin-top: 25px;
+            }
+
+            .btn-container .btn-register,
+            .btn-container .btn-back {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+                padding: 16px 20px;
+                font-size: 1rem;
+                min-height: 50px;
+                border-radius: 10px;
+                box-sizing: border-box;
+            }
+
+            .btn-register:active,
+            .btn-back:active {
+                transform: scale(0.98);
+            }
+
+            .success-celebration {
+                padding: 30px 10px;
+            }
+
+            .success-celebration h3 {
+                font-size: 1.45rem;
+            }
+
+            .receipt-summary-box {
+                padding: 18px 14px;
+                margin-bottom: 30px;
+            }
+
+            .receipt-row {
+                flex-direction: column;
+                gap: 4px;
+                padding: 8px 0;
+            }
+
+            .receipt-row span:last-child {
+                word-break: break-word;
+            }
+
+            .success-celebration .btn-register {
+                width: 100%;
+                box-sizing: border-box;
+                display: block;
+                padding: 15px 20px;
+                border-radius: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .invoice-header {
+                padding: 14px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .invoice-body {
+                padding: 16px 12px;
+            }
+
+            .invoice-table th,
+            .invoice-table td {
+                padding: 8px 6px;
+                font-size: 0.84rem;
+            }
+        }
     </style>
 
 </head>
@@ -1736,7 +1900,7 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
                         <h4>REGISTRATION SUMMARY</h4>
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <div id="invoiceReference" style="font-weight: 600; font-size: 0.9rem; opacity: 0.9;">Ref: <?= htmlspecialchars($reg_id) ?></div>
-                            <button type="button" onclick="copyRegId('<?= htmlspecialchars($reg_id, ENT_QUOTES) ?>')" style="background: none; border: none; cursor: pointer; color: white; opacity: 0.8; padding: 0; display: flex; align-items: center; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'" title="Copy Registration ID">
+                            <button type="button" onclick="copyRegId('<?= htmlspecialchars($reg_id, ENT_QUOTES) ?>')" style="background: none; border: none; cursor: pointer; color: white; opacity: 0.85; padding: 6px; display: inline-flex; align-items: center; justify-content: center; min-width: 32px; min-height: 32px; border-radius: 4px; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.85'" title="Copy Registration ID" aria-label="Copy Registration ID">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/></svg>
                             </button>
                         </div>
