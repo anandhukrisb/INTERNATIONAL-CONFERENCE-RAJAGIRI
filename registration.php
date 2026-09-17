@@ -333,26 +333,30 @@
         }
 
         
+        /* ================= RESPONSIVE STYLES ================= */
         @media (max-width: 768px) {
-            * {
+            img, video, canvas, svg {
                 max-width: 100%;
+                height: auto;
             }
 
             .main-container {
-                padding: 0 15px;
+                padding: 0 16px;
                 width: 100%;
-                max-width: 100vw;
+                max-width: 100%;
                 box-sizing: border-box;
             }
 
             .title-section {
-                margin-top: 120px;
+                margin-top: 100px;
+                margin-bottom: 30px;
                 text-align: center;
                 width: 100%;
             }
 
             #pageTitle {
-                font-size: 2rem;
+                font-size: 1.85rem;
+                line-height: 1.25;
             }
 
             #pageTitle::after {
@@ -360,14 +364,16 @@
             }
 
             .intro-text {
-                font-size: 1rem;
+                font-size: 0.95rem;
+                line-height: 1.6;
                 text-align: left;
                 width: 100%;
                 max-width: 100%;
             }
 
             .section-header {
-                font-size: 1.5rem;
+                font-size: 1.4rem;
+                line-height: 1.3;
             }
 
             .inclusions-grid {
@@ -377,7 +383,7 @@
             }
 
             .inclusion-card {
-                padding: 25px;
+                padding: 22px 18px;
                 width: 100%;
                 box-sizing: border-box;
             }
@@ -386,18 +392,23 @@
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
                 width: 100%;
-                margin-left: -15px;
-                margin-right: -15px;
-                padding: 0 15px;
+                margin-left: -16px;
+                margin-right: -16px;
+                padding: 0 16px;
+            }
+
+            .pricing-cards-container {
+                grid-template-columns: 1fr;
+                gap: 16px;
             }
 
             .pricing-table {
-                min-width: 600px;
+                min-width: 550px;
             }
 
             .pricing-table th,
             .pricing-table td {
-                padding: 12px 15px;
+                padding: 10px 12px;
                 font-size: 0.85rem;
             }
 
@@ -421,21 +432,25 @@
             }
 
             .info-header {
-                font-size: 1rem;
-                padding: 12px 20px;
+                font-size: 0.95rem;
+                padding: 12px 16px;
             }
 
             .info-content {
-                padding: 0 20px;
+                padding: 0 16px;
             }
 
             .info-content-inner {
-                padding: 20px 0;
+                padding: 16px 0;
             }
 
             .btn-register {
-                padding: 14px 35px;
-                font-size: 0.9rem;
+                width: 100%;
+                padding: 15px 20px;
+                font-size: 1rem;
+                border-radius: 10px;
+                display: block;
+                box-sizing: border-box;
             }
         }
 
@@ -739,36 +754,66 @@
             background-repeat: no-repeat;
             background-position: right 15px center;
             background-size: 12px;
+            padding-right: 38px;
         }
 
         .checkbox-group {
             display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
+            align-items: flex-start;
+            gap: 12px;
+            margin-top: 12px;
         }
 
         .checkbox-group input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             cursor: pointer;
             accent-color: var(--primary-purple);
+            flex-shrink: 0;
+            margin-top: 2px;
         }
 
         .checkbox-label {
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             color: var(--text-dark);
             cursor: pointer;
+            line-height: 1.45;
         }
 
         @media (max-width: 768px) {
             .form-row {
                 flex-direction: column;
-                gap: 15px;
+                gap: 16px;
+                margin-bottom: 16px;
             }
 
             .registration-form-section {
-                padding: 25px;
+                padding: 24px 18px;
+                margin-bottom: 40px;
+                border-radius: 12px;
+            }
+
+            .form-control {
+                font-size: 16px; /* Prevents auto-zoom on iOS */
+                min-height: 48px;
+                padding: 12px 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .registration-form-section {
+                padding: 18px 14px;
+                margin-bottom: 30px;
+                border-radius: 10px;
+            }
+
+            .title-section {
+                margin-top: 85px;
+                margin-bottom: 20px;
+            }
+
+            #pageTitle {
+                font-size: 1.6rem;
             }
         }
 
@@ -828,14 +873,17 @@
         @media (max-width: 768px) {
             .sticky-sidebar-buttons {
                 top: auto;
-                bottom: 20px;
-                right: 20px;
+                bottom: 15px;
+                right: 15px;
+                z-index: 1000;
             }
 
             .sidebar-btn {
-                border-radius: 8px;
-                min-width: 120px;
+                border-radius: 25px;
+                min-width: auto;
+                padding: 10px 18px;
                 font-size: 0.85rem;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
             }
         }
 
@@ -878,6 +926,12 @@
             transform: translateY(-2px);
         }
 
+        .btn-verify:active,
+        .btn-check-details-inline:active,
+        .btn-register:active {
+            transform: scale(0.98);
+        }
+
         .btn-verify:disabled {
             background-color: #CBD5E0;
             color: #718096;
@@ -917,6 +971,39 @@
             color: #FFFFFF;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 600px) {
+            .verification-box {
+                padding: 18px 14px;
+            }
+
+            .verification-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            .verification-row .form-group {
+                width: 100%;
+            }
+
+            .verification-row .btn-verify {
+                width: 100% !important;
+                min-width: 100% !important;
+            }
+
+            .verification-buttons-group {
+                width: 100%;
+            }
+
+            .verification-buttons-group .btn-verify,
+            .btn-check-details-inline {
+                width: 100% !important;
+                min-width: 100% !important;
+                text-align: center;
+                justify-content: center;
+            }
         }
 
         .verification-status {
