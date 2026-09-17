@@ -39,7 +39,7 @@ if (empty($_SESSION['vortex_admin_id'])) {
         </div>
         <ul class="sidebar-menu">
             <li>
-                <a href="<?= $adminBase ?>dashboard.php" class="<?= $activeNav === 'dashboard' ? 'active' : '' ?>">
+                <a href="<?= $adminBase ?>dashboard.php#overview" class="<?= ($activeNav === 'dashboard' || $activeNav === 'overview') ? 'active' : '' ?>">
                     <span>📊 Dashboard Overview</span>
                 </a>
             </li>

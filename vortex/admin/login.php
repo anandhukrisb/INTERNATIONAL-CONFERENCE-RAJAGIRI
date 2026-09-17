@@ -90,7 +90,7 @@ $loggedOut = isset($_GET['logged_out']);
         .login-logo h1 {
             font-size: 1.8rem;
             font-weight: 800;
-            color: #1d4ed8;
+            color: #0A1938;
             letter-spacing: -0.5px;
         }
 
@@ -125,15 +125,15 @@ $loggedOut = isset($_GET['logged_out']);
 
         .form-group input:focus {
             outline: none;
-            border-color: #1d4ed8;
+            border-color: #3165EC;
             background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(29,78,216,0.12);
+            box-shadow: 0 0 0 3px rgba(49,101,236,0.12);
         }
 
         .btn-login {
             width: 100%;
             padding: 11px;
-            background-color: #1d4ed8;
+            background-color: #3165EC;
             color: #ffffff;
             font-size: 0.95rem;
             font-weight: 700;
@@ -145,7 +145,7 @@ $loggedOut = isset($_GET['logged_out']);
         }
 
         .btn-login:hover {
-            background-color: #1e40af;
+            background-color: #133989;
         }
 
         .alert-error {
@@ -181,7 +181,7 @@ $loggedOut = isset($_GET['logged_out']);
 <body>
     <div class="login-box">
         <div class="login-logo">
-            <h1>⚡ Vortex</h1>
+            <h1>Vortex</h1>
             <p>Unified Payment Gateway — Administration</p>
         </div>
 

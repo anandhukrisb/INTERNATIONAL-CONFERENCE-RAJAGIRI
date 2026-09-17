@@ -5,17 +5,17 @@
 
 :root {
     /* === Main project brand colours === */
-    --primary:          #1d0a3f;   /* deep purple */
-    --primary-hover:    #3d2066;   /* secondary purple */
-    --primary-light:    #f3eeff;   /* light purple tint */
-    --accent:           #C9A227;   /* brand gold */
-    --accent-hover:     #b8861a;   /* darker gold */
-    --accent-light:     #fef9ec;   /* light gold tint */
+    --primary:          #0A1938;   /* dark navy blue */
+    --primary-hover:    #133989;   /* medium blue */
+    --primary-light:    #eef2ff;   /* light blue tint */
+    --accent:           #3165EC;   /* primary bright blue */
+    --accent-hover:     #1d4ed8;   /* hover bright blue */
+    --accent-light:     #eff6ff;   /* light blue tint */
 
     /* === Sidebar === */
-    --sidebar-bg:       #1d0a3f;
-    --sidebar-hover:    #3d2066;
-    --sidebar-active:   #C9A227;
+    --sidebar-bg:       #0A1938;
+    --sidebar-hover:    #133989;
+    --sidebar-active:   #3165EC;
     --sidebar-text:     #c4b5d8;
     --sidebar-text-active: #ffffff;
 
@@ -127,7 +127,7 @@ body {
 }
 
 .sidebar-menu li a.active {
-    background-color: rgba(201, 162, 39, 0.15);
+    background-color: rgba(49, 101, 236, 0.15);
     color: var(--accent);
     border-left-color: var(--accent);
 }
@@ -198,7 +198,7 @@ body {
     outline: none;
     border-color: var(--accent);
     background-color: #ffffff;
-    box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.18);
+    box-shadow: none;
 }
 
 .search-icon {
@@ -421,14 +421,15 @@ table.admin-table tbody tr:hover {
 
 .btn-primary {
     background-color: var(--accent);
-    color: var(--primary);
-    border-color: var(--accent);
+    color: #ffffff;
+    border: 1px solid #1d4ed8;
+    box-shadow: none;
 }
 
 .btn-primary:hover {
     background-color: var(--accent-hover);
-    color: var(--primary);
-    border-color: var(--accent-hover);
+    color: #ffffff;
+    border-color: #1e40af;
 }
 
 .btn-secondary {
@@ -538,26 +539,25 @@ table.admin-table tbody tr:hover {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 14px 24px;
+    padding: 12px 22px;
     background-color: var(--accent);
-    color: var(--primary);
+    color: #ffffff;
     font-family: var(--font-sans);
-    font-size: 0.95rem;
-    font-weight: 800;
-    border: none;
+    font-size: 0.92rem;
+    font-weight: 700;
+    border: 1px solid #1d4ed8;
     border-radius: 50px;
-    box-shadow: 0 6px 20px rgba(201, 162, 39, 0.45);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     cursor: pointer;
     text-decoration: none;
     letter-spacing: 0.02em;
-    transition: background-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+    transition: background-color 0.15s ease;
     user-select: none;
 }
 
 .fab-create-event:hover {
     background-color: var(--accent-hover);
-    transform: translateY(-3px);
-    box-shadow: 0 10px 28px rgba(201, 162, 39, 0.5);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
 }
 
 .fab-create-event:active {
@@ -656,7 +656,7 @@ table.admin-table tbody tr:hover {
 
 .modal-body .form-control:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.18);
+    box-shadow: none;
 }
 
 .btn-cancel {
@@ -683,7 +683,7 @@ table.admin-table tbody tr:hover {
     gap: 6px;
     padding: 9px 22px;
     background-color: var(--accent);
-    color: var(--primary);
+    color: #ffffff;
     font-size: 0.9rem;
     font-weight: 800;
     border: none;
