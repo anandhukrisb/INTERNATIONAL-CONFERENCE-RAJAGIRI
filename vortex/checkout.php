@@ -94,19 +94,15 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
             gap: 1.5rem;
         }
 
-        .credit-card {
+        .checkout-card {
             width: 100%;
-            max-width: 420px;
-            height: 250px;
+            max-width: 480px;
             background-color: var(--card-navy);
-            border-radius: 20px;
+            border-radius: 24px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 15px 35px rgba(14, 23, 62, 0.12);
-            padding: 1.75rem 2rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            box-shadow: 0 20px 40px rgba(14, 23, 62, 0.2);
+            padding: 2.25rem 2rem;
             color: white;
             z-index: 10;
         }
@@ -115,7 +111,7 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
             position: absolute;
             top: -10%;
             right: -10%;
-            width: 60%;
+            width: 65%;
             height: 120%;
             background: linear-gradient(135deg, #1e3ccb, var(--card-blue));
             border-top-left-radius: 120px 250px;
@@ -126,16 +122,15 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
         .card-content {
             position: relative;
             z-index: 2;
-            height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            gap: 1.75rem;
         }
 
         .card-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
         }
 
         .card-brand {
@@ -145,55 +140,50 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
         }
 
         .brand-logo {
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             background: white;
-            border-radius: 6px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--card-navy);
             font-weight: 800;
-            font-size: 0.8rem;
+            font-size: 1rem;
             transform: rotate(-10deg);
-            margin-right: 0.25rem;
         }
 
         .brand-name {
-            font-size: 1.05rem;
-            font-weight: 600;
+            font-size: 1.1rem;
+            font-weight: 700;
             letter-spacing: 0.02em;
         }
 
-        .card-type-icon {
+        .timer-badge {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            border-radius: 12px;
+            padding: 0.4rem 0.75rem;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: #fca5a5;
+            font-weight: 600;
             display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .timer-badge.safe {
+            color: #86efac;
         }
 
-        .circle-1, .circle-2 {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-        }
-
-        .circle-1 {
-            background-color: rgba(255, 255, 255, 0.9);
-            position: relative;
-            z-index: 2;
-        }
-
-        .circle-2 {
-            background-color: rgba(255, 255, 255, 0.4);
-            margin-left: -14px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .card-body {
-            margin-top: 1rem;
+        .balance-section {
+            margin-top: 0.5rem;
         }
 
         .balance-label {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: rgba(255, 255, 255, 0.7);
@@ -201,121 +191,108 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
         }
 
         .balance-amount {
-            font-size: 2.25rem;
+            font-size: 2.75rem;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.5rem;
             letter-spacing: -0.02em;
         }
 
-        .eye-icon {
-            font-size: 1.2rem;
-            opacity: 0.8;
-            cursor: pointer;
-            background: rgba(255,255,255,0.15);
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .currency-label {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 1rem;
         }
 
-        .card-footer {
-            font-family: var(--font-mono);
-            font-size: 1.15rem;
-            letter-spacing: 0.1em;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 0.25rem;
-        }
-
-        .checkout-panel {
-            background: white;
-            border-radius: 20px;
-            padding: 2.25rem 2rem;
-            width: 100%;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-            position: relative;
-        }
-
-        .timer-badge {
-            position: absolute;
-            top: -15px;
-            right: 24px;
-            background: #fff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-            border-radius: 20px;
-            padding: 0.45rem 0.85rem;
-            font-family: var(--font-mono);
-            font-size: 0.85rem;
-            color: var(--accent-rose);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            border: 1px solid #f1f5f9;
-        }
-        
-        .timer-badge.safe {
-            color: var(--accent-emerald);
+        .details-container {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 16px;
+            padding: 1.25rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .detail-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.85rem 0;
-            border-bottom: 1px solid #f1f5f9;
-            font-size: 0.92rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.95rem;
         }
 
         .detail-row:last-of-type {
             border-bottom: none;
-            margin-bottom: 1.5rem;
+            padding-bottom: 0;
+        }
+
+        .detail-row:first-of-type {
+            padding-top: 0;
         }
 
         .detail-label {
-            color: var(--text-muted);
+            color: rgba(255, 255, 255, 0.6);
         }
 
         .detail-value {
             font-weight: 600;
-            color: var(--text-dark);
+            color: white;
+            text-align: right;
         }
 
         .btn-pay {
             width: 100%;
-            background: var(--card-blue);
-            color: #fff;
+            background: white;
+            color: var(--card-navy);
             border: none;
             border-radius: 14px;
-            padding: 1rem 1.5rem;
+            padding: 1.1rem 1.5rem;
             font-family: var(--font-main);
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 1.15rem;
+            font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
             transition: all 0.25s ease;
-            box-shadow: 0 8px 20px rgba(44, 84, 245, 0.25);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            margin-top: 0.5rem;
         }
 
         .btn-pay:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 25px rgba(44, 84, 245, 0.35);
-            background: #1f42d6;
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+            background: #f8fafc;
         }
 
         .btn-pay:disabled {
-            opacity: 0.6;
+            opacity: 0.7;
             cursor: not-allowed;
             transform: none;
+        }
+
+        .btn-back {
+            align-self: flex-start;
+            background: transparent;
+            color: var(--text-dark);
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 0.5rem 1rem;
+            font-family: var(--font-main);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+            margin-bottom: 0.5rem;
+            text-decoration: none;
+        }
+        .btn-back:hover {
+            background: #f1f5f9;
         }
 
         .error-card, .success-card {
@@ -453,64 +430,55 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
     <?php else: ?>
         <!-- Valid Active Checkout Session -->
         
-        <!-- The Credit Card -->
-        <div class="credit-card">
+        <a href="javascript:history.back()" class="btn-back">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Back
+        </a>
+
+        <!-- The Single Checkout Card -->
+        <div class="checkout-card">
             <div class="card-bg-shape"></div>
             
             <div class="card-content">
                 <div class="card-header">
                     <div class="card-brand">
                         <div class="brand-logo">⚡</div>
-                        <div class="brand-name">Vortex Card</div>
+                        <div class="brand-name">VORTEX PAYMENT</div>
                     </div>
-                    <div class="card-type-icon">
-                        <div class="circle-1"></div>
-                        <div class="circle-2"></div>
+                    <div class="timer-badge safe" id="timer-display">
+                        ⏱ 5:00
                     </div>
                 </div>
 
-                <div class="card-body">
+                <div class="balance-section">
+                    <div class="balance-label">Total Amount Due</div>
                     <div class="balance-amount">
                         <?= $sessionData['currency'] === 'INR' ? '₹' : '$' ?><?= number_format((float)$sessionData['amount'], 2) ?>
-                        <span class="eye-icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                        </span>
+                        <span class="currency-label"><?= htmlspecialchars($sessionData['currency']) ?></span>
                     </div>
                 </div>
 
-                <div class="card-footer">
-                    <span>****</span>
-                    <span><?= htmlspecialchars(substr($sessionData['customer_mobile'], -4) ?: rand(1000, 9999)) ?></span>
+                <div class="details-container">
+                    <div class="detail-row">
+                        <span class="detail-label">Event</span>
+                        <span class="detail-value"><?= htmlspecialchars($sessionData['event_name'] ?: $sessionData['event_id']) ?></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Email</span>
+                        <span class="detail-value"><?= htmlspecialchars($sessionData['customer_email']) ?></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Mobile</span>
+                        <span class="detail-value"><?= htmlspecialchars($sessionData['customer_mobile']) ?></span>
+                    </div>
                 </div>
+
+                <button class="btn-pay" id="pay-btn" onclick="launchRazorpayCheckout()">
+                    <span>Pay <?= $sessionData['currency'] === 'INR' ? '₹' : '$' ?><?= number_format((float)$sessionData['amount'], 2) ?></span>
+                </button>
+
+                <div class="alert-box alert-error" id="checkout-alert" style="margin-top:0;"></div>
             </div>
-        </div>
-
-        <!-- Checkout Details Panel -->
-        <div class="checkout-panel">
-            <div class="timer-badge" id="timer-display">
-                ⏱ 5:00
-            </div>
-
-            <div class="detail-row">
-                <span class="detail-label">Event</span>
-                <span class="detail-value"><?= htmlspecialchars($sessionData['event_name'] ?: $sessionData['event_id']) ?></span>
-            </div>
-
-            <div class="detail-row">
-                <span class="detail-label">Email</span>
-                <span class="detail-value"><?= htmlspecialchars($sessionData['customer_email']) ?></span>
-            </div>
-
-            <div class="detail-row">
-                <span class="detail-label">Mobile</span>
-                <span class="detail-value"><?= htmlspecialchars($sessionData['customer_mobile']) ?></span>
-            </div>
-
-            <button class="btn-pay" id="pay-btn" onclick="launchRazorpayCheckout()">
-                <span>Pay <?= $sessionData['currency'] === 'INR' ? '₹' : '$' ?><?= number_format((float)$sessionData['amount'], 2) ?></span>
-            </button>
-
-            <div class="alert-box alert-error" id="checkout-alert"></div>
         </div>
 
         <div class="footer-secure">
