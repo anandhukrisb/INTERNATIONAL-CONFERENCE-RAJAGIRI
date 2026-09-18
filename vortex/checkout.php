@@ -51,12 +51,12 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
     <style>
         :root {
             --bg-page: #eef2f9;
-            --card-navy: #0e1643;
-            --card-blue: #2c54f5;
+            --card-navy: #0A1938;
+            --card-blue: #3165EC;
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
             --text-dark: #1e293b;
-            --accent-purple: #6366f1;
+            --accent-purple: #133989;
             --accent-cyan: #06b6d4;
             --accent-emerald: #10b981;
             --accent-rose: #f43f5e;
@@ -105,6 +105,18 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
             padding: 2.25rem 2rem;
             color: white;
             z-index: 10;
+            animation: cardSpringIn 1.2s cubic-bezier(0.25, 1.3, 0.5, 1) forwards;
+        }
+
+        @keyframes cardSpringIn {
+            0% {
+                transform: translateY(-80px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         .card-bg-shape {
@@ -114,9 +126,36 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
             width: 100%;
             height: 100%;
             z-index: 1;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 800' preserveAspectRatio='none'%3E%3Cpath d='M500,0 L0,0 L0,300 C150,550 350,150 500,400 Z' fill='%230f1e8a' opacity='0.8'/%3E%3Cpath d='M500,0 L0,0 L0,200 C200,400 300,50 500,250 Z' fill='%231e3ccb' opacity='0.9'/%3E%3Cpath d='M500,0 L0,0 L0,120 C250,280 250,0 500,150 Z' fill='%232c54f5' opacity='0.9'/%3E%3C/svg%3E");
             background-size: cover;
             background-position: center;
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+
+        .shape-1 {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 800' preserveAspectRatio='none'%3E%3Cpath d='M500,0 L0,0 L0,300 C150,550 350,150 500,400 Z' fill='%230A1938' opacity='0.8'/%3E%3C/svg%3E");
+            animation: slideDownShape 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards;
+        }
+
+        .shape-2 {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 800' preserveAspectRatio='none'%3E%3Cpath d='M500,0 L0,0 L0,200 C200,400 300,50 500,250 Z' fill='%23133989' opacity='0.9'/%3E%3C/svg%3E");
+            animation: slideDownShape 1.3s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards;
+        }
+
+        .shape-3 {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 800' preserveAspectRatio='none'%3E%3Cpath d='M500,0 L0,0 L0,120 C250,280 250,0 500,150 Z' fill='%233165EC' opacity='0.9'/%3E%3C/svg%3E");
+            animation: slideDownShape 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.7s forwards;
+        }
+
+        @keyframes slideDownShape {
+            0% {
+                transform: translateY(-100%) scaleY(1.2);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0) scaleY(1);
+                opacity: 1;
+            }
         }
 
         .card-content {
@@ -259,6 +298,26 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
             transition: all 0.25s ease;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
             margin-top: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-pay::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 80%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(49, 101, 236, 0.5), transparent);
+            transform: skewX(-25deg);
+            animation: shinySweep 2s ease-in-out 1s forwards;
+            pointer-events: none;
+        }
+
+        @keyframes shinySweep {
+            0% { left: -150%; }
+            100% { left: 200%; }
         }
 
         .btn-pay:hover {
@@ -437,7 +496,9 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
 
         <!-- The Single Checkout Card -->
         <div class="checkout-card">
-            <div class="card-bg-shape"></div>
+            <div class="card-bg-shape shape-1"></div>
+            <div class="card-bg-shape shape-2"></div>
+            <div class="card-bg-shape shape-3"></div>
             
             <div class="card-content">
                 <div class="card-header">
