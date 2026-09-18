@@ -14,7 +14,10 @@ $reg_id = $_GET['reg_id'];
 try {
     require_once __DIR__ . '/../backend/db.php';
     
+<<<<<<< HEAD
     
+=======
+>>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
     $stmtUser = $pdo->prepare("SELECT * FROM user_registrations WHERE registration_id = :reg_id");
     $stmtUser->execute([':reg_id' => $reg_id]);
     $user = $stmtUser->fetch(PDO::FETCH_ASSOC);
@@ -23,6 +26,7 @@ try {
         die("User not found.");
     }
 
+<<<<<<< HEAD
     
     $query = "
         SELECT 
@@ -80,6 +84,8 @@ try {
         return strtotime($b['event_date']) - strtotime($a['event_date']);
     });
 
+=======
+>>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
 } catch (PDOException $e) {
     $error = "Database error: " . $e->getMessage();
 }
@@ -89,10 +95,15 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <title>User History - <?php echo htmlspecialchars($reg_id); ?></title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
 
     <script src="../footer.js" defer></script>
+=======
+    <title>User Payment Info - <?php echo htmlspecialchars($reg_id); ?></title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+>>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
     <style>
         :root {
             --primary-purple: #1d0a3f;
@@ -109,6 +120,7 @@ try {
         }
         .container {
             padding: 40px;
+<<<<<<< HEAD
             max-width: 1200px;
             margin: 20px auto 40px auto;
             min-height: calc(100vh - 440px);
@@ -127,6 +139,10 @@ try {
             margin-bottom: 20px;
             border-bottom: 2px solid #e2e8f0;
             padding-bottom: 10px;
+=======
+            max-width: 800px;
+            margin: 20px auto 40px auto;
+>>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
         }
         .card {
             background: var(--white);
@@ -134,6 +150,7 @@ try {
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
             border-top: 4px solid var(--accent-gold);
             padding: 30px;
+<<<<<<< HEAD
             margin-bottom: 30px;
         }
         .summary-grid {
@@ -141,6 +158,14 @@ try {
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             margin-bottom: 20px;
+=======
+        }
+        h1, h2 { font-family: 'Outfit', sans-serif; color: var(--primary-purple); }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+>>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
         }
         .summary-item {
             background: #f8fafc;
@@ -148,6 +173,7 @@ try {
             border-radius: 8px;
             border: 1px solid #e2e8f0;
         }
+<<<<<<< HEAD
         .summary-label {
             font-size: 0.8rem;
             color: #64748b;
@@ -209,6 +235,10 @@ try {
         .badge-pending { background-color: #ffedd5; color: #9a3412; }
         .badge-failed { background-color: #fee2e2; color: #991b1b; }
         
+=======
+        .summary-label { font-size: 0.85rem; color: #64748b; text-transform: uppercase; font-weight: 600; margin-bottom: 5px; }
+        .summary-value { font-size: 1.1rem; font-weight: 500; color: var(--primary-purple); word-break: break-all; }
+>>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
         .btn-back {
             display: inline-flex;
             align-items: center;
@@ -219,6 +249,7 @@ try {
             border-radius: 6px;
             font-weight: 600;
             margin-bottom: 20px;
+<<<<<<< HEAD
             transition: background-color 0.2s;
         }
         .btn-back:hover {
@@ -272,6 +303,32 @@ try {
                     <div class="summary-item">
                         <div class="summary-label">Name</div>
                         <div class="summary-value"><?php echo htmlspecialchars(trim($user['first_name'] . ' ' . (!empty($user['middle_name']) ? $user['middle_name'] . ' ' : '') . $user['last_name'])); ?></div>
+=======
+        }
+        .notice {
+            background: #e0f2fe;
+            border-left: 4px solid #0284c7;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 4px;
+            color: #0369a1;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="dashboard.php" class="btn-back">← Back to Dashboard</a>
+        <div class="card">
+            <h1>User Payment Info</h1>
+            <?php if (isset($error)): ?>
+                <div style="color: red;"><?php echo htmlspecialchars($error); ?></div>
+            <?php else: ?>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="summary-label">Name</div>
+                        <div class="summary-value"><?php echo htmlspecialchars(trim($user['first_name'] . ' ' . $user['last_name'])); ?></div>
+>>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
                     </div>
                     <div class="summary-item">
                         <div class="summary-label">Registration ID</div>
@@ -279,6 +336,7 @@ try {
                     </div>
                     <div class="summary-item">
                         <div class="summary-label">Current Status</div>
+<<<<<<< HEAD
                         <div class="summary-value">
                             <?php 
                                 $statusClass = 'badge-pending';
@@ -357,5 +415,21 @@ try {
     </div>
     
     <main-footer base-path="../"></main-footer>
+=======
+                        <div class="summary-value"><?php echo htmlspecialchars($user['payment_status']); ?></div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Vortex Transaction ID</div>
+                        <div class="summary-value"><?php echo htmlspecialchars($user['transaction_id'] ?: 'N/A'); ?></div>
+                    </div>
+                </div>
+
+                <div class="notice">
+                    <strong>Note:</strong> Detailed transaction logs and attempts are securely managed by the Vortex Payment Gateway. To view the full history or process refunds for this transaction, please log into the <a href="../vortex/admin/dashboard.php" style="color: #0284c7; font-weight: bold;">Vortex Admin Dashboard</a>.
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+>>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
 </body>
 </html>
