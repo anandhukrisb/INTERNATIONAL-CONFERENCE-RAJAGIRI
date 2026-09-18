@@ -274,6 +274,14 @@ if (!in_array($initialTab, ['overview', 'clients', 'events'])) {
      TAB 1: OVERVIEW (Metrics & Transactions Details ONLY)
      ============================================================ -->
 <div id="tab-overview" class="tab-content-panel" style="<?= $initialTab === 'overview' ? '' : 'display:none;' ?>">
+    
+    <div class="section-title">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-blue);"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        Dashboard Overview
+    </div>
+
+    <div class="section-label">Quick Access Metrics</div>
+
     <!-- Key Performance Metrics Grid -->
     <div class="metrics-grid">
         <div class="metric-card">
@@ -298,9 +306,11 @@ if (!in_array($initialTab, ['overview', 'clients', 'events'])) {
         </div>
     </div>
 
+    <div class="section-label">Recent Transactions</div>
+
     <!-- Recent Transactions Table -->
     <div id="transactions" class="section-card">
-        <div class="section-header">
+        <div class="section-header" style="display:none;">
             <h2>💳 Recent Transactions Overview</h2>
             <a href="payments/payment_details.php" class="btn btn-secondary btn-sm">Search / View All Details</a>
         </div>
@@ -363,8 +373,15 @@ if (!in_array($initialTab, ['overview', 'clients', 'events'])) {
      TAB 2: API CLIENTS (MERCHANTS)
      ============================================================ -->
 <div id="tab-clients" class="tab-content-panel" style="<?= $initialTab === 'clients' ? '' : 'display:none;' ?>">
+    <div class="section-title">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-blue);"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        API Clients
+    </div>
+    
+    <div class="section-label">All Connected Clients</div>
+    
     <div id="clients" class="section-card">
-        <div class="section-header">
+        <div class="section-header" style="display:none;">
             <h2>🔌 API Clients (Merchants)</h2>
         </div>
         <div class="section-body">
@@ -522,8 +539,15 @@ document.addEventListener('keydown', function(e) {
      TAB 3: EVENTS & DEPARTMENTS MANAGEMENT
      ============================================================ -->
 <div id="tab-events" class="tab-content-panel" style="<?= $initialTab === 'events' ? '' : 'display:none;' ?>">
+    <div class="section-title">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-blue);"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        Events Management
+    </div>
+    
+    <div class="section-label">All Configured Events</div>
+    
     <div id="events" class="section-card">
-        <div class="section-header">
+        <div class="section-header" style="display:none;">
             <h2>🎟️ Event Management</h2>
         </div>
         <div class="section-body">
@@ -664,6 +688,7 @@ document.addEventListener('keydown', function(e) {
 <script>
 (function () {
     const fab     = document.getElementById('fabCreateEvent');
+    const sidebarBtn = document.getElementById('sidebarCreateEventBtn');
     const modal   = document.getElementById('createEventModal');
     const closeBtn = document.getElementById('closeEventModal');
     const cancelBtn = document.getElementById('cancelEventModal');
@@ -671,7 +696,8 @@ document.addEventListener('keydown', function(e) {
     function openModal()  { modal.classList.add('open');    document.body.style.overflow = 'hidden'; }
     function closeModal() { modal.classList.remove('open'); document.body.style.overflow = ''; }
 
-    fab.addEventListener('click', openModal);
+    if(fab) fab.addEventListener('click', openModal);
+    if(sidebarBtn) sidebarBtn.addEventListener('click', openModal);
     closeBtn.addEventListener('click', closeModal);
     cancelBtn.addEventListener('click', closeModal);
 
@@ -728,7 +754,7 @@ document.addEventListener('keydown', function(e) {
         }
 
         // Highlight matching sidebar navigation link
-        const sidebarLinks = document.querySelectorAll('.admin-sidebar .sidebar-menu a');
+        const sidebarLinks = document.querySelectorAll('.app-sidebar .sidebar-menu a');
         sidebarLinks.forEach(link => {
             const href = link.getAttribute('href') || '';
             link.classList.remove('active');
