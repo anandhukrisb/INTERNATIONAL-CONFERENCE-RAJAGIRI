@@ -1,4 +1,7 @@
 <?php
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
 
 /**
  * ------------------------------------------------------------
@@ -47,12 +50,12 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0b0f19;
-            --bg-card: rgba(23, 30, 48, 0.85);
-            --border-color: rgba(255, 255, 255, 0.1);
-            --border-accent: rgba(99, 102, 241, 0.4);
+            --bg-page: #eef2f9;
+            --card-navy: #0e1643;
+            --card-blue: #2c54f5;
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
+            --text-dark: #1e293b;
             --accent-purple: #6366f1;
             --accent-cyan: #06b6d4;
             --accent-emerald: #10b981;
@@ -68,11 +71,11 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
         }
 
         body {
-            background-color: var(--bg-primary);
+            background-color: var(--bg-page);
             background-image: 
-                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.18) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.15) 0px, transparent 50%);
-            color: var(--text-main);
+                radial-gradient(circle at 10% 20%, rgba(200, 220, 255, 0.6) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(220, 230, 255, 0.6) 0%, transparent 50%);
+            color: var(--text-dark);
             font-family: var(--font-main);
             min-height: 100vh;
             display: flex;
@@ -82,103 +85,192 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
             padding: 1.5rem;
         }
 
-        .checkout-container {
+        .checkout-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             width: 100%;
             max-width: 480px;
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
+            gap: 1.5rem;
+        }
+
+        .credit-card {
+            width: 100%;
+            max-width: 420px;
+            height: 250px;
+            background-color: var(--card-navy);
             border-radius: 20px;
-            padding: 2.25rem;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
             position: relative;
             overflow: hidden;
-        }
-
-        .checkout-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan));
-        }
-
-        .brand-header {
+            box-shadow: 0 15px 35px rgba(14, 23, 62, 0.12);
+            padding: 1.75rem 2rem;
             display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: space-between;
-            margin-bottom: 1.75rem;
+            color: white;
+            z-index: 10;
         }
 
-        .brand {
+        .card-bg-shape {
+            position: absolute;
+            top: -10%;
+            right: -10%;
+            width: 60%;
+            height: 120%;
+            background: linear-gradient(135deg, #1e3ccb, var(--card-blue));
+            border-top-left-radius: 120px 250px;
+            border-bottom-left-radius: 80px 200px;
+            z-index: 1;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .card-brand {
             display: flex;
             align-items: center;
-            gap: 0.65rem;
+            gap: 0.5rem;
         }
 
-        .brand-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+        .brand-logo {
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-
-        .brand-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            letter-spacing: -0.01em;
-            color: #fff;
-        }
-
-        .session-timer {
-            font-family: var(--font-mono);
-            font-size: 0.75rem;
-            padding: 0.25rem 0.55rem;
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid var(--border-color);
-            color: #38bdf8;
-        }
-
-        .amount-display {
-            background: rgba(11, 15, 25, 0.6);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 1.25rem;
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .amount-label {
+            color: var(--card-navy);
+            font-weight: 800;
             font-size: 0.8rem;
-            color: var(--text-muted);
+            transform: rotate(-10deg);
+            margin-right: 0.25rem;
+        }
+
+        .brand-name {
+            font-size: 1.05rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .card-type-icon {
+            display: flex;
+        }
+
+        .circle-1, .circle-2 {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+
+        .circle-1 {
+            background-color: rgba(255, 255, 255, 0.9);
+            position: relative;
+            z-index: 2;
+        }
+
+        .circle-2 {
+            background-color: rgba(255, 255, 255, 0.4);
+            margin-left: -14px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-body {
+            margin-top: 1rem;
+        }
+
+        .balance-label {
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            color: rgba(255, 255, 255, 0.7);
             margin-bottom: 0.25rem;
         }
 
-        .amount-value {
+        .balance-amount {
             font-size: 2.25rem;
             font-weight: 700;
-            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
             letter-spacing: -0.02em;
+        }
+
+        .eye-icon {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            cursor: pointer;
+            background: rgba(255,255,255,0.15);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-footer {
+            font-family: var(--font-mono);
+            font-size: 1.15rem;
+            letter-spacing: 0.1em;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 0.25rem;
+        }
+
+        .checkout-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 2.25rem 2rem;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+            position: relative;
+        }
+
+        .timer-badge {
+            position: absolute;
+            top: -15px;
+            right: 24px;
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            border-radius: 20px;
+            padding: 0.45rem 0.85rem;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--accent-rose);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            border: 1px solid #f1f5f9;
+        }
+        
+        .timer-badge.safe {
+            color: var(--accent-emerald);
         }
 
         .detail-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            font-size: 0.88rem;
+            padding: 0.85rem 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.92rem;
         }
 
         .detail-row:last-of-type {
@@ -191,32 +283,33 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
         }
 
         .detail-value {
-            font-weight: 500;
-            color: #fff;
+            font-weight: 600;
+            color: var(--text-dark);
         }
 
         .btn-pay {
             width: 100%;
-            background: linear-gradient(135deg, var(--accent-purple), #4f46e5);
+            background: var(--card-blue);
             color: #fff;
             border: none;
-            border-radius: 12px;
-            padding: 0.95rem 1.5rem;
+            border-radius: 14px;
+            padding: 1rem 1.5rem;
             font-family: var(--font-main);
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 20px rgba(44, 84, 245, 0.25);
         }
 
         .btn-pay:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 22px rgba(99, 102, 241, 0.6);
+            box-shadow: 0 12px 25px rgba(44, 84, 245, 0.35);
+            background: #1f42d6;
         }
 
         .btn-pay:disabled {
@@ -225,87 +318,79 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
             transform: none;
         }
 
-        .error-card {
+        .error-card, .success-card {
+            background: white;
+            border-radius: 20px;
             text-align: center;
-            padding: 2rem 1rem;
+            padding: 3rem 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            width: 100%;
         }
 
-        .error-icon {
-            width: 56px;
-            height: 56px;
+        .status-icon {
+            width: 64px;
+            height: 64px;
             border-radius: 50%;
-            background: rgba(244, 63, 94, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        .status-error {
+            background: rgba(244, 63, 94, 0.1);
             color: var(--accent-rose);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.75rem;
-            margin: 0 auto 1.25rem;
-            border: 1px solid rgba(244, 63, 94, 0.3);
         }
 
-        .error-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: #fff;
-        }
-
-        .error-desc {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
-
-        .success-card {
-            text-align: center;
-            padding: 1.5rem 0.5rem;
-        }
-
-        .success-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: rgba(16, 185, 129, 0.15);
+        .status-success {
+            background: rgba(16, 185, 129, 0.1);
             color: var(--accent-emerald);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.75rem;
-            margin: 0 auto 1.25rem;
-            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+
+        .status-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
         }
 
         .alert-box {
-            padding: 0.75rem 1rem;
-            border-radius: 10px;
-            font-size: 0.82rem;
-            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            margin-top: 1.5rem;
             display: none;
         }
 
         .alert-error {
-            background: rgba(244, 63, 94, 0.12);
-            border: 1px solid rgba(244, 63, 94, 0.3);
-            color: #fca5a5;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #ef4444;
         }
 
         .alert-info {
-            background: rgba(6, 182, 212, 0.12);
-            border: 1px solid rgba(6, 182, 212, 0.3);
-            color: #67e8f9;
+            background: #f0fdfa;
+            border: 1px solid #ccfbf1;
+            color: #0d9488;
         }
 
         .alert-success {
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            color: #6ee7b7;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #16a34a;
         }
 
         .spinner {
             display: inline-block;
-            width: 14px;
-            height: 14px;
+            width: 18px;
+            height: 18px;
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
             border-top-color: #fff;
@@ -320,35 +405,26 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
 
         .footer-secure {
             text-align: center;
-            margin-top: 1.25rem;
-            font-size: 0.78rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
             color: var(--text-muted);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.4rem;
+            gap: 0.5rem;
         }
     </style>
 </head>
 <body>
 
-<div class="checkout-container">
-    <div class="brand-header">
-        <div class="brand">
-            <div class="brand-icon">⚡</div>
-            <div class="brand-title">VORTEX PAYMENT</div>
-        </div>
-        <?php if ($isValid && !$isAlreadyPaid): ?>
-            <div class="session-timer" id="timer-display">5:00</div>
-        <?php endif; ?>
-    </div>
+<div class="checkout-wrapper">
 
     <?php if (!$isValid): ?>
         <!-- Invalid or Expired Session -->
         <div class="error-card">
-            <div class="error-icon">✕</div>
-            <div class="error-title">Unable to Process Payment</div>
-            <div class="error-desc"><?= htmlspecialchars($errorMessage) ?></div>
+            <div class="status-icon status-error">✕</div>
+            <div class="status-title">Unable to Process Payment</div>
+            <div class="status-desc"><?= htmlspecialchars($errorMessage) ?></div>
         </div>
 
     <?php elseif ($isAlreadyPaid): ?>
@@ -366,47 +442,79 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
             ]);
         ?>
         <div class="success-card">
-            <div class="success-icon">✓</div>
-            <div class="error-title">Payment Already Completed</div>
-            <div class="error-desc">This transaction (<?= htmlspecialchars($sessionData['vortex_transaction_id']) ?>) has already been processed successfully.</div>
-            <div style="margin-top: 1.5rem;">
-                <a href="<?= htmlspecialchars($alreadyPaidRedirectUrl) ?>" style="color: var(--accent-cyan); text-decoration: none; font-size: 0.95rem; font-weight: 500;">Return to Merchant →</a>
+            <div class="status-icon status-success">✓</div>
+            <div class="status-title">Payment Already Completed</div>
+            <div class="status-desc">This transaction (<?= htmlspecialchars($sessionData['vortex_transaction_id']) ?>) has already been processed successfully.</div>
+            <div style="margin-top: 2rem;">
+                <a href="<?= htmlspecialchars($alreadyPaidRedirectUrl) ?>" style="color: var(--card-blue); text-decoration: none; font-size: 1rem; font-weight: 600;">Return to Merchant →</a>
             </div>
         </div>
 
     <?php else: ?>
         <!-- Valid Active Checkout Session -->
-        <div class="amount-display">
-            <div class="amount-label">Total Amount Due</div>
-            <div class="amount-value">
-                <?= $sessionData['currency'] === 'INR' ? '₹' : '$' ?><?= number_format((float)$sessionData['amount'], 2) ?>
-                <span style="font-size: 0.9rem; font-weight: 500; color: var(--text-muted);"><?= htmlspecialchars($sessionData['currency']) ?></span>
+        
+        <!-- The Credit Card -->
+        <div class="credit-card">
+            <div class="card-bg-shape"></div>
+            
+            <div class="card-content">
+                <div class="card-header">
+                    <div class="card-brand">
+                        <div class="brand-logo">⚡</div>
+                        <div class="brand-name">Vortex Card</div>
+                    </div>
+                    <div class="card-type-icon">
+                        <div class="circle-1"></div>
+                        <div class="circle-2"></div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="balance-amount">
+                        <?= $sessionData['currency'] === 'INR' ? '₹' : '$' ?><?= number_format((float)$sessionData['amount'], 2) ?>
+                        <span class="eye-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <span>****</span>
+                    <span><?= htmlspecialchars(substr($sessionData['customer_mobile'], -4) ?: rand(1000, 9999)) ?></span>
+                </div>
             </div>
         </div>
 
-        <div class="detail-row">
-            <span class="detail-label">Event</span>
-            <span class="detail-value"><?= htmlspecialchars($sessionData['event_name'] ?: $sessionData['event_id']) ?></span>
+        <!-- Checkout Details Panel -->
+        <div class="checkout-panel">
+            <div class="timer-badge" id="timer-display">
+                ⏱ 5:00
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Event</span>
+                <span class="detail-value"><?= htmlspecialchars($sessionData['event_name'] ?: $sessionData['event_id']) ?></span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Email</span>
+                <span class="detail-value"><?= htmlspecialchars($sessionData['customer_email']) ?></span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Mobile</span>
+                <span class="detail-value"><?= htmlspecialchars($sessionData['customer_mobile']) ?></span>
+            </div>
+
+            <button class="btn-pay" id="pay-btn" onclick="launchRazorpayCheckout()">
+                <span>Pay <?= $sessionData['currency'] === 'INR' ? '₹' : '$' ?><?= number_format((float)$sessionData['amount'], 2) ?></span>
+            </button>
+
+            <div class="alert-box alert-error" id="checkout-alert"></div>
         </div>
-
-        <div class="detail-row">
-            <span class="detail-label">Customer Email</span>
-            <span class="detail-value"><?= htmlspecialchars($sessionData['customer_email']) ?></span>
-        </div>
-
-        <div class="detail-row">
-            <span class="detail-label">Customer Mobile</span>
-            <span class="detail-value"><?= htmlspecialchars($sessionData['customer_mobile']) ?></span>
-        </div>
-
-        <button class="btn-pay" id="pay-btn" onclick="launchRazorpayCheckout()">
-            <span>Pay <?= $sessionData['currency'] === 'INR' ? '₹' : '$' ?><?= number_format((float)$sessionData['amount'], 2) ?></span>
-        </button>
-
-        <div class="alert-box alert-error" id="checkout-alert"></div>
 
         <div class="footer-secure">
-            <span>🔒 Secured by Vortex Payment Gateway & Razorpay</span>
+            🔒 Secured by Vortex Payment Gateway & Razorpay
         </div>
     <?php endif; ?>
 </div>
@@ -450,7 +558,12 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
 
             const minutes = Math.floor(diff / 60000);
             const seconds = Math.floor((diff % 60000) / 1000);
-            timerEl.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            if (minutes > 1) {
+                timerEl.classList.add('safe');
+            } else {
+                timerEl.classList.remove('safe');
+            }
+            timerEl.innerHTML = `⏱ ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
         }, 1000);
     }
     startTimer();

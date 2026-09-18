@@ -284,26 +284,26 @@ if (!in_array($initialTab, ['overview', 'clients', 'events'])) {
 
     <!-- Key Performance Metrics Grid -->
     <div class="metrics-grid">
-        <div class="metric-card">
+        <a href="payments/list_payments.php?status=SUCCESS" class="metric-card">
             <span class="metric-label">Total Revenue (Successful)</span>
             <span class="metric-value amount">₹ <?= number_format($totalPaymentAmount, 2) ?></span>
-        </div>
-        <div class="metric-card">
+        </a>
+        <a href="payments/list_payments.php?status=SUCCESS" class="metric-card">
             <span class="metric-label">Successful Transactions</span>
             <span class="metric-value success"><?= number_format($successfulPayments) ?></span>
-        </div>
-        <div class="metric-card">
+        </a>
+        <a href="payments/list_payments.php?status=FAILED" class="metric-card">
             <span class="metric-label">Failed Transactions</span>
             <span class="metric-value danger"><?= number_format($failedPayments) ?></span>
-        </div>
-        <div class="metric-card">
+        </a>
+        <a href="#events" class="metric-card">
             <span class="metric-label">Active Events</span>
             <span class="metric-value"><?= count(array_filter($allEvents, fn($e) => $e['is_active'] == 1)) ?></span>
-        </div>
-        <div class="metric-card">
+        </a>
+        <a href="#clients" class="metric-card">
             <span class="metric-label">Registered Merchants / Clients</span>
             <span class="metric-value"><?= count($allClients) ?></span>
-        </div>
+        </a>
     </div>
 
     <div class="section-label">Recent Transactions</div>
@@ -595,11 +595,11 @@ document.addEventListener('keydown', function(e) {
                             <tr><td colspan="7" style="text-align:center; padding: 16px;">No events created yet.</td></tr>
                         <?php else: ?>
                             <?php foreach ($allEvents as $event): ?>
-                                <tr>
+                                <tr onclick="window.location.href='payments/list_payments.php?event_id=<?= urlencode($event['event_id']) ?>';" style="cursor:pointer;" class="hoverable-row">
                                     <td>
                                         <div class="copy-wrapper">
                                             <span class="font-mono"><?= htmlspecialchars($event['event_id']) ?></span>
-                                            <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($event['event_id'], ENT_QUOTES) ?>', this)" title="Copy Event ID">📋 Copy</button>
+                                            <button type="button" class="btn-copy btn-copy-sm" onclick="event.stopPropagation(); copyToClipboard('<?= htmlspecialchars($event['event_id'], ENT_QUOTES) ?>', this)" title="Copy Event ID">📋 Copy</button>
                                         </div>
                                     </td>
                                     <td><strong><?= htmlspecialchars($event['event_name']) ?></strong></td>
@@ -611,7 +611,7 @@ document.addEventListener('keydown', function(e) {
                                             <?= $event['is_active'] ? 'Active' : 'Disabled' ?>
                                         </span>
                                     </td>
-                                    <td>
+                                    <td onclick="event.stopPropagation();">
                                         <form action="dashboard.php" method="POST" style="display:inline;">
                                             <input type="hidden" name="event_id" value="<?= htmlspecialchars($event['event_id']) ?>">
                                             <?php if ($event['is_active']): ?>
@@ -632,91 +632,6 @@ document.addEventListener('keydown', function(e) {
         </div>
     </div>
 </div>
-
-<!-- ============================================================
-     Floating Action Button – Create Event
-     ============================================================ -->
-<button class="fab-create-event" id="fabCreateEvent" title="Create New Event">
-    <span class="fab-icon">🎟️</span>
-    Create Event
-</button>
-
-<!-- Create Event Modal -->
-<div class="modal-overlay" id="createEventModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="modal-box">
-        <div class="modal-header">
-            <h2 id="modalTitle">🎟️ Create New Event</h2>
-            <button class="modal-close" id="closeEventModal" title="Close">&times;</button>
-        </div>
-
-        <form action="dashboard.php" method="POST">
-            <input type="hidden" name="action" value="create_event">
-
-            <div class="modal-body">
-                <div class="form-grid">
-                    <div class="form-group" style="grid-column: span 2;">
-                        <label for="modal_event_name">Event Name</label>
-                        <input type="text" id="modal_event_name" name="event_name" class="form-control"
-                               placeholder="e.g. International AI Summit 2026" required>
-                    </div>
-                    <div class="form-group" style="grid-column: span 2;">
-                        <label for="modal_department">Department / Host</label>
-                        <input type="text" id="modal_department" name="department" class="form-control"
-                               placeholder="e.g. Computer Science Dept" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="modal_start_date">Start Date</label>
-                        <input type="date" id="modal_start_date" name="start_date" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="modal_end_date">End Date</label>
-                        <input type="date" id="modal_end_date" name="end_date" class="form-control" required>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn-cancel" id="cancelEventModal">Cancel</button>
-                <button type="submit" class="btn-submit-event">
-                    <span>✚</span> Create Event
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script>
-(function () {
-    const fab     = document.getElementById('fabCreateEvent');
-    const sidebarBtn = document.getElementById('sidebarCreateEventBtn');
-    const modal   = document.getElementById('createEventModal');
-    const closeBtn = document.getElementById('closeEventModal');
-    const cancelBtn = document.getElementById('cancelEventModal');
-
-    function openModal()  { modal.classList.add('open');    document.body.style.overflow = 'hidden'; }
-    function closeModal() { modal.classList.remove('open'); document.body.style.overflow = ''; }
-
-    if(fab) fab.addEventListener('click', openModal);
-    if(sidebarBtn) sidebarBtn.addEventListener('click', openModal);
-    closeBtn.addEventListener('click', closeModal);
-    cancelBtn.addEventListener('click', closeModal);
-
-    // Close on overlay click
-    modal.addEventListener('click', function (e) {
-        if (e.target === modal) closeModal();
-    });
-
-    // Close on Escape key
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
-    });
-
-    // Auto-open modal if there's a validation error returned (i.e. create_event was the last action)
-    <?php if (isset($flashError) && $flashError && str_contains($flashError ?? '', 'event')): ?>
-    openModal();
-    <?php endif; ?>
-}());
-</script>
 
 <!-- ============================================================
      Sidebar Tab Navigation Switcher Script
