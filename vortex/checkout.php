@@ -90,13 +90,13 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
             flex-direction: column;
             align-items: center;
             width: 100%;
-            max-width: 480px;
+            max-width: 540px;
             gap: 1.5rem;
         }
 
         .checkout-card {
             width: 100%;
-            max-width: 480px;
+            max-width: 540px;
             background-color: var(--card-navy);
             border-radius: 24px;
             position: relative;
@@ -109,14 +109,14 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
 
         .card-bg-shape {
             position: absolute;
-            top: -10%;
-            right: -10%;
-            width: 65%;
-            height: 120%;
-            background: linear-gradient(135deg, #1e3ccb, var(--card-blue));
-            border-top-left-radius: 120px 250px;
-            border-bottom-left-radius: 80px 200px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: 1;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 800' preserveAspectRatio='none'%3E%3Cpath d='M500,0 L0,0 L0,300 C150,550 350,150 500,400 Z' fill='%230f1e8a' opacity='0.8'/%3E%3Cpath d='M500,0 L0,0 L0,200 C200,400 300,50 500,250 Z' fill='%231e3ccb' opacity='0.9'/%3E%3Cpath d='M500,0 L0,0 L0,120 C250,280 250,0 500,150 Z' fill='%232c54f5' opacity='0.9'/%3E%3C/svg%3E");
+            background-size: cover;
+            background-position: center;
         }
 
         .card-content {
