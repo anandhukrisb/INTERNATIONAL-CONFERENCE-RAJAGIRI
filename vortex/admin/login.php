@@ -181,7 +181,10 @@ $loggedOut = isset($_GET['logged_out']);
 <body>
     <div class="login-box">
         <div class="login-logo">
-            <h1>Vortex</h1>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0; margin-bottom: 8px;">
+                <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1789742057/VortexBlue_smpgca.png" alt="Vortex Logo" style="height: 44px; width: auto; object-fit: contain; margin-right: -4px;">
+                <h1 style="font-size: 2.2rem; font-weight: 800; color: #0A1938; margin: 0; letter-spacing: -0.5px;">ORTEX</h1>
+            </div>
             <p>Unified Payment Gateway — Administration</p>
         </div>
 

@@ -10,6 +10,7 @@
     <style>
         :root {
             --bg-page: #eef2f9;
+
             --card-navy: #0e1643;
             --card-blue: #2c54f5;
             --text-main: #f3f4f6;
@@ -92,18 +93,13 @@
         }
 
         .shape-1 {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 800' preserveAspectRatio='none'%3E%3Cpath d='M500,0 L0,0 L0,300 C150,550 350,150 500,400 Z' fill='%230f1e8a' opacity='0.8'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 800' preserveAspectRatio='none'%3E%3Cpath d='M500,0 L0,0 L0,300 C150,550 350,150 500,400 Z' fill='%230A1938' opacity='0.8'/%3E%3C/svg%3E");
             animation: slideDownShape 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards;
         }
 
         .shape-2 {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 800' preserveAspectRatio='none'%3E%3Cpath d='M500,0 L0,0 L0,200 C200,400 300,50 500,250 Z' fill='%231e3ccb' opacity='0.9'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 800' preserveAspectRatio='none'%3E%3Cpath d='M500,0 L0,0 L0,200 C200,400 300,50 500,250 Z' fill='%23133989' opacity='0.9'/%3E%3C/svg%3E");
             animation: slideDownShape 1.3s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards;
-        }
-
-        .shape-3 {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 800' preserveAspectRatio='none'%3E%3Cpath d='M500,0 L0,0 L0,120 C250,280 250,0 500,150 Z' fill='%232c54f5' opacity='0.9'/%3E%3C/svg%3E");
-            animation: slideDownShape 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.7s forwards;
         }
 
         @keyframes slideDownShape {
@@ -134,7 +130,7 @@
         .card-brand {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0;
         }
 
         .brand-logo {
@@ -184,8 +180,9 @@
             font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: rgba(255, 255, 255, 0.7);
+            color: #ffffff;
             margin-bottom: 0.25rem;
+            font-weight: 500;
         }
 
         .balance-amount {
@@ -199,8 +196,8 @@
 
         .currency-label {
             font-size: 1.1rem;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+            color: #ffffff;
             margin-top: 1rem;
         }
 
@@ -230,12 +227,13 @@
         }
 
         .detail-label {
-            color: rgba(255, 255, 255, 0.6);
+            color: #ffffff;
+            font-weight: 500;
         }
 
         .detail-value {
-            font-weight: 600;
-            color: white;
+            font-weight: 700;
+            color: #ffffff;
             text-align: right;
         }
 
@@ -326,13 +324,12 @@
     <div class="checkout-card">
         <div class="card-bg-shape shape-1"></div>
         <div class="card-bg-shape shape-2"></div>
-        <div class="card-bg-shape shape-3"></div>
         
         <div class="card-content">
             <div class="card-header">
                 <div class="card-brand">
-                    <div class="brand-logo">⚡</div>
-                    <div class="brand-name">VORTEX PAYMENT</div>
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1789740193/VortexLogo_ssrpym.png" alt="Vortex Logo" style="height: 38px; width: auto; object-fit: contain; margin-right: -4px;">
+                    <div class="brand-name">ORTEX</div>
                 </div>
                 <div class="timer-badge safe" id="timer-display">
                     ⏱ 5:00

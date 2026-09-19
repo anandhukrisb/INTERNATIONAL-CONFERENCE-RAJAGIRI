@@ -142,11 +142,6 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
             animation: slideDownShape 1.3s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards;
         }
 
-        .shape-3 {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 800' preserveAspectRatio='none'%3E%3Cpath d='M500,0 L0,0 L0,120 C250,280 250,0 500,150 Z' fill='%233165EC' opacity='0.9'/%3E%3C/svg%3E");
-            animation: slideDownShape 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.7s forwards;
-        }
-
         @keyframes slideDownShape {
             0% {
                 transform: translateY(-100%) scaleY(1.2);
@@ -175,7 +170,7 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
         .card-brand {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0;
         }
 
         .brand-logo {
@@ -225,8 +220,9 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
             font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: rgba(255, 255, 255, 0.7);
+            color: #ffffff;
             margin-bottom: 0.25rem;
+            font-weight: 500;
         }
 
         .balance-amount {
@@ -240,8 +236,8 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
 
         .currency-label {
             font-size: 1.1rem;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+            color: #ffffff;
             margin-top: 1rem;
         }
 
@@ -271,12 +267,13 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
         }
 
         .detail-label {
-            color: rgba(255, 255, 255, 0.6);
+            color: #ffffff;
+            font-weight: 500;
         }
 
         .detail-value {
-            font-weight: 600;
-            color: white;
+            font-weight: 700;
+            color: #ffffff;
             text-align: right;
         }
 
@@ -498,14 +495,13 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
         <div class="checkout-card">
             <div class="card-bg-shape shape-1"></div>
             <div class="card-bg-shape shape-2"></div>
-            <div class="card-bg-shape shape-3"></div>
             
             <div class="card-content">
                 <div class="card-header">
                     <div class="card-brand">
-                        <div class="brand-logo">⚡</div>
-                        <div class="brand-name">VORTEX PAYMENT</div>
-                    </div>
+                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1789740193/VortexLogo_ssrpym.png" alt="Vortex Logo" style="height: 38px; width: auto; object-fit: contain; margin-right: -4px;">
+                    <div class="brand-name">ORTEX</div>
+                </div>
                     <div class="timer-badge safe" id="timer-display">
                         ⏱ 5:00
                     </div>
