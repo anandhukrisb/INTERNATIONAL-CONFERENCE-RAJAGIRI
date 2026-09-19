@@ -500,7 +500,7 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
                 <div class="card-header">
                     <div class="card-brand">
                     <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1789740193/VortexLogo_ssrpym.png" alt="Vortex Logo" style="height: 38px; width: auto; object-fit: contain; margin-right: -4px;">
-                    <div class="brand-name">ORTEX</div>
+                    <div class="brand-name">VORTEX</div>
                 </div>
                     <div class="timer-badge safe" id="timer-display">
                         ⏱ 5:00
