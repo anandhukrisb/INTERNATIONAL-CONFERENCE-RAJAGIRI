@@ -35,15 +35,21 @@ if ($txnParam !== '') {
                     FROM transactions t
                     LEFT JOIN events e ON t.event_id = e.event_id
                     LEFT JOIN api_clients c ON t.api_client_id = c.id
-                    WHERE t.vortex_transaction_id = :param
+                    WHERE t.vortex_transaction_id = :param1
                        OR t.id = :num
-                       OR t.razorpay_order_id = :param
-                       OR t.razorpay_payment_id = :param
-                       OR t.customer_email = :param
+                       OR t.razorpay_order_id = :param2
+                       OR t.razorpay_payment_id = :param3
+                       OR t.customer_email = :param4
                     ORDER BY t.id DESC";
 
         $stmtTx = $db->prepare($queryTx);
-        $stmtTx->execute(['param' => $txnParam, 'num' => $numericId]);
+        $stmtTx->execute([
+            'param1' => $txnParam,
+            'param2' => $txnParam,
+            'param3' => $txnParam,
+            'param4' => $txnParam,
+            'num'    => $numericId,
+        ]);
         $allSearchResults = $stmtTx->fetchAll(PDO::FETCH_ASSOC);
 
         if (!empty($allSearchResults)) {

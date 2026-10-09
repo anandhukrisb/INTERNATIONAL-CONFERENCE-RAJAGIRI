@@ -11,9 +11,14 @@ $activeNav = $activeNav ?? 'dashboard';
 
 // Determine base URL dynamically (must be before auth guard)
 $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
-$adminBase = (strpos($scriptName, '/admin/payments/') !== false
-           || strpos($scriptName, '/admin/events/') !== false
-           || strpos($scriptName, '/admin/api_clients/') !== false) ? '../' : '';
+$adminSubdirs = ['/admin/payments/', '/admin/events/', '/admin/api_clients/', '/admin/refunds/', '/admin/reports/', '/admin/profile/'];
+$adminBase = '';
+foreach ($adminSubdirs as $subdir) {
+    if (strpos($scriptName, $subdir) !== false) {
+        $adminBase = '../';
+        break;
+    }
+}
 
 // Auth Guard – redirect to login if not authenticated
 if (empty($_SESSION['vortex_admin_id'])) {
@@ -46,7 +51,7 @@ if (empty($_SESSION['vortex_admin_id'])) {
                     <span class="search-icon">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                     </span>
-                    <input type="text" name="vortex_transaction_id" placeholder="Search in Vortex..." value="<?= htmlspecialchars($_GET['vortex_transaction_id'] ?? $_GET['id'] ?? '') ?>" required>
+                    <input type="text" name="vortex_transaction_id" placeholder="Search in Vortex..." value="<?= htmlspecialchars($_GET['vortex_transaction_id'] ?? $_GET['id'] ?? $_GET['txn_id'] ?? $_GET['q'] ?? '') ?>" required>
                 </div>
             </form>
 
