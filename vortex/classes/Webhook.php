@@ -217,7 +217,7 @@ class Webhook
              */
 
             $txQuery = "SELECT id, vortex_transaction_id, razorpay_order_id, razorpay_payment_id,
-                               amount, currency, status
+                               amount, currency, status, api_client_id
                         FROM transactions
                         WHERE razorpay_order_id = ?
                         LIMIT 1";
@@ -558,7 +558,7 @@ class Webhook
      * @param int $apiClientId
      * --------------------------------------------------------
      */
-    private function dispatchClientWebhook($vortexTxnId, $status, $apiClientId)
+    public function dispatchClientWebhook($vortexTxnId, $status, $apiClientId)
     {
         try {
             $stmt = $this->db->prepare("SELECT webhook_url, webhook_secret FROM api_clients WHERE id = ?");
@@ -566,7 +566,8 @@ class Webhook
             $client = $stmt->fetch();
 
             if (!$client || empty($client['webhook_url']) || empty($client['webhook_secret'])) {
-                return; // No webhook configured for this client
+                Logger::info("Client webhook not dispatched for transaction {$vortexTxnId}: no webhook_url or webhook_secret configured for client ID {$apiClientId}.");
+                return;
             }
 
             $payload = json_encode([
@@ -592,10 +593,28 @@ class Webhook
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             }
 
-            curl_exec($ch);
+            $response  = curl_exec($ch);
+            $curlError = curl_error($ch);
+            $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
-            
-            Logger::info("Client webhook dispatched for transaction {$vortexTxnId} to {$client['webhook_url']}");
+
+            if ($curlError !== '') {
+                Logger::error(
+                    "Client webhook dispatch failed for transaction {$vortexTxnId} to {$client['webhook_url']}: "
+                    . "cURL error: {$curlError}"
+                );
+                return;
+            }
+
+            if ($httpCode < 200 || $httpCode >= 300) {
+                Logger::error(
+                    "Client webhook dispatch received non-2xx response for transaction {$vortexTxnId} "
+                    . "to {$client['webhook_url']}: HTTP {$httpCode}"
+                );
+                return;
+            }
+
+            Logger::info("Client webhook dispatched successfully for transaction {$vortexTxnId} to {$client['webhook_url']} (HTTP {$httpCode}).");
         } catch (\Throwable $e) {
             Logger::error("Failed to dispatch client webhook for transaction {$vortexTxnId}: " . $e->getMessage());
         }

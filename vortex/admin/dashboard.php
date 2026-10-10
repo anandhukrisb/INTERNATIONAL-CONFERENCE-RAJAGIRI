@@ -223,18 +223,33 @@ require_once __DIR__ . '/includes/header.php';
                 <span class="detail-label">Client Name</span>
                 <span class="detail-value"><?= htmlspecialchars($createdClientDetails['client_name']) ?></span>
             </div>
+            <div class="detail-item"></div>
             <div class="detail-item">
-                <span class="detail-label">API Key</span>
+                <span class="detail-label">LIVE API Key</span>
                 <div class="copy-wrapper" style="margin-top: 4px;">
                     <span class="detail-value font-mono"><?= htmlspecialchars($createdClientDetails['api_key']) ?></span>
                     <button type="button" class="btn-copy" onclick="copyToClipboard('<?= htmlspecialchars($createdClientDetails['api_key'], ENT_QUOTES) ?>', this)" title="Copy API Key">📋 Copy</button>
                 </div>
             </div>
-            <div class="detail-item" style="grid-column: span 2;">
-                <span class="detail-label">API Secret</span>
+            <div class="detail-item">
+                <span class="detail-label">TEST API Key</span>
+                <div class="copy-wrapper" style="margin-top: 4px;">
+                    <span class="detail-value font-mono"><?= htmlspecialchars($createdClientDetails['test_api_key'] ?? '') ?></span>
+                    <button type="button" class="btn-copy" onclick="copyToClipboard('<?= htmlspecialchars($createdClientDetails['test_api_key'] ?? '', ENT_QUOTES) ?>', this)" title="Copy API Key">📋 Copy</button>
+                </div>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">LIVE API Secret</span>
                 <div class="copy-wrapper" style="margin-top: 4px;">
                     <span class="detail-value font-mono" style="color: var(--danger-text); font-weight: 700;"><?= htmlspecialchars($createdClientDetails['api_secret']) ?></span>
                     <button type="button" class="btn-copy" onclick="copyToClipboard('<?= htmlspecialchars($createdClientDetails['api_secret'], ENT_QUOTES) ?>', this)" title="Copy API Secret">📋 Copy</button>
+                </div>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">TEST API Secret</span>
+                <div class="copy-wrapper" style="margin-top: 4px;">
+                    <span class="detail-value font-mono" style="color: var(--danger-text); font-weight: 700;"><?= htmlspecialchars($createdClientDetails['test_api_secret'] ?? '') ?></span>
+                    <button type="button" class="btn-copy" onclick="copyToClipboard('<?= htmlspecialchars($createdClientDetails['test_api_secret'] ?? '', ENT_QUOTES) ?>', this)" title="Copy API Secret">📋 Copy</button>
                 </div>
             </div>
         </div>
@@ -344,11 +359,13 @@ if (!in_array($initialTab, ['overview', 'clients', 'events'])) {
                                     <td>
                                         <?php
                                         $bClass = 'badge-pending';
+                                        $displayStatus = $tx['status'];
+                                        if ($tx['status'] === 'PENDING') $displayStatus = 'UNPAID';
                                         if ($tx['status'] === 'SUCCESS') $bClass = 'badge-success';
                                         if ($tx['status'] === 'FAILED') $bClass = 'badge-danger';
                                         if ($tx['status'] === 'REFUNDED') $bClass = 'badge-refunded';
                                         ?>
-                                        <span class="badge <?= $bClass ?>"><?= htmlspecialchars($tx['status']) ?></span>
+                                        <span class="badge <?= $bClass ?>"><?= htmlspecialchars($displayStatus) ?></span>
                                     </td>
                                     <td><span class="font-mono"><?= htmlspecialchars($tx['razorpay_payment_id'] ?? 'N/A') ?></span></td>
                                     <td><?= htmlspecialchars($tx['event_name'] ?? $tx['event_id']) ?></td>
@@ -402,8 +419,8 @@ if (!in_array($initialTab, ['overview', 'clients', 'events'])) {
                         <tr>
                             <th>ID</th>
                             <th>Client Name</th>
-                            <th>API Key</th>
-                            <th>API Secret</th>
+                            <th>API Key (Live & Test)</th>
+                            <th>API Secret (Live & Test)</th>
                             <th>Webhook URL</th>
                             <th>Status</th>
                             <th>Created At</th>
@@ -420,18 +437,34 @@ if (!in_array($initialTab, ['overview', 'clients', 'events'])) {
                                     <td><strong><?= htmlspecialchars($client['client_name']) ?></strong></td>
                                     <td>
                                         <div class="copy-wrapper" title="<?= htmlspecialchars($client['api_key']) ?>">
-                                            <span class="font-mono" style="max-width: 115px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: middle;">
+                                            <span style="font-size: 0.7rem; color: #64748b; margin-right: 2px;">LIVE</span>
+                                            <span class="font-mono" style="max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: middle;">
                                                 <?= htmlspecialchars($client['api_key']) ?>
                                             </span>
-                                            <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($client['api_key'], ENT_QUOTES) ?>', this)" title="Copy API Key">📋 Copy</button>
+                                            <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($client['api_key'], ENT_QUOTES) ?>', this)" title="Copy Live Key">📋</button>
+                                        </div>
+                                        <div class="copy-wrapper" style="margin-top: 4px;" title="<?= htmlspecialchars($client['test_api_key'] ?? '') ?>">
+                                            <span style="font-size: 0.7rem; color: #64748b; margin-right: 2px;">TEST</span>
+                                            <span class="font-mono" style="max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: middle;">
+                                                <?= htmlspecialchars($client['test_api_key'] ?? 'N/A') ?>
+                                            </span>
+                                            <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($client['test_api_key'] ?? '', ENT_QUOTES) ?>', this)" title="Copy Test Key">📋</button>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="copy-wrapper" title="<?= htmlspecialchars($client['api_secret'] ?? '') ?>">
-                                            <span class="font-mono" style="max-width: 115px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: middle; color: var(--danger-text);">
+                                            <span style="font-size: 0.7rem; color: #64748b; margin-right: 2px;">LIVE</span>
+                                            <span class="font-mono" style="max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: middle; color: var(--danger-text);">
                                                 <?= htmlspecialchars($client['api_secret'] ?? 'N/A') ?>
                                             </span>
-                                            <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($client['api_secret'] ?? '', ENT_QUOTES) ?>', this)" title="Copy API Secret">📋 Copy</button>
+                                            <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($client['api_secret'] ?? '', ENT_QUOTES) ?>', this)" title="Copy Live Secret">📋</button>
+                                        </div>
+                                        <div class="copy-wrapper" style="margin-top: 4px;" title="<?= htmlspecialchars($client['test_api_secret'] ?? '') ?>">
+                                            <span style="font-size: 0.7rem; color: #64748b; margin-right: 2px;">TEST</span>
+                                            <span class="font-mono" style="max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: middle; color: var(--danger-text);">
+                                                <?= htmlspecialchars($client['test_api_secret'] ?? 'N/A') ?>
+                                            </span>
+                                            <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($client['test_api_secret'] ?? '', ENT_QUOTES) ?>', this)" title="Copy Test Secret">📋</button>
                                         </div>
                                     </td>
                                     <td>

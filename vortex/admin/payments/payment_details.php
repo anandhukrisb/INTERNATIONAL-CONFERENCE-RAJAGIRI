@@ -176,7 +176,10 @@ require_once __DIR__ . '/../includes/header.php';
                     if ($st === 'SUCCESS') echo '<span class="badge badge-success">✓ SUCCESS</span>';
                     elseif ($st === 'FAILED') echo '<span class="badge badge-danger">✕ FAILED</span>';
                     elseif ($st === 'REFUNDED') echo '<span class="badge badge-refunded">↩ REFUNDED</span>';
-                    else echo '<span class="badge badge-pending">⏳ ' . htmlspecialchars($st) . '</span>';
+                    else {
+                        $displaySt = ($st === 'PENDING') ? 'UNPAID' : $st;
+                        echo '<span class="badge badge-pending">⏳ ' . htmlspecialchars($displaySt) . '</span>';
+                    }
                 ?>
             </div>
         </div>
@@ -201,7 +204,7 @@ require_once __DIR__ . '/../includes/header.php';
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">Payment Status</span>
-                    <span class="detail-value"><strong><?= htmlspecialchars($transaction['status']) ?></strong></span>
+                    <span class="detail-value"><strong><?= htmlspecialchars($transaction['status'] === 'PENDING' ? 'UNPAID' : $transaction['status']) ?></strong></span>
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">Customer Email</span>

@@ -153,7 +153,8 @@ $result = $payment->createPayment(
     $email,
     $mobile,
     $amount,
-    $normalizedCurrency
+    $normalizedCurrency,
+    $client['is_test_mode']
 );
 
 if (!is_array($result) || ($result['success'] ?? false) === false) {

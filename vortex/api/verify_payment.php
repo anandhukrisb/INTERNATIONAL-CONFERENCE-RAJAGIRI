@@ -103,7 +103,7 @@ try {
 
     $db = Database::getInstance()->getConnection();
 
-    $query = "SELECT id, vortex_transaction_id, razorpay_order_id, razorpay_payment_id, amount, currency, status
+    $query = "SELECT id, vortex_transaction_id, razorpay_order_id, razorpay_payment_id, amount, currency, status, api_client_id, is_test_mode
               FROM transactions
               WHERE vortex_transaction_id = ?
               LIMIT 1";
@@ -150,8 +150,13 @@ try {
     // 7. Verify Signature using Razorpay SDK
     // --------------------------------------------------------
 
-    $keyId = trim($_ENV['RAZORPAY_KEY_ID'] ?? '');
-    $keySecret = trim($_ENV['RAZORPAY_KEY_SECRET'] ?? '');
+    if (isset($transaction['is_test_mode']) && $transaction['is_test_mode'] == 1) {
+        $keyId = trim($_ENV['RAZORPAY_TEST_KEY_ID'] ?? '');
+        $keySecret = trim($_ENV['RAZORPAY_TEST_KEY_SECRET'] ?? '');
+    } else {
+        $keyId = trim($_ENV['RAZORPAY_LIVE_KEY_ID'] ?? '');
+        $keySecret = trim($_ENV['RAZORPAY_LIVE_KEY_SECRET'] ?? '');
+    }
 
     if (empty($keyId) || empty($keySecret)) {
         Logger::error('Payment verification failed: Razorpay credentials not configured in environment.');
@@ -195,6 +200,10 @@ try {
         $razorpaySignature,
         $transaction['id']
     ]);
+
+    require_once __DIR__ . '/../classes/Webhook.php';
+    $webhook = new Webhook();
+    $webhook->dispatchClientWebhook($transaction['vortex_transaction_id'], 'SUCCESS', $transaction['api_client_id']);
 
     Logger::info(
         'Payment signature verified successfully. '

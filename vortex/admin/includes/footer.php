@@ -140,5 +140,41 @@
             document.body.removeChild(textarea);
         }
     </script>
+    <style>
+        @keyframes btn-spinner-anim {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .vortex-btn-spinner {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            margin-right: 8px;
+            vertical-align: middle;
+            animation: btn-spinner-anim 1s linear infinite;
+        }
+        .btn-loading-state {
+            opacity: 0.8;
+            cursor: not-allowed !important;
+            pointer-events: none;
+        }
+    </style>
+    <script>
+        document.addEventListener('submit', function(e) {
+            if (e.target.tagName === 'FORM') {
+                const form = e.target;
+                const submitBtn = form.querySelector('button[type="submit"]:focus') || form.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    if (submitBtn.dataset.submitting) return;
+                    submitBtn.dataset.submitting = 'true';
+                    submitBtn.classList.add('btn-loading-state');
+                    
+                    const spinnerSvg = `<svg class="vortex-btn-spinner" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-dasharray="80" stroke-dashoffset="60"></circle></svg>`;
+                    
+                    submitBtn.innerHTML = `<span style="display: inline-flex; align-items: center; justify-content: center;">${spinnerSvg}<span>${submitBtn.innerHTML}</span></span>`;
+                }
+            }
+        });
+    </script>
 </body>
 </html>

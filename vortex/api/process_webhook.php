@@ -93,8 +93,8 @@ if ($webhookSecret === '' || $webhookSecret === 'the_secret_configured_by_your_s
 // ------------------------------------------------------------
 
 try {
-    $keyId = trim($_ENV['RAZORPAY_KEY_ID'] ?? '');
-    $keySecret = trim($_ENV['RAZORPAY_KEY_SECRET'] ?? '');
+    $keyId = trim($_ENV['RAZORPAY_LIVE_KEY_ID'] ?? $_ENV['RAZORPAY_TEST_KEY_ID'] ?? '');
+    $keySecret = trim($_ENV['RAZORPAY_LIVE_KEY_SECRET'] ?? $_ENV['RAZORPAY_TEST_KEY_SECRET'] ?? '');
 
     $api = new Razorpay\Api\Api($keyId, $keySecret);
     $api->utility->verifyWebhookSignature(

@@ -90,11 +90,13 @@ require_once __DIR__ . '/../includes/header.php';
                                     <td>
                                         <?php
                                         $bClass = 'badge-pending';
+                                        $displayStatus = $tx['status'];
+                                        if ($tx['status'] === 'PENDING') $displayStatus = 'UNPAID';
                                         if ($tx['status'] === 'SUCCESS') $bClass = 'badge-success';
                                         if ($tx['status'] === 'FAILED') $bClass = 'badge-danger';
                                         if ($tx['status'] === 'REFUNDED') $bClass = 'badge-refunded';
                                         ?>
-                                        <span class="badge <?= $bClass ?>"><?= htmlspecialchars($tx['status']) ?></span>
+                                        <span class="badge <?= $bClass ?>"><?= htmlspecialchars($displayStatus) ?></span>
                                     </td>
                                     <td><span class="font-mono"><?= htmlspecialchars($tx['razorpay_payment_id'] ?? 'N/A') ?></span></td>
                                     <td><?= htmlspecialchars($tx['event_name'] ?? $tx['event_id']) ?></td>

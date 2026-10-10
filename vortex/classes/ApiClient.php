@@ -42,41 +42,39 @@ class ApiClient
      */
     public function verifyClient($apiKey, $apiSecret)
     {
-        // SQL query to find the client.
-        $query = "SELECT id, client_name, api_key, is_active
+        // 1. Check Live keys
+        $queryLive = "SELECT id, client_name, api_key, is_active
                   FROM api_clients
                   WHERE api_key = ?
                   AND api_secret = ?
                   AND is_active = 1";
+        $stmtLive = $this->db->prepare($queryLive);
+        $stmtLive->execute([$apiKey, $apiSecret]);
+        $client = $stmtLive->fetch();
 
-        // Prepare the SQL query.
-        $statement = $this->db->prepare($query);
-
-        // Execute the query with the API credentials.
-        $statement->execute([$apiKey, $apiSecret]);
-
-        // Get the matching client.
-        $client = $statement->fetch();
-
-        // Check whether a client was found.
         if ($client) {
-
-            // Log successful authentication.
-            Logger::info(
-                'API client authenticated successfully. '
-                . 'Client ID: ' . $client['id']
-            );
-
+            $client['is_test_mode'] = 0;
+            Logger::info('API client authenticated successfully (LIVE mode). Client ID: ' . $client['id']);
             return $client;
         }
 
-        // Log failed authentication.
-        // Do NOT log the API key or API secret.
-        Logger::error(
-            'API client authentication failed.'
-        );
+        // 2. Check Test keys
+        $queryTest = "SELECT id, client_name, api_key, is_active
+                  FROM api_clients
+                  WHERE test_api_key = ?
+                  AND test_api_secret = ?
+                  AND is_active = 1";
+        $stmtTest = $this->db->prepare($queryTest);
+        $stmtTest->execute([$apiKey, $apiSecret]);
+        $clientTest = $stmtTest->fetch();
 
-        // No valid client was found.
+        if ($clientTest) {
+            $clientTest['is_test_mode'] = 1;
+            Logger::info('API client authenticated successfully (TEST mode). Client ID: ' . $clientTest['id']);
+            return $clientTest;
+        }
+
+        Logger::error('API client authentication failed.');
         return false;
     }
 
@@ -146,18 +144,23 @@ class ApiClient
             $apiKey = bin2hex(random_bytes(16));
             $apiSecret = bin2hex(random_bytes(16));
 
+            $testApiKey = 'test_' . bin2hex(random_bytes(16));
+            $testApiSecret = bin2hex(random_bytes(16));
+
 
             // Insert the new client.
             $query = "INSERT INTO api_clients
-                      (client_name, api_key, api_secret, is_active)
-                      VALUES (?, ?, ?, 1)";
+                      (client_name, api_key, api_secret, test_api_key, test_api_secret, is_active)
+                      VALUES (?, ?, ?, ?, ?, 1)";
 
             $statement = $this->db->prepare($query);
 
             $statement->execute([
                 $clientName,
                 $apiKey,
-                $apiSecret
+                $apiSecret,
+                $testApiKey,
+                $testApiSecret
             ]);
 
 
@@ -184,7 +187,9 @@ class ApiClient
                     'id' => $clientId,
                     'client_name' => $clientName,
                     'api_key' => $apiKey,
-                    'api_secret' => $apiSecret
+                    'api_secret' => $apiSecret,
+                    'test_api_key' => $testApiKey,
+                    'test_api_secret' => $testApiSecret
                 ]
             ];
 
@@ -401,7 +406,7 @@ class ApiClient
     {
         try {
             $limit = max(1, min((int) $limit, 200));
-            $query = "SELECT id, client_name, api_key, api_secret, webhook_url, webhook_secret, is_active, created_at
+            $query = "SELECT id, client_name, api_key, api_secret, test_api_key, test_api_secret, webhook_url, webhook_secret, is_active, created_at
                       FROM api_clients
                       ORDER BY id DESC
                       LIMIT " . $limit;

@@ -256,7 +256,8 @@ class Payment
         $email,
         $mobile,
         $amount,
-        $currency
+        $currency,
+        $isTestMode = 0
     ) {
         $query = "INSERT INTO transactions (
                     vortex_transaction_id,
@@ -266,9 +267,10 @@ class Payment
                     customer_mobile,
                     amount,
                     currency,
-                    status
+                    status,
+                    is_test_mode
                   )
-                  VALUES (?, ?, ?, ?, ?, ?, ?, 'PENDING')";
+                  VALUES (?, ?, ?, ?, ?, ?, ?, 'PENDING', ?)";
 
 
         $statement = $this->db->prepare($query);
@@ -281,7 +283,8 @@ class Payment
             $email,
             $mobile,
             $amount,
-            $currency
+            $currency,
+            $isTestMode
         ]);
 
 
@@ -329,16 +332,20 @@ class Payment
     private function createRazorpayOrder(
         $amount,
         $currency,
-        $vortexTransactionId
+        $vortexTransactionId,
+        $isTestMode = 0
     ) {
         try {
 
             /**
              * Create Razorpay SDK object.
              */
+            $keyId = $isTestMode ? $_ENV['RAZORPAY_TEST_KEY_ID'] : $_ENV['RAZORPAY_LIVE_KEY_ID'];
+            $keySecret = $isTestMode ? $_ENV['RAZORPAY_TEST_KEY_SECRET'] : $_ENV['RAZORPAY_LIVE_KEY_SECRET'];
+
             $razorpay = new \Razorpay\Api\Api(
-                $_ENV['RAZORPAY_KEY_ID'],
-                $_ENV['RAZORPAY_KEY_SECRET']
+                $keyId,
+                $keySecret
             );
 
 
@@ -444,7 +451,8 @@ class Payment
         $email,
         $mobile,
         $amount,
-        $currency
+        $currency,
+        $isTestMode = 0
     ) {
         try {
 
@@ -503,7 +511,8 @@ class Payment
                 $email,
                 $mobile,
                 $amount,
-                strtoupper(trim($currency))
+                strtoupper(trim($currency)),
+                $isTestMode
             );
 
 
@@ -514,7 +523,8 @@ class Payment
             $razorpayOrder = $this->createRazorpayOrder(
                 $amount,
                 $currency,
-                $vortexTransactionId
+                $vortexTransactionId,
+                $isTestMode
             );
 
 
