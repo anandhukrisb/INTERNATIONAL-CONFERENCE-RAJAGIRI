@@ -63,6 +63,16 @@ if ($webhookBody === false || trim($webhookBody) === '') {
 
 $webhookSignature = $_SERVER['HTTP_X_RAZORPAY_SIGNATURE'] ?? '';
 
+if (trim($webhookSignature) === '' && function_exists('getallheaders')) {
+    $allHeaders = getallheaders();
+    foreach ($allHeaders as $hKey => $hVal) {
+        if (strcasecmp($hKey, 'X-Razorpay-Signature') === 0) {
+            $webhookSignature = trim((string) $hVal);
+            break;
+        }
+    }
+}
+
 if (trim($webhookSignature) === '') {
     http_response_code(400);
     echo json_encode([
@@ -89,19 +99,22 @@ if ($webhookSecret === '' || $webhookSecret === 'the_secret_configured_by_your_s
 }
 
 // ------------------------------------------------------------
-// 5. Verify Razorpay webhook signature using Razorpay SDK
+// 5. Verify Razorpay webhook signature using HMAC-SHA256
 // ------------------------------------------------------------
 
 try {
-    $keyId = trim($_ENV['RAZORPAY_LIVE_KEY_ID'] ?? $_ENV['RAZORPAY_TEST_KEY_ID'] ?? '');
-    $keySecret = trim($_ENV['RAZORPAY_LIVE_KEY_SECRET'] ?? $_ENV['RAZORPAY_TEST_KEY_SECRET'] ?? '');
+    $expectedSignature = hash_hmac('sha256', $webhookBody, $webhookSecret);
+    $isValid = hash_equals($expectedSignature, $webhookSignature);
 
-    $api = new Razorpay\Api\Api($keyId, $keySecret);
-    $api->utility->verifyWebhookSignature(
-        $webhookBody,
-        $webhookSignature,
-        $webhookSecret
-    );
+    // Fallback: Check if fallback secret is defined in environment
+    if (!$isValid && !empty($_ENV['RAZORPAY_WEBHOOK_SECRET_FALLBACK'])) {
+        $altSecret = trim($_ENV['RAZORPAY_WEBHOOK_SECRET_FALLBACK']);
+        $isValid = hash_equals(hash_hmac('sha256', $webhookBody, $altSecret), $webhookSignature);
+    }
+
+    if (!$isValid) {
+        throw new \Exception('Invalid signature passed');
+    }
 } catch (Throwable $e) {
     Logger::error('Razorpay Webhook Error: Invalid signature. ' . $e->getMessage());
     http_response_code(400);

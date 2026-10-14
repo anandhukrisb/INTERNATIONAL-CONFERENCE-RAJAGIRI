@@ -144,6 +144,8 @@ class Webhook
                 'payment.authorized',
                 'payment.captured',
                 'payment.failed',
+                // Order events
+                'order.paid',
                 // Dispute events
                 'payment.dispute.created',
                 'payment.dispute.won',
@@ -200,6 +202,7 @@ class Webhook
             $paymentEntity = $event['payload']['payment']['entity'] ?? null;
             $refundEntity  = $event['payload']['refund']['entity'] ?? null;
             $disputeEntity = $event['payload']['dispute']['entity'] ?? null;
+            $orderEntity   = $event['payload']['order']['entity'] ?? null;
 
             $paymentId = trim((string) (
                 $paymentEntity['id'] ??
@@ -210,6 +213,7 @@ class Webhook
 
             $orderId = trim((string) (
                 $paymentEntity['order_id'] ??
+                $orderEntity['id'] ??
                 ''
             ));
 
@@ -289,6 +293,7 @@ class Webhook
 
             switch ($eventName) {
                 case 'payment.captured':
+                case 'order.paid':
                     $targetStatus = 'SUCCESS';
                     break;
 
@@ -408,6 +413,7 @@ class Webhook
                 // 4. Record event in chronological transaction_timeline
                 $timelineReason = match ($eventName) {
                     'payment.captured'             => 'Payment captured successfully via Razorpay (' . ($paymentEntity['method'] ?? 'card/upi/netbanking') . ')',
+                    'order.paid'                   => 'Order fully paid and captured via Razorpay',
                     'payment.failed'               => 'Payment attempt failed: ' . ($paymentEntity['error_description'] ?? 'Bank/User declined payment'),
                     'payment.authorized'           => 'Payment authorized, awaiting capture/settlement',
                     'payment.dispute.created'      => 'Chargeback / Dispute opened by customer with their bank',
