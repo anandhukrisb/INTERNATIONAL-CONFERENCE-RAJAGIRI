@@ -321,7 +321,14 @@ class CheckoutSession
 
         // Detect project subfolder if applicable
         $scriptDir = dirname($_SERVER['SCRIPT_NAME'] ?? '');
+        if (!empty($_ENV['APP_URL'])) {
+            return rtrim($_ENV['APP_URL'], '/') . '/vortex/checkout.php?token=' . urlencode($sessionToken);
+        }
+
         $baseDir = rtrim(str_replace('/api', '', $scriptDir), '/\\');
+        if ($baseDir !== '' && $baseDir[0] !== '/') {
+            $baseDir = '/' . $baseDir;
+        }
 
         return $protocol . $host . $baseDir . '/checkout.php?token=' . urlencode($sessionToken);
     }
