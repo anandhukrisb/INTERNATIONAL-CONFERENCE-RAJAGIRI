@@ -2,11 +2,26 @@
 // backend/verify_vortex_payment.php
 session_start();
 
-$env = parse_ini_file(__DIR__ . '/../.env');
+require_once __DIR__ . '/db.php';
 
-$vortexApiUrl = rtrim($env['VORTEX_API_URL'], '/') . '/get_payment_status.php';
-$vortexApiKey = $env['VORTEX_API_KEY'];
-$vortexApiSecret = $env['VORTEX_API_SECRET'];
+$rawApiUrl = $env['VORTEX_API_URL'] ?? getenv('VORTEX_API_URL') ?: '';
+if (empty($rawApiUrl)) {
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? null) == 443;
+    $protocol = $isHttps ? 'https://' : 'http://';
+    $host = $_SERVER['HTTP_HOST'] ?? 'icswhmh.com';
+    $rawApiUrl = $protocol . $host . '/vortex/api';
+}
+
+$vortexApiUrl = rtrim($rawApiUrl, '/') . '/get_payment_status.php';
+if (!preg_match('#^https?://#i', $vortexApiUrl)) {
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? null) == 443;
+    $protocol = $isHttps ? 'https://' : 'http://';
+    $host = $_SERVER['HTTP_HOST'] ?? 'icswhmh.com';
+    $vortexApiUrl = $protocol . $host . '/' . ltrim($vortexApiUrl, '/');
+}
+
+$vortexApiKey = $env['VORTEX_API_KEY'] ?? getenv('VORTEX_API_KEY') ?: 'test_ea1b4a6263fc0b0fb0ad8680be4d4087';
+$vortexApiSecret = $env['VORTEX_API_SECRET'] ?? getenv('VORTEX_API_SECRET') ?: 'e415495af5e85622c1ab65cf45199165';
 
 $regId = $_GET['reg_id'] ?? '';
 $vortexTxnId = $_GET['vortex_transaction_id'] ?? '';
@@ -26,7 +41,6 @@ if (empty($regId) || empty($vortexTxnId)) {
 }
 
 try {
-    require_once __DIR__ . '/db.php';
     
     // 1. We must verify the transaction with Vortex API securely
     $payload = [

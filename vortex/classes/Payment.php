@@ -340,8 +340,8 @@ class Payment
             /**
              * Create Razorpay SDK object.
              */
-            $keyId = $isTestMode ? $_ENV['RAZORPAY_TEST_KEY_ID'] : $_ENV['RAZORPAY_LIVE_KEY_ID'];
-            $keySecret = $isTestMode ? $_ENV['RAZORPAY_TEST_KEY_SECRET'] : $_ENV['RAZORPAY_LIVE_KEY_SECRET'];
+            $keyId = $isTestMode ? ($_ENV['RAZORPAY_TEST_KEY_ID'] ?? $_ENV['RAZORPAY_KEY_ID'] ?? '') : ($_ENV['RAZORPAY_LIVE_KEY_ID'] ?? $_ENV['RAZORPAY_KEY_ID'] ?? '');
+            $keySecret = $isTestMode ? ($_ENV['RAZORPAY_TEST_KEY_SECRET'] ?? $_ENV['RAZORPAY_KEY_SECRET'] ?? '') : ($_ENV['RAZORPAY_LIVE_KEY_SECRET'] ?? $_ENV['RAZORPAY_KEY_SECRET'] ?? '');
 
             $razorpay = new \Razorpay\Api\Api(
                 $keyId,

@@ -2,17 +2,37 @@
 // backend/init_vortex_payment.php
 header('Content-Type: application/json');
 
-$env = parse_ini_file(__DIR__ . '/../.env');
+// 1. Load database & environment configuration
+require_once __DIR__ . '/db.php';
 
 // Vortex Gateway Configuration
-$vortexApiUrl = rtrim($env['VORTEX_API_URL'], '/') . '/create_payment_order.php';
-$vortexApiKey = $env['VORTEX_API_KEY'];
-$vortexApiSecret = $env['VORTEX_API_SECRET'];
-$vortexEventId = $env['VORTEX_EVENT_ID'];
+$rawApiUrl = $env['VORTEX_API_URL'] ?? getenv('VORTEX_API_URL') ?: '';
+if (empty($rawApiUrl)) {
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? null) == 443;
+    $protocol = $isHttps ? 'https://' : 'http://';
+    $host = $_SERVER['HTTP_HOST'] ?? 'icswhmh.com';
+    $rawApiUrl = $protocol . $host . '/vortex/api';
+}
+
+$vortexApiUrl = rtrim($rawApiUrl, '/') . '/create_payment_order.php';
+// Safety check: ensure URL has protocol and host
+if (!preg_match('#^https?://#i', $vortexApiUrl)) {
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? null) == 443;
+    $protocol = $isHttps ? 'https://' : 'http://';
+    $host = $_SERVER['HTTP_HOST'] ?? 'icswhmh.com';
+    $vortexApiUrl = $protocol . $host . '/' . ltrim($vortexApiUrl, '/');
+}
+
+$vortexApiKey = $env['VORTEX_API_KEY'] ?? getenv('VORTEX_API_KEY') ?: 'test_ea1b4a6263fc0b0fb0ad8680be4d4087';
+$vortexApiSecret = $env['VORTEX_API_SECRET'] ?? getenv('VORTEX_API_SECRET') ?: 'e415495af5e85622c1ab65cf45199165';
+$vortexEventId = $env['VORTEX_EVENT_ID'] ?? getenv('VORTEX_EVENT_ID') ?: 'ICSW20261011MV3SALAS2FM';
 
 try {
-    // 1. Get raw input data
+    // 2. Get raw input data
     $json = file_get_contents('php://input');
+    if (($json === '' || $json === false) && php_sapi_name() === 'cli') {
+        $json = @file_get_contents('php://stdin');
+    }
     $data = json_decode($json, true);
     
     $regId = $data['registration_id'] ?? '';
@@ -20,8 +40,7 @@ try {
         throw new Exception("Registration ID is missing.");
     }
     
-    // 2. Fetch user data from database
-    require_once __DIR__ . '/db.php';
+    // 3. Fetch user data from database
     $stmt = $pdo->prepare("SELECT * FROM user_registrations WHERE registration_id = :reg_id LIMIT 1");
     $stmt->execute([':reg_id' => $regId]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);

@@ -22,7 +22,6 @@ if (empty($reg_id)) {
 
 try {
     require_once __DIR__ . '/../backend/db.php';
-    $env = parse_ini_file(__DIR__ . '/../.env');
     
     // Ensure the registration is 'Completed'
     $stmt = $pdo->prepare("SELECT payment_status, transaction_id, base_amount FROM user_registrations WHERE registration_id = :reg_id");
@@ -42,9 +41,23 @@ try {
     $vortexTxnId = $reg['transaction_id'];
     
     // Call Vortex API to create refund
-    $vortexApiUrl = rtrim($env['VORTEX_API_URL'], '/') . '/create_refund.php';
-    $vortexApiKey = $env['VORTEX_API_KEY'] ?? $env['KEY'] ?? '';
-    $vortexApiSecret = $env['VORTEX_API_SECRET'] ?? $env['SECRET'] ?? '';
+    $rawApiUrl = $env['VORTEX_API_URL'] ?? getenv('VORTEX_API_URL') ?: '';
+    if (empty($rawApiUrl)) {
+        $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? null) == 443;
+        $protocol = $isHttps ? 'https://' : 'http://';
+        $host = $_SERVER['HTTP_HOST'] ?? 'icswhmh.com';
+        $rawApiUrl = $protocol . $host . '/vortex/api';
+    }
+
+    $vortexApiUrl = rtrim($rawApiUrl, '/') . '/create_refund.php';
+    if (!preg_match('#^https?://#i', $vortexApiUrl)) {
+        $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? null) == 443;
+        $protocol = $isHttps ? 'https://' : 'http://';
+        $host = $_SERVER['HTTP_HOST'] ?? 'icswhmh.com';
+        $vortexApiUrl = $protocol . $host . '/' . ltrim($vortexApiUrl, '/');
+    }
+    $vortexApiKey = $env['VORTEX_API_KEY'] ?? $env['KEY'] ?? getenv('VORTEX_API_KEY') ?: 'test_ea1b4a6263fc0b0fb0ad8680be4d4087';
+    $vortexApiSecret = $env['VORTEX_API_SECRET'] ?? $env['SECRET'] ?? getenv('VORTEX_API_SECRET') ?: 'e415495af5e85622c1ab65cf45199165';
     
     $payload = [
         'api_key' => $vortexApiKey,
