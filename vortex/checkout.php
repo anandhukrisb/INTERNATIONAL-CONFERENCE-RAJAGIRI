@@ -31,7 +31,21 @@ $sessionData = $sessionResult['data'] ?? null;
 $errorMessage = $sessionResult['message'] ?? 'Invalid or expired checkout session.';
 $errorCode = $sessionResult['error_code'] ?? 400;
 
-$isTestMode = ($sessionData['is_test_mode'] ?? 1) == 1;
+require_once __DIR__ . '/classes/Database.php';
+
+// Ensure is_test_mode is accurately resolved even if CheckoutSession.php query on server is not updated
+if ($isValid && $sessionData && !isset($sessionData['is_test_mode']) && !empty($sessionData['transaction_id'])) {
+    try {
+        $db = Database::getInstance()->getConnection();
+        $stmtTx = $db->prepare("SELECT is_test_mode FROM transactions WHERE id = ? LIMIT 1");
+        $stmtTx->execute([$sessionData['transaction_id']]);
+        $sessionData['is_test_mode'] = (int) $stmtTx->fetchColumn();
+    } catch (\Throwable $e) {
+        Logger::error("Failed to fetch is_test_mode for transaction in checkout: " . $e->getMessage());
+    }
+}
+
+$isTestMode = isset($sessionData['is_test_mode']) ? ((int) $sessionData['is_test_mode'] === 1) : false;
 $razorpayKeyId = trim(
     $isTestMode
         ? ($_ENV['RAZORPAY_TEST_KEY_ID'] ?? $_ENV['RAZORPAY_KEY_ID'] ?? '')
@@ -131,6 +145,7 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
             width: 100%;
             height: 100%;
             z-index: 1;
+            pointer-events: none;
             background-size: cover;
             background-position: center;
             transform: translateY(-100%);
@@ -504,9 +519,9 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
             <div class="card-content">
                 <div class="card-header">
                     <div class="card-brand">
-                    <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1789740193/VortexLogo_ssrpym.png" alt="Vortex Logo" style="height: 38px; width: auto; object-fit: contain; margin-right: -4px;">
-                    <div class="brand-name">VORTEX</div>
-                </div>
+                        <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1789740193/VortexLogo_ssrpym.png" alt="Vortex Logo" style="height: 38px; width: auto; object-fit: contain; margin-right: -4px;">
+                        <div class="brand-name">VORTEX</div>
+                    </div>
                     <div class="timer-badge safe" id="timer-display">
                         ⏱ 5:00
                     </div>

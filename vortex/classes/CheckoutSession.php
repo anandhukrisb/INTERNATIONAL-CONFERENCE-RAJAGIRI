@@ -147,6 +147,7 @@ class CheckoutSession
                              t.customer_mobile,
                              t.razorpay_order_id,
                              t.status AS transaction_status,
+                             t.is_test_mode,
                              t.created_at AS transaction_created_at
                       FROM checkout_sessions cs
                       INNER JOIN transactions t ON cs.transaction_id = t.id
