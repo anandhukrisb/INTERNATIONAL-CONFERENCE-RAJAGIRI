@@ -133,19 +133,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // 5. Update Webhook URL for API Client
+    // 5. Update Webhook URL and Secret for API Client
     if ($action === 'update_webhook') {
-        $clientId   = (int)($_POST['client_id'] ?? 0);
-        $webhookUrl = trim($_POST['webhook_url'] ?? '');
+        $clientId      = (int)($_POST['client_id'] ?? 0);
+        $webhookUrl    = trim($_POST['webhook_url'] ?? '');
+        $webhookSecret = trim($_POST['webhook_secret'] ?? '');
 
         if ($clientId > 0) {
-            $res = $apiClientModel->updateWebhook($clientId, $webhookUrl);
+            $res = $apiClientModel->updateWebhook($clientId, $webhookUrl, $webhookSecret !== '' ? $webhookSecret : null);
             if ($res['success']) {
                 if ($webhookUrl === '') {
                     $_SESSION['flash_success'] = "Webhook cleared for Client #{$clientId}.";
                 } else {
-                    $_SESSION['flash_success'] = "Webhook URL updated for Client #{$clientId}.";
-                    // Store new secret so it can be shown once
+                    $_SESSION['flash_success'] = "Webhook configuration saved for Client #{$clientId}.";
                     $_SESSION['new_webhook_secret'] = [
                         'client_id' => $clientId,
                         'secret'    => $res['data']['webhook_secret']
@@ -494,12 +494,22 @@ if (!in_array($initialTab, ['overview', 'clients', 'events'])) {
                                     </td>
                                     <td>
                                         <?php if (!empty($client['webhook_url'])): ?>
-                                            <span style="display:inline-flex;align-items:center;gap:6px;">
-                                                <span style="width:8px;height:8px;border-radius:50%;background:#15803d;flex-shrink:0;"></span>
-                                                <span class="font-mono" style="font-size:0.78rem;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="<?= htmlspecialchars($client['webhook_url']) ?>">
+                                            <div class="copy-wrapper" title="<?= htmlspecialchars($client['webhook_url']) ?>">
+                                                <span style="font-size: 0.7rem; color: #15803d; font-weight: 700; margin-right: 2px;">URL</span>
+                                                <span class="font-mono" style="font-size:0.78rem;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;vertical-align:middle;">
                                                     <?= htmlspecialchars($client['webhook_url']) ?>
                                                 </span>
-                                            </span>
+                                                <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($client['webhook_url'], ENT_QUOTES) ?>', this)" title="Copy Webhook URL">📋</button>
+                                            </div>
+                                            <?php if (!empty($client['webhook_secret'])): ?>
+                                                <div class="copy-wrapper" style="margin-top: 4px;" title="<?= htmlspecialchars($client['webhook_secret']) ?>">
+                                                    <span style="font-size: 0.7rem; color: #64748b; font-weight: 700; margin-right: 2px;">SECRET</span>
+                                                    <span class="font-mono" style="font-size:0.78rem;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;vertical-align:middle;color:var(--danger-text);">
+                                                        <?= htmlspecialchars($client['webhook_secret']) ?>
+                                                    </span>
+                                                    <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($client['webhook_secret'], ENT_QUOTES) ?>', this)" title="Copy Webhook Secret">📋</button>
+                                                </div>
+                                            <?php endif; ?>
                                         <?php else: ?>
                                             <span style="color:var(--text-muted);font-size:0.85rem;font-style:italic;">Not configured</span>
                                         <?php endif; ?>
@@ -527,7 +537,7 @@ if (!in_array($initialTab, ['overview', 'clients', 'events'])) {
                                         <button type="button"
                                                 class="btn btn-secondary btn-sm"
                                                 style="margin-left:6px;"
-                                                onclick="openWebhookModal(<?= (int)$client['id'] ?>, '<?= htmlspecialchars(addslashes($client['webhook_url'] ?? ''), ENT_QUOTES) ?>')">
+                                                onclick="openWebhookModal(<?= (int)$client['id'] ?>, '<?= htmlspecialchars(addslashes($client['webhook_url'] ?? ''), ENT_QUOTES) ?>', '<?= htmlspecialchars(addslashes($client['webhook_secret'] ?? ''), ENT_QUOTES) ?>')">
                                             🔗 Webhook
                                         </button>
                                     </td>
@@ -543,7 +553,7 @@ if (!in_array($initialTab, ['overview', 'clients', 'events'])) {
 
 <!-- Webhook Configure Modal (shared, populated via JS) -->
 <div class="modal-overlay" id="webhookModal" role="dialog" aria-modal="true" aria-labelledby="webhookModalTitle">
-    <div class="modal-box" style="max-width:500px;">
+    <div class="modal-box" style="max-width:520px;">
         <div class="modal-header">
             <h2 id="webhookModalTitle">🔗 Configure Webhook</h2>
             <button class="modal-close" onclick="closeWebhookModal()">&times;</button>
@@ -553,16 +563,26 @@ if (!in_array($initialTab, ['overview', 'clients', 'events'])) {
             <input type="hidden" name="client_id" id="webhookClientId">
             <div class="modal-body">
                 <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:18px;">
-                    Set the endpoint Vortex will POST payment notifications to.
-                    Saving generates a new <strong>webhook secret</strong> which will be shown once.
+                    Set the endpoint Vortex will POST payment notifications to. Both the URL and Secret are saved into <code>api_clients</code> and displayed on the dashboard.
                 </p>
                 <div class="form-group">
                     <label for="webhookUrlInput">Webhook URL</label>
-                    <input type="url" id="webhookUrlInput" name="webhook_url" class="form-control"
-                           placeholder="https://yourapp.com/webhook/vortex">
+                    <input type="url" id="webhookUrlInput" name="webhook_url" class="form-control font-mono"
+                           placeholder="https://yourapp.com/webhook.php">
                 </div>
-                <p style="font-size:0.82rem;color:var(--text-muted);margin-top:8px;">
-                    Leave blank and save to <strong>remove</strong> the webhook configuration.
+                <div class="form-group" style="margin-top:14px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                        <label for="webhookSecretInput" style="margin:0;">Webhook Secret</label>
+                        <button type="button" class="btn btn-secondary btn-sm" style="padding:2px 8px;font-size:0.75rem;" onclick="generateRandomWebhookSecret()">🎲 Generate New</button>
+                    </div>
+                    <div class="copy-wrapper">
+                        <input type="text" id="webhookSecretInput" name="webhook_secret" class="form-control font-mono" style="width:100%;font-size:0.82rem;"
+                               placeholder="Leave as-is or click Generate New">
+                        <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard(document.getElementById('webhookSecretInput').value, this)" title="Copy Secret">📋</button>
+                    </div>
+                </div>
+                <p style="font-size:0.82rem;color:var(--text-muted);margin-top:12px;">
+                    Leave the URL blank and save to <strong>remove</strong> webhook configuration.
                 </p>
             </div>
             <div class="modal-footer">
@@ -574,12 +594,19 @@ if (!in_array($initialTab, ['overview', 'clients', 'events'])) {
 </div>
 
 <script>
-function openWebhookModal(clientId, currentUrl) {
-    document.getElementById('webhookClientId').value  = clientId;
-    document.getElementById('webhookUrlInput').value  = currentUrl || '';
+function openWebhookModal(clientId, currentUrl, currentSecret) {
+    document.getElementById('webhookClientId').value    = clientId;
+    document.getElementById('webhookUrlInput').value    = currentUrl || '';
+    document.getElementById('webhookSecretInput').value = currentSecret || '';
     document.getElementById('webhookModal').classList.add('open');
     document.body.style.overflow = 'hidden';
     document.getElementById('webhookUrlInput').focus();
+}
+function generateRandomWebhookSecret() {
+    const arr = new Uint8Array(24);
+    window.crypto.getRandomValues(arr);
+    const hex = Array.from(arr, b => b.toString(16).padStart(2, '0')).join('');
+    document.getElementById('webhookSecretInput').value = hex;
 }
 function closeWebhookModal() {
     document.getElementById('webhookModal').classList.remove('open');

@@ -439,7 +439,7 @@ class ApiClient
      * @return array
      * --------------------------------------------------------
      */
-    public function updateWebhook(int $clientId, string $webhookUrl): array
+    public function updateWebhook(int $clientId, string $webhookUrl, ?string $customSecret = null): array
     {
         try {
             if ($clientId <= 0) {
@@ -468,8 +468,17 @@ class ApiClient
                 ];
             }
 
-            // Generate a new webhook secret
-            $webhookSecret = bin2hex(random_bytes(24));  // 48-char hex secret
+            // Determine webhook secret: use custom secret if provided, else keep existing, else generate new
+            $webhookSecret = trim((string)$customSecret);
+            if ($webhookSecret === '') {
+                $curStmt = $this->db->prepare("SELECT webhook_secret FROM api_clients WHERE id = ?");
+                $curStmt->execute([$clientId]);
+                $cur = $curStmt->fetch();
+                $webhookSecret = trim((string)($cur['webhook_secret'] ?? ''));
+                if ($webhookSecret === '') {
+                    $webhookSecret = bin2hex(random_bytes(24));  // 48-char hex secret
+                }
+            }
 
             $stmt = $this->db->prepare(
                 "UPDATE api_clients SET webhook_url = ?, webhook_secret = ? WHERE id = ?"
