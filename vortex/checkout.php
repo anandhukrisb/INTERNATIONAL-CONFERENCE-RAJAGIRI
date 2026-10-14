@@ -31,7 +31,12 @@ $sessionData = $sessionResult['data'] ?? null;
 $errorMessage = $sessionResult['message'] ?? 'Invalid or expired checkout session.';
 $errorCode = $sessionResult['error_code'] ?? 400;
 
-$razorpayKeyId = trim($_ENV['RAZORPAY_KEY_ID'] ?? '');
+$isTestMode = ($sessionData['is_test_mode'] ?? 1) == 1;
+$razorpayKeyId = trim(
+    $isTestMode
+        ? ($_ENV['RAZORPAY_TEST_KEY_ID'] ?? $_ENV['RAZORPAY_KEY_ID'] ?? '')
+        : ($_ENV['RAZORPAY_LIVE_KEY_ID'] ?? $_ENV['RAZORPAY_KEY_ID'] ?? '')
+);
 
 // Check if transaction is already completed
 $isAlreadyPaid = false;

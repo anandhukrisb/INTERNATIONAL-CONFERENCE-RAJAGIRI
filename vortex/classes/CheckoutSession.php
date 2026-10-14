@@ -321,7 +321,8 @@ class CheckoutSession
 
         // Detect project subfolder if applicable
         $scriptDir = dirname($_SERVER['SCRIPT_NAME'] ?? '');
-        if (!empty($_ENV['APP_URL'])) {
+        $isLocal = (!empty($_SERVER['HTTP_HOST']) && (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false));
+        if (!$isLocal && !empty($_ENV['APP_URL'])) {
             return rtrim($_ENV['APP_URL'], '/') . '/vortex/checkout.php?token=' . urlencode($sessionToken);
         }
 

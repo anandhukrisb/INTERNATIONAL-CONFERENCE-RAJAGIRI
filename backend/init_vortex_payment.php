@@ -6,8 +6,15 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/db.php';
 
 // Vortex Gateway Configuration
+$isLocal = (!empty($_SERVER['HTTP_HOST']) && (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false));
 $rawApiUrl = $env['VORTEX_API_URL'] ?? getenv('VORTEX_API_URL') ?: '';
-if (empty($rawApiUrl)) {
+
+if ($isLocal) {
+    // When running locally on dev server, route to the local Vortex instance
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? null) == 443;
+    $protocol = $isHttps ? 'https://' : 'http://';
+    $rawApiUrl = $protocol . $_SERVER['HTTP_HOST'] . '/vortex/api';
+} elseif (empty($rawApiUrl)) {
     $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? null) == 443;
     $protocol = $isHttps ? 'https://' : 'http://';
     $host = $_SERVER['HTTP_HOST'] ?? 'icswhmh.com';

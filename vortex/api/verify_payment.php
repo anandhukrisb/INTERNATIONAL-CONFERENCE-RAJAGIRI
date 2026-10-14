@@ -151,11 +151,11 @@ try {
     // --------------------------------------------------------
 
     if (isset($transaction['is_test_mode']) && $transaction['is_test_mode'] == 1) {
-        $keyId = trim($_ENV['RAZORPAY_TEST_KEY_ID'] ?? '');
-        $keySecret = trim($_ENV['RAZORPAY_TEST_KEY_SECRET'] ?? '');
+        $keyId = trim($_ENV['RAZORPAY_TEST_KEY_ID'] ?? $_ENV['RAZORPAY_KEY_ID'] ?? '');
+        $keySecret = trim($_ENV['RAZORPAY_TEST_KEY_SECRET'] ?? $_ENV['RAZORPAY_KEY_SECRET'] ?? '');
     } else {
-        $keyId = trim($_ENV['RAZORPAY_LIVE_KEY_ID'] ?? '');
-        $keySecret = trim($_ENV['RAZORPAY_LIVE_KEY_SECRET'] ?? '');
+        $keyId = trim($_ENV['RAZORPAY_LIVE_KEY_ID'] ?? $_ENV['RAZORPAY_KEY_ID'] ?? '');
+        $keySecret = trim($_ENV['RAZORPAY_LIVE_KEY_SECRET'] ?? $_ENV['RAZORPAY_KEY_SECRET'] ?? '');
     }
 
     if (empty($keyId) || empty($keySecret)) {

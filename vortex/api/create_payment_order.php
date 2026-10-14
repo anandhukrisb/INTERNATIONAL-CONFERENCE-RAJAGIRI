@@ -21,6 +21,15 @@
  * ------------------------------------------------------------
  */
 
+// Explicitly load .env from project root
+if (file_exists(__DIR__ . '/../helpers/env_loader.php')) {
+    require_once __DIR__ . '/../helpers/env_loader.php';
+    if (function_exists('loadEnv')) {
+        if (file_exists(__DIR__ . '/../.env')) loadEnv(__DIR__ . '/../.env');
+        if (file_exists(__DIR__ . '/../../.env')) loadEnv(__DIR__ . '/../../.env');
+    }
+}
+
 require_once __DIR__ . '/../classes/Auth.php';
 require_once __DIR__ . '/../classes/Payment.php';
 require_once __DIR__ . '/../classes/Event.php';
