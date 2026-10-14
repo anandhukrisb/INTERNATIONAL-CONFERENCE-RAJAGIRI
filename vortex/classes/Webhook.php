@@ -23,6 +23,7 @@
 
 require_once __DIR__ . '/Database.php';
 require_once __DIR__ . '/Logger.php';
+require_once __DIR__ . '/TransactionTimeline.php';
 
 
 class Webhook
@@ -138,7 +139,24 @@ class Webhook
              * ------------------------------------------------
              */
 
-            $supportedEvents = ['payment.captured', 'payment.failed'];
+            $supportedEvents = [
+                // Payment events
+                'payment.authorized',
+                'payment.captured',
+                'payment.failed',
+                // Dispute events
+                'payment.dispute.created',
+                'payment.dispute.won',
+                'payment.dispute.lost',
+                'payment.dispute.closed',
+                'payment.dispute.under_review',
+                'payment.dispute.action_required',
+                // Refund events
+                'refund.created',
+                'refund.processed',
+                'refund.failed',
+                'refund.speed_changed'
+            ];
 
             if (!in_array($eventName, $supportedEvents, true)) {
                 Logger::info(
@@ -146,7 +164,6 @@ class Webhook
                     . 'Event: ' . $eventName . ', Event ID: ' . $razorpayEventId
                 );
 
-                // Save unsupported webhook as PROCESSED so duplicate deliveries are ignored
                 $payloadJson = json_encode($event);
                 if ($payloadJson !== false) {
                     $insertIgnoredQuery = "INSERT INTO webhooks (
@@ -176,63 +193,57 @@ class Webhook
 
             /**
              * ------------------------------------------------
-             * 5. Extract & Validate Payment Entity
+             * 5. Extract Entities (Payment, Refund, Dispute)
              * ------------------------------------------------
              */
 
             $paymentEntity = $event['payload']['payment']['entity'] ?? null;
+            $refundEntity  = $event['payload']['refund']['entity'] ?? null;
+            $disputeEntity = $event['payload']['dispute']['entity'] ?? null;
 
-            if (!is_array($paymentEntity) || empty($paymentEntity)) {
-                Logger::error('Webhook processing failed: Payment entity missing in event ' . $eventName);
-                return [
-                    'status' => 'FAILED',
-                    'message' => 'Payment entity is missing from webhook.'
-                ];
-            }
+            $paymentId = trim((string) (
+                $paymentEntity['id'] ??
+                $refundEntity['payment_id'] ??
+                $disputeEntity['payment_id'] ??
+                ''
+            ));
 
-            $paymentId = trim((string) ($paymentEntity['id'] ?? ''));
-            $orderId   = trim((string) ($paymentEntity['order_id'] ?? ''));
-
-            if ($paymentId === '') {
-                Logger::error('Webhook processing failed: Payment ID is missing.');
-                return [
-                    'status' => 'FAILED',
-                    'message' => 'Razorpay payment ID is missing.'
-                ];
-            }
-
-            if ($orderId === '') {
-                Logger::error('Webhook processing failed: Order ID is missing for Payment ID: ' . $paymentId);
-                return [
-                    'status' => 'FAILED',
-                    'message' => 'Razorpay order ID is missing.'
-                ];
-            }
+            $orderId = trim((string) (
+                $paymentEntity['order_id'] ??
+                ''
+            ));
 
 
             /**
              * ------------------------------------------------
              * 6. Find Corresponding Vortex Transaction
              * ------------------------------------------------
+             * Search by Order ID first, fallback to Payment ID
              */
 
-            $txQuery = "SELECT id, vortex_transaction_id, razorpay_order_id, razorpay_payment_id,
-                               amount, currency, status, api_client_id
-                        FROM transactions
-                        WHERE razorpay_order_id = ?
-                        LIMIT 1";
+            $transaction = null;
 
-            $txStmt = $this->db->prepare($txQuery);
-            $txStmt->execute([$orderId]);
-            $transaction = $txStmt->fetch();
+            if ($orderId !== '') {
+                $txStmt = $this->db->prepare("SELECT * FROM transactions WHERE razorpay_order_id = ? LIMIT 1");
+                $txStmt->execute([$orderId]);
+                $transaction = $txStmt->fetch();
+            }
+
+            if (!$transaction && $paymentId !== '') {
+                $txStmt = $this->db->prepare("SELECT * FROM transactions WHERE razorpay_payment_id = ? LIMIT 1");
+                $txStmt->execute([$paymentId]);
+                $transaction = $txStmt->fetch();
+                if ($transaction && empty($orderId)) {
+                    $orderId = (string)($transaction['razorpay_order_id'] ?? '');
+                }
+            }
 
             if (!$transaction) {
                 Logger::error(
-                    'Webhook processing failed: Transaction not found in database for Order ID: '
-                    . $orderId . ', Payment ID: ' . $paymentId
+                    'Webhook processing failed: Transaction not found in database for Order: '
+                    . ($orderId ?: 'EMPTY') . ', Payment: ' . ($paymentId ?: 'EMPTY')
                 );
 
-                // Safely record failed webhook attempt for tracking
                 $payloadJson = json_encode($event);
                 if ($payloadJson !== false) {
                     $insertFailQuery = "INSERT INTO webhooks (
@@ -248,8 +259,8 @@ class Webhook
                     $insertFailStmt->execute([
                         $razorpayEventId,
                         $eventName,
-                        $paymentId,
-                        $orderId,
+                        $paymentId ?: null,
+                        $orderId ?: null,
                         (string) $signature,
                         $payloadJson
                     ]);
@@ -257,188 +268,76 @@ class Webhook
 
                 return [
                     'status' => 'FAILED',
-                    'message' => 'Transaction not found for the provided order ID.'
+                    'message' => 'Transaction not found for the provided order/payment ID.'
                 ];
             }
 
 
             /**
              * ------------------------------------------------
-             * 7. Verify Payment Matches Expected Transaction Data
+             * 7. Determine Target State & Actions
              * ------------------------------------------------
-             */
-
-            // Verify Order ID matches
-            if ($transaction['razorpay_order_id'] !== $orderId) {
-                Logger::error("Webhook order ID mismatch: Stored {$transaction['razorpay_order_id']} vs Received {$orderId}");
-                return [
-                    'status' => 'FAILED',
-                    'message' => 'Transaction order ID mismatch.'
-                ];
-            }
-
-            // Verify Amount (Razorpay entity amount is in subunits/paise)
-            if (isset($paymentEntity['amount'])) {
-                $receivedPaise = (int) $paymentEntity['amount'];
-                $expectedPaise = (int) round((float) $transaction['amount'] * 100);
-
-                if ($receivedPaise !== $expectedPaise) {
-                    Logger::error(
-                        "Webhook payment amount mismatch for Order ID: {$orderId}. "
-                        . "Expected paise: {$expectedPaise}, Received paise: {$receivedPaise}"
-                    );
-                    return [
-                        'status' => 'FAILED',
-                        'message' => 'Payment amount mismatch.'
-                    ];
-                }
-            }
-
-            // Verify Currency (if provided in payment entity)
-            if (!empty($paymentEntity['currency'])) {
-                $receivedCurrency = strtoupper(trim((string) $paymentEntity['currency']));
-                $expectedCurrency = strtoupper(trim((string) $transaction['currency']));
-
-                if ($receivedCurrency !== $expectedCurrency) {
-                    Logger::error(
-                        "Webhook payment currency mismatch for Order ID: {$orderId}. "
-                        . "Expected: {$expectedCurrency}, Received: {$receivedCurrency}"
-                    );
-                    return [
-                        'status' => 'FAILED',
-                        'message' => 'Payment currency mismatch.'
-                    ];
-                }
-            }
-
-
-            /**
-             * ------------------------------------------------
-             * 8. Handle Race Conditions & Existing Final States
-             * ------------------------------------------------
-             * Protect against overwriting final states:
-             * - SUCCESS must never become FAILED.
-             * - FAILED must never become SUCCESS.
-             * - If verify_payment.php already marked SUCCESS, acknowledge idempotently.
              */
 
             $currentTxStatus = strtoupper((string) $transaction['status']);
-
-            // Case A: Transaction is ALREADY SUCCESS
-            if ($currentTxStatus === 'SUCCESS') {
-                Logger::info(
-                    "Webhook received for already SUCCESS transaction: {$transaction['vortex_transaction_id']} "
-                    . "(Order ID: {$orderId}, Incoming Event: {$eventName})"
-                );
-
-                // Save webhook as PROCESSED
-                $payloadJson = json_encode($event);
-                $saveWebhookQuery = "INSERT INTO webhooks (
-                                        razorpay_event_id,
-                                        event_type,
-                                        payment_id,
-                                        order_id,
-                                        signature,
-                                        payload,
-                                        status,
-                                        processed_at
-                                     ) VALUES (?, ?, ?, ?, ?, ?, 'PROCESSED', CURRENT_TIMESTAMP)";
-                $saveStmt = $this->db->prepare($saveWebhookQuery);
-                $saveStmt->execute([
-                    $razorpayEventId,
-                    $eventName,
-                    $paymentId,
-                    $orderId,
-                    (string) $signature,
-                    $payloadJson
-                ]);
-
-                // Ensure razorpay_payment_id is populated if previously blank
-                if (empty($transaction['razorpay_payment_id']) && $eventName === 'payment.captured') {
-                    $fillPaymentIdQuery = "UPDATE transactions SET razorpay_payment_id = ? WHERE id = ? AND (razorpay_payment_id IS NULL OR razorpay_payment_id = '')";
-                    $fillStmt = $this->db->prepare($fillPaymentIdQuery);
-                    $fillStmt->execute([$paymentId, $transaction['id']]);
-                }
-
-                return [
-                    'status' => 'SUCCESS',
-                    'message' => 'Webhook acknowledged: transaction already marked as SUCCESS.',
-                    'event' => $eventName,
-                    'payment_id' => $paymentId,
-                    'order_id' => $orderId,
-                    'payment_status' => 'SUCCESS'
-                ];
-            }
-
-            // Case B: Transaction is ALREADY FAILED
-            if ($currentTxStatus === 'FAILED') {
-                Logger::info(
-                    "Webhook received for already FAILED transaction: {$transaction['vortex_transaction_id']} "
-                    . "(Order ID: {$orderId}, Incoming Event: {$eventName})"
-                );
-
-                $payloadJson = json_encode($event);
-                $saveWebhookQuery = "INSERT INTO webhooks (
-                                        razorpay_event_id,
-                                        event_type,
-                                        payment_id,
-                                        order_id,
-                                        signature,
-                                        payload,
-                                        status,
-                                        processed_at
-                                     ) VALUES (?, ?, ?, ?, ?, ?, 'PROCESSED', CURRENT_TIMESTAMP)";
-                $saveStmt = $this->db->prepare($saveWebhookQuery);
-                $saveStmt->execute([
-                    $razorpayEventId,
-                    $eventName,
-                    $paymentId,
-                    $orderId,
-                    (string) $signature,
-                    $payloadJson
-                ]);
-
-                return [
-                    'status' => 'SUCCESS',
-                    'message' => 'Webhook acknowledged: transaction is in terminal FAILED state.',
-                    'event' => $eventName,
-                    'payment_id' => $paymentId,
-                    'order_id' => $orderId,
-                    'payment_status' => 'FAILED'
-                ];
-            }
-
-
-            /**
-             * ------------------------------------------------
-             * 9. Atomic State Transition (PENDING -> SUCCESS / FAILED)
-             * ------------------------------------------------
-             * Uses database transaction:
-             *   BEGIN
-             *     INSERT webhook record
-             *     UPDATE transaction status (guarded by WHERE status = 'PENDING')
-             *     UPDATE webhook to PROCESSED
-             *   COMMIT
-             * On error:
-             *   ROLLBACK
-             * ------------------------------------------------
-             */
-
-            $targetStatus = ($eventName === 'payment.captured') ? 'SUCCESS' : 'FAILED';
-            $payloadJson  = json_encode($event);
+            $targetStatus    = $currentTxStatus;
+            $payloadJson     = json_encode($event);
 
             if ($payloadJson === false) {
-                Logger::error('Webhook payload could not be JSON encoded.');
-                return [
-                    'status' => 'FAILED',
-                    'message' => 'Unable to encode webhook payload.'
-                ];
+                return ['status' => 'FAILED', 'message' => 'Unable to encode webhook payload.'];
+            }
+
+            switch ($eventName) {
+                case 'payment.captured':
+                    $targetStatus = 'SUCCESS';
+                    break;
+
+                case 'payment.failed':
+                    if ($currentTxStatus === 'PENDING') {
+                        $targetStatus = 'FAILED';
+                    }
+                    break;
+
+                case 'payment.authorized':
+                    // Authorized; remain PENDING until captured unless already SUCCESS
+                    if ($currentTxStatus === 'PENDING') {
+                        $targetStatus = 'PENDING';
+                    }
+                    break;
+
+                case 'refund.processed':
+                    $targetStatus = 'REFUNDED';
+                    break;
+
+                case 'refund.created':
+                case 'refund.failed':
+                case 'refund.speed_changed':
+                    // Maintain current transaction status, log refund activity
+                    break;
+
+                case 'payment.dispute.created':
+                    $targetStatus = 'DISPUTED';
+                    break;
+
+                case 'payment.dispute.won':
+                    $targetStatus = 'SUCCESS';
+                    break;
+
+                case 'payment.dispute.lost':
+                    $targetStatus = 'REFUNDED';
+                    break;
+
+                case 'payment.dispute.under_review':
+                case 'payment.dispute.action_required':
+                case 'payment.dispute.closed':
+                    // Maintained in webhooks audit trail
+                    break;
             }
 
             $this->db->beginTransaction();
 
             try {
-                // Insert webhook record with initial status 'RECEIVED'
+                // 1. Insert Webhook Record
                 $insertWebhookQuery = "INSERT INTO webhooks (
                                             razorpay_event_id,
                                             event_type,
@@ -446,88 +345,127 @@ class Webhook
                                             order_id,
                                             signature,
                                             payload,
-                                            status
-                                       ) VALUES (?, ?, ?, ?, ?, ?, 'RECEIVED')";
-
+                                            status,
+                                            processed_at
+                                       ) VALUES (?, ?, ?, ?, ?, ?, 'PROCESSED', CURRENT_TIMESTAMP)";
                 $insertStmt = $this->db->prepare($insertWebhookQuery);
                 $insertStmt->execute([
                     $razorpayEventId,
                     $eventName,
-                    $paymentId,
-                    $orderId,
+                    $paymentId ?: null,
+                    $orderId ?: null,
                     (string) $signature,
                     $payloadJson
                 ]);
 
-                $webhookDatabaseId = $this->db->lastInsertId();
+                // 2. Update Transaction if status or payment_id changed
+                $statusChanged = ($targetStatus !== $currentTxStatus);
+                $payIdNeeded   = (empty($transaction['razorpay_payment_id']) && !empty($paymentId));
 
-                // Atomically update transaction status ONLY if currently PENDING
-                $updateTxQuery = "UPDATE transactions
-                                  SET razorpay_payment_id = ?,
-                                      status = ?
-                                  WHERE id = ?
-                                    AND status = 'PENDING'";
+                if ($statusChanged || $payIdNeeded) {
+                    $updateSql = "UPDATE transactions SET updated_at = NOW()";
+                    $params = [];
 
-                $updateTxStmt = $this->db->prepare($updateTxQuery);
-                $updateTxStmt->execute([
-                    $paymentId,
-                    $targetStatus,
-                    $transaction['id']
-                ]);
+                    if ($statusChanged) {
+                        $updateSql .= ", status = ?";
+                        $params[] = $targetStatus;
+                    }
+                    if ($payIdNeeded || !empty($paymentId)) {
+                        $updateSql .= ", razorpay_payment_id = ?";
+                        $params[] = $paymentId;
+                    }
 
-                if ($updateTxStmt->rowCount() > 0) {
-                    // Successfully transitioned transaction; mark webhook as PROCESSED
-                    $updateWebhookQuery = "UPDATE webhooks
-                                           SET status = 'PROCESSED',
-                                               processed_at = CURRENT_TIMESTAMP
-                                           WHERE id = ?";
-                    $updateWebhookStmt = $this->db->prepare($updateWebhookQuery);
-                    $updateWebhookStmt->execute([$webhookDatabaseId]);
+                    $updateSql .= " WHERE id = ?";
+                    $params[] = $transaction['id'];
 
-                    $this->db->commit();
-
-                    $this->dispatchClientWebhook($transaction['vortex_transaction_id'], $targetStatus, $transaction['api_client_id']);
-
-                    Logger::info(
-                        "Webhook processed successfully. Event: {$eventName}, "
-                        . "Vortex Tx: {$transaction['vortex_transaction_id']}, "
-                        . "Order ID: {$orderId}, Payment ID: {$paymentId}, New Status: {$targetStatus}"
-                    );
-
-                    return [
-                        'status' => 'SUCCESS',
-                        'message' => 'Webhook processed successfully.',
-                        'event' => $eventName,
-                        'payment_id' => $paymentId,
-                        'order_id' => $orderId,
-                        'payment_status' => $targetStatus
-                    ];
-                } else {
-                    // Transaction was modified concurrently (e.g. checkout verification completed first)
-                    // Mark webhook as PROCESSED to avoid reprocessing
-                    $updateWebhookQuery = "UPDATE webhooks
-                                           SET status = 'PROCESSED',
-                                               processed_at = CURRENT_TIMESTAMP
-                                           WHERE id = ?";
-                    $updateWebhookStmt = $this->db->prepare($updateWebhookQuery);
-                    $updateWebhookStmt->execute([$webhookDatabaseId]);
-
-                    $this->db->commit();
-
-                    Logger::info(
-                        "Webhook acknowledged: Transaction {$transaction['vortex_transaction_id']} "
-                        . "was resolved concurrently by verification."
-                    );
-
-                    return [
-                        'status' => 'SUCCESS',
-                        'message' => 'Webhook acknowledged: transaction state already resolved.',
-                        'event' => $eventName,
-                        'payment_id' => $paymentId,
-                        'order_id' => $orderId,
-                        'payment_status' => $targetStatus
-                    ];
+                    $updateStmt = $this->db->prepare($updateSql);
+                    $updateStmt->execute($params);
                 }
+
+                // 3. Handle Refunds Table Integration
+                if (str_starts_with($eventName, 'refund.') && !empty($refundEntity)) {
+                    $refundId  = $refundEntity['id'] ?? null;
+                    $rfAmount  = isset($refundEntity['amount']) ? ($refundEntity['amount'] / 100) : $transaction['amount'];
+                    $rfStatus  = ($eventName === 'refund.processed') ? 'PROCESSED' : (($eventName === 'refund.failed') ? 'FAILED' : 'PENDING');
+                    $rfNotes   = $refundEntity['notes']['reason'] ?? ($refundEntity['speed_requested'] ?? 'Razorpay Webhook');
+
+                    if (!empty($refundId)) {
+                        $rfStmt = $this->db->prepare("
+                            INSERT INTO refunds (transaction_id, razorpay_refund_id, amount, reason, status)
+                            VALUES (?, ?, ?, ?, ?)
+                            ON DUPLICATE KEY UPDATE status = VALUES(status)
+                        ");
+                        $rfStmt->execute([
+                            $transaction['id'],
+                            $refundId,
+                            $rfAmount,
+                            $rfNotes,
+                            $rfStatus
+                        ]);
+                    }
+                }
+
+                // 4. Record event in chronological transaction_timeline
+                $timelineReason = match ($eventName) {
+                    'payment.captured'             => 'Payment captured successfully via Razorpay (' . ($paymentEntity['method'] ?? 'card/upi/netbanking') . ')',
+                    'payment.failed'               => 'Payment attempt failed: ' . ($paymentEntity['error_description'] ?? 'Bank/User declined payment'),
+                    'payment.authorized'           => 'Payment authorized, awaiting capture/settlement',
+                    'payment.dispute.created'      => 'Chargeback / Dispute opened by customer with their bank',
+                    'payment.dispute.won'          => 'Dispute won by merchant; bank dismissed chargeback and funds restored',
+                    'payment.dispute.lost'         => 'Dispute lost; bank debited funds to refund customer',
+                    'payment.dispute.under_review' => 'Dispute under bank/merchant review',
+                    'payment.dispute.action_required' => 'Dispute evidence required from merchant',
+                    'payment.dispute.closed'       => 'Dispute lifecycle closed',
+                    'refund.created'               => 'Refund initiated (' . ($refundEntity['id'] ?? '') . ')',
+                    'refund.processed'             => 'Customer got money back; refund processed successfully',
+                    'refund.failed'                => 'Refund attempt failed by customer bank; funds remained with merchant',
+                    'refund.speed_changed'         => 'Refund processing speed updated',
+                    default                        => 'Webhook event: ' . $eventName
+                };
+
+                TransactionTimeline::record(
+                    $transaction['vortex_transaction_id'],
+                    strtoupper(str_replace('.', '_', $eventName)),
+                    $targetStatus,
+                    [
+                        'transaction_id' => $transaction['id'],
+                        'order_id'       => $orderId,
+                        'payment_id'     => $paymentId,
+                        'amount'         => $transaction['amount'],
+                        'currency'       => $transaction['currency'] ?? 'INR',
+                        'reason'         => $timelineReason,
+                        'source'         => 'RAZORPAY_WEBHOOK',
+                        'metadata'       => [
+                            'razorpay_event_id' => $razorpayEventId,
+                            'event'             => $eventName,
+                            'method'            => $paymentEntity['method'] ?? null,
+                            'error_code'        => $paymentEntity['error_code'] ?? null,
+                            'error_description' => $paymentEntity['error_description'] ?? null
+                        ]
+                    ]
+                );
+
+                $this->db->commit();
+
+                // 4. Dispatch Client Webhook if status transitioned
+                if ($statusChanged) {
+                    $this->dispatchClientWebhook($transaction['vortex_transaction_id'], $targetStatus, $transaction['api_client_id']);
+                }
+
+                Logger::info(
+                    "Webhook processed successfully. Event: {$eventName}, "
+                    . "Vortex Tx: {$transaction['vortex_transaction_id']}, "
+                    . "Status: {$currentTxStatus} -> {$targetStatus}, Payment ID: {$paymentId}"
+                );
+
+                return [
+                    'status' => 'SUCCESS',
+                    'message' => 'Webhook processed successfully.',
+                    'event' => $eventName,
+                    'payment_id' => $paymentId,
+                    'order_id' => $orderId,
+                    'payment_status' => $targetStatus
+                ];
 
             } catch (\Throwable $transError) {
                 if ($this->db->inTransaction()) {
@@ -582,13 +520,14 @@ class Webhook
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+            curl_setopt($ch, CURLOPT_USERAGENT, 'Vortex-Webhook-Dispatcher/1.0');
             curl_setopt($ch, CURLOPT_HTTPHEADER, [
                 'Content-Type: application/json',
                 'X-Vortex-Signature: ' . $signature
             ]);
             curl_setopt($ch, CURLOPT_TIMEOUT, 5); // 5 second timeout so we don't block Razorpay
             
-            if (strpos($client['webhook_url'], 'localhost') !== false) {
+            if (strpos($client['webhook_url'], 'localhost') !== false || strpos($client['webhook_url'], '127.0.0.1') !== false) {
                 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
                 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             }

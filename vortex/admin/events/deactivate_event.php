@@ -15,6 +15,10 @@ require_once __DIR__ . '/../../classes/Logger.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+if (empty($_SESSION['vortex_admin_id'])) {
+    header('Location: ../login.php');
+    exit;
+}
 
 $eventId = trim((string)($_POST['event_id'] ?? $_GET['event_id'] ?? ''));
 

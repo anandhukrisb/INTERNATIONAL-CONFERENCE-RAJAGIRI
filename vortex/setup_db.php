@@ -1,29 +1,70 @@
 <?php
-// Setup script to initialize database and tables automatically
+/**
+ * ------------------------------------------------------------
+ * setup_db.php
+ * ------------------------------------------------------------
+ * Project : Vortex Unified Payment Gateway
+ * Purpose : Automatically creates/initializes database tables
+ *           from database/schema.sql (or imports a provided SQL dump).
+ *
+ * Usage:
+ * php setup_db.php                (runs database/schema.sql)
+ * php setup_db.php [path_to.sql]  (imports custom dump/migration)
+ * ------------------------------------------------------------
+ */
+
+if (php_sapi_name() !== 'cli') {
+    http_response_code(403);
+    die("Access denied: Database setup script can only be run via CLI.\n");
+}
 
 require_once __DIR__ . '/config/database.php';
 
 echo "=== Vortex Payment Gateway Database Setup ===\n";
 
 try {
-    // 1. Connect to the database
-    echo "Connecting to MySQL server on " . DB_HOST . ":" . DB_PORT . " as '" . DB_USER . "'...\n";
-    $dsn = "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME;
-    $pdo = new PDO($dsn, DB_USER, DB_PASS, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+    $dbName = DB_NAME;
+    $host   = DB_HOST;
+    $port   = DB_PORT;
+    $user   = DB_USER;
+    $pass   = DB_PASS;
 
-    // 2. Read schema file
-    $schemaFile = __DIR__ . '/database/schema.sql';
-    if (!file_exists($schemaFile)) {
-        throw new Exception("Schema file not found at " . $schemaFile);
+    // 1. Connect to MySQL server (auto-create database if not exists)
+    echo "Connecting to MySQL server on {$host}:{$port} as '{$user}'...\n";
+    
+    try {
+        $dsn = "mysql:host={$host};port={$port};dbname={$dbName}";
+        $pdo = new PDO($dsn, $user, $pass, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+    } catch (PDOException $e) {
+        // Unknown database error (1049) -> attempt to create it
+        if ($e->getCode() == 1049 || strpos($e->getMessage(), 'Unknown database') !== false) {
+            echo "Database '{$dbName}' not found. Attempting to create it...\n";
+            $serverPdo = new PDO("mysql:host={$host};port={$port}", $user, $pass, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+            $serverPdo->exec("CREATE DATABASE IF NOT EXISTS `{$dbName}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+            echo "✅ Database '{$dbName}' created.\n";
+
+            $pdo = new PDO("mysql:host={$host};port={$port};dbname={$dbName}", $user, $pass, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        } else {
+            throw $e;
+        }
     }
 
-    $sql = file_get_contents($schemaFile);
+    // 2. Determine target SQL file (default: database/schema.sql)
+    $sqlFile = $argv[1] ?? (__DIR__ . '/database/schema.sql');
+    if (!file_exists($sqlFile)) {
+        throw new Exception("SQL file not found at: {$sqlFile}");
+    }
+
+    echo "Reading SQL from: " . basename($sqlFile) . "...\n";
+    $sql = file_get_contents($sqlFile);
 
     // 3. Execute SQL Statements
-    echo "Running database schema setup...\n";
+    echo "Running SQL setup against '{$dbName}'...\n";
     $pdo->exec($sql);
 
-    echo "✅ Database 'vortex_gateway' and tables ('events', 'api_clients', 'transactions') created successfully!\n";
+    echo "✅ Setup completed successfully on database '{$dbName}'!\n";
+    echo "Tables ready: events, api_clients, transactions, checkout_sessions, admin, refunds, webhooks, transaction_timeline.\n";
+
 } catch (Exception $e) {
     echo "❌ Error during database setup: " . $e->getMessage() . "\n";
     exit(1);

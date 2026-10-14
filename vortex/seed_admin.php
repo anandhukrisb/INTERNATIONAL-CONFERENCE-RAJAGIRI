@@ -3,6 +3,11 @@
  * seed_admin.php – Run once to create the admin table and seed the default admin.
  * DELETE or restrict access after running!
  */
+if (php_sapi_name() !== 'cli') {
+    http_response_code(403);
+    die("Access denied: This setup script can only be run from the command line (CLI).\n");
+}
+
 require_once __DIR__ . '/config/database.php';
 
 $dsn = "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET;

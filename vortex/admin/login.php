@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         try {
             $db   = Database::getInstance()->getConnection();
-            $stmt = $db->prepare("SELECT id, username, password_hash, full_name, is_active FROM admin WHERE username = :u LIMIT 1");
+            $stmt = $db->prepare("SELECT id, username, password_hash, full_name, email, role, avatar_color, is_active FROM admin WHERE username = :u LIMIT 1");
             $stmt->execute([':u' => $username]);
             $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -33,9 +33,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Regenerate session ID to prevent fixation
                 session_regenerate_id(true);
 
-                $_SESSION['vortex_admin_id']       = $admin['id'];
-                $_SESSION['vortex_admin_username']  = $admin['username'];
-                $_SESSION['vortex_admin_fullname']  = $admin['full_name'];
+                $_SESSION['vortex_admin_id']           = $admin['id'];
+                $_SESSION['vortex_admin_username']      = $admin['username'];
+                $_SESSION['vortex_admin_fullname']      = $admin['full_name'];
+                $_SESSION['vortex_admin_email']         = $admin['email'] ?? '';
+                $_SESSION['vortex_admin_role']          = $admin['role'] ?? 'Super Administrator';
+                $_SESSION['vortex_admin_avatar_color']  = $admin['avatar_color'] ?? '#1a73e8';
 
                 // Update last_login
                 $db->prepare("UPDATE admin SET last_login = NOW() WHERE id = :id")->execute([':id' => $admin['id']]);

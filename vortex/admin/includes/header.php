@@ -11,7 +11,7 @@ $activeNav = $activeNav ?? 'dashboard';
 
 // Determine base URL dynamically (must be before auth guard)
 $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
-$adminSubdirs = ['/admin/payments/', '/admin/events/', '/admin/api_clients/', '/admin/refunds/', '/admin/reports/', '/admin/profile/'];
+$adminSubdirs = ['/admin/payments/', '/admin/events/', '/admin/api_clients/'];
 $adminBase = '';
 foreach ($adminSubdirs as $subdir) {
     if (strpos($scriptName, $subdir) !== false) {
@@ -56,10 +56,11 @@ if (empty($_SESSION['vortex_admin_id'])) {
             </form>
 
             <div class="topbar-actions">
-                <span class="user-profile">
-                    <span class="user-avatar"><?= strtoupper(substr($_SESSION['vortex_admin_fullname'] ?? $_SESSION['vortex_admin_username'] ?? 'A', 0, 1)) ?></span>
+                <a href="<?= $adminBase ?>profile.php" class="user-profile <?= ($activeNav === 'profile') ? 'active-profile' : '' ?>" title="Admin Profile & Settings">
+                    <span class="user-avatar" style="<?= !empty($_SESSION['vortex_admin_avatar_color']) ? 'background-color: ' . htmlspecialchars($_SESSION['vortex_admin_avatar_color']) . ';' : '' ?>"><?= strtoupper(substr($_SESSION['vortex_admin_fullname'] ?? $_SESSION['vortex_admin_username'] ?? 'A', 0, 1)) ?></span>
                     <span class="user-name"><?= htmlspecialchars($_SESSION['vortex_admin_fullname'] ?? $_SESSION['vortex_admin_username'] ?? 'Admin') ?></span>
-                </span>
+                    <svg class="profile-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </a>
                 <a href="<?= $adminBase ?>logout.php" class="btn-logout" title="Sign out" onclick="return confirm('Sign out of Vortex Admin?');">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                 </a>
@@ -98,6 +99,12 @@ if (empty($_SESSION['vortex_admin_id'])) {
                         <a href="<?= $adminBase ?>dashboard.php#events" class="<?= $activeNav === 'events' ? 'active' : '' ?>">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                             <span>Events</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<?= $adminBase ?>profile.php" class="<?= $activeNav === 'profile' ? 'active' : '' ?>">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            <span>Admin Profile</span>
                         </a>
                     </li>
                 </ul>

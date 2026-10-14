@@ -12,6 +12,11 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Authentication Guard: Disallow any unauthenticated GET or POST requests
+if (empty($_SESSION['vortex_admin_id'])) {
+    header('Location: login.php');
+    exit;
+}
 
 require_once __DIR__ . '/../classes/Database.php';
 require_once __DIR__ . '/../classes/Event.php';
@@ -186,7 +191,16 @@ $allClients = $apiClientModel->getAllClients(100) ?: [];
 // Recent Transactions
 $recentTx = [];
 try {
-    $recentTxStmt = $db->query("SELECT t.*, e.event_name, c.client_name 
+    $recentTxStmt = $db->query("SELECT t.*, e.event_name, c.client_name,
+                                       (SELECT w.event_type FROM webhooks w 
+                                        WHERE (w.order_id IS NOT NULL AND w.order_id != '' AND w.order_id = t.razorpay_order_id)
+                                           OR (w.payment_id IS NOT NULL AND w.payment_id != '' AND w.payment_id = t.razorpay_payment_id)
+                                        ORDER BY w.id DESC LIMIT 1) AS latest_event,
+                                       (SELECT tl.reason FROM transaction_timeline tl 
+                                        WHERE tl.vortex_transaction_id = t.vortex_transaction_id 
+                                        ORDER BY tl.id DESC LIMIT 1) AS latest_reason,
+                                       (SELECT COUNT(*) FROM transaction_timeline tl 
+                                        WHERE tl.vortex_transaction_id = t.vortex_transaction_id) AS timeline_count
                                 FROM transactions t 
                                 LEFT JOIN events e ON t.event_id = e.event_id 
                                 LEFT JOIN api_clients c ON t.api_client_id = c.id
@@ -364,16 +378,27 @@ if (!in_array($initialTab, ['overview', 'clients', 'events'])) {
                                         if ($tx['status'] === 'SUCCESS') $bClass = 'badge-success';
                                         if ($tx['status'] === 'FAILED') $bClass = 'badge-danger';
                                         if ($tx['status'] === 'REFUNDED') $bClass = 'badge-refunded';
+                                        if ($tx['status'] === 'DISPUTED') $bClass = 'badge-disputed';
                                         ?>
                                         <span class="badge <?= $bClass ?>"><?= htmlspecialchars($displayStatus) ?></span>
+                                        <?php if (!empty($tx['latest_event'])): ?>
+                                            <div style="margin-top: 3px;">
+                                                <span class="badge badge-event" title="Latest Razorpay Event">📡 <?= htmlspecialchars($tx['latest_event']) ?></span>
+                                            </div>
+                                        <?php endif; ?>
+                                        <?php if (!empty($tx['latest_reason'])): ?>
+                                            <div style="margin-top: 4px; font-size: 0.74rem; color: var(--text-muted); max-width: 220px; line-height: 1.25;">
+                                                <?= htmlspecialchars($tx['latest_reason']) ?>
+                                            </div>
+                                        <?php endif; ?>
                                     </td>
                                     <td><span class="font-mono"><?= htmlspecialchars($tx['razorpay_payment_id'] ?? 'N/A') ?></span></td>
                                     <td><?= htmlspecialchars($tx['event_name'] ?? $tx['event_id']) ?></td>
                                     <td><?= htmlspecialchars($tx['client_name'] ?? 'Default Client') ?></td>
                                     <td style="font-size: 0.85rem; color: var(--text-muted);"><?= htmlspecialchars($tx['created_at']) ?></td>
                                     <td>
-                                        <a href="payments/payment_details.php?vortex_transaction_id=<?= urlencode($tx['vortex_transaction_id']) ?>" class="btn btn-secondary btn-sm">
-                                            🔍 Details
+                                        <a href="payments/payment_details.php?vortex_transaction_id=<?= urlencode($tx['vortex_transaction_id']) ?>" class="btn btn-secondary btn-sm" title="View Full Status History & Audit Trail">
+                                            📜 Timeline (<?= (int)($tx['timeline_count'] ?? 0) ?>)
                                         </a>
                                     </td>
                                 </tr>

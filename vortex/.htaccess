@@ -1,0 +1,36 @@
+# ============================================================
+# Vortex Payment Gateway - Apache Production Hardening
+# ============================================================
+
+# 1. Disable directory browsing
+Options -Indexes
+
+# 2. Prevent access to dotfiles and hidden files (e.g. .env, .git)
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# 3. Block access to sensitive file extensions
+<FilesMatch "\.(env|log|sql|json|lock|md|bak|swp|sh|yml|yaml|ini)$">
+    Require all denied
+</FilesMatch>
+
+# 4. Protect internal directories from direct HTTP access
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Deny direct access to internal library and system directories
+    RewriteRule ^(classes|config|database|logs|tests|helpers)/ - [F,L,NC]
+</IfModule>
+
+# 5. Production Security Headers
+<IfModule mod_headers.c>
+    # Prevent MIME type sniffing
+    Header always set X-Content-Type-Options "nosniff"
+
+    # XSS Protection
+    Header always set X-XSS-Protection "1; mode=block"
+
+    # Referrer Policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

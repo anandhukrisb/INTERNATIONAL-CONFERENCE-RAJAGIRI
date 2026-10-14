@@ -1,3 +1,35 @@
-*.log
-.DS_Store
+# Dependencies
+/vendor/
+
+# Environment and sensitive configuration
 .env
+.env.local
+.env.*.local
+.env.backup
+
+# Logs
+*.log
+/logs/*
+!/logs/.gitkeep
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Backup & temporary files
+*.bak
+*.tmp
+*.temp
+*.swp
+*~
+diff.txt
+
+# Testing & Scratch
+/scratch/
+.phpunit.result.cache
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
