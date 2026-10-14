@@ -348,13 +348,31 @@ class Webhook
 
                 $this->db->commit();
 
-                // 8. Notify the client app only on a real status transition
-                if ($statusChanged) {
-                    $this->dispatchClientWebhook(
-                        $transaction['vortex_transaction_id'],
-                        $targetStatus,
-                        $transaction['api_client_id']
-                    );
+                // 8. Notify the client app (Layer 2).
+                //    Notify on a real status change, OR when the client was never told
+                //    this status (e.g. checkout verification already set SUCCESS first,
+                //    so $statusChanged is false but the client still has not been told).
+                $notifiedStatus = strtoupper((string) ($transaction['client_notified_status'] ?? ''));
+                $shouldNotify = $statusChanged
+                    || ($targetStatus !== 'PENDING' && $notifiedStatus !== $targetStatus);
+
+                if ($shouldNotify) {
+                    try {
+                        $delivered = $this->dispatchClientWebhook(
+                            $transaction['vortex_transaction_id'],
+                            $targetStatus,
+                            $transaction['api_client_id']
+                        );
+
+                        if ($delivered) {
+                            $this->db->prepare(
+                                "UPDATE transactions SET client_notified_status = ?, client_notified_at = NOW() WHERE id = ?"
+                            )->execute([$targetStatus, $transaction['id']]);
+                        }
+                    } catch (\Throwable $notifyError) {
+                        // Never fail the Razorpay webhook because the client notification failed
+                        Logger::error('Client notification bookkeeping failed: ' . $notifyError->getMessage());
+                    }
                 }
 
                 Logger::info(
@@ -501,6 +519,7 @@ class Webhook
      * @param string $vortexTxnId
      * @param string $status
      * @param int    $apiClientId
+     * @return bool true if the client answered with HTTP 2xx
      * --------------------------------------------------------
      */
     public function dispatchClientWebhook($vortexTxnId, $status, $apiClientId)
@@ -512,7 +531,7 @@ class Webhook
 
             if (!$client || empty($client['webhook_url']) || empty($client['webhook_secret'])) {
                 Logger::info("Client webhook not dispatched for transaction {$vortexTxnId}: no webhook_url or webhook_secret configured for client ID {$apiClientId}.");
-                return;
+                return false;
             }
 
             $payload = json_encode([
@@ -521,7 +540,8 @@ class Webhook
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
 
-            $signature = hash_hmac('sha256', $payload, $client['webhook_secret']);
+            // trim() so a stray space/newline in the DB value can't break the signature
+            $signature = hash_hmac('sha256', $payload, trim((string) $client['webhook_secret']));
 
             $ch = curl_init($client['webhook_url']);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -552,20 +572,23 @@ class Webhook
                     "Client webhook dispatch failed for transaction {$vortexTxnId} to {$client['webhook_url']}: "
                     . "cURL error: {$curlError}"
                 );
-                return;
+                return false;
             }
 
             if ($httpCode < 200 || $httpCode >= 300) {
                 Logger::error(
                     "Client webhook dispatch received non-2xx response for transaction {$vortexTxnId} "
-                    . "to {$client['webhook_url']}: HTTP {$httpCode}"
+                    . "to {$client['webhook_url']}: HTTP {$httpCode}. Response: "
+                    . substr((string) $response, 0, 300)
                 );
-                return;
+                return false;
             }
 
             Logger::info("Client webhook dispatched successfully for transaction {$vortexTxnId} to {$client['webhook_url']} (HTTP {$httpCode}).");
+            return true;
         } catch (\Throwable $e) {
             Logger::error("Failed to dispatch client webhook for transaction {$vortexTxnId}: " . $e->getMessage());
+            return false;
         }
     }
 }
