@@ -102,6 +102,11 @@ require_once __DIR__ . '/../includes/header.php';
                                         <a href="payment_details.php?vortex_transaction_id=<?= urlencode($tx['vortex_transaction_id']) ?>" class="font-mono" style="color: var(--primary); font-weight: 700; text-decoration: underline;">
                                             <?= htmlspecialchars($tx['vortex_transaction_id']) ?>
                                         </a>
+                                        <?php if (!empty($tx['customer_email'])): ?>
+                                            <div style="font-size: 0.76rem; color: var(--text-gray); margin-top: 3px; display: flex; align-items: center; gap: 4px;" title="Customer / User">
+                                                <span>👤</span> <span style="max-width: 175px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?= htmlspecialchars($tx['customer_email']) ?></span>
+                                            </div>
+                                        <?php endif; ?>
                                     </td>
                                     <td style="font-weight: 700; color: var(--text-main);">₹<?= number_format($tx['amount'], 2) ?></td>
                                     <td>
@@ -131,9 +136,25 @@ require_once __DIR__ . '/../includes/header.php';
                                     <td><?= htmlspecialchars($tx['client_name'] ?? 'Default Client') ?></td>
                                     <td style="font-size: 0.85rem; color: var(--text-muted);"><?= htmlspecialchars($tx['created_at']) ?></td>
                                     <td>
-                                        <a href="payment_details.php?vortex_transaction_id=<?= urlencode($tx['vortex_transaction_id']) ?>" class="btn btn-secondary btn-sm" title="View Full Status History & Audit Trail">
-                                            📜 Timeline (<?= (int)($tx['timeline_count'] ?? 0) ?>)
-                                        </a>
+                                        <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+                                            <a href="payment_details.php?vortex_transaction_id=<?= urlencode($tx['vortex_transaction_id']) ?>" class="btn btn-secondary btn-sm" title="View Full Status History & Audit Trail">
+                                                📜 Timeline (<?= (int)($tx['timeline_count'] ?? 0) ?>)
+                                            </a>
+                                            <?php if ($tx['status'] === 'SUCCESS'): ?>
+                                                <button type="button" class="btn btn-sm"
+                                                        onclick="openRefundModal('<?= htmlspecialchars($tx['vortex_transaction_id'], ENT_QUOTES) ?>', '<?= htmlspecialchars($tx['amount'], ENT_QUOTES) ?>', '<?= htmlspecialchars(addslashes($tx['customer_email'] ?? ''), ENT_QUOTES) ?>')"
+                                                        title="Process Refund via Razorpay"
+                                                        style="background-color: #dc2626; color: white; border: none; font-weight: 600; padding: 5px 10px; border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-size: 0.78rem;">
+                                                    💸 Refund
+                                                </button>
+                                            <?php elseif ($tx['status'] === 'REFUNDED'): ?>
+                                                <span class="badge badge-refunded" style="font-size: 0.74rem; padding: 4px 8px;">↩ Refunded</span>
+                                            <?php else: ?>
+                                                <button type="button" class="btn btn-sm" disabled style="opacity: 0.45; cursor: not-allowed; background: #e2e8f0; color: #64748b; border: none; font-size: 0.75rem; padding: 5px 8px; border-radius: 4px;" title="Refund available only for successful payments">
+                                                    Refund
+                                                </button>
+                                            <?php endif; ?>
+                                        </div>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -145,4 +166,5 @@ require_once __DIR__ . '/../includes/header.php';
     </div>
 </div>
 
+<?php require_once __DIR__ . '/../includes/refund_modal.php'; ?>
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>
