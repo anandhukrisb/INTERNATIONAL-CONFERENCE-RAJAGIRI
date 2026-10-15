@@ -9,16 +9,15 @@ require_once __DIR__ . '/db.php';
 $isLocal = (!empty($_SERVER['HTTP_HOST']) && (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false));
 $rawApiUrl = $env['VORTEX_API_URL'] ?? getenv('VORTEX_API_URL') ?: '';
 
-if ($isLocal) {
-    // When running locally on dev server, route to the local Vortex instance
+if (empty($rawApiUrl)) {
     $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? null) == 443;
     $protocol = $isHttps ? 'https://' : 'http://';
-    $rawApiUrl = $protocol . $_SERVER['HTTP_HOST'] . '/vortex/api';
-} elseif (empty($rawApiUrl)) {
-    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? null) == 443;
-    $protocol = $isHttps ? 'https://' : 'http://';
-    $host = $_SERVER['HTTP_HOST'] ?? 'icswhmh.com';
-    $rawApiUrl = $protocol . $host . '/vortex/api';
+    if ($isLocal) {
+        $rawApiUrl = $protocol . $_SERVER['HTTP_HOST'] . '/vortex/api';
+    } else {
+        $host = $_SERVER['HTTP_HOST'] ?? 'rpay.rajagiri.edu';
+        $rawApiUrl = $protocol . $host . '/api';
+    }
 }
 
 $vortexApiUrl = rtrim($rawApiUrl, '/') . '/create_payment_order.php';
@@ -26,12 +25,12 @@ $vortexApiUrl = rtrim($rawApiUrl, '/') . '/create_payment_order.php';
 if (!preg_match('#^https?://#i', $vortexApiUrl)) {
     $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? null) == 443;
     $protocol = $isHttps ? 'https://' : 'http://';
-    $host = $_SERVER['HTTP_HOST'] ?? 'icswhmh.com';
+    $host = $_SERVER['HTTP_HOST'] ?? 'rpay.rajagiri.edu';
     $vortexApiUrl = $protocol . $host . '/' . ltrim($vortexApiUrl, '/');
 }
 
-$vortexApiKey = $env['VORTEX_API_KEY'] ?? getenv('VORTEX_API_KEY') ?: 'test_ea1b4a6263fc0b0fb0ad8680be4d4087';
-$vortexApiSecret = $env['VORTEX_API_SECRET'] ?? getenv('VORTEX_API_SECRET') ?: 'e415495af5e85622c1ab65cf45199165';
+$vortexApiKey = $env['VORTEX_API_KEY'] ?? getenv('VORTEX_API_KEY') ?: '839109936a140f77e293b0c17c50173f';
+$vortexApiSecret = $env['VORTEX_API_SECRET'] ?? getenv('VORTEX_API_SECRET') ?: '0b48b7bd0f581246fc3f80130ba8c2e9';
 $vortexEventId = $env['VORTEX_EVENT_ID'] ?? getenv('VORTEX_EVENT_ID') ?: 'ICSW20261011MV3SALAS2FM';
 
 try {
@@ -116,9 +115,18 @@ try {
     $stmtUpdate->execute([':txn_id' => $vortexTxnId, ':reg_id' => $regId]);
     
     // 6. Return Success Response
+    $paymentUrl = $result['data']['payment_url'] ?? '';
+    // If the remote gateway's own .env still has the old domain (icswhmh.com),
+    // normalize the checkout URL to match the configured gateway host
+    $gatewayHost = parse_url($vortexApiUrl, PHP_URL_HOST);
+    $gatewayScheme = parse_url($vortexApiUrl, PHP_URL_SCHEME) ?: 'https';
+    if ($gatewayHost && !empty($paymentUrl) && strpos($paymentUrl, 'icswhmh.com') !== false) {
+        $paymentUrl = preg_replace('#^https?://[^/]+(?:/vortex)?/checkout\.php#i', $gatewayScheme . '://' . $gatewayHost . '/checkout.php', $paymentUrl);
+    }
+
     echo json_encode([
         'success' => true,
-        'payment_url' => $result['data']['payment_url'],
+        'payment_url' => $paymentUrl,
         'vortex_transaction_id' => $vortexTxnId
     ]);
 

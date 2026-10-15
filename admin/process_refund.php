@@ -45,19 +45,19 @@ try {
     if (empty($rawApiUrl)) {
         $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? null) == 443;
         $protocol = $isHttps ? 'https://' : 'http://';
-        $host = $_SERVER['HTTP_HOST'] ?? 'icswhmh.com';
-        $rawApiUrl = $protocol . $host . '/vortex/api';
+        $host = $_SERVER['HTTP_HOST'] ?? 'rpay.rajagiri.edu';
+        $rawApiUrl = $protocol . $host . '/api';
     }
 
     $vortexApiUrl = rtrim($rawApiUrl, '/') . '/create_refund.php';
     if (!preg_match('#^https?://#i', $vortexApiUrl)) {
         $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? null) == 443;
         $protocol = $isHttps ? 'https://' : 'http://';
-        $host = $_SERVER['HTTP_HOST'] ?? 'icswhmh.com';
+        $host = $_SERVER['HTTP_HOST'] ?? 'rpay.rajagiri.edu';
         $vortexApiUrl = $protocol . $host . '/' . ltrim($vortexApiUrl, '/');
     }
-    $vortexApiKey = $env['VORTEX_API_KEY'] ?? $env['KEY'] ?? getenv('VORTEX_API_KEY') ?: 'test_ea1b4a6263fc0b0fb0ad8680be4d4087';
-    $vortexApiSecret = $env['VORTEX_API_SECRET'] ?? $env['SECRET'] ?? getenv('VORTEX_API_SECRET') ?: 'e415495af5e85622c1ab65cf45199165';
+    $vortexApiKey = $env['VORTEX_API_KEY'] ?? $env['KEY'] ?? getenv('VORTEX_API_KEY') ?: '839109936a140f77e293b0c17c50173f';
+    $vortexApiSecret = $env['VORTEX_API_SECRET'] ?? $env['SECRET'] ?? getenv('VORTEX_API_SECRET') ?: '0b48b7bd0f581246fc3f80130ba8c2e9';
     
     $payload = [
         'api_key' => $vortexApiKey,

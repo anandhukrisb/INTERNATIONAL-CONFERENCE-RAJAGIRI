@@ -1,7 +1,7 @@
 # Dependencies
-/vendor/
 
 # Environment and sensitive configuration
+.env*
 .env.local
 .env.*.local
 .env.backup
