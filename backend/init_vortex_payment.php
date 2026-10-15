@@ -116,12 +116,20 @@ try {
     
     // 6. Return Success Response
     $paymentUrl = $result['data']['payment_url'] ?? '';
-    // If the remote gateway's own .env still has the old domain (icswhmh.com),
-    // normalize the checkout URL to match the configured gateway host
+
+    // Align checkout URL host with VORTEX_API_URL only if the gateway returned a mismatched host
     $gatewayHost = parse_url($vortexApiUrl, PHP_URL_HOST);
+    $gatewayPath = parse_url($vortexApiUrl, PHP_URL_PATH) ?: '';
+    $gatewayBasePath = preg_replace('#/api/?.*$#i', '', $gatewayPath); // e.g. "/vortex" or ""
     $gatewayScheme = parse_url($vortexApiUrl, PHP_URL_SCHEME) ?: 'https';
-    if ($gatewayHost && !empty($paymentUrl) && strpos($paymentUrl, 'icswhmh.com') !== false) {
-        $paymentUrl = preg_replace('#^https?://[^/]+(?:/vortex)?/checkout\.php#i', $gatewayScheme . '://' . $gatewayHost . '/checkout.php', $paymentUrl);
+
+    $paymentUrlHost = parse_url($paymentUrl, PHP_URL_HOST);
+    if ($gatewayHost && $paymentUrlHost && strcasecmp($gatewayHost, $paymentUrlHost) !== 0) {
+        $token = '';
+        if (preg_match('/[?&]token=([^&]+)/', $paymentUrl, $m)) {
+            $token = $m[1];
+        }
+        $paymentUrl = $gatewayScheme . '://' . $gatewayHost . rtrim($gatewayBasePath, '/') . '/checkout.php?token=' . $token;
     }
 
     echo json_encode([
