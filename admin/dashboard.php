@@ -324,32 +324,72 @@ try {
         }
         .pagination {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            gap: 15px;
-            padding: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 16px 24px;
             background: #f8fafc;
             border-top: 1px solid #e2e8f0;
         }
+        .pagination-info {
+            font-size: 0.9rem;
+            color: #475569;
+            font-weight: 500;
+        }
+        .pagination-info strong {
+            color: #1e293b;
+            font-weight: 700;
+        }
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
         .page-link {
-            padding: 8px 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 34px;
+            height: 34px;
+            padding: 0 10px;
             background: white;
             border: 1px solid #cbd5e1;
             border-radius: 6px;
             color: var(--primary-purple);
             text-decoration: none;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             transition: all 0.2s;
+            user-select: none;
         }
-        .page-link:hover {
+        .page-link:hover:not(.active):not(.disabled) {
             background: #f1f5f9;
             border-color: var(--primary-purple);
+            color: var(--primary-purple);
         }
-        .page-info {
-            font-size: 0.95rem;
-            color: #475569;
-            font-weight: 500;
+        .page-link.active {
+            background: var(--primary-purple);
+            color: white;
+            border-color: var(--primary-purple);
+            cursor: default;
+        }
+        .page-link.disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            pointer-events: none;
+            background: #f1f5f9;
+            color: #94a3b8;
+        }
+        .page-ellipsis {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 24px;
+            height: 34px;
+            color: #64748b;
+            font-weight: 600;
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @media (max-width: 600px) {
@@ -357,6 +397,13 @@ try {
                 margin-left: 0;
                 width: 100%;
             }
+            .pagination {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+        }
+
         /* Modern Modal Component */
         .admin-modal-backdrop {
             position: fixed;
@@ -816,29 +863,81 @@ try {
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="8" style="text-align: center; padding: 40px; color: #64748b;">No registrations found yet.</td>
+                                <td colspan="9" style="text-align: center; padding: 40px; color: #64748b;">No registrations found yet.</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
             </div>
 
-            <?php if (isset($total_pages) && $total_pages > 1): ?>
+            <?php if (isset($total_records) && $total_records > 0): ?>
+            <?php
+                $qsParams = $_GET;
+                unset($qsParams['page']);
+                $buildPageUrl = function($p) use ($qsParams) {
+                    $params = $qsParams;
+                    $params['page'] = $p;
+                    return '?' . http_build_query($params);
+                };
+                $fromRec = ($total_records == 0) ? 0 : $offset + 1;
+                $toRec = min($offset + count($registrations), $total_records);
+            ?>
             <div class="pagination">
-                <?php
-                    $qsParams = $_GET;
-                    unset($qsParams['page']);
-                    $baseQs = http_build_query($qsParams);
-                    $baseQs = $baseQs ? '&' . $baseQs : '';
-                ?>
-                <?php if ($page > 1): ?>
-                    <a href="?page=<?php echo ($page - 1) . $baseQs; ?>" onclick="showLinkLoading(this, 'Loading...')" class="page-link">Previous</a>
-                <?php endif; ?>
-                
-                <span class="page-info">Page <?php echo $page; ?> of <?php echo $total_pages; ?> (<?php echo $total_records; ?> total)</span>
-                
-                <?php if ($page < $total_pages): ?>
-                    <a href="?page=<?php echo ($page + 1) . $baseQs; ?>" onclick="showLinkLoading(this, 'Loading...')" class="page-link">Next</a>
+                <div class="pagination-info">
+                    Showing <strong><?php echo $fromRec; ?>–<?php echo $toRec; ?></strong> of <strong><?php echo number_format($total_records); ?></strong> registrations
+                    <span style="color: #cbd5e1; margin: 0 4px;">•</span>
+                    Page <strong><?php echo $page; ?></strong> of <strong><?php echo $total_pages; ?></strong>
+                </div>
+
+                <?php if ($total_pages > 1): ?>
+                <div class="pagination-controls">
+                    <!-- First & Prev -->
+                    <?php if ($page > 1): ?>
+                        <a href="<?php echo htmlspecialchars($buildPageUrl(1)); ?>" onclick="showLinkLoading(this, 'Loading...')" class="page-link" title="First Page">« First</a>
+                        <a href="<?php echo htmlspecialchars($buildPageUrl($page - 1)); ?>" onclick="showLinkLoading(this, 'Loading...')" class="page-link" title="Previous Page">‹ Prev</a>
+                    <?php else: ?>
+                        <span class="page-link disabled">« First</span>
+                        <span class="page-link disabled">‹ Prev</span>
+                    <?php endif; ?>
+
+                    <!-- Numbered Pages -->
+                    <?php
+                        $window = 2;
+                        $startP = max(1, $page - $window);
+                        $endP = min($total_pages, $page + $window);
+
+                        if ($startP > 1):
+                    ?>
+                        <a href="<?php echo htmlspecialchars($buildPageUrl(1)); ?>" onclick="showLinkLoading(this, 'Loading...')" class="page-link">1</a>
+                        <?php if ($startP > 2): ?>
+                            <span class="page-ellipsis">…</span>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
+                    <?php for ($p = $startP; $p <= $endP; $p++): ?>
+                        <?php if ($p === $page): ?>
+                            <span class="page-link active" aria-current="page"><?php echo $p; ?></span>
+                        <?php else: ?>
+                            <a href="<?php echo htmlspecialchars($buildPageUrl($p)); ?>" onclick="showLinkLoading(this, 'Loading...')" class="page-link"><?php echo $p; ?></a>
+                        <?php endif; ?>
+                    <?php endfor; ?>
+
+                    <?php if ($endP < $total_pages): ?>
+                        <?php if ($endP < $total_pages - 1): ?>
+                            <span class="page-ellipsis">…</span>
+                        <?php endif; ?>
+                        <a href="<?php echo htmlspecialchars($buildPageUrl($total_pages)); ?>" onclick="showLinkLoading(this, 'Loading...')" class="page-link"><?php echo $total_pages; ?></a>
+                    <?php endif; ?>
+
+                    <!-- Next & Last -->
+                    <?php if ($page < $total_pages): ?>
+                        <a href="<?php echo htmlspecialchars($buildPageUrl($page + 1)); ?>" onclick="showLinkLoading(this, 'Loading...')" class="page-link" title="Next Page">Next ›</a>
+                        <a href="<?php echo htmlspecialchars($buildPageUrl($total_pages)); ?>" onclick="showLinkLoading(this, 'Loading...')" class="page-link" title="Last Page">Last »</a>
+                    <?php else: ?>
+                        <span class="page-link disabled">Next ›</span>
+                        <span class="page-link disabled">Last »</span>
+                    <?php endif; ?>
+                </div>
                 <?php endif; ?>
             </div>
             <?php endif; ?>
