@@ -53,13 +53,41 @@ try {
         $params[':event_id'] = $eventIdFilter;
     }
     
-    $query .= " ORDER BY t.id DESC LIMIT 500"; // limit to 500 for safety
+    // Count total records for pagination
+    $countQuery = "SELECT COUNT(*) FROM transactions t WHERE 1=1";
+    if ($statusFilter !== '') {
+        $countQuery .= " AND t.status = :status";
+    }
+    if ($eventIdFilter !== '') {
+        $countQuery .= " AND t.event_id = :event_id";
+    }
+    $countStmt = $db->prepare($countQuery);
+    $countStmt->execute($params);
+    $totalCount = (int) $countStmt->fetchColumn();
+
+    $perPage = 25;
+    $totalPages = max(1, (int) ceil($totalCount / $perPage));
+    $page = max(1, (int) ($_GET['page'] ?? $_GET['p'] ?? 1));
+    if ($page > $totalPages && $totalCount > 0) {
+        $page = $totalPages;
+    }
+    $offset = ($page - 1) * $perPage;
+
+    $query .= " ORDER BY t.id DESC LIMIT " . (int)$perPage . " OFFSET " . (int)$offset;
     
     $stmt = $db->prepare($query);
     $stmt->execute($params);
     $transactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $fromTx = ($totalCount === 0) ? 0 : $offset + 1;
+    $toTx = min($offset + count($transactions), $totalCount);
 } catch (\Throwable $e) {
     $transactions = [];
+    $totalCount = 0;
+    $totalPages = 1;
+    $page = 1;
+    $fromTx = 0;
+    $toTx = 0;
     $error = "Failed to fetch transactions: " . $e->getMessage();
 }
 
@@ -162,6 +190,75 @@ require_once __DIR__ . '/../includes/header.php';
                     </tbody>
                 </table>
             </div>
+
+            <!-- Transactions Pagination Bar -->
+            <?php if ($totalCount > 0): ?>
+                <?php
+                $buildUrl = function($p) {
+                    $params = $_GET;
+                    $params['page'] = $p;
+                    return '?' . http_build_query($params);
+                };
+                ?>
+                <div class="pagination-wrapper">
+                    <div class="pagination-info">
+                        Showing <strong><?= $fromTx ?>–<?= $toTx ?></strong> of <strong><?= number_format($totalCount) ?></strong> transactions
+                        <span style="color: var(--border-color); margin: 0 4px;">•</span>
+                        Page <strong><?= $page ?></strong> of <strong><?= $totalPages ?></strong>
+                    </div>
+
+                    <?php if ($totalPages > 1): ?>
+                        <div class="pagination-controls">
+                            <!-- First & Prev -->
+                            <?php if ($page > 1): ?>
+                                <a href="<?= htmlspecialchars($buildUrl(1)) ?>" class="pagination-btn pagination-nav-btn" title="First Page">« First</a>
+                                <a href="<?= htmlspecialchars($buildUrl($page - 1)) ?>" class="pagination-btn pagination-nav-btn" title="Previous Page">‹ Prev</a>
+                            <?php else: ?>
+                                <span class="pagination-btn pagination-nav-btn disabled" aria-disabled="true">« First</span>
+                                <span class="pagination-btn pagination-nav-btn disabled" aria-disabled="true">‹ Prev</span>
+                            <?php endif; ?>
+
+                            <!-- Windowed Numbers -->
+                            <?php
+                            $window = 2;
+                            $startPage = max(1, $page - $window);
+                            $endPage = min($totalPages, $page + $window);
+
+                            if ($startPage > 1):
+                            ?>
+                                <a href="<?= htmlspecialchars($buildUrl(1)) ?>" class="pagination-btn">1</a>
+                                <?php if ($startPage > 2): ?>
+                                    <span class="pagination-ellipsis">…</span>
+                                <?php endif; ?>
+                            <?php endif; ?>
+
+                            <?php for ($p = $startPage; $p <= $endPage; $p++): ?>
+                                <?php if ($p === $page): ?>
+                                    <span class="pagination-btn active" aria-current="page"><?= $p ?></span>
+                                <?php else: ?>
+                                    <a href="<?= htmlspecialchars($buildUrl($p)) ?>" class="pagination-btn"><?= $p ?></a>
+                                <?php endif; ?>
+                            <?php endfor; ?>
+
+                            <?php if ($endPage < $totalPages): ?>
+                                <?php if ($endPage < $totalPages - 1): ?>
+                                    <span class="pagination-ellipsis">…</span>
+                                <?php endif; ?>
+                                <a href="<?= htmlspecialchars($buildUrl($totalPages)) ?>" class="pagination-btn"><?= $totalPages ?></a>
+                            <?php endif; ?>
+
+                            <!-- Next & Last -->
+                            <?php if ($page < $totalPages): ?>
+                                <a href="<?= htmlspecialchars($buildUrl($page + 1)) ?>" class="pagination-btn pagination-nav-btn" title="Next Page">Next ›</a>
+                                <a href="<?= htmlspecialchars($buildUrl($totalPages)) ?>" class="pagination-btn pagination-nav-btn" title="Last Page">Last »</a>
+                            <?php else: ?>
+                                <span class="pagination-btn pagination-nav-btn disabled" aria-disabled="true">Next ›</span>
+                                <span class="pagination-btn pagination-nav-btn disabled" aria-disabled="true">Last »</span>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
         <?php endif; ?>
     </div>
 </div>

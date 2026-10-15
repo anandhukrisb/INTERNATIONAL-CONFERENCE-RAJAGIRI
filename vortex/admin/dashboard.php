@@ -188,27 +188,41 @@ try {
 $allEvents = $eventModel->getAllEvents(100) ?: [];
 $allClients = $apiClientModel->getAllClients(100) ?: [];
 
-// Recent Transactions
+// Transactions Overview (Paginated)
+$txPerPage = 15;
+$txTotalCount = $totalPayments;
+$txTotalPages = max(1, (int) ceil($txTotalCount / $txPerPage));
+$txPage = max(1, (int) ($_GET['page'] ?? $_GET['p'] ?? 1));
+if ($txPage > $txTotalPages && $txTotalCount > 0) {
+    $txPage = $txTotalPages;
+}
+$txOffset = ($txPage - 1) * $txPerPage;
+
 $recentTx = [];
 try {
-    $recentTxStmt = $db->query("SELECT t.*, e.event_name, c.client_name,
-                                       (SELECT w.event_type FROM webhooks w 
-                                        WHERE (w.order_id IS NOT NULL AND w.order_id != '' AND w.order_id = t.razorpay_order_id)
-                                           OR (w.payment_id IS NOT NULL AND w.payment_id != '' AND w.payment_id = t.razorpay_payment_id)
-                                        ORDER BY w.id DESC LIMIT 1) AS latest_event,
-                                       (SELECT tl.reason FROM transaction_timeline tl 
-                                        WHERE tl.vortex_transaction_id = t.vortex_transaction_id 
-                                        ORDER BY tl.id DESC LIMIT 1) AS latest_reason,
-                                       (SELECT COUNT(*) FROM transaction_timeline tl 
-                                        WHERE tl.vortex_transaction_id = t.vortex_transaction_id) AS timeline_count
-                                FROM transactions t 
-                                LEFT JOIN events e ON t.event_id = e.event_id 
-                                LEFT JOIN api_clients c ON t.api_client_id = c.id
-                                ORDER BY t.id DESC LIMIT 15");
+    $recentTxSql = "SELECT t.*, e.event_name, c.client_name,
+                           (SELECT w.event_type FROM webhooks w 
+                            WHERE (w.order_id IS NOT NULL AND w.order_id != '' AND w.order_id = t.razorpay_order_id)
+                               OR (w.payment_id IS NOT NULL AND w.payment_id != '' AND w.payment_id = t.razorpay_payment_id)
+                            ORDER BY w.id DESC LIMIT 1) AS latest_event,
+                           (SELECT tl.reason FROM transaction_timeline tl 
+                            WHERE tl.vortex_transaction_id = t.vortex_transaction_id 
+                            ORDER BY tl.id DESC LIMIT 1) AS latest_reason,
+                           (SELECT COUNT(*) FROM transaction_timeline tl 
+                            WHERE tl.vortex_transaction_id = t.vortex_transaction_id) AS timeline_count
+                    FROM transactions t 
+                    LEFT JOIN events e ON t.event_id = e.event_id 
+                    LEFT JOIN api_clients c ON t.api_client_id = c.id
+                    ORDER BY t.id DESC LIMIT " . (int)$txPerPage . " OFFSET " . (int)$txOffset;
+    $recentTxStmt = $db->query($recentTxSql);
     $recentTx = $recentTxStmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (\Throwable $e) {
     $recentTx = [];
 }
+
+$fromTx = ($txTotalCount === 0) ? 0 : $txOffset + 1;
+$toTx = min($txOffset + count($recentTx), $txTotalCount);
+
 
 $pageTitle = "Vortex Gateway Dashboard";
 $activeNav = "dashboard";
@@ -335,7 +349,16 @@ if (!in_array($initialTab, ['overview', 'clients', 'events'])) {
         </a>
     </div>
 
-    <div class="section-label">Recent Transactions</div>
+    <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-top: 24px; margin-bottom: 8px;">
+        <div class="section-label" style="margin-bottom: 0;">Recent Transactions</div>
+        <span style="font-size: 0.85rem; color: var(--text-gray);">
+            <?php if ($txTotalCount > 0): ?>
+                Showing <strong><?= $fromTx ?>–<?= $toTx ?></strong> of <strong><?= number_format($txTotalCount) ?></strong> transactions
+            <?php else: ?>
+                No transactions recorded
+            <?php endif; ?>
+        </span>
+    </div>
 
     <!-- Recent Transactions Table -->
     <div id="transactions" class="section-card">
@@ -403,7 +426,7 @@ if (!in_array($initialTab, ['overview', 'clients', 'events'])) {
                                     <td style="font-size: 0.85rem; color: var(--text-muted);"><?= htmlspecialchars($tx['created_at']) ?></td>
                                     <td>
                                         <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-                                            <a href="payments/payment_details.php?vortex_transaction_id=<?= urlencode($tx['vortex_transaction_id']) ?>" class="btn btn-secondary btn-sm" title="View Full Status History & Audit Trail">
+                                             <a href="payments/payment_details.php?vortex_transaction_id=<?= urlencode($tx['vortex_transaction_id']) ?>" class="btn btn-secondary btn-sm" title="View Full Status History & Audit Trail">
                                                 📜 Timeline (<?= (int)($tx['timeline_count'] ?? 0) ?>)
                                             </a>
                                             <?php if ($tx['status'] === 'SUCCESS'): ?>
@@ -428,7 +451,85 @@ if (!in_array($initialTab, ['overview', 'clients', 'events'])) {
                     </tbody>
                 </table>
             </div>
+
+            <!-- Dashboard Transactions Pagination Bar -->
+            <?php if ($txTotalCount > 0): ?>
+                <?php
+                $buildTxUrl = function($p) {
+                    $params = $_GET;
+                    $params['page'] = $p;
+                    return '?' . http_build_query($params) . '#transactions';
+                };
+                ?>
+                <div class="pagination-wrapper">
+                    <div class="pagination-info">
+                        Showing <strong><?= $fromTx ?>–<?= $toTx ?></strong> of <strong><?= number_format($txTotalCount) ?></strong> transactions
+                        <span style="color: var(--border-color); margin: 0 4px;">•</span>
+                        Page <strong><?= $txPage ?></strong> of <strong><?= $txTotalPages ?></strong>
+                    </div>
+
+                    <?php if ($txTotalPages > 1): ?>
+                        <div class="pagination-controls">
+                            <!-- First Page Button -->
+                            <?php if ($txPage > 1): ?>
+                                <a href="<?= htmlspecialchars($buildTxUrl(1)) ?>" class="pagination-btn pagination-nav-btn" title="First Page">
+                                    « First
+                                </a>
+                                <a href="<?= htmlspecialchars($buildTxUrl($txPage - 1)) ?>" class="pagination-btn pagination-nav-btn" title="Previous Page">
+                                    ‹ Prev
+                                </a>
+                            <?php else: ?>
+                                <span class="pagination-btn pagination-nav-btn disabled" aria-disabled="true">« First</span>
+                                <span class="pagination-btn pagination-nav-btn disabled" aria-disabled="true">‹ Prev</span>
+                            <?php endif; ?>
+
+                            <!-- Numbered Pages -->
+                            <?php
+                            $window = 2;
+                            $startPage = max(1, $txPage - $window);
+                            $endPage = min($txTotalPages, $txPage + $window);
+
+                            if ($startPage > 1):
+                            ?>
+                                <a href="<?= htmlspecialchars($buildTxUrl(1)) ?>" class="pagination-btn">1</a>
+                                <?php if ($startPage > 2): ?>
+                                    <span class="pagination-ellipsis">…</span>
+                                <?php endif; ?>
+                            <?php endif; ?>
+
+                            <?php for ($p = $startPage; $p <= $endPage; $p++): ?>
+                                <?php if ($p === $txPage): ?>
+                                    <span class="pagination-btn active" aria-current="page"><?= $p ?></span>
+                                <?php else: ?>
+                                    <a href="<?= htmlspecialchars($buildTxUrl($p)) ?>" class="pagination-btn"><?= $p ?></a>
+                                <?php endif; ?>
+                            <?php endfor; ?>
+
+                            <?php if ($endPage < $txTotalPages): ?>
+                                <?php if ($endPage < $txTotalPages - 1): ?>
+                                    <span class="pagination-ellipsis">…</span>
+                                <?php endif; ?>
+                                <a href="<?= htmlspecialchars($buildTxUrl($txTotalPages)) ?>" class="pagination-btn"><?= $txTotalPages ?></a>
+                            <?php endif; ?>
+
+                            <!-- Next Page Button -->
+                            <?php if ($txPage < $txTotalPages): ?>
+                                <a href="<?= htmlspecialchars($buildTxUrl($txPage + 1)) ?>" class="pagination-btn pagination-nav-btn" title="Next Page">
+                                    Next ›
+                                </a>
+                                <a href="<?= htmlspecialchars($buildTxUrl($txTotalPages)) ?>" class="pagination-btn pagination-nav-btn" title="Last Page">
+                                    Last »
+                                </a>
+                            <?php else: ?>
+                                <span class="pagination-btn pagination-nav-btn disabled" aria-disabled="true">Next ›</span>
+                                <span class="pagination-btn pagination-nav-btn disabled" aria-disabled="true">Last »</span>
+                            <?php endif; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
         </div>
+
     </div>
 </div>
 
