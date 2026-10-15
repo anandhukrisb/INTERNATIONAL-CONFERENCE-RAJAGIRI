@@ -357,6 +357,106 @@ try {
                 margin-left: 0;
                 width: 100%;
             }
+        /* Modern Modal Component */
+        .admin-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            opacity: 0;
+            transition: opacity 0.2s ease-in-out;
+        }
+        .admin-modal-backdrop.open {
+            display: flex;
+            opacity: 1;
+        }
+        .admin-modal-box {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.28);
+            max-width: 460px;
+            width: 90%;
+            overflow: hidden;
+            animation: modalScale 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid #e2e8f0;
+        }
+        @keyframes modalScale {
+            0% { transform: scale(0.93); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .admin-modal-header {
+            padding: 16px 22px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .admin-modal-header.error {
+            background: #fef2f2;
+            border-bottom-color: #fee2e2;
+        }
+        .admin-modal-header.confirm {
+            background: #fffbeb;
+            border-bottom-color: #fef3c7;
+        }
+        .admin-modal-header.success {
+            background: #ecfdf5;
+            border-bottom-color: #d1fae5;
+        }
+        .admin-modal-body {
+            padding: 20px 24px;
+            font-size: 0.95rem;
+            color: #334155;
+            line-height: 1.5;
+        }
+        .admin-modal-footer {
+            padding: 14px 24px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .btn-modal {
+            padding: 9px 18px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.88rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-modal-cancel {
+            background: #e2e8f0;
+            color: #475569;
+        }
+        .btn-modal-cancel:hover {
+            background: #cbd5e1;
+        }
+        .btn-modal-danger {
+            background: #dc2626;
+            color: #ffffff;
+            box-shadow: 0 2px 4px rgba(220, 38, 38, 0.25);
+        }
+        .btn-modal-danger:hover {
+            background: #b91c1c;
+        }
+        .btn-modal-primary {
+            background: var(--primary-purple);
+            color: #ffffff;
+        }
+        .btn-modal-primary:hover {
+            opacity: 0.92;
         }
     </style>
     <script>
@@ -389,34 +489,154 @@ try {
             }
         }
 
+        let pendingRefundRegId = null;
+        let pendingRefundBtn = null;
+
         function approveRefund(regId, btn) {
-            if (confirm('Are you sure you want to approve the refund for ' + regId + '?')) {
-                const originalText = btn.innerHTML;
-                btn.style.pointerEvents = 'none';
-                btn.innerHTML = spinnerSvg + 'Approving...';
-                
-                fetch('process_refund.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ registration_id: regId })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Refund approved successfully.');
-                        window.location.reload();
-                    } else {
-                        alert('Error: ' + (data.error || 'Failed to approve refund'));
-                        btn.innerHTML = originalText;
-                        btn.style.pointerEvents = 'auto';
-                    }
-                })
-                .catch(error => {
-                    alert('An error occurred.');
-                    btn.innerHTML = originalText;
-                    btn.style.pointerEvents = 'auto';
-                });
+            if (!btn.hasAttribute('data-original-html')) {
+                btn.setAttribute('data-original-html', btn.innerHTML);
             }
+            pendingRefundRegId = regId;
+            pendingRefundBtn = btn;
+
+            // Open clean Confirmation Modal
+            const regDisplay = document.getElementById('refundConfirmRegId');
+            if (regDisplay) regDisplay.textContent = regId;
+            
+            document.getElementById('refundModalConfirmState').style.display = 'block';
+            document.getElementById('refundModalFeedbackState').style.display = 'none';
+            
+            const modal = document.getElementById('refundActionModal');
+            modal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAdminModal() {
+            const modal = document.getElementById('refundActionModal');
+            if (modal) modal.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function executeRefund() {
+            const regId = pendingRefundRegId;
+            const btn = pendingRefundBtn;
+
+            if (!regId || !btn) {
+                closeAdminModal();
+                return;
+            }
+
+            const originalHtml = btn.getAttribute('data-original-html') || 'Approve Refund';
+            
+            // Set Loading state on button
+            btn.style.pointerEvents = 'none';
+            btn.disabled = true;
+            btn.innerHTML = spinnerSvg + 'Approving...';
+
+            // Switch modal to processing mode
+            const confirmState = document.getElementById('refundModalConfirmState');
+            if (confirmState) confirmState.style.display = 'none';
+            closeAdminModal();
+
+            // Function to restore button and guarantee the spinner STOPS
+            function restoreButtonState(isError) {
+                if (!btn) return;
+                btn.style.pointerEvents = 'auto';
+                btn.disabled = false;
+                if (isError) {
+                    btn.innerHTML = '✕ Failed';
+                    btn.style.backgroundColor = '#991b1b';
+                    setTimeout(() => {
+                        btn.innerHTML = originalHtml;
+                        btn.style.backgroundColor = '#dc2626';
+                    }, 2800);
+                } else {
+                    btn.innerHTML = originalHtml;
+                    btn.style.backgroundColor = '#dc2626';
+                }
+            }
+
+            fetch('process_refund.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ registration_id: regId })
+            })
+            .then(async response => {
+                let data = {};
+                try {
+                    data = await response.json();
+                } catch (e) {
+                    data = { success: false, error: 'Server returned unexpected response (HTTP ' + response.status + ')' };
+                }
+
+                // Immediately stop the button spinner!
+                if (data.success) {
+                    btn.innerHTML = '✓ Approved';
+                    btn.style.backgroundColor = '#16a34a';
+                    btn.style.pointerEvents = 'none';
+                    showRefundFeedbackModal('success', 'Refund Approved Successfully', 'Refund for registration <strong>' + regId + '</strong> has been processed via Razorpay. Refreshing records...', true);
+                } else {
+                    restoreButtonState(true);
+                    const errorMsg = data.error || 'Failed to approve refund';
+                    showRefundFeedbackModal('error', 'Refund Processing Failed', errorMsg, false);
+                }
+            })
+            .catch(error => {
+                // Guarantee button spinner stops even on network failure
+                restoreButtonState(true);
+                showRefundFeedbackModal('error', 'Connection Error', 'Failed to communicate with refund server: ' + (error.message || 'Unknown network error'), false);
+            });
+        }
+
+        function showRefundFeedbackModal(type, title, messageHtml, autoReload) {
+            document.getElementById('refundModalConfirmState').style.display = 'none';
+            const feedbackState = document.getElementById('refundModalFeedbackState');
+            feedbackState.style.display = 'block';
+
+            const header = document.getElementById('refundFeedbackHeader');
+            const icon = document.getElementById('refundFeedbackIcon');
+            const titleEl = document.getElementById('refundFeedbackTitle');
+            const subTitleEl = document.getElementById('refundFeedbackSubtitle');
+            const msgEl = document.getElementById('refundFeedbackMessage');
+            const btnEl = document.getElementById('refundFeedbackBtn');
+
+            if (type === 'success') {
+                header.className = 'admin-modal-header success';
+                icon.style.background = '#d1fae5';
+                icon.innerHTML = '✓';
+                icon.style.color = '#065f46';
+                titleEl.textContent = title;
+                titleEl.style.color = '#065f46';
+                subTitleEl.textContent = 'Transaction Reversed';
+                subTitleEl.style.color = '#047857';
+                msgEl.style.background = '#f0fdf4';
+                msgEl.style.border = '1px solid #bbf7d0';
+                msgEl.style.color = '#166534';
+                btnEl.textContent = 'OK';
+                if (autoReload) {
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1400);
+                }
+            } else {
+                header.className = 'admin-modal-header error';
+                icon.style.background = '#fee2e2';
+                icon.innerHTML = '✕';
+                icon.style.color = '#991b1b';
+                titleEl.textContent = title;
+                titleEl.style.color = '#991b1b';
+                subTitleEl.textContent = 'Gateway Response';
+                subTitleEl.style.color = '#b91c1c';
+                msgEl.style.background = '#fef2f2';
+                msgEl.style.border = '1px solid #fecaca';
+                msgEl.style.color = '#991b1b';
+                btnEl.textContent = 'Dismiss';
+            }
+
+            msgEl.innerHTML = messageHtml;
+            const modal = document.getElementById('refundActionModal');
+            modal.classList.add('open');
+            document.body.style.overflow = 'hidden';
         }
 
         window.addEventListener('pageshow', function (event) {
@@ -425,6 +645,23 @@ try {
                     el.innerHTML = el.getAttribute('data-original-text');
                     el.style.pointerEvents = 'auto';
                 });
+                document.querySelectorAll('[data-original-html]').forEach(function(el) {
+                    el.innerHTML = el.getAttribute('data-original-html');
+                    el.style.pointerEvents = 'auto';
+                    el.disabled = false;
+                });
+            }
+        });
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeAdminModal();
+            }
+        });
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('refundActionModal');
+            if (event.target === modal) {
+                closeAdminModal();
             }
         });
     </script>
@@ -570,7 +807,7 @@ try {
                                     <td>
                                         <div style="display: flex; gap: 8px;">
                                             <a href="user_history.php?reg_id=<?php echo urlencode($reg['registration_id']); ?>" onclick="showLinkLoading(this, 'Opening...')" style="display: inline-block; padding: 6px 12px; background-color: var(--primary-purple); color: white; text-decoration: none; border-radius: 4px; font-size: 0.8rem; font-weight: 600; white-space: nowrap;">View History</a>
-                                            <?php if ($status === 'Completed'): ?>
+                                            <?php if ($status === 'Completed' && !empty($reg['transaction_id'])): ?>
                                                 <button onclick="approveRefund('<?php echo htmlspecialchars($reg['registration_id']); ?>', this)" style="display: inline-block; padding: 6px 12px; background-color: #dc2626; color: white; text-decoration: none; border: none; border-radius: 4px; font-size: 0.8rem; font-weight: 600; cursor: pointer; white-space: nowrap;">Approve Refund</button>
                                             <?php endif; ?>
                                         </div>
@@ -608,7 +845,52 @@ try {
 
             <?php endif; ?>
         </div>
+    <!-- Admin Refund Action Modal -->
+    <div class="admin-modal-backdrop" id="refundActionModal" role="dialog" aria-modal="true">
+        <div class="admin-modal-box">
+            <!-- Confirm State -->
+            <div id="refundModalConfirmState" style="display: none;">
+                <div class="admin-modal-header confirm">
+                    <div style="width: 36px; height: 36px; border-radius: 50%; background: #fde68a; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0;">
+                        ⚠️
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.05rem; font-weight: 700; color: #92400e;">Confirm Refund Approval</h3>
+                        <p style="margin: 0; font-size: 0.78rem; color: #b45309;">Payment Reversal via Vortex Gateway</p>
+                    </div>
+                </div>
+                <div class="admin-modal-body">
+                    <p style="margin-bottom: 10px; font-size: 0.92rem;">Are you sure you want to approve the refund for registration:</p>
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; font-weight: 700; color: var(--primary-purple); font-family: monospace; font-size: 1.05rem; margin-bottom: 14px;" id="refundConfirmRegId"></div>
+                    <p style="font-size: 0.8rem; color: #64748b; line-height: 1.45; margin: 0;">
+                        This will issue an immediate refund via Vortex and Razorpay back to the participant's original payment method. The registration status will update to <strong>Refund Approved</strong>.
+                    </p>
+                </div>
+                <div class="admin-modal-footer">
+                    <button type="button" class="btn-modal btn-modal-cancel" onclick="closeAdminModal()">Cancel</button>
+                    <button type="button" class="btn-modal btn-modal-danger" onclick="executeRefund()">💸 Approve & Refund</button>
+                </div>
+            </div>
+
+            <!-- Feedback State (Error or Success) -->
+            <div id="refundModalFeedbackState" style="display: none;">
+                <div class="admin-modal-header" id="refundFeedbackHeader">
+                    <div id="refundFeedbackIcon" style="width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0;"></div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.05rem; font-weight: 700;" id="refundFeedbackTitle"></h3>
+                        <p style="margin: 0; font-size: 0.78rem;" id="refundFeedbackSubtitle"></p>
+                    </div>
+                </div>
+                <div class="admin-modal-body">
+                    <div id="refundFeedbackMessage" style="padding: 14px 16px; border-radius: 8px; font-size: 0.88rem; line-height: 1.5; word-break: break-word;"></div>
+                </div>
+                <div class="admin-modal-footer">
+                    <button type="button" class="btn-modal btn-modal-primary" id="refundFeedbackBtn" onclick="closeAdminModal()">Dismiss</button>
+                </div>
+            </div>
+        </div>
     </div>
+
     <main-footer base-path="../"></main-footer>
 </body>
 </html>
