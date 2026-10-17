@@ -26,7 +26,7 @@ $baseUrl = $protocol . $host . '/vortex';
 <div style="margin-bottom: 24px;">
     <h1 style="font-size: 1.35rem; font-weight: 800; color: var(--text-main); margin-bottom: 4px;">Developer Credentials &amp; Quickstart</h1>
     <p style="font-size: 0.84rem; color: var(--text-muted); margin: 0;">
-        Access your cryptographic API keys and ready-to-run code snippets to integrate PayVortex into your application.
+        Access your cryptographic API keys and ready-to-run code snippets to integrate Rpay into your application.
     </p>
 </div>
 
@@ -209,7 +209,7 @@ $order = json_decode($response, true);
 });
 
 const data = await response.json();
-console.log('Vortex Order:', data);</pre>
+console.log('Rpay Order:', data);</pre>
                 </div>
             </div>
         </div>

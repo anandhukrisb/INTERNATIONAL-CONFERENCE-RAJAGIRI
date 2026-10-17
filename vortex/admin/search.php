@@ -43,7 +43,7 @@ if ($query !== '') {
     ]);
 }
 
-$pageTitle = ($query !== '') ? "Search: " . htmlspecialchars($query) . " - Vortex Admin" : "Global Search - Vortex Admin";
+$pageTitle = ($query !== '') ? "Search: " . htmlspecialchars($query) . " - Rpay Admin" : "Global Search - Rpay Admin";
 $activeNav = "search";
 require_once __DIR__ . '/includes/header.php';
 
@@ -181,7 +181,7 @@ function highlightMatch(?string $text, string $query): string
     <form action="search.php" method="GET" id="globalSearchForm">
         <div class="search-input-row">
             <input type="text" name="q" id="searchHeroInput" class="search-hero-input"
-                   placeholder="Search by Vortex ID (VTX_...), Razorpay ID (pay_...), Customer Email, Mobile, or Merchant..."
+                   placeholder="Search by Rpay ID (VTX_...), Razorpay ID (pay_...), Customer Email, Mobile, or Merchant..."
                    value="<?= htmlspecialchars($query) ?>" autofocus required>
             <button type="submit" class="btn btn-primary" style="padding: 12px 24px; font-weight: 600; font-size: 0.95rem;">
                 🔍 Search
@@ -315,7 +315,7 @@ function highlightMatch(?string $text, string $query): string
                         <table class="admin-table">
                             <thead>
                                 <tr>
-                                    <th>Vortex Tx ID</th>
+                                    <th>Rpay Tx ID</th>
                                     <th>Customer</th>
                                     <th>Razorpay Payment / Order</th>
                                     <th>Event &amp; Merchant</th>

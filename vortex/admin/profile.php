@@ -18,7 +18,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $activeNav = 'profile';
-$pageTitle = 'Admin Profile & Security – Vortex';
+$pageTitle = 'Admin Profile & Security – Rpay';
 
 require_once __DIR__ . '/../classes/Database.php';
 require_once __DIR__ . '/../classes/RBAC.php';
@@ -557,7 +557,7 @@ require_once __DIR__ . '/includes/header.php';
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                         Admin Profile Details
                     </h3>
-                    <p class="profile-card-desc">Your basic account credentials and administrative identity across Vortex Gateway.</p>
+                    <p class="profile-card-desc">Your basic account credentials and administrative identity across Rpay Gateway.</p>
                 </div>
                 <button type="button" class="btn btn-secondary btn-sm" onclick="openModal('editProfileModal')">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
@@ -1748,7 +1748,7 @@ function selectAvatarColor(hex, swatchElement) {
 // --- Copy All Recovery Codes ---
 function copyAllRecoveryCodes(btn) {
     const codes = Array.from(document.querySelectorAll('.recovery-code-val')).map(el => el.innerText.trim());
-    const allText = "VORTEX ADMIN RECOVERY CODES\n" + codes.join("\n");
+    const allText = "RPAY ADMIN RECOVERY CODES\n" + codes.join("\n");
     copyToClipboard(allText, btn);
 }
 

@@ -233,7 +233,7 @@ class GlobalSearch
         $countStmt->execute($params);
         $totalCount = (int)$countStmt->fetchColumn();
 
-        $sql = "SELECT id, client_name, email, phone, api_key, test_api_key, webhook_url, is_active, created_at
+        $sql = "SELECT id, client_name, email, phone, api_key, test_api_key, is_active, created_at
                 FROM api_clients
                 WHERE {$whereSql}
                 ORDER BY id DESC
@@ -277,7 +277,7 @@ class GlobalSearch
         $countStmt->execute($params);
         $totalCount = (int)$countStmt->fetchColumn();
 
-        $sql = "SELECT id, event_id, event_name, department, start_date, end_date, is_active, created_at
+        $sql = "SELECT id, event_id, event_name, department, start_date, end_date, webhook_url, is_active, created_at
                 FROM events
                 WHERE {$whereSql}
                 ORDER BY id DESC

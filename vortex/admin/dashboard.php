@@ -19,72 +19,22 @@ if (empty($_SESSION['vortex_admin_id'])) {
     exit;
 }
 
-// Seamless Backwards Compatibility for query parameter tabs
-$tabRedirect = trim($_GET['tab'] ?? '');
+// Legacy tab redirection for backwards compatibility
+$tabRedirect = $_GET['tab'] ?? '';
 if ($tabRedirect === 'clients') {
     header('Location: api_clients/index.php');
     exit;
-} elseif ($tabRedirect === 'events') {
+}
+if ($tabRedirect === 'events') {
     header('Location: events/index.php');
     exit;
 }
 
 require_once __DIR__ . '/../classes/Database.php';
-require_once __DIR__ . '/../classes/Event.php';
-require_once __DIR__ . '/../classes/ApiClient.php';
 require_once __DIR__ . '/../classes/RBAC.php';
 require_once __DIR__ . '/../classes/AuditLogger.php';
 
-$eventModel = new Event();
-$apiClientModel = new ApiClient();
 $db = Database::getInstance()->getConnection();
-
-// Backwards-compatible POST handling for legacy forms submitting to dashboard.php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $action = $_POST['action'] ?? '';
-
-    if ($action === 'create_event') {
-        RBAC::require('events.create', null, 'events/index.php');
-        $eventName  = trim($_POST['event_name'] ?? '');
-        $department = trim($_POST['department'] ?? $_POST['event_department'] ?? '');
-        $startDate  = trim($_POST['start_date'] ?? '');
-        $endDate    = trim($_POST['end_date'] ?? '');
-        $result = $eventModel->createEvent($eventName, $department, $startDate, $endDate);
-        if ($result['success']) {
-            AuditLogger::log('event', $result['data']['event_id'] ?? '', AuditLogger::EVENT_CREATED, null, $_POST, "Created event '{$eventName}'");
-            $_SESSION['flash_success'] = "Event '{$eventName}' created successfully!";
-        } else {
-            $_SESSION['flash_error'] = "Failed to create event: " . $result['message'];
-        }
-        header('Location: events/index.php');
-        exit;
-    }
-
-    if ($action === 'create_client') {
-        RBAC::require('clients.create', null, 'api_clients/index.php');
-        $clientName = trim($_POST['client_name'] ?? '');
-        $result = $apiClientModel->createClient($clientName);
-        if ($result['success']) {
-            AuditLogger::log('api_client', (string)($result['data']['client_id'] ?? ''), AuditLogger::CLIENT_CREATED, null, $_POST, "Registered client '{$clientName}'");
-            $_SESSION['flash_success'] = "API Client '{$clientName}' created successfully!";
-            $_SESSION['created_client'] = $result['data'];
-        } else {
-            $_SESSION['flash_error'] = "Failed to create API Client: " . $result['message'];
-        }
-        header('Location: api_clients/index.php');
-        exit;
-    }
-
-    if (in_array($action, ['activate_event', 'deactivate_event'], true)) {
-        header('Location: events/index.php');
-        exit;
-    }
-
-    if (in_array($action, ['activate_client', 'deactivate_client', 'update_webhook'], true)) {
-        header('Location: api_clients/index.php');
-        exit;
-    }
-}
 
 // Flash Messages
 $flashSuccess         = $_SESSION['flash_success'] ?? null;
@@ -145,7 +95,7 @@ try {
 $fromTx = ($txTotalCount === 0) ? 0 : $txOffset + 1;
 $toTx = min($txOffset + count($recentTx), $txTotalCount);
 
-$pageTitle = "Vortex Gateway Dashboard";
+$pageTitle = "Rpay Gateway Dashboard";
 $activeNav = "dashboard";
 require_once __DIR__ . '/includes/header.php';
 ?>
@@ -167,37 +117,26 @@ require_once __DIR__ . '/includes/header.php';
 <?php require_once __DIR__ . '/includes/client_credentials_alert.php'; ?>
 
 <!-- Dashboard Title & Operations Summary -->
-<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 24px;">
     <div>
-        <div class="section-title" style="margin-bottom: 4px;">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-blue); vertical-align: -4px;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-            Gateway Operations Overview
+        <div class="section-title" style="margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-blue);"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+            Operations Overview
         </div>
         <div style="font-size: 0.85rem; color: var(--text-gray);">
-            Real-time transaction settlement volume, merchant integrations, and active university events.
+            Real-time payment volume, settlement metrics, and connected merchant activity.
         </div>
     </div>
-    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+    <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
         <?php if (RBAC::can('clients.create')): ?>
-        <a href="api_clients/onboarding.php" class="btn btn-primary btn-sm" style="display: inline-flex; align-items: center; gap: 4px;">
-            <span>🚀</span> Onboard Merchant
+        <a href="api_clients/onboarding.php" class="btn btn-primary btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>Onboard Merchant</span>
         </a>
         <?php endif; ?>
-        <?php if (RBAC::can('events.create')): ?>
-        <a href="events/index.php" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 4px;">
-            <span>🎟️</span> Manage Events
-        </a>
-        <?php endif; ?>
-        <?php if (RBAC::can('clients.view')): ?>
-        <a href="api_clients/index.php" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 4px;">
-            <span>🔌</span> API Clients
-        </a>
-        <?php endif; ?>
-        <a href="audit_logs.php" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 4px;">
-            <span>📜</span> Audit Trail
-        </a>
-        <a href="search.php" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 4px;">
-            <span>🔍</span> Global Search
+        <a href="payments/list_payments.php" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+            <span>View All Payments</span>
         </a>
     </div>
 </div>
@@ -212,17 +151,6 @@ require_once __DIR__ . '/includes/header.php';
     require_once __DIR__ . '/includes/transactions_table.php';
     ?>
 </div>
-
-<!-- Backwards Compatibility Hash Redirect Script -->
-<script>
-(function() {
-    if (window.location.hash === '#clients') {
-        window.location.replace('api_clients/index.php');
-    } else if (window.location.hash === '#events') {
-        window.location.replace('events/index.php');
-    }
-})();
-</script>
 
 <?php require_once __DIR__ . '/includes/refund_modal.php'; ?>
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

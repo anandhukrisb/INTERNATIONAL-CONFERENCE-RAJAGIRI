@@ -20,7 +20,7 @@ require_once __DIR__ . '/../../classes/Database.php';
 require_once __DIR__ . '/../../classes/Logger.php';
 require_once __DIR__ . '/../../classes/TransactionTimeline.php';
 
-$pageTitle = "Vortex Transaction Details & Search";
+$pageTitle = "Rpay Transaction Details & Search";
 $activeNav = "payments";
 
 $txnParam = trim((string)($_GET['vortex_transaction_id'] ?? $_GET['id'] ?? $_GET['txn_id'] ?? $_GET['q'] ?? $_GET['search'] ?? $_GET['query'] ?? ''));
@@ -159,18 +159,18 @@ require_once __DIR__ . '/../includes/header.php';
 <!-- Search Bar Header Banner -->
 <div class="section-card">
     <div class="section-header">
-        <h2>🔍 Search Transaction by Vortex ID</h2>
+        <h2>🔍 Search Transaction by Rpay ID</h2>
         <a href="../dashboard.php" class="btn btn-secondary btn-sm">← Back to Dashboard</a>
     </div>
     <div class="section-body">
         <form action="payment_details.php" method="GET" style="display: flex; gap: 12px; max-width: 700px;">
             <input type="text" name="vortex_transaction_id" class="form-control" style="flex: 1; font-family: var(--font-mono);" 
-                   placeholder="Enter Vortex Transaction ID (e.g. VTX_SIM_123, VTX_66E3...)" 
+                   placeholder="Enter Rpay Transaction ID (e.g. VTX_SIM_123, VTX_66E3...)" 
                    value="<?= htmlspecialchars($txnParam) ?>" required>
             <button type="submit" class="btn btn-primary">Search Details</button>
         </form>
         <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">
-            * You can search by Vortex Transaction ID (`VTX_...`), Database ID, Razorpay Order ID (`order_...`), Razorpay Payment ID (`pay_...`), or Customer Email.
+            * You can search by Rpay Transaction ID (`VTX_...`), Database ID, Razorpay Order ID (`order_...`), Razorpay Payment ID (`pay_...`), or Customer Email.
         </p>
 
         <!-- Quick Switcher Bar -->
@@ -254,10 +254,10 @@ require_once __DIR__ . '/../includes/header.php';
         <div class="section-body">
             <div class="detail-grid">
                 <div class="detail-item">
-                    <span class="detail-label">Vortex Transaction ID</span>
+                    <span class="detail-label">Rpay Transaction ID</span>
                     <div class="copy-wrapper" style="margin-top: 2px;">
                         <span class="detail-value font-mono" style="color: var(--primary); font-size: 1.05rem;"><?= htmlspecialchars($transaction['vortex_transaction_id']) ?></span>
-                        <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($transaction['vortex_transaction_id'], ENT_QUOTES) ?>', this)" title="Copy Vortex Transaction ID">📋 Copy</button>
+                        <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($transaction['vortex_transaction_id'], ENT_QUOTES) ?>', this)" title="Copy Rpay Transaction ID">📋 Copy</button>
                     </div>
                 </div>
                 <div class="detail-item">
@@ -552,9 +552,9 @@ require_once __DIR__ . '/../includes/header.php';
 <?php else: ?>
     <div class="section-card">
         <div class="section-body" style="text-align: center; padding: 48px 24px;">
-            <h3 style="margin-bottom: 8px;">Enter a Vortex ID to Inspect All Details</h3>
+            <h3 style="margin-bottom: 8px;">Enter an Rpay ID to Inspect All Details</h3>
             <p style="color: var(--text-muted); max-width: 500px; margin: 0 auto 24px auto;">
-                Use the search box above or type a Vortex Transaction ID (`VTX_...`) to retrieve all associated transaction details, Razorpay signatures, API client keys, and webhook logs.
+                Use the search box above or type an Rpay Transaction ID (`VTX_...`) to retrieve all associated transaction details, Razorpay signatures, API client keys, and webhook logs.
             </p>
         </div>
     </div>

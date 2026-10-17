@@ -186,8 +186,7 @@ class NotificationService
             'Live API Secret'      => $clientData['api_secret'] ?? 'N/A',
             'Test API Key'         => $clientData['test_api_key'] ?? 'N/A',
             'Test API Secret'      => $clientData['test_api_secret'] ?? 'N/A',
-            'Webhook Endpoint'     => !empty($clientData['webhook_url']) ? $clientData['webhook_url'] : 'Not configured',
-            'Webhook Secret'       => !empty($clientData['webhook_secret']) ? $clientData['webhook_secret'] : 'N/A',
+            'Webhooks'             => 'Configured per Event under Events Management',
             'Merchant Portal URL'  => "<a href=\"{$portalUrl}\" style=\"color: #2563eb; font-weight: 600;\">{$portalUrl}</a>",
             'Next Steps'           => "Log in to the Merchant Portal using your API Key & Secret or set an account password in your settings."
         ]);

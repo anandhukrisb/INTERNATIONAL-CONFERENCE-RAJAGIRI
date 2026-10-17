@@ -22,12 +22,12 @@ $formTarget = $webhookFormAction ?? 'index.php';
             <input type="hidden" name="client_id" id="webhookClientId">
             <div class="modal-body">
                 <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 18px; line-height: 1.45;">
-                    Set the HTTPS URL where Vortex will POST real-time payment notifications. The webhook secret is used by the merchant to verify HMAC-SHA256 signatures.
+                    Set the HTTPS URL where Rpay will POST real-time payment notifications. The webhook secret is used by the merchant to verify HMAC-SHA256 signatures.
                 </p>
                 <div class="form-group">
                     <label for="webhookUrlInput">Webhook URL</label>
                     <input type="url" id="webhookUrlInput" name="webhook_url" class="form-control font-mono"
-                           placeholder="https://merchant.example.com/api/vortex_webhook">
+                           placeholder="https://merchant.example.com/api/rpay_webhook">
                 </div>
                 <div class="form-group" style="margin-top: 14px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">

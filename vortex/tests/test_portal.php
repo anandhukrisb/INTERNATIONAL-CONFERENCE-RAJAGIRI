@@ -163,31 +163,51 @@ function run_portal_tests()
     );
 
     // ------------------------------------------------------------
-    // 4. Webhook Self-Service Tests
+    // 4. Webhook Self-Service Tests (Per-Event)
     // ------------------------------------------------------------
-    echo "\n--- 4. Webhook Management Tests ---\n";
+    echo "\n--- 4. Event Webhook Management Tests ---\n";
 
-    // Set valid webhook URL
-    $whRes = $apiClientModel->updateWebhook(1, 'https://test-merchant-domain.com/vortex-webhook.php');
+    require_once __DIR__ . '/../classes/Event.php';
+    $eventModel = new Event();
+
+    // Create or ensure an isolated test event for webhook tests
+    $testEvtId = 'EVT_PORTAL_WH_TEST';
+    $conn = $db->getConnection();
+    $conn->exec("DELETE FROM events WHERE event_id = '{$testEvtId}'");
+    $conn->exec("INSERT INTO events (event_id, event_name, department, start_date, end_date, is_active)
+                 VALUES ('{$testEvtId}', 'Portal Webhook Test Event', 'Engineering', NOW(), DATE_ADD(NOW(), INTERVAL 7 DAY), 1)");
+
+    // Set valid webhook URL on test event
+    $whRes = $eventModel->updateWebhook($testEvtId, 'https://test-merchant-domain.com/vortex-webhook.php');
     TestHelper::assertTrue(
         $whRes['success'] === true && !empty($whRes['webhook_secret']),
-        'Webhooks: Successfully sets valid HTTPS webhook URL with generated secret'
+        'Event Webhooks: Successfully sets valid HTTPS webhook URL with generated secret on event'
     );
 
     // Reject invalid webhook URL
-    $whBadRes = $apiClientModel->updateWebhook(1, 'not-a-valid-url-format');
+    $whBadRes = $eventModel->updateWebhook($testEvtId, 'not-a-valid-url-format');
     TestHelper::assertTrue(
         $whBadRes['success'] === false,
-        'Webhooks: Correctly rejects invalid webhook URL format'
+        'Event Webhooks: Correctly rejects invalid webhook URL format'
     );
 
-    // Rotate webhook secret
+    // Rotate webhook secret on test event
     $newCustomSecret = bin2hex(random_bytes(24));
-    $whRotRes = $apiClientModel->updateWebhook(1, 'https://test-merchant-domain.com/vortex-webhook.php', $newCustomSecret);
+    $whRotRes = $eventModel->updateWebhook($testEvtId, 'https://test-merchant-domain.com/vortex-webhook.php', $newCustomSecret);
     TestHelper::assertTrue(
         $whRotRes['success'] === true && $whRotRes['webhook_secret'] === $newCustomSecret,
-        'Webhooks: Secret rotation updates cryptographic secret correctly'
+        'Event Webhooks: Secret rotation updates cryptographic secret correctly on event'
     );
+
+    // Clear test event webhook
+    $whClearRes = $eventModel->updateWebhook($testEvtId, '');
+    TestHelper::assertTrue(
+        $whClearRes['success'] === true && empty($whClearRes['data']['webhook_url']),
+        'Event Webhooks: Clearing webhook URL successfully removes URL and secret'
+    );
+
+    // Cleanup isolated test event
+    $conn->exec("DELETE FROM events WHERE event_id = '{$testEvtId}'");
 
     // ------------------------------------------------------------
     // 5. Merchant Profile Updating Tests

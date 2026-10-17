@@ -71,23 +71,49 @@ class WebhookQueueService
         ?array $extraData = null
     ): array {
         try {
-            // 1. Fetch merchant webhook credentials
-            $stmt = $this->db->prepare("SELECT client_name, webhook_url, webhook_secret FROM api_clients WHERE id = ? LIMIT 1");
-            $stmt->execute([$apiClientId]);
-            $client = $stmt->fetch(\PDO::FETCH_ASSOC);
+            // 1. Resolve event-specific webhook credentials first
+            $webhookUrl    = null;
+            $webhookSecret = null;
+            $clientName    = 'Client #' . $apiClientId;
 
-            if (!$client || empty($client['webhook_url']) || empty($client['webhook_secret'])) {
-                Logger::info("WebhookQueueService: Client #{$apiClientId} has no webhook_url or webhook_secret. Skipped.");
+            // Fetch transaction to determine which event it belongs to and enrich payload
+            $txStmt = $this->db->prepare("SELECT * FROM transactions WHERE vortex_transaction_id = ? LIMIT 1");
+            $txStmt->execute([$vortexTxnId]);
+            $tx = $txStmt->fetch(\PDO::FETCH_ASSOC);
+            $eventId = $tx['event_id'] ?? ($extraData['event_id'] ?? null);
+            if (empty($eventId) && $apiClientId > 0) {
+                $clEvtStmt = $this->db->prepare("
+                    SELECT event_id FROM events
+                    WHERE event_id IN (SELECT DISTINCT event_id FROM transactions WHERE api_client_id = ?)
+                       OR LOWER(event_name) = (SELECT LOWER(client_name) FROM api_clients WHERE id = ?)
+                    ORDER BY id ASC LIMIT 1
+                ");
+                $clEvtStmt->execute([$apiClientId, $apiClientId]);
+                $eventId = $clEvtStmt->fetchColumn() ?: null;
+            }
+
+            if (!empty($eventId)) {
+                $evtStmt = $this->db->prepare("SELECT event_name, webhook_url, webhook_secret FROM events WHERE event_id = ? LIMIT 1");
+                $evtStmt->execute([$eventId]);
+                $evt = $evtStmt->fetch(\PDO::FETCH_ASSOC);
+                if ($evt && !empty($evt['webhook_url']) && !empty($evt['webhook_secret'])) {
+                    $webhookUrl    = trim($evt['webhook_url']);
+                    $webhookSecret = trim($evt['webhook_secret']);
+                    $clientName    = $evt['event_name'];
+                    Logger::info("WebhookQueueService: Using Event webhook endpoint for {$eventId}: {$webhookUrl}");
+                }
+            }
+
+            if (empty($webhookUrl) || empty($webhookSecret)) {
+                Logger::info("WebhookQueueService: No webhook_url or webhook_secret configured on event '{$eventId}' for Txn {$vortexTxnId}. Skipped.");
                 return [
                     'success' => false,
                     'delivered' => false,
                     'enqueued' => false,
-                    'message' => 'No webhook URL or secret configured for client.'
+                    'message' => "No webhook URL or secret configured for event '{$eventId}'."
                 ];
             }
 
-            $webhookUrl    = trim($client['webhook_url']);
-            $webhookSecret = trim($client['webhook_secret']);
             $resolvedEvent = $eventType ?? ('payment.' . strtolower($status));
 
             // 2. Prepare payload & cryptographic HMAC signature
@@ -95,6 +121,13 @@ class WebhookQueueService
                 'event'                 => $resolvedEvent,
                 'vortex_transaction_id' => $vortexTxnId,
                 'status'                => $status,
+                'amount'                => isset($tx['amount']) ? (float) $tx['amount'] : null,
+                'currency'              => $tx['currency'] ?? 'INR',
+                'customer_email'        => $tx['customer_email'] ?? null,
+                'customer_mobile'       => $tx['customer_mobile'] ?? null,
+                'order_id'              => $tx['razorpay_order_id'] ?? null,
+                'payment_id'            => $tx['razorpay_payment_id'] ?? null,
+                'event_id'              => $eventId,
                 'timestamp'             => date('Y-m-d H:i:s')
             ];
 

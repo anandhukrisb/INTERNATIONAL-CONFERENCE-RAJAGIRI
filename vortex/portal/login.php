@@ -50,7 +50,8 @@ $loggedOut = isset($_GET['logged_out']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Merchant Portal Sign In – PayVortex</title>
+    <title>Merchant Portal Sign In – Rpay</title>
+    <link rel="icon" type="image/png" href="assets/images/rpay-icon.png">
     <link rel="stylesheet" href="assets/css/portal.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -145,10 +146,9 @@ $loggedOut = isset($_GET['logged_out']);
 
 <div class="login-card-wrapper">
     <div class="login-card-header">
-        <div class="login-brand">
-            <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1789742057/VortexBlue_smpgca.png" alt="PayVortex">
-            <h1>ORTEX</h1>
-            <span class="login-badge">Merchant Portal</span>
+        <div class="login-brand" style="justify-content: center; margin-bottom: 8px;">
+            <img src="assets/images/rpay-logo.png" alt="Rpay Logo" style="height: 38px; width: auto; object-fit: contain;">
+            <span class="login-badge" style="margin-left: 10px;">Merchant Portal</span>
         </div>
         <p class="login-subtitle">Self-service dashboard for integrated merchants and applications</p>
     </div>
@@ -189,7 +189,7 @@ $loggedOut = isset($_GET['logged_out']);
     </div>
 
     <div class="login-footer-info">
-        PayVortex Orchestrator &bull; Need credentials? Contact your Platform Administrator.
+        Rpay Orchestrator &bull; Need credentials? Contact your Platform Administrator.
     </div>
 </div>
 

@@ -133,7 +133,7 @@ $exportQuery = http_build_query([
         <table class="portal-table">
             <thead>
                 <tr>
-                    <th>Vortex TX ID</th>
+                    <th>Rpay TX ID</th>
                     <th>Razorpay IDs</th>
                     <th>Customer</th>
                     <th>Event / Purpose</th>

@@ -62,7 +62,8 @@ $loggedOut = isset($_GET['logged_out']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vortex Admin – Login</title>
+    <title>Rpay Admin – Login</title>
+    <link rel="icon" type="image/png" href="assets/images/rpay-icon.png">
     <!-- Immediate Flash-Free Theme Initializer -->
     <script>
         (function() {
@@ -321,6 +322,11 @@ $loggedOut = isset($_GET['logged_out']);
             color: var(--footer-text);
             margin-top: 24px;
         }
+
+        .rpay-logo-light { display: block; }
+        .rpay-logo-dark { display: none; }
+        [data-theme="dark"] .rpay-logo-light { display: none !important; }
+        [data-theme="dark"] .rpay-logo-dark { display: block !important; }
     </style>
 </head>
 <body>
@@ -338,9 +344,9 @@ $loggedOut = isset($_GET['logged_out']);
 
     <div class="login-box">
         <div class="login-logo">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 0; margin-bottom: 8px;">
-                <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1789742057/VortexBlue_smpgca.png" alt="Vortex Logo" style="height: 44px; width: auto; object-fit: contain; margin-right: -4px;">
-                <h1>ORTEX</h1>
+            <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+                <img src="assets/images/rpay-logo.png" alt="Rpay Logo" class="rpay-logo-light" style="height: 48px; width: auto; object-fit: contain;">
+                <img src="assets/images/rpay-logo-white-text.png" alt="Rpay Logo" class="rpay-logo-dark" style="height: 48px; width: auto; object-fit: contain; display: none;">
             </div>
             <p>Unified Payment Gateway — Administration</p>
         </div>
@@ -370,7 +376,7 @@ $loggedOut = isset($_GET['logged_out']);
             <button type="submit" class="btn-login">Sign In</button>
         </form>
 
-        <div class="login-footer">Vortex Gateway v1.0 &bull; Secure Administration Console</div>
+        <div class="login-footer">Rpay Gateway &bull; Secure Administration Console</div>
     </div>
     <style>
         @keyframes btn-spinner-anim {

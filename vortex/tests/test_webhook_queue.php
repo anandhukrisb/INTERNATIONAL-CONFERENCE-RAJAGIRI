@@ -45,21 +45,31 @@ function run_webhook_queue_tests(): bool
 --- " . '2. Test Merchant Setup' . " ---
 ";
 
-    // Create a client with a reachable local endpoint for success tests
+    // Create a client and an event with a reachable local endpoint for success tests
     $db->prepare("
         INSERT INTO api_clients (
-            client_name, email, api_key, api_secret,
-            webhook_url, webhook_secret, is_active
+            client_name, email, api_key, api_secret, is_active
         ) VALUES (
             'Webhook Queue Test Merchant', 'queue_test@rajagiri.edu',
-            'key_queue_test_123', 'secret_queue_test_123',
+            'key_queue_test_123', 'secret_queue_test_123', 1
+        ) ON DUPLICATE KEY UPDATE
+            is_active = 1
+    ")->execute();
+
+    $testEventId = 'EVT_QUEUE_TEST_01';
+    $db->prepare("
+        INSERT INTO events (
+            event_id, event_name, department, start_date, end_date,
+            webhook_url, webhook_secret, is_active
+        ) VALUES (
+            ?, 'Webhook Queue Test Event', 'CS', NOW(), DATE_ADD(NOW(), INTERVAL 7 DAY),
             'http://localhost:8080/vortex/api/health_check.php',
             'whsec_queue_test_secret_999', 1
         ) ON DUPLICATE KEY UPDATE
             webhook_url = 'http://localhost:8080/vortex/api/health_check.php',
             webhook_secret = 'whsec_queue_test_secret_999',
             is_active = 1
-    ")->execute();
+    ")->execute([$testEventId]);
 
     $clientId = (int) $db->query("SELECT id FROM api_clients WHERE api_key = 'key_queue_test_123'")->fetchColumn();
     TestHelper::assertTrue($clientId > 0, "Queue 2.1: Test merchant exists (ID #{$clientId})");
@@ -79,7 +89,7 @@ function run_webhook_queue_tests(): bool
         'SUCCESS',
         $clientId,
         'payment.success',
-        ['amount' => 500.00]
+        ['amount' => 500.00, 'event_id' => $testEventId]
     );
 
     TestHelper::assertTrue(!empty($resultSuccess['delivered']), "Queue 3.1: Immediate delivery succeeded");
@@ -102,8 +112,8 @@ function run_webhook_queue_tests(): bool
 --- " . '4. Failed Delivery & Exponential Backoff (Retry 1: +3 min)' . " ---
 ";
 
-    // Update client to unreachable local port to guarantee failure
-    $db->prepare("UPDATE api_clients SET webhook_url = 'http://localhost:59999/unreachable_webhook' WHERE id = ?")->execute([$clientId]);
+    // Update event to unreachable local port to guarantee failure
+    $db->prepare("UPDATE events SET webhook_url = 'http://localhost:59999/unreachable_webhook' WHERE event_id = ?")->execute([$testEventId]);
 
     $txnIdFail = 'VTX_QUEUE_TEST_FAIL_' . time();
     $resultFail = $queueService->dispatchOrEnqueue(
@@ -111,7 +121,7 @@ function run_webhook_queue_tests(): bool
         'SUCCESS',
         $clientId,
         'payment.success',
-        ['amount' => 1200.00]
+        ['amount' => 1200.00, 'event_id' => $testEventId]
     );
 
     TestHelper::assertTrue(empty($resultFail['delivered']), "Queue 4.1: Delivery correctly reported failure");
@@ -213,8 +223,8 @@ function run_webhook_queue_tests(): bool
 --- " . '8. Manual Retry Functionality' . " ---
 ";
 
-    // Fix the merchant endpoint so manual retry succeeds
-    $db->prepare("UPDATE api_clients SET webhook_url = 'http://localhost:8080/vortex/api/health_check.php' WHERE id = ?")->execute([$clientId]);
+    // Fix the event endpoint so manual retry succeeds
+    $db->prepare("UPDATE events SET webhook_url = 'http://localhost:8080/vortex/api/health_check.php' WHERE event_id = ?")->execute([$testEventId]);
     $db->prepare("UPDATE outbound_webhook_queue SET webhook_url = 'http://localhost:8080/vortex/api/health_check.php' WHERE id = ?")->execute([$failedQueueId]);
 
     $manualRes = $queueService->retryManually($failedQueueId);

@@ -32,6 +32,8 @@ class AuditLogger
     public const ADMIN_LOGIN_FAILED      = 'admin.login_failed';
 
     public const EVENT_CREATED           = 'event.created';
+    public const EVENT_EDITED            = 'event.edited';
+    public const EVENT_WEBHOOK_UPDATED   = 'event.webhook_updated';
     public const EVENT_ACTIVATED         = 'event.activated';
     public const EVENT_DEACTIVATED       = 'event.deactivated';
 

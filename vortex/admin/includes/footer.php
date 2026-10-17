@@ -6,11 +6,11 @@
     <div class="modal-overlay" id="createEventModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
         <div class="modal-box">
             <div class="modal-header">
-                <h2 id="modalTitle">🎟️ Create New Event</h2>
+                <h2 id="modalTitle">Create New Event</h2>
                 <button class="modal-close" id="closeEventModal" title="Close">&times;</button>
             </div>
 
-            <form action="<?= $adminBase ?? '' ?>dashboard.php" method="POST">
+            <form action="<?= $adminBase ?? '' ?>events/index.php" method="POST">
                 <input type="hidden" name="action" value="create_event">
 
                 <div class="modal-body">
@@ -33,13 +33,18 @@
                             <label for="modal_end_date">End Date</label>
                             <input type="date" id="modal_end_date" name="end_date" class="form-control" required>
                         </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label for="modal_webhook_url">Webhook Delivery URL (Optional)</label>
+                            <input type="url" id="modal_webhook_url" name="webhook_url" class="form-control"
+                                   placeholder="e.g. https://dyuti.in/webhook.php">
+                        </div>
                     </div>
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn-cancel" id="cancelEventModal">Cancel</button>
                     <button type="submit" class="btn-submit-event">
-                        <span>✚</span> Create Event
+                        Create Event
                     </button>
                 </div>
             </form>

@@ -55,7 +55,7 @@ $transactions = $data['rows'] ?? [];
 
 // Filename
 $safeClientName = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $currentClient['client_name'] ?? 'merchant');
-$filename = "payvortex_report_{$safeClientName}_client{$clientId}_" . date('Ymd_His') . ".csv";
+$filename = "rpay_report_{$safeClientName}_client{$clientId}_" . date('Ymd_His') . ".csv";
 
 // Headers for direct file download
 header('Content-Type: text/csv; charset=UTF-8');
@@ -70,7 +70,7 @@ fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
 
 // CSV Header row
 fputcsv($output, [
-    'Vortex Transaction ID',
+    'Rpay Transaction ID',
     'Razorpay Order ID',
     'Razorpay Payment ID',
     'Customer Name',

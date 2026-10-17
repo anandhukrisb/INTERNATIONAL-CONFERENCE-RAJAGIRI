@@ -49,24 +49,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'compl
     $nsr = isset($_POST['notify_sms_refund'])    ? 1 : 0;
     $nsd = isset($_POST['notify_sms_dispute'])   ? 1 : 0;
 
-    $webhookUrl   = trim($_POST['webhook_url'] ?? '');
-    $webhookSecret= trim($_POST['webhook_secret'] ?? '');
     $sendWelcome  = isset($_POST['send_welcome_email']) ? 1 : 0;
 
     if (empty($clientName)) {
         $error = "Merchant / Organization name is required.";
     } elseif (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Please provide a valid contact email address.";
-    } elseif (!empty($webhookUrl) && !filter_var($webhookUrl, FILTER_VALIDATE_URL)) {
-        $error = "Invalid webhook URL format. Please provide a valid HTTP/HTTPS URL.";
     } else {
         $result = $apiClientModel->onboardClient([
             'client_name'          => $clientName,
             'email'                => $email,
             'phone'                => $phone,
             'is_active'            => $isActive,
-            'webhook_url'          => $webhookUrl,
-            'webhook_secret'       => $webhookSecret,
             'notify_email_payment' => $nep,
             'notify_email_refund'  => $ner,
             'notify_email_dispute' => $ned,
@@ -96,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'compl
 // Generate an initial random webhook secret for the UI
 $initialWebhookSecret = bin2hex(random_bytes(24));
 
-$pageTitle = "Client Onboarding Wizard - Vortex Admin";
+$pageTitle = "Client Onboarding Wizard - Rpay Admin";
 $activeNav = "clients";
 require_once __DIR__ . '/../includes/header.php';
 ?>
@@ -481,26 +475,13 @@ require_once __DIR__ . '/../includes/header.php';
                         </div>
                     </div>
 
-                    <!-- Webhook Details -->
-                    <?php if (!empty($onboardedClient['webhook_url'])): ?>
-                    <div style="margin-top: 16px;">
-                        <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #34d399; font-weight: 700;">Webhook Configuration</span>
-                        <div class="credential-field" style="margin-top: 6px;">
-                            <div>
-                                <span style="font-size: 0.75rem; color: #94a3b8; display: block;">Webhook Endpoint URL</span>
-                                <span class="val" style="color: #6ee7b7;" id="disp_webhook_url"><?= htmlspecialchars($onboardedClient['webhook_url']) ?></span>
-                            </div>
-                            <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($onboardedClient['webhook_url'], ENT_QUOTES) ?>', this)">📋 Copy</button>
-                        </div>
-                        <div class="credential-field">
-                            <div>
-                                <span style="font-size: 0.75rem; color: #94a3b8; display: block;">HMAC-SHA256 Webhook Secret</span>
-                                <span class="val" style="color: #6ee7b7;" id="disp_webhook_secret"><?= htmlspecialchars($onboardedClient['webhook_secret']) ?></span>
-                            </div>
-                            <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($onboardedClient['webhook_secret'], ENT_QUOTES) ?>', this)">📋 Copy</button>
+                    <!-- Event Webhooks Notice -->
+                    <div style="margin-top: 16px; background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 6px; padding: 12px 14px;">
+                        <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #93c5fd; font-weight: 700; display: block; margin-bottom: 4px;">Event Webhooks</span>
+                        <div style="font-size: 0.8rem; color: #cbd5e1;">
+                            Webhooks are configured per Event in the <a href="../events/index.php" style="color: #60a5fa; text-decoration: underline; font-weight: 600;">Events Management</a> panel.
                         </div>
                     </div>
-                    <?php endif; ?>
                 </div>
 
                 <!-- Integration Quickstart Preview -->
@@ -558,7 +539,7 @@ $response = json_decode(curl_exec($ch), true);') ?></pre>
         }
 
         function copyAllCredentials() {
-            const text = `PayVortex Merchant Credentials
+            const text = `Rpay Merchant Credentials
 -------------------------------------------
 Client Name:   ${clientBundle.client_name}
 Client ID:     #${clientBundle.id}
@@ -594,11 +575,6 @@ Webhook Secret:${clientBundle.webhook_secret || 'N/A'}
 
             <button type="button" class="step-node" id="stepNode3" onclick="jumpToStep(3)">
                 <div class="step-circle">3</div>
-                <span class="step-label">Webhook &amp; Test</span>
-            </button>
-
-            <button type="button" class="step-node" id="stepNode4" onclick="jumpToStep(4)">
-                <div class="step-circle">4</div>
                 <span class="step-label">Review &amp; Deploy</span>
             </button>
         </div>
@@ -614,7 +590,7 @@ Webhook Secret:${clientBundle.webhook_secret || 'N/A'}
                             <h3 class="wizard-card-title">1. Merchant &amp; Business Information</h3>
                             <div class="wizard-card-subtitle">Enter the merchant's business entity and primary contact information.</div>
                         </div>
-                        <span class="badge badge-info" style="font-size: 0.78rem;">Step 1 of 4</span>
+                        <span class="badge badge-info" style="font-size: 0.78rem;">Step 1 of 3</span>
                     </div>
                     <div class="wizard-card-body">
                         <div class="form-group">
@@ -724,101 +700,19 @@ Webhook Secret:${clientBundle.webhook_secret || 'N/A'}
                             &larr; Back
                         </button>
                         <button type="button" class="btn btn-primary" onclick="nextStep(3)">
-                            Next: Webhook Setup &amp; Test &rarr;
+                            Next: Review &amp; Deploy &rarr;
                         </button>
                     </div>
                 </div>
 
-                <!-- STEP 3: WEBHOOK SETUP & LIVE TEST -->
+                <!-- STEP 3: REVIEW & PROVISION -->
                 <div class="wizard-step-pane" id="paneStep3">
                     <div class="wizard-card-header">
                         <div>
-                            <h3 class="wizard-card-title">3. Webhook Endpoint Setup &amp; Live Diagnostic Ping</h3>
-                            <div class="wizard-card-subtitle">Configure real-time event forwarding and verify reachability with a signed cryptographic test ping.</div>
-                        </div>
-                        <span class="badge badge-info" style="font-size: 0.78rem;">Step 3 of 4</span>
-                    </div>
-                    <div class="wizard-card-body">
-                        <div class="form-group">
-                            <label for="webhook_url">Webhook Destination URL</label>
-                            <input type="url" id="webhook_url" name="webhook_url" class="form-control font-mono" placeholder="https://merchant.example.com/api/vortex_webhook">
-                            <small style="color: var(--text-gray); font-size: 0.78rem;">Must be an HTTPS endpoint reachable over the public internet (or localhost in dev).</small>
-                        </div>
-
-                        <div class="form-group" style="margin-top: 16px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                                <label for="webhook_secret" style="margin: 0;">Cryptographic Webhook Secret</label>
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="regenerateSecret()" style="font-size: 0.75rem; padding: 2px 8px;">🎲 Generate New</button>
-                            </div>
-                            <div class="copy-wrapper">
-                                <input type="text" id="webhook_secret" name="webhook_secret" class="form-control font-mono" value="<?= htmlspecialchars($initialWebhookSecret) ?>" style="font-size: 0.85rem;">
-                                <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard(document.getElementById('webhook_secret').value, this)" title="Copy Secret">📋</button>
-                            </div>
-                            <small style="color: var(--text-gray); font-size: 0.78rem;">Used to sign payloads with HMAC-SHA256 in header <code>X-Vortex-Signature</code>.</small>
-                        </div>
-
-                        <!-- Webhook Diagnostic Runner Panel -->
-                        <div class="diagnostic-panel">
-                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                                <div>
-                                    <h4 style="margin: 0; font-size: 0.95rem; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; gap: 6px;">
-                                        ⚡ Live Webhook Health Check
-                                    </h4>
-                                    <div style="font-size: 0.8rem; color: var(--text-gray); margin-top: 2px;">
-                                        Sends a live test payload with signature <code>X-Vortex-Signature</code> and validates HTTP 2xx response.
-                                    </div>
-                                </div>
-                                <button type="button" id="btnTestWebhook" class="btn btn-primary btn-sm" onclick="runLiveWebhookTest()" style="padding: 7px 14px;">
-                                    🚀 Send Diagnostic Ping
-                                </button>
-                            </div>
-
-                            <!-- Live Spinner -->
-                            <div id="pingLoading" style="display: none; align-items: center; gap: 8px; margin-top: 14px; font-size: 0.85rem; color: var(--primary-blue);">
-                                <span class="spinner" style="width: 16px; height: 16px; border: 2px solid var(--primary-blue); border-top-color: transparent; border-radius: 50%; display: inline-block; animation: spin 0.8s linear infinite;"></span>
-                                Dispatching signed HTTP POST request &amp; awaiting server response...
-                            </div>
-
-                            <!-- Ping Result Display -->
-                            <div id="pingResultBox" class="ping-result-box">
-                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                                    <strong id="pingStatusTitle" style="font-size: 0.92rem;"></strong>
-                                    <div style="display: flex; gap: 6px;" id="pingBadges"></div>
-                                </div>
-                                <div id="pingMessage" style="font-size: 0.85rem; margin-top: 6px; line-height: 1.4;"></div>
-                                
-                                <div id="pingDetails" style="margin-top: 10px; font-size: 0.78rem; display: none;">
-                                    <div style="font-weight: 600; margin-bottom: 3px;">Diagnostic Headers &amp; Response Body Snippet:</div>
-                                    <pre id="pingSnippet" style="background: rgba(0,0,0,0.06); padding: 8px; border-radius: 4px; overflow-x: auto; max-height: 120px; font-family: monospace; margin: 0;"></pre>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="margin-top: 16px;">
-                            <label style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #64748b; cursor: pointer;">
-                                <input type="checkbox" id="skip_webhook_test" name="skip_webhook_test" value="1">
-                                <span>Skip webhook verification (Merchant endpoint is still in development or not configured yet)</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="wizard-card-footer">
-                        <button type="button" class="btn btn-secondary" onclick="prevStep(2)">
-                            &larr; Back
-                        </button>
-                        <button type="button" class="btn btn-primary" onclick="nextStep(4)">
-                            Next: Review &amp; Provision &rarr;
-                        </button>
-                    </div>
-                </div>
-
-                <!-- STEP 4: REVIEW & PROVISION -->
-                <div class="wizard-step-pane" id="paneStep4">
-                    <div class="wizard-card-header">
-                        <div>
-                            <h3 class="wizard-card-title">4. Review &amp; Deploy Merchant Account</h3>
+                            <h3 class="wizard-card-title">3. Review &amp; Deploy Merchant Account</h3>
                             <div class="wizard-card-subtitle">Review summary before generating live and sandbox cryptographic keys.</div>
                         </div>
-                        <span class="badge badge-info" style="font-size: 0.78rem;">Step 4 of 4</span>
+                        <span class="badge badge-info" style="font-size: 0.78rem;">Step 3 of 3</span>
                     </div>
                     <div class="wizard-card-body">
                         <!-- Summary Table -->
@@ -840,8 +734,8 @@ Webhook Secret:${clientBundle.webhook_secret || 'N/A'}
                                     <td style="padding: 10px 16px; color: var(--text-dark); border-bottom: 1px solid #edf2f7;" id="rev_phone">–</td>
                                 </tr>
                                 <tr>
-                                    <td style="padding: 10px 16px; color: var(--text-gray); border-bottom: 1px solid #edf2f7;">Webhook URL</td>
-                                    <td style="padding: 10px 16px; font-family: monospace; color: var(--primary-blue); border-bottom: 1px solid #edf2f7;" id="rev_webhook_url">None (Disabled)</td>
+                                    <td style="padding: 10px 16px; color: var(--text-gray); border-bottom: 1px solid #edf2f7;">Event Webhooks</td>
+                                    <td style="padding: 10px 16px; color: var(--text-dark); border-bottom: 1px solid #edf2f7;">Configured per Event under Events Management</td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 10px 16px; color: var(--text-gray); border-bottom: 1px solid #edf2f7;">Account Status</td>
@@ -855,12 +749,12 @@ Webhook Secret:${clientBundle.webhook_secret || 'N/A'}
                             <input type="checkbox" name="send_welcome_email" id="send_welcome_email" value="1" checked>
                             <div class="pref-box-content">
                                 <div class="pref-box-title">✉️ Dispatch Welcome Credentials Email</div>
-                                <div class="pref-box-desc">Automatically email the generated live/test API keys, webhook secret, and merchant portal login link to the contact email.</div>
+                                <div class="pref-box-desc">Automatically email the generated live/test API keys, portal quickstart, and login link to the contact email.</div>
                             </div>
                         </label>
                     </div>
                     <div class="wizard-card-footer">
-                        <button type="button" class="btn btn-secondary" onclick="prevStep(3)">
+                        <button type="button" class="btn btn-secondary" onclick="prevStep(2)">
                             &larr; Back
                         </button>
                         <button type="submit" class="btn btn-primary" id="btnSubmitOnboarding" style="padding: 10px 24px; font-weight: 700;">
@@ -873,16 +767,15 @@ Webhook Secret:${clientBundle.webhook_secret || 'N/A'}
 
         <script>
         let currentStep = 1;
-        let webhookVerified = false;
 
         function updateStepUI(step) {
             currentStep = step;
 
             // Update Progress Bar & Nodes
-            const progressPct = ((step - 1) / 3) * 100;
+            const progressPct = ((step - 1) / 2) * 100;
             document.getElementById('stepperProgressBar').style.width = progressPct + '%';
 
-            for (let i = 1; i <= 4; i++) {
+            for (let i = 1; i <= 3; i++) {
                 const node = document.getElementById('stepNode' + i);
                 const pane = document.getElementById('paneStep' + i);
 
@@ -897,12 +790,11 @@ Webhook Secret:${clientBundle.webhook_secret || 'N/A'}
                 }
             }
 
-            // Sync step 4 review summary if reached
-            if (step === 4) {
+            // Sync step 3 review summary if reached
+            if (step === 3) {
                 document.getElementById('rev_client_name').textContent = document.getElementById('client_name').value.trim() || '–';
                 document.getElementById('rev_email').textContent       = document.getElementById('email').value.trim() || '–';
                 document.getElementById('rev_phone').textContent       = document.getElementById('phone').value.trim() || '–';
-                document.getElementById('rev_webhook_url').textContent = document.getElementById('webhook_url').value.trim() || 'None (Disabled)';
                 document.getElementById('rev_status').textContent      = document.getElementById('is_active').value === '1' ? 'Active' : 'Suspended';
             }
         }
@@ -915,17 +807,6 @@ Webhook Secret:${clientBundle.webhook_secret || 'N/A'}
                     alert('Please enter the Client / Merchant name.');
                     document.getElementById('client_name').focus();
                     return;
-                }
-            }
-
-            if (currentStep === 3) {
-                const url = document.getElementById('webhook_url').value.trim();
-                const skip = document.getElementById('skip_webhook_test').checked;
-
-                if (url && !skip && !webhookVerified) {
-                    if (!confirm('You have configured a webhook URL but have not successfully verified it with a test ping. Proceed anyway?')) {
-                        return;
-                    }
                 }
             }
 
@@ -942,86 +823,6 @@ Webhook Secret:${clientBundle.webhook_secret || 'N/A'}
             } else {
                 updateStepUI(target);
             }
-        }
-
-        function regenerateSecret() {
-            const arr = new Uint8Array(24);
-            window.crypto.getRandomValues(arr);
-            const hex = Array.from(arr, b => b.toString(16).padStart(2, '0')).join('');
-            document.getElementById('webhook_secret').value = hex;
-        }
-
-        function runLiveWebhookTest() {
-            const url = document.getElementById('webhook_url').value.trim();
-            const secret = document.getElementById('webhook_secret').value.trim();
-            const resultBox = document.getElementById('pingResultBox');
-            const loading = document.getElementById('pingLoading');
-            const btn = document.getElementById('btnTestWebhook');
-
-            if (!url) {
-                alert('Please enter a Webhook URL to test.');
-                document.getElementById('webhook_url').focus();
-                return;
-            }
-
-            loading.style.display = 'flex';
-            resultBox.style.display = 'none';
-            btn.disabled = true;
-
-            fetch('test_webhook_ajax.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams({
-                    webhook_url: url,
-                    webhook_secret: secret
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                loading.style.display = 'none';
-                btn.disabled = false;
-                resultBox.style.display = 'block';
-
-                const statusTitle = document.getElementById('pingStatusTitle');
-                const badges = document.getElementById('pingBadges');
-                const msg = document.getElementById('pingMessage');
-                const details = document.getElementById('pingDetails');
-                const snippet = document.getElementById('pingSnippet');
-
-                resultBox.className = 'ping-result-box ' + (data.success ? 'success' : 'error');
-
-                if (data.success) {
-                    webhookVerified = true;
-                    statusTitle.textContent = '✅ Webhook Verified (HTTP ' + data.http_code + ')';
-                    badges.innerHTML = `
-                        <span class="badge badge-success">${data.response_time_ms} ms</span>
-                        <span class="badge badge-info">${data.primary_ip || 'IP OK'}</span>
-                    `;
-                } else {
-                    webhookVerified = false;
-                    statusTitle.textContent = '❌ Webhook Ping Failed' + (data.http_code ? ' (HTTP ' + data.http_code + ')' : '');
-                    badges.innerHTML = `
-                        <span class="badge badge-danger">${data.response_time_ms || 0} ms</span>
-                    `;
-                }
-
-                msg.textContent = data.message || 'No message provided.';
-
-                if (data.response_body || data.signature_sample) {
-                    details.style.display = 'block';
-                    snippet.textContent = `HMAC Signature: ${data.signature_sample || 'N/A'}\nServer Response:\n${data.response_body || '(Empty Body)'}`;
-                } else {
-                    details.style.display = 'none';
-                }
-            })
-            .catch(err => {
-                loading.style.display = 'none';
-                btn.disabled = false;
-                resultBox.style.display = 'block';
-                resultBox.className = 'ping-result-box error';
-                document.getElementById('pingStatusTitle').textContent = '⚠️ Request Error';
-                document.getElementById('pingMessage').textContent = 'Could not communicate with PayVortex diagnostic service: ' + err.message;
-            });
         }
 
         function validateBeforeSubmit() {

@@ -6,7 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-$pageTitle = $pageTitle ?? 'Vortex Admin Dashboard';
+$pageTitle = $pageTitle ?? 'Rpay Admin Dashboard';
 $activeNav = $activeNav ?? 'dashboard';
 
 // Determine base URL dynamically (must be before auth guard)
@@ -34,6 +34,7 @@ if (empty($_SESSION['vortex_admin_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle) ?></title>
+    <link rel="icon" type="image/png" href="<?= $adminBase ?>assets/images/rpay-icon.png">
     <link rel="stylesheet" href="<?= $adminBase ?>assets/css/admin.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Immediate Flash-Free Theme Initializer -->
@@ -53,9 +54,11 @@ if (empty($_SESSION['vortex_admin_id'])) {
     <div class="app-layout">
         <!-- Top Navigation Bar -->
         <header class="app-topbar">
-            <div class="topbar-brand" style="gap: 0;">
-                <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1789742057/VortexBlue_smpgca.png" alt="Vortex Logo" style="height: 34px; width: auto; object-fit: contain; margin-right: -2px;">
-                <span class="brand-name">ORTEX</span>
+            <div class="topbar-brand">
+                <a href="<?= $adminBase ?>dashboard.php" class="brand-link" style="display: inline-flex; align-items: center; text-decoration: none;">
+                    <img src="<?= $adminBase ?>assets/images/rpay-logo.png" alt="Rpay Logo" class="rpay-logo rpay-logo-light" style="height: 32px; width: auto; object-fit: contain;">
+                    <img src="<?= $adminBase ?>assets/images/rpay-logo-white-text.png" alt="Rpay Logo" class="rpay-logo rpay-logo-dark" style="height: 32px; width: auto; object-fit: contain; display: none;">
+                </a>
             </div>
 
             <!-- Global Search Form with Omnisearch Autocomplete -->
@@ -64,8 +67,7 @@ if (empty($_SESSION['vortex_admin_id'])) {
                     <span class="search-icon">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                     </span>
-                    <input type="text" name="q" id="topbarSearchInput" placeholder="Search transactions, emails, Razorpay IDs, merchants... (Press /)" value="<?= htmlspecialchars($_GET['q'] ?? $_GET['vortex_transaction_id'] ?? '') ?>" required>
-                    <span class="search-shortcut-badge" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 0.72rem; color: #94a3b8; background: #e2e8f0; padding: 2px 7px; border-radius: 4px; font-family: monospace; pointer-events: none;">/</span>
+                    <input type="text" name="q" id="topbarSearchInput" placeholder="Search transactions, emails, IDs, merchants..." value="<?= htmlspecialchars($_GET['q'] ?? $_GET['vortex_transaction_id'] ?? '') ?>" required>
                     <div id="topbarSearchDropdown" class="search-autocomplete-dropdown"></div>
                 </div>
             </form>
@@ -129,7 +131,7 @@ if (empty($_SESSION['vortex_admin_id'])) {
                     <?= RBAC::getRoleBadge() ?>
                     <svg class="profile-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </a>
-                <a href="<?= $adminBase ?>logout.php" class="btn-logout" title="Sign out" onclick="return confirm('Sign out of Vortex Admin?');">
+                <a href="<?= $adminBase ?>logout.php" class="btn-logout" title="Sign out" onclick="return confirm('Sign out of Rpay Admin?');">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                 </a>
             </div>
