@@ -289,6 +289,18 @@ class Refund
                 } catch (\Throwable $whEx) {
                     Logger::error("Failed to dispatch client webhook on refund: " . $whEx->getMessage());
                 }
+
+                try {
+                    require_once __DIR__ . '/NotificationService.php';
+                    NotificationService::notifyRefundProcessed($transaction, [
+                        'refund_id' => $razorpayRefundId,
+                        'amount'    => $amount,
+                        'reason'    => $reason,
+                        'status'    => $status
+                    ]);
+                } catch (\Throwable $notifEx) {
+                    Logger::error("Failed to dispatch client notification on refund: " . $notifEx->getMessage());
+                }
             }
 
             /**

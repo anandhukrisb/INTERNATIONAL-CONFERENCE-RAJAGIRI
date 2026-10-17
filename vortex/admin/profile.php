@@ -21,6 +21,7 @@ $activeNav = 'profile';
 $pageTitle = 'Admin Profile & Security – Vortex';
 
 require_once __DIR__ . '/../classes/Database.php';
+require_once __DIR__ . '/../classes/RBAC.php';
 
 // Auth Guard
 if (empty($_SESSION['vortex_admin_id'])) {
@@ -277,7 +278,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: profile.php#api');
         exit;
     }
+
+    // 6. CREATE ADMIN USER (Super Admin only)
+    if ($action === 'create_admin_user') {
+        $res = RBAC::createAdminUser($_POST);
+        if ($res['success']) {
+            $_SESSION['flash_success'] = $res['message'];
+        } else {
+            $_SESSION['flash_error'] = $res['message'];
+        }
+        header('Location: profile.php#tab-permissions');
+        exit;
+    }
+
+    // 7. UPDATE ADMIN ROLE (Super Admin only)
+    if ($action === 'update_admin_role') {
+        $targetAdminId = (int)($_POST['target_admin_id'] ?? 0);
+        $newRole = trim($_POST['new_role'] ?? '');
+        $res = RBAC::updateAdminRole($targetAdminId, $newRole);
+        if ($res['success']) {
+            $_SESSION['flash_success'] = $res['message'];
+        } else {
+            $_SESSION['flash_error'] = $res['message'];
+        }
+        header('Location: profile.php#tab-permissions');
+        exit;
+    }
+
+    // 8. TOGGLE ADMIN STATUS (Super Admin only)
+    if ($action === 'toggle_admin_status') {
+        $targetAdminId = (int)($_POST['target_admin_id'] ?? 0);
+        $newStatus = (int)($_POST['is_active'] ?? 1);
+        $res = RBAC::toggleAdminStatus($targetAdminId, $newStatus);
+        if ($res['success']) {
+            $_SESSION['flash_success'] = $res['message'];
+        } else {
+            $_SESSION['flash_error'] = $res['message'];
+        }
+        header('Location: profile.php#tab-permissions');
+        exit;
+    }
 }
+
+// Fetch all administrative users if Super Admin
+$allAdminUsers = RBAC::can('admins.manage') ? RBAC::getAllAdmins() : [];
 
 // Fetch System Overview Metrics for Admin Oversight
 $totalEvents       = (int)$db->query("SELECT COUNT(*) FROM events")->fetchColumn();
@@ -572,8 +616,53 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="profile-info-item">
                     <span class="profile-info-label">Account Status</span>
                     <span class="profile-info-value">
-                        <span class="badge badge-success">✓ Active & Functional</span>
+                        <span class="badge badge-success">✓ Active &amp; Functional</span>
                     </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appearance & Theme Card -->
+        <div class="profile-card" style="margin-top: 24px;">
+            <div class="profile-card-header">
+                <div>
+                    <h3 class="profile-card-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        Appearance &amp; Theme Settings
+                    </h3>
+                    <p class="profile-card-desc">Customize your visual interface. Switch between Google Drive Light and Google Dark Mode.</p>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 16px;">
+                <!-- Light Theme Option -->
+                <div class="theme-choice-card" id="themeChoiceLight" onclick="setAdminTheme('light')" style="border: 2px solid var(--border-color); border-radius: 10px; padding: 18px; cursor: pointer; transition: all 0.2s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <span style="font-size: 1.5rem;">☀️</span>
+                        <input type="radio" name="profile_theme_choice" id="radioThemeLight" value="light" style="width: 18px; height: 18px; accent-color: #1a73e8;">
+                    </div>
+                    <div style="font-weight: 700; font-size: 0.95rem;">Google Drive Light</div>
+                    <div style="font-size: 0.8rem; color: var(--text-gray); margin-top: 4px;">Crisp white surfaces with signature Google Drive blue accents.</div>
+                </div>
+
+                <!-- Dark Theme Option -->
+                <div class="theme-choice-card" id="themeChoiceDark" onclick="setAdminTheme('dark')" style="border: 2px solid var(--border-color); border-radius: 10px; padding: 18px; cursor: pointer; transition: all 0.2s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <span style="font-size: 1.5rem;">🌙</span>
+                        <input type="radio" name="profile_theme_choice" id="radioThemeDark" value="dark" style="width: 18px; height: 18px; accent-color: #8ab4f8;">
+                    </div>
+                    <div style="font-weight: 700; font-size: 0.95rem;">Google Dark Mode</div>
+                    <div style="font-size: 0.8rem; color: var(--text-gray); margin-top: 4px;">Comfortable #202124 charcoal canvas with #8ab4f8 Google blue.</div>
+                </div>
+
+                <!-- System Auto Option -->
+                <div class="theme-choice-card" id="themeChoiceAuto" onclick="setAdminTheme('auto')" style="border: 2px solid var(--border-color); border-radius: 10px; padding: 18px; cursor: pointer; transition: all 0.2s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <span style="font-size: 1.5rem;">💻</span>
+                        <input type="radio" name="profile_theme_choice" id="radioThemeAuto" value="auto" style="width: 18px; height: 18px;">
+                    </div>
+                    <div style="font-weight: 700; font-size: 0.95rem;">System Default</div>
+                    <div style="font-size: 0.8rem; color: var(--text-gray); margin-top: 4px;">Automatically follows your operating system appearance.</div>
                 </div>
             </div>
         </div>
@@ -668,57 +757,133 @@ require_once __DIR__ . '/includes/header.php';
                 <div>
                     <h3 class="profile-card-title">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                        Administrator Privileges Matrix
+                        Privileges & Access Control Matrix
                     </h3>
-                    <p class="profile-card-desc">Your administrative tier grants unrestricted gateway governance and transaction controls.</p>
+                    <p class="profile-card-desc">Your active role is <strong><?= htmlspecialchars(RBAC::getRoleLabel()) ?></strong>. <?= htmlspecialchars(RBAC::getAllRoles()[RBAC::getCurrentRole()]['description'] ?? '') ?></p>
                 </div>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="openModal('permissionsModal')">
-                    Detailed Matrix
-                </button>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <?= RBAC::getRoleBadge() ?>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="openModal('permissionsModal')">
+                        Full Role Matrix
+                    </button>
+                </div>
             </div>
 
             <div class="permissions-grid">
-                <div class="permission-card granted">
-                    <div class="permission-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <?php foreach (RBAC::getPermissionsForRole() as $pKey => $pInfo): ?>
+                    <div class="permission-card <?= $pInfo['granted'] ? 'granted' : 'revoked' ?>" style="<?= $pInfo['granted'] ? '' : 'opacity: 0.65; border-color: #e2e8f0; background: #f8fafc;' ?>">
+                        <div class="permission-icon" style="<?= $pInfo['granted'] ? '' : 'background: #f1f5f9; color: #94a3b8;' ?>">
+                            <?php if ($pInfo['granted']): ?>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            <?php else: ?>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            <?php endif; ?>
+                        </div>
+                        <div>
+                            <div class="permission-title" style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                                <span><?= htmlspecialchars($pInfo['label']) ?></span>
+                                <?php if ($pInfo['granted']): ?>
+                                    <span class="badge badge-success" style="font-size:0.7rem;">✓ Allowed</span>
+                                <?php else: ?>
+                                    <span class="badge" style="font-size:0.7rem; background:#f1f5f9; color:#64748b;">✕ Restricted</span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="permission-desc"><?= htmlspecialchars($pInfo['description']) ?></div>
+                        </div>
                     </div>
-                    <div>
-                        <div class="permission-title">Payment & Dispute Governance</div>
-                        <div class="permission-desc">View real-time transactions, execute direct Razorpay refunds, and resolve payment disputes.</div>
-                    </div>
-                </div>
-
-                <div class="permission-card granted">
-                    <div class="permission-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    </div>
-                    <div>
-                        <div class="permission-title">Event Lifecycle Management</div>
-                        <div class="permission-desc">Create institutional events, adjust event schedule dates, and toggle activation status.</div>
-                    </div>
-                </div>
-
-                <div class="permission-card granted">
-                    <div class="permission-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    </div>
-                    <div>
-                        <div class="permission-title">API Client & Key Provisioning</div>
-                        <div class="permission-desc">Provision live and test API keys/secrets for integrated client apps and webhook endpoints.</div>
-                    </div>
-                </div>
-
-                <div class="permission-card granted">
-                    <div class="permission-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    </div>
-                    <div>
-                        <div class="permission-title">Database & Webhook Synchronization</div>
-                        <div class="permission-desc">Execute background synchronization for orphaned orders and inspect incoming webhook payloads.</div>
-                    </div>
-                </div>
+                <?php endforeach; ?>
             </div>
         </div>
+
+        <?php if (RBAC::can('admins.manage')): ?>
+        <!-- Super Admin Team Management Section -->
+        <div class="profile-card" style="margin-top: 24px;">
+            <div class="profile-card-header">
+                <div>
+                    <h3 class="profile-card-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        Administrative Team & Role Assignments
+                    </h3>
+                    <p class="profile-card-desc">Provision administrative accounts, assign RBAC roles (Super Admin, Finance, Support, Read-Only), and manage access.</p>
+                </div>
+                <button type="button" class="btn btn-primary btn-sm" onclick="openModal('addAdminModal')">
+                    + Add Administrator
+                </button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Administrator</th>
+                            <th>Email & Contact</th>
+                            <th>Role Tier</th>
+                            <th>Status</th>
+                            <th>Last Login</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($allAdminUsers as $admUser): ?>
+                            <tr>
+                                <td>
+                                    <div style="display:flex; align-items:center; gap:10px;">
+                                        <span style="width:34px; height:34px; border-radius:50%; background-color:<?= htmlspecialchars($admUser['avatar_color'] ?? '#1a73e8') ?>; color:white; display:inline-flex; align-items:center; justify-content:center; font-weight:700; font-size:0.88rem;">
+                                            <?= strtoupper(substr($admUser['full_name'] ?: $admUser['username'], 0, 1)) ?>
+                                        </span>
+                                        <div>
+                                            <strong><?= htmlspecialchars($admUser['full_name']) ?></strong>
+                                            <div style="font-size:0.78rem; color:var(--text-gray);">@<?= htmlspecialchars($admUser['username']) ?> (#<?= (int)$admUser['id'] ?>)</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div><?= htmlspecialchars($admUser['email'] ?: 'No email') ?></div>
+                                    <?php if (!empty($admUser['phone'])): ?>
+                                        <div style="font-size:0.78rem; color:var(--text-gray);"><?= htmlspecialchars($admUser['phone']) ?></div>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?= $admUser['badge_html'] ?>
+                                </td>
+                                <td>
+                                    <span class="badge <?= $admUser['is_active'] ? 'badge-success' : 'badge-failed' ?>">
+                                        <?= $admUser['is_active'] ? '✓ Active' : '✕ Disabled' ?>
+                                    </span>
+                                </td>
+                                <td style="font-size:0.8rem; color:var(--text-gray);">
+                                    <?= !empty($admUser['last_login']) ? htmlspecialchars($admUser['last_login']) : 'Never' ?>
+                                </td>
+                                <td style="white-space:nowrap;">
+                                    <button type="button" class="btn btn-secondary btn-sm"
+                                            onclick="openRoleModal(<?= (int)$admUser['id'] ?>, '<?= htmlspecialchars(addslashes($admUser['full_name']), ENT_QUOTES) ?>', '<?= htmlspecialchars($admUser['normalized_role']) ?>')">
+                                        Change Role
+                                    </button>
+
+                                    <?php if ((int)$admUser['id'] !== $adminId): ?>
+                                        <form action="profile.php" method="POST" style="display:inline; margin-left:4px;">
+                                            <input type="hidden" name="action" value="toggle_admin_status">
+                                            <input type="hidden" name="target_admin_id" value="<?= (int)$admUser['id'] ?>">
+                                            <input type="hidden" name="is_active" value="<?= $admUser['is_active'] ? '0' : '1' ?>">
+                                            <?php if ($admUser['is_active']): ?>
+                                                <button type="submit" class="btn btn-sm" style="background:#fee2e2; color:#b91c1c; border:1px solid #fca5a5;" onclick="return confirm('Deactivate account for @<?= htmlspecialchars($admUser['username']) ?>?')">
+                                                    Deactivate
+                                                </button>
+                                            <?php else: ?>
+                                                <button type="submit" class="btn btn-sm" style="background:#dcfce7; color:#15803d; border:1px solid #86efac;">
+                                                    Activate
+                                                </button>
+                                            <?php endif; ?>
+                                        </form>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <?php endif; ?>
     </div>
 
     <!-- TAB 4: ACTIVITY & AUDIT TRAIL -->
@@ -1165,66 +1330,146 @@ require_once __DIR__ . '/includes/header.php';
 
 <!-- 5. PERMISSIONS MATRIX MODAL -->
 <div class="modal-overlay" id="permissionsModal" role="dialog" aria-modal="true" aria-labelledby="permissionsTitle">
-    <div class="modal-box modal-lg">
+    <div class="modal-box modal-lg" style="max-width: 860px;">
         <div class="modal-header">
             <div>
                 <h2 id="permissionsTitle">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                    Super Administrator Privileges Matrix
+                    Enterprise Role-Based Access Control (RBAC) Matrix
                 </h2>
-                <p class="modal-subtitle">Comprehensive breakdown of gateway governance scopes assigned to your account.</p>
+                <p class="modal-subtitle">Comparative privilege breakdown across all 4 gateway administrative tiers.</p>
             </div>
             <button class="modal-close" onclick="closeModal('permissionsModal')" title="Close">&times;</button>
         </div>
 
-        <div class="modal-body">
-            <table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>Module / Scope</th>
-                        <th>Action Privilege</th>
-                        <th>Status</th>
-                        <th>Scope Tier</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Transactions</strong></td>
-                        <td>View all incoming payments, customer logs, and Razorpay IDs</td>
-                        <td><span class="badge badge-success">✓ Granted</span></td>
-                        <td><span class="font-mono">admin:read</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Refund Engine</strong></td>
-                        <td>Execute instant customer refunds with DB update & audit trace</td>
-                        <td><span class="badge badge-success">✓ Granted</span></td>
-                        <td><span class="font-mono">refund:write</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Events</strong></td>
-                        <td>Create, configure dates, activate, and deactivate college events</td>
-                        <td><span class="badge badge-success">✓ Granted</span></td>
-                        <td><span class="font-mono">event:manage</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>API Clients</strong></td>
-                        <td>Generate live & test API keys, set webhooks, and revoke clients</td>
-                        <td><span class="badge badge-success">✓ Granted</span></td>
-                        <td><span class="font-mono">client:admin</span></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Database Sync</strong></td>
-                        <td>Poll Razorpay API directly to resolve pending/abandoned checkouts</td>
-                        <td><span class="badge badge-success">✓ Granted</span></td>
-                        <td><span class="font-mono">system:sync</span></td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="modal-body" style="padding: 16px 24px;">
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th style="min-width: 220px;">Governance Scope</th>
+                            <th style="text-align:center;">Super Admin</th>
+                            <th style="text-align:center;">Finance</th>
+                            <th style="text-align:center;">Support</th>
+                            <th style="text-align:center;">Read-Only</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach (RBAC::getPermissions() as $pKey => $p): ?>
+                            <tr>
+                                <td>
+                                    <strong><?= htmlspecialchars($p['label']) ?></strong>
+                                    <div style="font-size:0.75rem; color:var(--text-gray);"><?= htmlspecialchars($p['description']) ?></div>
+                                </td>
+                                <td style="text-align:center; font-weight:700; color:#15803d; font-size:1.1rem;">
+                                    ✓
+                                </td>
+                                <td style="text-align:center; font-weight:700; font-size:1.1rem;">
+                                    <?= in_array(RBAC::ROLE_FINANCE, $p['roles'], true) ? '<span style="color:#15803d;">✓</span>' : '<span style="color:#cbd5e1;">—</span>' ?>
+                                </td>
+                                <td style="text-align:center; font-weight:700; font-size:1.1rem;">
+                                    <?= in_array(RBAC::ROLE_SUPPORT, $p['roles'], true) ? '<span style="color:#15803d;">✓</span>' : '<span style="color:#cbd5e1;">—</span>' ?>
+                                </td>
+                                <td style="text-align:center; font-weight:700; font-size:1.1rem;">
+                                    <?= in_array(RBAC::ROLE_READ_ONLY, $p['roles'], true) ? '<span style="color:#15803d;">✓</span>' : '<span style="color:#cbd5e1;">—</span>' ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div class="modal-footer">
-            <button type="button" class="btn btn-primary" onclick="closeModal('permissionsModal')">Understood</button>
+            <button type="button" class="btn btn-primary" onclick="closeModal('permissionsModal')">Close</button>
         </div>
+    </div>
+</div>
+
+<!-- 5B. ADD ADMINISTRATOR MODAL -->
+<div class="modal-overlay" id="addAdminModal" role="dialog" aria-modal="true" aria-labelledby="addAdminTitle">
+    <div class="modal-box modal-md">
+        <div class="modal-header">
+            <div>
+                <h2 id="addAdminTitle">Add Administrator</h2>
+                <p class="modal-subtitle">Provision a new team member with an RBAC tier.</p>
+            </div>
+            <button class="modal-close" onclick="closeModal('addAdminModal')" title="Close">&times;</button>
+        </div>
+        <form method="POST" action="profile.php">
+            <input type="hidden" name="action" value="create_admin_user">
+            <div class="modal-body">
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" name="full_name" class="form-control" placeholder="e.g. John Doe" required>
+                </div>
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label class="form-label">Username</label>
+                    <input type="text" name="username" class="form-control" placeholder="e.g. jdoe" required>
+                </div>
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label class="form-label">Email Address (Optional)</label>
+                    <input type="email" name="email" class="form-control" placeholder="e.g. jdoe@institution.edu">
+                </div>
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label class="form-label">Phone Number (Optional)</label>
+                    <input type="text" name="phone" class="form-control" placeholder="e.g. +91 9876543210">
+                </div>
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label class="form-label">Initial Password</label>
+                    <input type="password" name="password" class="form-control" placeholder="Minimum 6 characters" required>
+                </div>
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label class="form-label">Assigned RBAC Role</label>
+                    <select name="role" class="form-control" style="font-weight:600;" required>
+                        <option value="super_admin">⚡ Super Administrator (Full Governance)</option>
+                        <option value="finance" selected>💳 Finance Manager (Refunds & Reconciliations)</option>
+                        <option value="support">🎧 Support Specialist (Order Inquiries & Timeline)</option>
+                        <option value="read_only">👁️ Auditor / Read-Only (Read-Only Views)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('addAdminModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">+ Create Administrator</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 5C. EDIT ADMIN ROLE MODAL -->
+<div class="modal-overlay" id="editAdminRoleModal" role="dialog" aria-modal="true" aria-labelledby="editRoleTitle">
+    <div class="modal-box modal-sm">
+        <div class="modal-header">
+            <div>
+                <h2 id="editRoleTitle">Change Administrator Role</h2>
+                <p class="modal-subtitle">Modify RBAC privilege tier.</p>
+            </div>
+            <button class="modal-close" onclick="closeModal('editAdminRoleModal')" title="Close">&times;</button>
+        </div>
+        <form method="POST" action="profile.php">
+            <input type="hidden" name="action" value="update_admin_role">
+            <input type="hidden" name="target_admin_id" id="editRoleAdminId" value="0">
+            <div class="modal-body">
+                <div class="form-group" style="margin-bottom:14px;">
+                    <label class="form-label">Administrator</label>
+                    <input type="text" id="editRoleAdminName" class="form-control" readonly style="background:#f1f5f9; font-weight:600;">
+                </div>
+                <div class="form-group" style="margin-bottom:14px;">
+                    <label class="form-label">New Role Tier</label>
+                    <select name="new_role" id="editRoleSelect" class="form-control" style="font-weight:600;" required>
+                        <option value="super_admin">⚡ Super Administrator</option>
+                        <option value="finance">💳 Finance Manager</option>
+                        <option value="support">🎧 Support Specialist</option>
+                        <option value="read_only">👁️ Auditor / Read-Only</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('editAdminRoleModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Role</button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -1735,6 +1980,60 @@ document.getElementById('generateTokenForm').addEventListener('submit', function
         showToast('Error generating token.', 'error');
     });
 });
+
+// 6. Open Role Change Modal
+function openRoleModal(adminId, adminName, currentRole) {
+    document.getElementById('editRoleAdminId').value = adminId;
+    document.getElementById('editRoleAdminName').value = adminName;
+    document.getElementById('editRoleSelect').value = currentRole;
+    openModal('editAdminRoleModal');
+}
+
+// 7. Appearance & Theme Manager
+function setAdminTheme(mode) {
+    if (mode === 'auto') {
+        localStorage.removeItem('vortex_theme');
+        document.cookie = "vortex_theme=; path=/; max-age=0";
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+    } else {
+        localStorage.setItem('vortex_theme', mode);
+        document.cookie = "vortex_theme=" + mode + "; path=/; max-age=31536000; SameSite=Lax";
+        document.documentElement.setAttribute('data-theme', mode);
+    }
+    syncThemeRadios();
+    window.dispatchEvent(new CustomEvent('vortexThemeChanged', { detail: { theme: mode } }));
+}
+
+function syncThemeRadios() {
+    const saved = localStorage.getItem('vortex_theme');
+    const radioLight = document.getElementById('radioThemeLight');
+    const radioDark = document.getElementById('radioThemeDark');
+    const radioAuto = document.getElementById('radioThemeAuto');
+    const cardLight = document.getElementById('themeChoiceLight');
+    const cardDark = document.getElementById('themeChoiceDark');
+    const cardAuto = document.getElementById('themeChoiceAuto');
+
+    if (!radioLight) return;
+
+    [cardLight, cardDark, cardAuto].forEach(c => {
+        if (c) c.style.borderColor = 'var(--border-color)';
+    });
+
+    if (saved === 'dark') {
+        radioDark.checked = true;
+        cardDark.style.borderColor = 'var(--primary-blue)';
+    } else if (saved === 'light') {
+        radioLight.checked = true;
+        cardLight.style.borderColor = 'var(--primary-blue)';
+    } else {
+        radioAuto.checked = true;
+        cardAuto.style.borderColor = 'var(--primary-blue)';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', syncThemeRadios);
+window.addEventListener('vortexThemeChanged', syncThemeRadios);
 </script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

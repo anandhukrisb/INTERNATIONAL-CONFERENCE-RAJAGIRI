@@ -1,10 +1,11 @@
 <?php
 /**
  * ------------------------------------------------------------
- * Vortex Admin Dashboard
+ * Vortex Admin Dashboard – Operations Hub & Gateway Overview
  * ------------------------------------------------------------
  * Project : Vortex Unified Payment Gateway
- * Purpose : Traditional, clean admin dashboard for gateway management.
+ * Purpose : Modular overview dashboard displaying real-time metrics,
+ *           quick operations launchpad, and paginated recent stream.
  * ------------------------------------------------------------
  */
 
@@ -12,181 +13,102 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Authentication Guard: Disallow any unauthenticated GET or POST requests
+// Authentication Guard
 if (empty($_SESSION['vortex_admin_id'])) {
     header('Location: login.php');
+    exit;
+}
+
+// Seamless Backwards Compatibility for query parameter tabs
+$tabRedirect = trim($_GET['tab'] ?? '');
+if ($tabRedirect === 'clients') {
+    header('Location: api_clients/index.php');
+    exit;
+} elseif ($tabRedirect === 'events') {
+    header('Location: events/index.php');
     exit;
 }
 
 require_once __DIR__ . '/../classes/Database.php';
 require_once __DIR__ . '/../classes/Event.php';
 require_once __DIR__ . '/../classes/ApiClient.php';
+require_once __DIR__ . '/../classes/RBAC.php';
+require_once __DIR__ . '/../classes/AuditLogger.php';
 
 $eventModel = new Event();
 $apiClientModel = new ApiClient();
 $db = Database::getInstance()->getConnection();
 
-$eventAlert = null;
-$clientAlert = null;
-$createdClientDetails = null;
-
-// Handle Form Actions Submitted directly to dashboard.php
+// Backwards-compatible POST handling for legacy forms submitting to dashboard.php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
-    // 1. Create Event
     if ($action === 'create_event') {
+        RBAC::require('events.create', null, 'events/index.php');
         $eventName  = trim($_POST['event_name'] ?? '');
-        $department = trim($_POST['department'] ?? '');
-        $rawStart   = trim($_POST['start_date'] ?? '');
-        $rawEnd     = trim($_POST['end_date'] ?? '');
-
-        if (!empty($rawStart) && !empty($rawEnd) && strtotime($rawStart) !== false && strtotime($rawEnd) !== false) {
-            $startDate = date('Y-m-d 00:00:00', strtotime($rawStart));
-            $endDate   = date('Y-m-d 23:59:59', strtotime($rawEnd));
-        } else {
-            $startDate = $rawStart;
-            $endDate   = $rawEnd;
-        }
-
+        $department = trim($_POST['department'] ?? $_POST['event_department'] ?? '');
+        $startDate  = trim($_POST['start_date'] ?? '');
+        $endDate    = trim($_POST['end_date'] ?? '');
         $result = $eventModel->createEvent($eventName, $department, $startDate, $endDate);
-
         if ($result['success']) {
-            $_SESSION['flash_success'] = "Event '{$eventName}' created successfully with ID: " . $result['data']['event_id'];
+            AuditLogger::log('event', $result['data']['event_id'] ?? '', AuditLogger::EVENT_CREATED, null, $_POST, "Created event '{$eventName}'");
+            $_SESSION['flash_success'] = "Event '{$eventName}' created successfully!";
         } else {
             $_SESSION['flash_error'] = "Failed to create event: " . $result['message'];
         }
-        header('Location: dashboard.php#events');
+        header('Location: events/index.php');
         exit;
     }
 
-    // 2. Create API Client
     if ($action === 'create_client') {
+        RBAC::require('clients.create', null, 'api_clients/index.php');
         $clientName = trim($_POST['client_name'] ?? '');
         $result = $apiClientModel->createClient($clientName);
-
         if ($result['success']) {
+            AuditLogger::log('api_client', (string)($result['data']['client_id'] ?? ''), AuditLogger::CLIENT_CREATED, null, $_POST, "Registered client '{$clientName}'");
             $_SESSION['flash_success'] = "API Client '{$clientName}' created successfully!";
             $_SESSION['created_client'] = $result['data'];
         } else {
             $_SESSION['flash_error'] = "Failed to create API Client: " . $result['message'];
         }
-        header('Location: dashboard.php#clients');
+        header('Location: api_clients/index.php');
         exit;
     }
 
-    // 3. Activate / Deactivate Event
-    if ($action === 'activate_event') {
-        $eventId = trim($_POST['event_id'] ?? '');
-        if (!empty($eventId)) {
-            $res = $eventModel->activateEvent($eventId);
-            if ($res['success']) {
-                $_SESSION['flash_success'] = "Event '{$eventId}' activated.";
-            } else {
-                $_SESSION['flash_error'] = "Failed: " . $res['message'];
-            }
-        }
-        header('Location: dashboard.php#events');
+    if (in_array($action, ['activate_event', 'deactivate_event'], true)) {
+        header('Location: events/index.php');
         exit;
     }
 
-    if ($action === 'deactivate_event') {
-        $eventId = trim($_POST['event_id'] ?? '');
-        if (!empty($eventId)) {
-            $res = $eventModel->deactivateEvent($eventId);
-            if ($res['success']) {
-                $_SESSION['flash_success'] = "Event '{$eventId}' deactivated.";
-            } else {
-                $_SESSION['flash_error'] = "Failed: " . $res['message'];
-            }
-        }
-        header('Location: dashboard.php#events');
-        exit;
-    }
-
-    // 4. Activate / Deactivate API Client
-    if ($action === 'activate_client') {
-        $clientId = (int)($_POST['client_id'] ?? 0);
-        if ($clientId > 0) {
-            $res = $apiClientModel->activateClient($clientId);
-            if ($res['success']) {
-                $_SESSION['flash_success'] = "API Client #{$clientId} activated.";
-            } else {
-                $_SESSION['flash_error'] = "Failed: " . $res['message'];
-            }
-        }
-        header('Location: dashboard.php#clients');
-        exit;
-    }
-
-    if ($action === 'deactivate_client') {
-        $clientId = (int)($_POST['client_id'] ?? 0);
-        if ($clientId > 0) {
-            $res = $apiClientModel->deactivateClient($clientId);
-            if ($res['success']) {
-                $_SESSION['flash_success'] = "API Client #{$clientId} deactivated.";
-            } else {
-                $_SESSION['flash_error'] = "Failed: " . $res['message'];
-            }
-        }
-        header('Location: dashboard.php#clients');
-        exit;
-    }
-
-    // 5. Update Webhook URL and Secret for API Client
-    if ($action === 'update_webhook') {
-        $clientId      = (int)($_POST['client_id'] ?? 0);
-        $webhookUrl    = trim($_POST['webhook_url'] ?? '');
-        $webhookSecret = trim($_POST['webhook_secret'] ?? '');
-
-        if ($clientId > 0) {
-            $res = $apiClientModel->updateWebhook($clientId, $webhookUrl, $webhookSecret !== '' ? $webhookSecret : null);
-            if ($res['success']) {
-                if ($webhookUrl === '') {
-                    $_SESSION['flash_success'] = "Webhook cleared for Client #{$clientId}.";
-                } else {
-                    $_SESSION['flash_success'] = "Webhook configuration saved for Client #{$clientId}.";
-                    $_SESSION['new_webhook_secret'] = [
-                        'client_id' => $clientId,
-                        'secret'    => $res['data']['webhook_secret']
-                    ];
-                }
-            } else {
-                $_SESSION['flash_error'] = "Webhook update failed: " . $res['message'];
-            }
-        }
-        header('Location: dashboard.php#clients');
+    if (in_array($action, ['activate_client', 'deactivate_client', 'update_webhook'], true)) {
+        header('Location: api_clients/index.php');
         exit;
     }
 }
 
-// Read and clear Flash Messages
-$flashSuccess = $_SESSION['flash_success'] ?? null;
-$flashError   = $_SESSION['flash_error'] ?? null;
+// Flash Messages
+$flashSuccess         = $_SESSION['flash_success'] ?? null;
+$flashError           = $_SESSION['flash_error'] ?? null;
 $createdClientDetails = $_SESSION['created_client'] ?? null;
 $newWebhookSecret     = $_SESSION['new_webhook_secret'] ?? null;
 unset($_SESSION['flash_success'], $_SESSION['flash_error'], $_SESSION['created_client'], $_SESSION['new_webhook_secret']);
 
 // Database Metrics
-$totalEvents        = $eventModel->getTotalCount();
-$totalClients       = $apiClientModel->getTotalCount();
 $totalPayments      = 0;
 $successfulPayments = 0;
 $failedPayments     = 0;
 $totalPaymentAmount = 0.00;
+$activeEventsCount  = 0;
+$totalClientsCount  = 0;
 
 try {
     $totalPayments      = (int) $db->query("SELECT COUNT(*) FROM transactions")->fetchColumn();
     $successfulPayments = (int) $db->query("SELECT COUNT(*) FROM transactions WHERE status = 'SUCCESS'")->fetchColumn();
     $failedPayments     = (int) $db->query("SELECT COUNT(*) FROM transactions WHERE status = 'FAILED'")->fetchColumn();
     $totalPaymentAmount = (float) $db->query("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE status = 'SUCCESS'")->fetchColumn();
-} catch (\Throwable $e) {
-    // Database fallback
-}
-
-// Correctly fetched database lists
-$allEvents = $eventModel->getAllEvents(100) ?: [];
-$allClients = $apiClientModel->getAllClients(100) ?: [];
+    $activeEventsCount  = (int) $db->query("SELECT COUNT(*) FROM events WHERE is_active = 1")->fetchColumn();
+    $totalClientsCount  = (int) $db->query("SELECT COUNT(*) FROM api_clients")->fetchColumn();
+} catch (\Throwable $e) {}
 
 // Transactions Overview (Paginated)
 $txPerPage = 15;
@@ -223,7 +145,6 @@ try {
 $fromTx = ($txTotalCount === 0) ? 0 : $txOffset + 1;
 $toTx = min($txOffset + count($recentTx), $txTotalCount);
 
-
 $pageTitle = "Vortex Gateway Dashboard";
 $activeNav = "dashboard";
 require_once __DIR__ . '/includes/header.php';
@@ -242,668 +163,65 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 <?php endif; ?>
 
-<?php if ($createdClientDetails): ?>
-    <div class="alert alert-warning" style="border: 2px dashed #b45309;">
-        <h3 style="margin-bottom: 8px; color: #78350f;">🔑 New API Client Generated!</h3>
-        <p style="margin-bottom: 8px;">Please save these API credentials securely. The secret is shown only once:</p>
-        <div class="detail-grid">
-            <div class="detail-item">
-                <span class="detail-label">Client Name</span>
-                <span class="detail-value"><?= htmlspecialchars($createdClientDetails['client_name']) ?></span>
-            </div>
-            <div class="detail-item"></div>
-            <div class="detail-item">
-                <span class="detail-label">LIVE API Key</span>
-                <div class="copy-wrapper" style="margin-top: 4px;">
-                    <span class="detail-value font-mono"><?= htmlspecialchars($createdClientDetails['api_key']) ?></span>
-                    <button type="button" class="btn-copy" onclick="copyToClipboard('<?= htmlspecialchars($createdClientDetails['api_key'], ENT_QUOTES) ?>', this)" title="Copy API Key">📋 Copy</button>
-                </div>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">TEST API Key</span>
-                <div class="copy-wrapper" style="margin-top: 4px;">
-                    <span class="detail-value font-mono"><?= htmlspecialchars($createdClientDetails['test_api_key'] ?? '') ?></span>
-                    <button type="button" class="btn-copy" onclick="copyToClipboard('<?= htmlspecialchars($createdClientDetails['test_api_key'] ?? '', ENT_QUOTES) ?>', this)" title="Copy API Key">📋 Copy</button>
-                </div>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">LIVE API Secret</span>
-                <div class="copy-wrapper" style="margin-top: 4px;">
-                    <span class="detail-value font-mono" style="color: var(--danger-text); font-weight: 700;"><?= htmlspecialchars($createdClientDetails['api_secret']) ?></span>
-                    <button type="button" class="btn-copy" onclick="copyToClipboard('<?= htmlspecialchars($createdClientDetails['api_secret'], ENT_QUOTES) ?>', this)" title="Copy API Secret">📋 Copy</button>
-                </div>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">TEST API Secret</span>
-                <div class="copy-wrapper" style="margin-top: 4px;">
-                    <span class="detail-value font-mono" style="color: var(--danger-text); font-weight: 700;"><?= htmlspecialchars($createdClientDetails['test_api_secret'] ?? '') ?></span>
-                    <button type="button" class="btn-copy" onclick="copyToClipboard('<?= htmlspecialchars($createdClientDetails['test_api_secret'] ?? '', ENT_QUOTES) ?>', this)" title="Copy API Secret">📋 Copy</button>
-                </div>
-            </div>
+<!-- Credentials Alert Component -->
+<?php require_once __DIR__ . '/includes/client_credentials_alert.php'; ?>
+
+<!-- Dashboard Title & Operations Summary -->
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
+    <div>
+        <div class="section-title" style="margin-bottom: 4px;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-blue); vertical-align: -4px;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+            Gateway Operations Overview
+        </div>
+        <div style="font-size: 0.85rem; color: var(--text-gray);">
+            Real-time transaction settlement volume, merchant integrations, and active university events.
         </div>
     </div>
-<?php endif; ?>
-
-<?php if ($newWebhookSecret): ?>
-    <div class="alert alert-warning" style="border: 2px dashed #b45309;">
-        <h3 style="margin-bottom: 8px; color: #78350f;">🔐 New Webhook Secret Generated for Client #<?= (int)$newWebhookSecret['client_id'] ?>!</h3>
-        <p style="margin-bottom: 10px;">
-            Share this secret with the client so they can verify incoming webhook signatures.
-            <strong>It will not be shown again.</strong>
-        </p>
-        <div class="detail-grid">
-            <div class="detail-item" style="grid-column: span 2;">
-                <span class="detail-label">Webhook Secret</span>
-                <div class="copy-wrapper" style="margin-top: 4px;">
-                    <span class="detail-value font-mono" style="color: var(--danger-text); font-weight: 700; font-size: 0.9rem; word-break: break-all;">
-                        <?= htmlspecialchars($newWebhookSecret['secret']) ?>
-                    </span>
-                    <button type="button" class="btn-copy" onclick="copyToClipboard('<?= htmlspecialchars($newWebhookSecret['secret'], ENT_QUOTES) ?>', this)" title="Copy Webhook Secret">📋 Copy</button>
-                </div>
-            </div>
-        </div>
-    </div>
-<?php endif; ?>
-
-
-<?php
-$initialTab = trim($_GET['tab'] ?? '');
-if (!in_array($initialTab, ['overview', 'clients', 'events'])) {
-    $initialTab = 'overview';
-}
-?>
-
-<!-- ============================================================
-     TAB 1: OVERVIEW (Metrics & Transactions Details ONLY)
-     ============================================================ -->
-<div id="tab-overview" class="tab-content-panel" style="<?= $initialTab === 'overview' ? '' : 'display:none;' ?>">
-    
-    <div class="section-title">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-blue);"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-        Dashboard Overview
-    </div>
-
-    <div class="section-label">Quick Access Metrics</div>
-
-    <!-- Key Performance Metrics Grid -->
-    <div class="metrics-grid">
-        <a href="payments/list_payments.php?status=SUCCESS" class="metric-card">
-            <span class="metric-label">Total Revenue (Successful)</span>
-            <span class="metric-value amount">₹ <?= number_format($totalPaymentAmount, 2) ?></span>
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <?php if (RBAC::can('clients.create')): ?>
+        <a href="api_clients/onboarding.php" class="btn btn-primary btn-sm" style="display: inline-flex; align-items: center; gap: 4px;">
+            <span>🚀</span> Onboard Merchant
         </a>
-        <a href="payments/list_payments.php?status=SUCCESS" class="metric-card">
-            <span class="metric-label">Successful Transactions</span>
-            <span class="metric-value success"><?= number_format($successfulPayments) ?></span>
+        <?php endif; ?>
+        <?php if (RBAC::can('events.create')): ?>
+        <a href="events/index.php" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 4px;">
+            <span>🎟️</span> Manage Events
         </a>
-        <a href="payments/list_payments.php?status=FAILED" class="metric-card">
-            <span class="metric-label">Failed Transactions</span>
-            <span class="metric-value danger"><?= number_format($failedPayments) ?></span>
+        <?php endif; ?>
+        <?php if (RBAC::can('clients.view')): ?>
+        <a href="api_clients/index.php" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 4px;">
+            <span>🔌</span> API Clients
         </a>
-        <a href="#events" class="metric-card">
-            <span class="metric-label">Active Events</span>
-            <span class="metric-value"><?= count(array_filter($allEvents, fn($e) => $e['is_active'] == 1)) ?></span>
+        <?php endif; ?>
+        <a href="audit_logs.php" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 4px;">
+            <span>📜</span> Audit Trail
         </a>
-        <a href="#clients" class="metric-card">
-            <span class="metric-label">Registered Merchants / Clients</span>
-            <span class="metric-value"><?= count($allClients) ?></span>
+        <a href="search.php" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 4px;">
+            <span>🔍</span> Global Search
         </a>
-    </div>
-
-    <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-top: 24px; margin-bottom: 8px;">
-        <div class="section-label" style="margin-bottom: 0;">Recent Transactions</div>
-        <span style="font-size: 0.85rem; color: var(--text-gray);">
-            <?php if ($txTotalCount > 0): ?>
-                Showing <strong><?= $fromTx ?>–<?= $toTx ?></strong> of <strong><?= number_format($txTotalCount) ?></strong> transactions
-            <?php else: ?>
-                No transactions recorded
-            <?php endif; ?>
-        </span>
-    </div>
-
-    <!-- Recent Transactions Table -->
-    <div id="transactions" class="section-card">
-        <div class="section-header" style="display:none;">
-            <h2>💳 Recent Transactions Overview</h2>
-            <a href="payments/payment_details.php" class="btn btn-secondary btn-sm">Search / View All Details</a>
-        </div>
-        <div class="section-body" style="padding: 0;">
-            <div class="table-responsive">
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Vortex Transaction ID</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Razorpay Payment ID</th>
-                            <th>Event</th>
-                            <th>Client</th>
-                            <th>Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($recentTx)): ?>
-                            <tr><td colspan="8" style="text-align:center; padding: 24px;">No transactions recorded yet.</td></tr>
-                        <?php else: ?>
-                            <?php foreach ($recentTx as $tx): ?>
-                                <tr>
-                                    <td>
-                                        <a href="payments/payment_details.php?vortex_transaction_id=<?= urlencode($tx['vortex_transaction_id']) ?>" class="font-mono" style="color: var(--primary); font-weight: 700; text-decoration: underline;">
-                                            <?= htmlspecialchars($tx['vortex_transaction_id']) ?>
-                                        </a>
-                                        <?php if (!empty($tx['customer_email'])): ?>
-                                            <div style="font-size: 0.76rem; color: var(--text-gray); margin-top: 3px; display: flex; align-items: center; gap: 4px;" title="Customer / User">
-                                                <span>👤</span> <span style="max-width: 175px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?= htmlspecialchars($tx['customer_email']) ?></span>
-                                            </div>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td style="font-weight: 700; color: var(--text-main);">₹<?= number_format($tx['amount'], 2) ?></td>
-                                    <td>
-                                        <?php
-                                        $bClass = 'badge-pending';
-                                        $displayStatus = $tx['status'];
-                                        if ($tx['status'] === 'PENDING') $displayStatus = 'UNPAID';
-                                        if ($tx['status'] === 'SUCCESS') $bClass = 'badge-success';
-                                        if ($tx['status'] === 'FAILED') $bClass = 'badge-danger';
-                                        if ($tx['status'] === 'REFUNDED') $bClass = 'badge-refunded';
-                                        if ($tx['status'] === 'DISPUTED') $bClass = 'badge-disputed';
-                                        ?>
-                                        <span class="badge <?= $bClass ?>"><?= htmlspecialchars($displayStatus) ?></span>
-                                        <?php if (!empty($tx['latest_event'])): ?>
-                                            <div style="margin-top: 3px;">
-                                                <span class="badge badge-event" title="Latest Razorpay Event">📡 <?= htmlspecialchars($tx['latest_event']) ?></span>
-                                            </div>
-                                        <?php endif; ?>
-                                        <?php if (!empty($tx['latest_reason'])): ?>
-                                            <div style="margin-top: 4px; font-size: 0.74rem; color: var(--text-muted); max-width: 220px; line-height: 1.25;">
-                                                <?= htmlspecialchars($tx['latest_reason']) ?>
-                                            </div>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td><span class="font-mono"><?= htmlspecialchars($tx['razorpay_payment_id'] ?? 'N/A') ?></span></td>
-                                    <td><?= htmlspecialchars($tx['event_name'] ?? $tx['event_id']) ?></td>
-                                    <td><?= htmlspecialchars($tx['client_name'] ?? 'Default Client') ?></td>
-                                    <td style="font-size: 0.85rem; color: var(--text-muted);"><?= htmlspecialchars($tx['created_at']) ?></td>
-                                    <td>
-                                        <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-                                             <a href="payments/payment_details.php?vortex_transaction_id=<?= urlencode($tx['vortex_transaction_id']) ?>" class="btn btn-secondary btn-sm" title="View Full Status History & Audit Trail">
-                                                📜 Timeline (<?= (int)($tx['timeline_count'] ?? 0) ?>)
-                                            </a>
-                                            <?php if ($tx['status'] === 'SUCCESS'): ?>
-                                                <button type="button" class="btn btn-sm"
-                                                        onclick="openRefundModal('<?= htmlspecialchars($tx['vortex_transaction_id'], ENT_QUOTES) ?>', '<?= htmlspecialchars($tx['amount'], ENT_QUOTES) ?>', '<?= htmlspecialchars(addslashes($tx['customer_email'] ?? ''), ENT_QUOTES) ?>')"
-                                                        title="Process Refund via Razorpay"
-                                                        style="background-color: #dc2626; color: white; border: none; font-weight: 600; padding: 5px 10px; border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-size: 0.78rem;">
-                                                    💸 Refund
-                                                </button>
-                                            <?php elseif ($tx['status'] === 'REFUNDED'): ?>
-                                                <span class="badge badge-refunded" style="font-size: 0.74rem; padding: 4px 8px;">↩ Refunded</span>
-                                            <?php else: ?>
-                                                <button type="button" class="btn btn-sm" disabled style="opacity: 0.45; cursor: not-allowed; background: #e2e8f0; color: #64748b; border: none; font-size: 0.75rem; padding: 5px 8px; border-radius: 4px;" title="Refund available only for successful payments">
-                                                    Refund
-                                                </button>
-                                            <?php endif; ?>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Dashboard Transactions Pagination Bar -->
-            <?php if ($txTotalCount > 0): ?>
-                <?php
-                $buildTxUrl = function($p) {
-                    $params = $_GET;
-                    $params['page'] = $p;
-                    return '?' . http_build_query($params) . '#transactions';
-                };
-                ?>
-                <div class="pagination-wrapper">
-                    <div class="pagination-info">
-                        Showing <strong><?= $fromTx ?>–<?= $toTx ?></strong> of <strong><?= number_format($txTotalCount) ?></strong> transactions
-                        <span style="color: var(--border-color); margin: 0 4px;">•</span>
-                        Page <strong><?= $txPage ?></strong> of <strong><?= $txTotalPages ?></strong>
-                    </div>
-
-                    <?php if ($txTotalPages > 1): ?>
-                        <div class="pagination-controls">
-                            <!-- First Page Button -->
-                            <?php if ($txPage > 1): ?>
-                                <a href="<?= htmlspecialchars($buildTxUrl(1)) ?>" class="pagination-btn pagination-nav-btn" title="First Page">
-                                    « First
-                                </a>
-                                <a href="<?= htmlspecialchars($buildTxUrl($txPage - 1)) ?>" class="pagination-btn pagination-nav-btn" title="Previous Page">
-                                    ‹ Prev
-                                </a>
-                            <?php else: ?>
-                                <span class="pagination-btn pagination-nav-btn disabled" aria-disabled="true">« First</span>
-                                <span class="pagination-btn pagination-nav-btn disabled" aria-disabled="true">‹ Prev</span>
-                            <?php endif; ?>
-
-                            <!-- Numbered Pages -->
-                            <?php
-                            $window = 2;
-                            $startPage = max(1, $txPage - $window);
-                            $endPage = min($txTotalPages, $txPage + $window);
-
-                            if ($startPage > 1):
-                            ?>
-                                <a href="<?= htmlspecialchars($buildTxUrl(1)) ?>" class="pagination-btn">1</a>
-                                <?php if ($startPage > 2): ?>
-                                    <span class="pagination-ellipsis">…</span>
-                                <?php endif; ?>
-                            <?php endif; ?>
-
-                            <?php for ($p = $startPage; $p <= $endPage; $p++): ?>
-                                <?php if ($p === $txPage): ?>
-                                    <span class="pagination-btn active" aria-current="page"><?= $p ?></span>
-                                <?php else: ?>
-                                    <a href="<?= htmlspecialchars($buildTxUrl($p)) ?>" class="pagination-btn"><?= $p ?></a>
-                                <?php endif; ?>
-                            <?php endfor; ?>
-
-                            <?php if ($endPage < $txTotalPages): ?>
-                                <?php if ($endPage < $txTotalPages - 1): ?>
-                                    <span class="pagination-ellipsis">…</span>
-                                <?php endif; ?>
-                                <a href="<?= htmlspecialchars($buildTxUrl($txTotalPages)) ?>" class="pagination-btn"><?= $txTotalPages ?></a>
-                            <?php endif; ?>
-
-                            <!-- Next Page Button -->
-                            <?php if ($txPage < $txTotalPages): ?>
-                                <a href="<?= htmlspecialchars($buildTxUrl($txPage + 1)) ?>" class="pagination-btn pagination-nav-btn" title="Next Page">
-                                    Next ›
-                                </a>
-                                <a href="<?= htmlspecialchars($buildTxUrl($txTotalPages)) ?>" class="pagination-btn pagination-nav-btn" title="Last Page">
-                                    Last »
-                                </a>
-                            <?php else: ?>
-                                <span class="pagination-btn pagination-nav-btn disabled" aria-disabled="true">Next ›</span>
-                                <span class="pagination-btn pagination-nav-btn disabled" aria-disabled="true">Last »</span>
-                            <?php endif; ?>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            <?php endif; ?>
-        </div>
-
     </div>
 </div>
 
-<!-- ============================================================
-     TAB 2: API CLIENTS (MERCHANTS)
-     ============================================================ -->
-<div id="tab-clients" class="tab-content-panel" style="<?= $initialTab === 'clients' ? '' : 'display:none;' ?>">
-    <div class="section-title">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-blue);"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-        API Clients
-    </div>
-    
-    <div class="section-label">All Connected Clients</div>
-    
-    <div id="clients" class="section-card">
-        <div class="section-header" style="display:none;">
-            <h2>🔌 API Clients (Merchants)</h2>
-        </div>
-        <div class="section-body">
+<!-- Metrics Cards Component -->
+<?php require_once __DIR__ . '/includes/metrics_cards.php'; ?>
 
-            <!-- Form to Create New Client -->
-            <form action="dashboard.php" method="POST" style="margin-bottom: 24px; padding: 16px; background: #f8fafc; border: 1px solid var(--border-light); border-radius: 6px;">
-                <input type="hidden" name="action" value="create_client">
-                <h3 style="font-size: 0.95rem; margin-bottom: 12px; color: var(--text-main);">Register New API Client</h3>
-                <div style="display: flex; gap: 12px; max-width: 600px;">
-                    <input type="text" name="client_name" class="form-control" placeholder="Client Name (e.g. Rajagiri Conference App)" required style="flex: 1;">
-                    <button type="submit" class="btn btn-primary">+ Register Client</button>
-                </div>
-            </form>
-
-            <div class="table-responsive">
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Client Name</th>
-                            <th>API Key (Live & Test)</th>
-                            <th>API Secret (Live & Test)</th>
-                            <th>Webhook URL</th>
-                            <th>Status</th>
-                            <th>Created At</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($allClients)): ?>
-                            <tr><td colspan="8" style="text-align:center; padding: 16px;">No API Clients found.</td></tr>
-                        <?php else: ?>
-                            <?php foreach ($allClients as $client): ?>
-                                <tr>
-                                    <td>#<?= (int)$client['id'] ?></td>
-                                    <td><strong><?= htmlspecialchars($client['client_name']) ?></strong></td>
-                                    <td>
-                                        <div class="copy-wrapper" title="<?= htmlspecialchars($client['api_key']) ?>">
-                                            <span style="font-size: 0.7rem; color: #64748b; margin-right: 2px;">LIVE</span>
-                                            <span class="font-mono" style="max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: middle;">
-                                                <?= htmlspecialchars($client['api_key']) ?>
-                                            </span>
-                                            <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($client['api_key'], ENT_QUOTES) ?>', this)" title="Copy Live Key">📋</button>
-                                        </div>
-                                        <div class="copy-wrapper" style="margin-top: 4px;" title="<?= htmlspecialchars($client['test_api_key'] ?? '') ?>">
-                                            <span style="font-size: 0.7rem; color: #64748b; margin-right: 2px;">TEST</span>
-                                            <span class="font-mono" style="max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: middle;">
-                                                <?= htmlspecialchars($client['test_api_key'] ?? 'N/A') ?>
-                                            </span>
-                                            <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($client['test_api_key'] ?? '', ENT_QUOTES) ?>', this)" title="Copy Test Key">📋</button>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="copy-wrapper" title="<?= htmlspecialchars($client['api_secret'] ?? '') ?>">
-                                            <span style="font-size: 0.7rem; color: #64748b; margin-right: 2px;">LIVE</span>
-                                            <span class="font-mono" style="max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: middle; color: var(--danger-text);">
-                                                <?= htmlspecialchars($client['api_secret'] ?? 'N/A') ?>
-                                            </span>
-                                            <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($client['api_secret'] ?? '', ENT_QUOTES) ?>', this)" title="Copy Live Secret">📋</button>
-                                        </div>
-                                        <div class="copy-wrapper" style="margin-top: 4px;" title="<?= htmlspecialchars($client['test_api_secret'] ?? '') ?>">
-                                            <span style="font-size: 0.7rem; color: #64748b; margin-right: 2px;">TEST</span>
-                                            <span class="font-mono" style="max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: middle; color: var(--danger-text);">
-                                                <?= htmlspecialchars($client['test_api_secret'] ?? 'N/A') ?>
-                                            </span>
-                                            <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($client['test_api_secret'] ?? '', ENT_QUOTES) ?>', this)" title="Copy Test Secret">📋</button>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <?php if (!empty($client['webhook_url'])): ?>
-                                            <div class="copy-wrapper" title="<?= htmlspecialchars($client['webhook_url']) ?>">
-                                                <span style="font-size: 0.7rem; color: #15803d; font-weight: 700; margin-right: 2px;">URL</span>
-                                                <span class="font-mono" style="font-size:0.78rem;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;vertical-align:middle;">
-                                                    <?= htmlspecialchars($client['webhook_url']) ?>
-                                                </span>
-                                                <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($client['webhook_url'], ENT_QUOTES) ?>', this)" title="Copy Webhook URL">📋</button>
-                                            </div>
-                                            <?php if (!empty($client['webhook_secret'])): ?>
-                                                <div class="copy-wrapper" style="margin-top: 4px;" title="<?= htmlspecialchars($client['webhook_secret']) ?>">
-                                                    <span style="font-size: 0.7rem; color: #64748b; font-weight: 700; margin-right: 2px;">SECRET</span>
-                                                    <span class="font-mono" style="font-size:0.78rem;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;vertical-align:middle;color:var(--danger-text);">
-                                                        <?= htmlspecialchars($client['webhook_secret']) ?>
-                                                    </span>
-                                                    <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($client['webhook_secret'], ENT_QUOTES) ?>', this)" title="Copy Webhook Secret">📋</button>
-                                                </div>
-                                            <?php endif; ?>
-                                        <?php else: ?>
-                                            <span style="color:var(--text-muted);font-size:0.85rem;font-style:italic;">Not configured</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td>
-                                        <span class="badge <?= $client['is_active'] ? 'badge-success' : 'badge-failed' ?>">
-                                            <?= $client['is_active'] ? 'Active' : 'Disabled' ?>
-                                        </span>
-                                    </td>
-                                    <td style="font-size: 0.85rem; color: var(--text-muted);"><?= htmlspecialchars($client['created_at']) ?></td>
-                                    <td style="white-space:nowrap;">
-                                        <!-- Toggle Active/Inactive -->
-                                        <form action="dashboard.php" method="POST" style="display:inline;">
-                                            <input type="hidden" name="client_id" value="<?= (int)$client['id'] ?>">
-                                            <?php if ($client['is_active']): ?>
-                                                <input type="hidden" name="action" value="deactivate_client">
-                                                <button type="submit" class="btn btn-secondary btn-sm" onclick="return confirm('Deactivate this client?')">Deactivate</button>
-                                            <?php else: ?>
-                                                <input type="hidden" name="action" value="activate_client">
-                                                <button type="submit" class="btn btn-primary btn-sm">Activate</button>
-                                            <?php endif; ?>
-                                        </form>
-
-                                        <!-- Configure Webhook button -->
-                                        <button type="button"
-                                                class="btn btn-secondary btn-sm"
-                                                style="margin-left:6px;"
-                                                onclick="openWebhookModal(<?= (int)$client['id'] ?>, '<?= htmlspecialchars(addslashes($client['webhook_url'] ?? ''), ENT_QUOTES) ?>', '<?= htmlspecialchars(addslashes($client['webhook_secret'] ?? ''), ENT_QUOTES) ?>')">
-                                            🔗 Webhook
-                                        </button>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+<!-- Transactions Table Component -->
+<div style="margin-top: 24px;">
+    <?php
+    $tableTitle = 'Real-Time Transactions Stream';
+    require_once __DIR__ . '/includes/transactions_table.php';
+    ?>
 </div>
 
-<!-- Webhook Configure Modal (shared, populated via JS) -->
-<div class="modal-overlay" id="webhookModal" role="dialog" aria-modal="true" aria-labelledby="webhookModalTitle">
-    <div class="modal-box" style="max-width:520px;">
-        <div class="modal-header">
-            <h2 id="webhookModalTitle">🔗 Configure Webhook</h2>
-            <button class="modal-close" onclick="closeWebhookModal()">&times;</button>
-        </div>
-        <form action="dashboard.php" method="POST" id="webhookForm">
-            <input type="hidden" name="action" value="update_webhook">
-            <input type="hidden" name="client_id" id="webhookClientId">
-            <div class="modal-body">
-                <p style="font-size:0.88rem;color:var(--text-muted);margin-bottom:18px;">
-                    Set the endpoint Vortex will POST payment notifications to. Both the URL and Secret are saved into <code>api_clients</code> and displayed on the dashboard.
-                </p>
-                <div class="form-group">
-                    <label for="webhookUrlInput">Webhook URL</label>
-                    <input type="url" id="webhookUrlInput" name="webhook_url" class="form-control font-mono"
-                           placeholder="https://yourapp.com/webhook.php">
-                </div>
-                <div class="form-group" style="margin-top:14px;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                        <label for="webhookSecretInput" style="margin:0;">Webhook Secret</label>
-                        <button type="button" class="btn btn-secondary btn-sm" style="padding:2px 8px;font-size:0.75rem;" onclick="generateRandomWebhookSecret()">🎲 Generate New</button>
-                    </div>
-                    <div class="copy-wrapper">
-                        <input type="text" id="webhookSecretInput" name="webhook_secret" class="form-control font-mono" style="width:100%;font-size:0.82rem;"
-                               placeholder="Leave as-is or click Generate New">
-                        <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard(document.getElementById('webhookSecretInput').value, this)" title="Copy Secret">📋</button>
-                    </div>
-                </div>
-                <p style="font-size:0.82rem;color:var(--text-muted);margin-top:12px;">
-                    Leave the URL blank and save to <strong>remove</strong> webhook configuration.
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn-cancel" onclick="closeWebhookModal()">Cancel</button>
-                <button type="submit" class="btn-submit-event">💾 Save Webhook</button>
-            </div>
-        </form>
-    </div>
-</div>
-
+<!-- Backwards Compatibility Hash Redirect Script -->
 <script>
-function openWebhookModal(clientId, currentUrl, currentSecret) {
-    document.getElementById('webhookClientId').value    = clientId;
-    document.getElementById('webhookUrlInput').value    = currentUrl || '';
-    document.getElementById('webhookSecretInput').value = currentSecret || '';
-    document.getElementById('webhookModal').classList.add('open');
-    document.body.style.overflow = 'hidden';
-    document.getElementById('webhookUrlInput').focus();
-}
-function generateRandomWebhookSecret() {
-    const arr = new Uint8Array(24);
-    window.crypto.getRandomValues(arr);
-    const hex = Array.from(arr, b => b.toString(16).padStart(2, '0')).join('');
-    document.getElementById('webhookSecretInput').value = hex;
-}
-function closeWebhookModal() {
-    document.getElementById('webhookModal').classList.remove('open');
-    document.body.style.overflow = '';
-}
-document.getElementById('webhookModal').addEventListener('click', function(e) {
-    if (e.target === this) closeWebhookModal();
-});
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && document.getElementById('webhookModal').classList.contains('open')) closeWebhookModal();
-});
-</script>
-
-<!-- ============================================================
-     TAB 3: EVENTS & DEPARTMENTS MANAGEMENT
-     ============================================================ -->
-<div id="tab-events" class="tab-content-panel" style="<?= $initialTab === 'events' ? '' : 'display:none;' ?>">
-    <div class="section-title">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-blue);"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-        Events Management
-    </div>
-    
-    <div class="section-label">All Configured Events</div>
-    
-    <div id="events" class="section-card">
-        <div class="section-header" style="display:none;">
-            <h2>🎟️ Event Management</h2>
-        </div>
-        <div class="section-body">
-
-            <!-- Form to Create New Event -->
-            <form action="dashboard.php" method="POST" style="margin-bottom: 24px; padding: 16px; background: #f8fafc; border: 1px solid var(--border-light); border-radius: 6px;">
-                <input type="hidden" name="action" value="create_event">
-                <h3 style="font-size: 0.95rem; margin-bottom: 12px; color: var(--text-main);">Create New Event</h3>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Event Name</label>
-                        <input type="text" name="event_name" class="form-control" placeholder="e.g. International AI Summit 2026" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Department / Host</label>
-                        <input type="text" name="event_department" class="form-control" placeholder="e.g. Computer Science Dept" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Start Date</label>
-                        <input type="date" name="start_date" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>End Date</label>
-                        <input type="date" name="end_date" class="form-control" required>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary" style="margin-top: 8px;">+ Create Event</button>
-            </form>
-
-            <div class="table-responsive">
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Event ID</th>
-                            <th>Event Name</th>
-                            <th>Department</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($allEvents)): ?>
-                            <tr><td colspan="7" style="text-align:center; padding: 16px;">No events created yet.</td></tr>
-                        <?php else: ?>
-                            <?php foreach ($allEvents as $event): ?>
-                                <tr onclick="window.location.href='payments/list_payments.php?event_id=<?= urlencode($event['event_id']) ?>';" style="cursor:pointer;" class="hoverable-row">
-                                    <td>
-                                        <div class="copy-wrapper">
-                                            <span class="font-mono"><?= htmlspecialchars($event['event_id']) ?></span>
-                                            <button type="button" class="btn-copy btn-copy-sm" onclick="event.stopPropagation(); copyToClipboard('<?= htmlspecialchars($event['event_id'], ENT_QUOTES) ?>', this)" title="Copy Event ID">📋 Copy</button>
-                                        </div>
-                                    </td>
-                                    <td><strong><?= htmlspecialchars($event['event_name']) ?></strong></td>
-                                    <td><?= htmlspecialchars($event['department'] ?? 'N/A') ?></td>
-                                    <td><?= htmlspecialchars($event['start_date']) ?></td>
-                                    <td><?= htmlspecialchars($event['end_date']) ?></td>
-                                    <td>
-                                        <span class="badge <?= $event['is_active'] ? 'badge-success' : 'badge-failed' ?>">
-                                            <?= $event['is_active'] ? 'Active' : 'Disabled' ?>
-                                        </span>
-                                    </td>
-                                    <td onclick="event.stopPropagation();">
-                                        <form action="dashboard.php" method="POST" style="display:inline;">
-                                            <input type="hidden" name="event_id" value="<?= htmlspecialchars($event['event_id']) ?>">
-                                            <?php if ($event['is_active']): ?>
-                                                <input type="hidden" name="action" value="deactivate_event">
-                                                <button type="submit" class="btn btn-secondary btn-sm">Deactivate</button>
-                                            <?php else: ?>
-                                                <input type="hidden" name="action" value="activate_event">
-                                                <button type="submit" class="btn btn-primary btn-sm">Activate</button>
-                                            <?php endif; ?>
-                                        </form>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ============================================================
-     Sidebar Tab Navigation Switcher Script
-     ============================================================ -->
-<script>
-(function () {
-    function getActiveTabName() {
-        const hash = window.location.hash.replace('#', '');
-        if (['overview', 'clients', 'events'].includes(hash)) {
-            return hash;
-        }
-        const params = new URLSearchParams(window.location.search);
-        const tabParam = params.get('tab');
-        if (['overview', 'clients', 'events'].includes(tabParam)) {
-            return tabParam;
-        }
-        return 'overview';
+(function() {
+    if (window.location.hash === '#clients') {
+        window.location.replace('api_clients/index.php');
+    } else if (window.location.hash === '#events') {
+        window.location.replace('events/index.php');
     }
-
-    function switchDashboardTab(tabName) {
-        if (!['overview', 'clients', 'events'].includes(tabName)) {
-            tabName = 'overview';
-        }
-
-        // Hide all tab panels
-        const panels = document.querySelectorAll('.tab-content-panel');
-        panels.forEach(panel => {
-            panel.style.display = 'none';
-        });
-
-        // Display targeted tab panel
-        const activePanel = document.getElementById('tab-' + tabName);
-        if (activePanel) {
-            activePanel.style.display = 'block';
-        }
-
-        // Highlight matching sidebar navigation link
-        const sidebarLinks = document.querySelectorAll('.app-sidebar .sidebar-menu a');
-        sidebarLinks.forEach(link => {
-            const href = link.getAttribute('href') || '';
-            link.classList.remove('active');
-            if (tabName === 'overview' && (href.includes('#overview') || (href.endsWith('dashboard.php') && !href.includes('#')))) {
-                link.classList.add('active');
-            } else if (tabName === 'clients' && href.includes('#clients')) {
-                link.classList.add('active');
-            } else if (tabName === 'events' && href.includes('#events')) {
-                link.classList.add('active');
-            }
-        });
-
-        // Toggle Floating Action Button visibility (shown on Events & Overview tabs)
-        const fab = document.getElementById('fabCreateEvent');
-        if (fab) {
-            fab.style.display = (tabName === 'events' || tabName === 'overview') ? 'flex' : 'none';
-        }
-    }
-
-    function syncTabState() {
-        switchDashboardTab(getActiveTabName());
-    }
-
-    window.addEventListener('hashchange', syncTabState);
-    document.addEventListener('DOMContentLoaded', syncTabState);
-    syncTabState();
-}());
+})();
 </script>
 
 <?php require_once __DIR__ . '/includes/refund_modal.php'; ?>

@@ -242,7 +242,7 @@ require_once __DIR__ . '/../includes/header.php';
                         echo ' <span class="badge badge-event" title="Latest Razorpay Webhook Event">📡 ' . htmlspecialchars($webhookLogs[0]['event_type']) . '</span>';
                     }
                 ?>
-                <?php if ($st === 'SUCCESS'): ?>
+                <?php if ($st === 'SUCCESS' && RBAC::can('payments.refund')): ?>
                     <button type="button" class="btn btn-sm"
                             onclick="openRefundModal('<?= htmlspecialchars($transaction['vortex_transaction_id'], ENT_QUOTES) ?>', '<?= htmlspecialchars($transaction['amount'], ENT_QUOTES) ?>', '<?= htmlspecialchars(addslashes($transaction['customer_email'] ?? ''), ENT_QUOTES) ?>')"
                             style="background-color: #dc2626; color: white; border: none; font-weight: 700; padding: 6px 14px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem; box-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);">

@@ -2,7 +2,8 @@
    Vortex Payment Gateway - Admin Panel Stylesheet
    Theme: Goodle Drive (Vibrant Blue & Clean Curves)
    ============================================================ */
-:root {
+:root,
+[data-theme="light"] {
     /* === Brand Colors === */
     --primary-blue:     #1a73e8; /* Google Drive Blue */
     --primary-dark:     #174ea6;
@@ -13,8 +14,12 @@
     
     /* === Layout Colors === */
     --bg-main:          #ffffff;
+    --bg-surface:       #ffffff;
+    --bg-card:          #ffffff;
     --bg-gray:          #f1f3f4;
+    --bg-hover:         #f8f9fa;
     --border-color:     #dadce0;
+    --border-subtle:    #edf2f7;
     
     /* === Status Colors === */
     --success-bg:       #ceead6;
@@ -30,10 +35,68 @@
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
 }
 
+/* === Google Dark Theme Tokens === */
+[data-theme="dark"] {
+    --primary-blue:     #8ab4f8; /* Google Blue in Dark Mode */
+    --primary-dark:     #aecbfa;
+    --primary-light:    rgba(138, 180, 248, 0.16);
+    --text-dark:        #e8eaed; /* Google White High Emphasis */
+    --text-gray:        #9aa0a6; /* Google Gray Medium Emphasis */
+    --text-light:       #ffffff;
+    
+    --bg-main:          #202124; /* Google Dark Canvas */
+    --bg-surface:       #292a2d; /* Google Dark Topbar / Sidebar */
+    --bg-card:          #303134; /* Google Dark Elevated Surface (Cards/Modals) */
+    --bg-gray:          #3c4043; /* Google Dark Secondary Elements */
+    --bg-hover:         #35363a; /* Google Dark Hover state */
+    --border-color:     #3c4043; /* Google Dark Subtle Borders */
+    --border-subtle:    #4d5156;
+    
+    --success-bg:       rgba(129, 201, 149, 0.18);
+    --success-text:     #81c995; /* Google Green Dark */
+    --danger-bg:        rgba(242, 139, 130, 0.18);
+    --danger-text:      #f28b82; /* Google Red Dark */
+    --warning-bg:       rgba(253, 214, 99, 0.18);
+    --warning-text:     #fdd663; /* Google Yellow Dark */
+    --purple-bg:        rgba(215, 174, 251, 0.18);
+    --purple-text:      #c58af9; /* Google Purple Dark */
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --primary-blue:     #8ab4f8;
+        --primary-dark:     #aecbfa;
+        --primary-light:    rgba(138, 180, 248, 0.16);
+        --text-dark:        #e8eaed;
+        --text-gray:        #9aa0a6;
+        --text-light:       #ffffff;
+        --bg-main:          #202124;
+        --bg-surface:       #292a2d;
+        --bg-card:          #303134;
+        --bg-gray:          #3c4043;
+        --bg-hover:         #35363a;
+        --border-color:     #3c4043;
+        --border-subtle:    #4d5156;
+        --success-bg:       rgba(129, 201, 149, 0.18);
+        --success-text:     #81c995;
+        --danger-bg:        rgba(242, 139, 130, 0.18);
+        --danger-text:      #f28b82;
+        --warning-bg:       rgba(253, 214, 99, 0.18);
+        --warning-text:     #fdd663;
+        --purple-bg:        rgba(215, 174, 251, 0.18);
+        --purple-text:      #c58af9;
+    }
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+}
+
+/* Remove unnecessary borders on all div elements */
+div {
+    border: none !important;
 }
 
 body {
@@ -44,6 +107,7 @@ body {
     font-size: 0.95rem;
     line-height: 1.5;
     overflow: hidden; /* layout controls scrolling */
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* ----------------------------------
@@ -62,8 +126,10 @@ body {
     justify-content: space-between;
     padding: 12px 24px;
     height: 64px;
-    background-color: #ffffff;
+    background-color: var(--bg-surface);
+    border-bottom: 1px solid var(--border-color);
     flex-shrink: 0;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .topbar-brand {
@@ -120,6 +186,66 @@ body {
     outline: none;
     background-color: #ffffff;
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+/* Omnisearch Instant Dropdown */
+.search-autocomplete-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border: none !important;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+    z-index: 1000;
+    max-height: 480px;
+    overflow-y: auto;
+    display: none;
+}
+.search-dropdown-section {
+    padding: 6px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+.search-dropdown-section:last-child {
+    border-bottom: none;
+}
+.search-dropdown-header {
+    padding: 6px 16px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #94a3b8;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.search-dropdown-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: var(--text-dark);
+    font-size: 0.86rem;
+    transition: background 0.12s ease;
+}
+.search-dropdown-item:hover, .search-dropdown-item.selected {
+    background: #f8fafc;
+}
+.search-dropdown-footer {
+    padding: 10px 16px;
+    background: #fafbfc;
+    font-size: 0.8rem;
+    text-align: center;
+    color: var(--primary-blue);
+    font-weight: 600;
+    cursor: pointer;
+    border-top: 1px solid #f1f5f9;
+}
+.search-dropdown-footer:hover {
+    background: #f1f5f9;
 }
 
 .topbar-actions {
@@ -211,6 +337,248 @@ body {
 .btn-logout:hover {
     background-color: rgba(0,0,0,0.05);
     color: var(--text-dark);
+}
+
+/* Google Material Theme Toggle Button */
+.btn-theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-gray);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.btn-theme-toggle:hover {
+    background-color: var(--bg-hover);
+    color: var(--primary-blue);
+    border-color: var(--primary-blue);
+    transform: scale(1.05);
+}
+
+.btn-theme-toggle svg {
+    width: 19px;
+    height: 19px;
+}
+
+/* Light Mode: display moon */
+:root:not([data-theme="dark"]) .theme-icon-sun { display: none !important; }
+:root:not([data-theme="dark"]) .theme-icon-moon { display: flex !important; align-items: center; justify-content: center; color: #5f6368; }
+
+/* Dark Mode: display sun in bright Google yellow */
+[data-theme="dark"] .theme-icon-sun { display: flex !important; align-items: center; justify-content: center; color: #fdd663; }
+[data-theme="dark"] .theme-icon-moon { display: none !important; }
+
+/* ============================================================
+   In-App Notification Center: Bell & Floating Palette
+   ============================================================ */
+.topbar-notif-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-notif-bell {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: transparent;
+    color: var(--text-gray);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.btn-notif-bell:hover {
+    background-color: var(--bg-hover);
+    color: var(--primary-blue);
+    transform: scale(1.05);
+}
+
+.btn-notif-bell svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Red Unread Notification Badge */
+.notif-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    background-color: #ea4335;
+    color: #ffffff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    box-shadow: 0 2px 6px rgba(234, 67, 53, 0.45);
+    z-index: 10;
+}
+
+.sidebar-badge-count {
+    background-color: #ea4335;
+    color: #ffffff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 10px;
+    padding: 1px 7px;
+    margin-left: auto;
+}
+
+/* Floating Notification Dropdown Palette */
+.notif-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: -60px;
+    width: 380px;
+    max-width: 92vw;
+    background-color: var(--bg-card);
+    border-radius: 14px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+    z-index: 1100;
+    overflow: hidden;
+    animation: fadeIn 0.18s ease-out;
+}
+
+.notif-dropdown-header {
+    padding: 14px 18px;
+    background: var(--bg-surface);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.notif-pill-count {
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: rgba(234, 67, 53, 0.14);
+    color: #ea4335;
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.notif-action-btn {
+    background: transparent;
+    border: none;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--primary-blue);
+    cursor: pointer;
+    padding: 3px 6px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.15s;
+}
+
+.notif-action-btn:hover {
+    background-color: var(--primary-light);
+}
+
+.notif-items-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notif-dropdown-item {
+    padding: 12px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+    transition: background-color 0.15s;
+    position: relative;
+    border-bottom: 1px solid var(--bg-gray);
+    text-decoration: none;
+}
+
+.notif-dropdown-item:hover {
+    background-color: var(--bg-hover);
+}
+
+.notif-dropdown-item.unread {
+    background-color: rgba(26, 115, 232, 0.04);
+}
+
+[data-theme="dark"] .notif-dropdown-item.unread {
+    background-color: rgba(138, 180, 248, 0.08);
+}
+
+.notif-item-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.notif-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notif-item-title {
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 2px;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.notif-item-msg {
+    font-size: 0.78rem;
+    color: var(--text-gray);
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.notif-item-time {
+    font-size: 0.72rem;
+    color: var(--text-gray);
+    margin-top: 4px;
+}
+
+.notif-unread-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--primary-blue);
+    flex-shrink: 0;
+    margin-top: 6px;
+}
+
+.notif-dropdown-footer {
+    padding: 12px 16px;
+    background: var(--bg-surface);
+    text-align: center;
+    border-top: 1px solid var(--border-color);
 }
 
 /* App Body containing Sidebar and Main Content */
@@ -382,7 +750,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    border: 1px solid transparent;
+    border: none !important;
     transition: background-color 0.2s, border-color 0.2s;
     cursor: default;
     text-decoration: none;
@@ -594,7 +962,7 @@ table.admin-table tbody tr:hover {
 
 .detail-item {
     background-color: #ffffff;
-    border: 1px solid var(--border-color);
+    border: none !important;
     border-radius: 8px;
     padding: 16px;
     display: flex;
@@ -971,7 +1339,7 @@ table.admin-table tbody tr:hover {
 .profile-hero-card {
     background: #ffffff;
     border-radius: 16px;
-    border: 1px solid var(--border-color);
+    border: none !important;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     overflow: hidden;
     position: relative;
@@ -1119,7 +1487,7 @@ table.admin-table tbody tr:hover {
 
 .profile-stat-card {
     background: #ffffff;
-    border: 1px solid var(--border-color);
+    border: none !important;
     border-radius: 12px;
     padding: 18px 20px;
     display: flex;
@@ -1229,7 +1597,7 @@ table.admin-table tbody tr:hover {
 /* Profile Content Cards */
 .profile-card {
     background: #ffffff;
-    border: 1px solid var(--border-color);
+    border: none !important;
     border-radius: 12px;
     padding: 24px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.03);
@@ -1311,7 +1679,7 @@ table.admin-table tbody tr:hover {
     align-items: center;
     justify-content: space-between;
     padding: 16px;
-    border: 1px solid var(--border-color);
+    border: none !important;
     border-radius: 10px;
     margin-bottom: 12px;
     transition: background-color 0.15s;
@@ -1640,5 +2008,368 @@ table.admin-table tbody tr:hover {
         text-align: center;
         gap: 10px;
     }
+}
+
+/* ============================================================
+   GOOGLE DARK THEME COMPREHENSIVE OVERRIDES
+   Matches Google Drive, Google Cloud Console, and Workspace
+   ============================================================ */
+
+[data-theme="dark"] body {
+    background-color: var(--bg-main) !important;
+    color: var(--text-dark) !important;
+    scrollbar-color: #5f6368 #202124;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+[data-theme="dark"] ::-webkit-scrollbar-track {
+    background: #202124;
+}
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: #5f6368;
+    border-radius: 4px;
+}
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: #80868b;
+}
+
+/* Topbar & Header */
+[data-theme="dark"] .app-topbar {
+    background-color: #292a2d !important;
+    border-color: #3c4043 !important;
+}
+
+[data-theme="dark"] .brand-name {
+    color: #e8eaed !important;
+}
+
+[data-theme="dark"] .search-input-group input {
+    background-color: #303134 !important;
+    color: #e8eaed !important;
+    border: 1px solid transparent !important;
+}
+
+[data-theme="dark"] .search-input-group input:focus {
+    background-color: #202124 !important;
+    border-color: #8ab4f8 !important;
+    box-shadow: 0 0 0 2px rgba(138, 180, 248, 0.25) !important;
+}
+
+[data-theme="dark"] .search-shortcut-badge {
+    background-color: #3c4043 !important;
+    color: #9aa0a6 !important;
+}
+
+[data-theme="dark"] .user-name {
+    color: #e8eaed !important;
+}
+
+[data-theme="dark"] .user-profile:hover {
+    background-color: #35363a !important;
+    border-color: #3c4043 !important;
+}
+
+[data-theme="dark"] .btn-logout:hover {
+    background-color: #35363a !important;
+    color: #e8eaed !important;
+}
+
+/* Sidebar in Google Dark Mode */
+[data-theme="dark"] .app-sidebar {
+    background-color: #292a2d !important;
+    border-right: 1px solid #3c4043 !important;
+    box-shadow: none !important;
+}
+
+[data-theme="dark"] .btn-new {
+    background-color: #3c4043 !important;
+    color: #8ab4f8 !important;
+    border: 1px solid #5f6368 !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
+}
+
+[data-theme="dark"] .btn-new:hover {
+    background-color: #4d5156 !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4) !important;
+}
+
+[data-theme="dark"] .sidebar-menu li a {
+    color: #9aa0a6 !important;
+}
+
+[data-theme="dark"] .sidebar-menu li a:hover {
+    background-color: #35363a !important;
+    color: #8ab4f8 !important;
+}
+
+[data-theme="dark"] .sidebar-menu li a.active {
+    background-color: rgba(138, 180, 248, 0.16) !important;
+    color: #8ab4f8 !important;
+}
+
+[data-theme="dark"] .sidebar-storage {
+    border-top: 1px solid #3c4043;
+}
+
+/* Cards & Elevated Containers */
+[data-theme="dark"] .section-card,
+[data-theme="dark"] .wizard-card,
+[data-theme="dark"] .search-bar-card,
+[data-theme="dark"] .modal-box,
+[data-theme="dark"] .detail-item {
+    background-color: #303134 !important;
+    border: none !important;
+    color: #e8eaed !important;
+}
+
+[data-theme="dark"] .section-header,
+[data-theme="dark"] .wizard-card-header,
+[data-theme="dark"] .wizard-card-footer,
+[data-theme="dark"] .modal-header,
+[data-theme="dark"] .modal-footer {
+    background-color: #292a2d !important;
+    border-color: #3c4043 !important;
+    color: #e8eaed !important;
+}
+
+[data-theme="dark"] .section-title,
+[data-theme="dark"] .section-header h2,
+[data-theme="dark"] .section-header h3,
+[data-theme="dark"] .wizard-card-title,
+[data-theme="dark"] .metric-value,
+[data-theme="dark"] .detail-value {
+    color: #e8eaed !important;
+}
+
+[data-theme="dark"] .metric-card {
+    background-color: #303134 !important;
+    border: none !important;
+    color: #e8eaed !important;
+}
+
+[data-theme="dark"] .metric-card:hover {
+    background-color: #35363a !important;
+    border: none !important;
+}
+
+[data-theme="dark"] .metric-label,
+[data-theme="dark"] .detail-label,
+[data-theme="dark"] .section-label,
+[data-theme="dark"] .wizard-card-subtitle,
+[data-theme="dark"] .form-group label {
+    color: #9aa0a6 !important;
+}
+
+/* Tables */
+[data-theme="dark"] table.admin-table {
+    background-color: #303134 !important;
+}
+
+[data-theme="dark"] table.admin-table th {
+    background-color: #292a2d !important;
+    border-bottom: 1px solid #3c4043 !important;
+    color: #9aa0a6 !important;
+}
+
+[data-theme="dark"] table.admin-table td {
+    border-bottom: 1px solid #3c4043 !important;
+    color: #e8eaed !important;
+}
+
+[data-theme="dark"] table.admin-table tbody tr:hover td,
+[data-theme="dark"] table.admin-table tbody tr:hover {
+    background-color: #35363a !important;
+}
+
+/* Forms & Inputs */
+[data-theme="dark"] .form-control,
+[data-theme="dark"] input[type="text"],
+[data-theme="dark"] input[type="email"],
+[data-theme="dark"] input[type="tel"],
+[data-theme="dark"] input[type="password"],
+[data-theme="dark"] input[type="date"],
+[data-theme="dark"] input[type="url"],
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+    background-color: #202124 !important;
+    border: 1px solid #3c4043 !important;
+    color: #e8eaed !important;
+}
+
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] input:focus,
+[data-theme="dark"] select:focus,
+[data-theme="dark"] textarea:focus {
+    background-color: #292a2d !important;
+    border-color: #8ab4f8 !important;
+    box-shadow: 0 0 0 2px rgba(138, 180, 248, 0.25) !important;
+    color: #ffffff !important;
+}
+
+/* Buttons */
+[data-theme="dark"] .btn-primary {
+    background-color: #8ab4f8 !important;
+    color: #202124 !important;
+    font-weight: 600 !important;
+}
+
+[data-theme="dark"] .btn-primary:hover {
+    background-color: #aecbfa !important;
+}
+
+[data-theme="dark"] .btn-secondary {
+    background-color: transparent !important;
+    color: #8ab4f8 !important;
+    border: 1px solid #3c4043 !important;
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+    background-color: rgba(138, 180, 248, 0.14) !important;
+    border-color: #8ab4f8 !important;
+}
+
+[data-theme="dark"] .btn-cancel {
+    background-color: transparent !important;
+    border-color: #3c4043 !important;
+    color: #9aa0a6 !important;
+}
+
+[data-theme="dark"] .btn-cancel:hover {
+    background-color: #35363a !important;
+    color: #e8eaed !important;
+}
+
+[data-theme="dark"] .btn-copy {
+    background-color: #3c4043 !important;
+    border-color: #5f6368 !important;
+    color: #e8eaed !important;
+}
+
+[data-theme="dark"] .btn-copy:hover {
+    background-color: #4d5156 !important;
+    border-color: #8ab4f8 !important;
+}
+
+/* Badges & Monospace */
+[data-theme="dark"] .font-mono {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    color: #8ab4f8 !important;
+}
+
+[data-theme="dark"] .copy-wrapper {
+    background-color: #202124 !important;
+    border: none !important;
+}
+
+[data-theme="dark"] .badge-event,
+[data-theme="dark"] .badge-secondary {
+    background-color: #3c4043 !important;
+    color: #9aa0a6 !important;
+    border-color: #5f6368 !important;
+}
+
+/* Onboarding & Search Special Components */
+[data-theme="dark"] .pref-box,
+[data-theme="dark"] .diagnostic-panel {
+    background-color: #292a2d !important;
+    border: none !important;
+}
+
+[data-theme="dark"] .pref-box:hover {
+    background-color: #35363a !important;
+    border: none !important;
+}
+
+[data-theme="dark"] .pref-box-title {
+    color: #e8eaed !important;
+}
+
+[data-theme="dark"] .tab-pill:not(.active) {
+    background-color: #292a2d !important;
+    color: #9aa0a6 !important;
+    border: 1px solid #3c4043 !important;
+}
+
+[data-theme="dark"] .tab-pill:not(.active) .tab-pill-count {
+    background-color: #3c4043 !important;
+    color: #e8eaed !important;
+}
+
+[data-theme="dark"] .tab-pills-bar {
+    border-color: #3c4043 !important;
+}
+
+[data-theme="dark"] .step-circle {
+    background-color: #303134 !important;
+    border-color: #3c4043 !important;
+    color: #9aa0a6 !important;
+}
+
+[data-theme="dark"] .step-node.active .step-circle {
+    background-color: #8ab4f8 !important;
+    border-color: #8ab4f8 !important;
+    color: #202124 !important;
+}
+
+[data-theme="dark"] .step-node.completed .step-circle {
+    background-color: #81c995 !important;
+    border-color: #81c995 !important;
+    color: #202124 !important;
+}
+
+/* Omnisearch Floating Dropdown in Dark Mode */
+[data-theme="dark"] .search-autocomplete-dropdown {
+    background-color: #303134 !important;
+    border: none !important;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.5) !important;
+}
+
+[data-theme="dark"] .search-dropdown-section {
+    border-bottom: 1px solid #3c4043 !important;
+}
+
+[data-theme="dark"] .search-dropdown-header {
+    color: #9aa0a6 !important;
+}
+
+[data-theme="dark"] .search-dropdown-item {
+    color: #e8eaed !important;
+}
+
+[data-theme="dark"] .search-dropdown-item:hover,
+[data-theme="dark"] .search-dropdown-item.selected {
+    background-color: #3c4043 !important;
+}
+
+[data-theme="dark"] .search-dropdown-footer {
+    background-color: #292a2d !important;
+    border-color: #3c4043 !important;
+    color: #8ab4f8 !important;
+}
+
+[data-theme="dark"] .search-dropdown-footer:hover {
+    background-color: #35363a !important;
+}
+
+/* Pagination in Dark Mode */
+[data-theme="dark"] .pagination-btn {
+    background-color: #292a2d !important;
+    border-color: #3c4043 !important;
+    color: #e8eaed !important;
+}
+
+[data-theme="dark"] .pagination-btn:hover {
+    background-color: #35363a !important;
+    border-color: #8ab4f8 !important;
+    color: #8ab4f8 !important;
+}
+
+[data-theme="dark"] .pagination-btn.active {
+    background-color: #8ab4f8 !important;
+    border-color: #8ab4f8 !important;
+    color: #202124 !important;
 }
 

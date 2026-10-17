@@ -15,6 +15,8 @@ if (session_status() === PHP_SESSION_NONE) {
 
 header('Content-Type: application/json');
 
+require_once __DIR__ . '/../../classes/RBAC.php';
+
 // 1. Authentication Guard - Require Vortex Admin session
 if (empty($_SESSION['vortex_admin_id'])) {
     http_response_code(403);
@@ -24,6 +26,9 @@ if (empty($_SESSION['vortex_admin_id'])) {
     ]);
     exit;
 }
+
+// 2. RBAC Guard - Require payments.refund privilege (Super Admin or Finance)
+RBAC::require('payments.refund');
 
 // 2. Allow only POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -67,6 +72,7 @@ if ($amount <= 0) {
 // 4. Execute Refund through Vortex Core
 try {
     require_once __DIR__ . '/../../classes/Refund.php';
+require_once __DIR__ . '/../../classes/AuditLogger.php';
     
     $adminIdentifier = $_SESSION['vortex_admin_username'] ?? ('Admin #' . $_SESSION['vortex_admin_id']);
     $refundService   = new Refund();
@@ -78,6 +84,16 @@ try {
     );
 
     if (!empty($result['success'])) {
+        AuditLogger::log(
+            'refund',
+            $vortexTransactionId,
+            AuditLogger::REFUND_PROCESSED,
+            ['status' => 'SUCCESS'],
+            ['status' => 'REFUNDED', 'refund_amount' => $amount],
+            "Refund of ₹{$amount} processed for transaction {$vortexTransactionId}",
+            ['reason' => $reason]
+        );
+
         http_response_code(200);
         echo json_encode([
             'success' => true,

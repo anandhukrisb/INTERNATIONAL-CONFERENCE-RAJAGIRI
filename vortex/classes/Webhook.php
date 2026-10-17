@@ -375,6 +375,46 @@ class Webhook
                     }
                 }
 
+                // 9. Dispatch Real-Time Email/SMS Alert to Merchant & In-App Admin Notification Center
+                try {
+                    require_once __DIR__ . '/NotificationService.php';
+                    require_once __DIR__ . '/NotificationCenter.php';
+
+                    if (in_array($eventName, ['payment.captured', 'order.paid'], true) || ($statusChanged && $targetStatus === 'SUCCESS')) {
+                        NotificationService::notifyPaymentSuccess($transaction);
+                        if ((float)$transaction['amount'] >= 10000) {
+                            NotificationCenter::triggerHighValueTxnAlert(
+                                $transaction['vortex_transaction_id'],
+                                (float)$transaction['amount'],
+                                $transaction['customer_email'],
+                                $client['client_name'] ?? '',
+                                (int)$transaction['api_client_id']
+                            );
+                        }
+                    } elseif (str_starts_with($eventName, 'refund.processed')) {
+                        NotificationService::notifyRefundProcessed($transaction, [
+                            'refund_id' => $refundEntity['id'] ?? null,
+                            'amount'    => isset($refundEntity['amount']) ? ($refundEntity['amount'] / 100) : $transaction['amount'],
+                            'reason'    => $refundEntity['notes']['reason'] ?? ($refundEntity['speed_requested'] ?? 'Razorpay Webhook Refund'),
+                            'status'    => 'PROCESSED'
+                        ]);
+                    } elseif ($eventName === 'payment.failed') {
+                        $failReason = $paymentEntity['error_description'] ?? 'Customer payment failed';
+                        NotificationService::notifyFailureOrDispute($transaction, $failReason, NotificationService::EVENT_PAYMENT_FAILED);
+                    } elseif (str_starts_with($eventName, 'payment.dispute.')) {
+                        $disputeReason = 'Dispute event received: ' . $eventName . ' (Dispute ID: ' . ($disputeEntity['id'] ?? 'N/A') . ')';
+                        NotificationService::notifyFailureOrDispute($transaction, $disputeReason, NotificationService::EVENT_PAYMENT_DISPUTED);
+                        NotificationCenter::triggerDisputeAlert(
+                            $transaction['vortex_transaction_id'],
+                            $transaction['customer_email'],
+                            (float)$transaction['amount'],
+                            $disputeReason
+                        );
+                    }
+                } catch (\Throwable $notifEx) {
+                    Logger::error('Webhook client notification dispatch failed: ' . $notifEx->getMessage());
+                }
+
                 Logger::info(
                     "Webhook processed successfully. Event: {$eventName}, "
                     . "Vortex Tx: {$transaction['vortex_transaction_id']}, "
@@ -525,67 +565,10 @@ class Webhook
     public function dispatchClientWebhook($vortexTxnId, $status, $apiClientId)
     {
         try {
-            $stmt = $this->db->prepare("SELECT webhook_url, webhook_secret FROM api_clients WHERE id = ?");
-            $stmt->execute([$apiClientId]);
-            $client = $stmt->fetch();
-
-            if (!$client || empty($client['webhook_url']) || empty($client['webhook_secret'])) {
-                Logger::info("Client webhook not dispatched for transaction {$vortexTxnId}: no webhook_url or webhook_secret configured for client ID {$apiClientId}.");
-                return false;
-            }
-
-            $payload = json_encode([
-                'vortex_transaction_id' => $vortexTxnId,
-                'status' => $status,
-                'timestamp' => date('Y-m-d H:i:s')
-            ]);
-
-            // trim() so a stray space/newline in the DB value can't break the signature
-            $signature = hash_hmac('sha256', $payload, trim((string) $client['webhook_secret']));
-
-            $ch = curl_init($client['webhook_url']);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-            curl_setopt($ch, CURLOPT_USERAGENT, 'Vortex-Webhook-Dispatcher/1.0');
-            curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                'Content-Type: application/json',
-                'X-Vortex-Signature: ' . $signature
-            ]);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 3); // stay well inside Razorpay's ~5s window
-
-            // Disable SSL verification only for an exact local host, never a substring match
-            $host = strtolower((string) parse_url($client['webhook_url'], PHP_URL_HOST));
-            if (in_array($host, ['localhost', '127.0.0.1'], true)) {
-                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            }
-
-            $response  = curl_exec($ch);
-            $curlError = curl_error($ch);
-            $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
-
-            if ($curlError !== '') {
-                Logger::error(
-                    "Client webhook dispatch failed for transaction {$vortexTxnId} to {$client['webhook_url']}: "
-                    . "cURL error: {$curlError}"
-                );
-                return false;
-            }
-
-            if ($httpCode < 200 || $httpCode >= 300) {
-                Logger::error(
-                    "Client webhook dispatch received non-2xx response for transaction {$vortexTxnId} "
-                    . "to {$client['webhook_url']}: HTTP {$httpCode}. Response: "
-                    . substr((string) $response, 0, 300)
-                );
-                return false;
-            }
-
-            Logger::info("Client webhook dispatched successfully for transaction {$vortexTxnId} to {$client['webhook_url']} (HTTP {$httpCode}).");
-            return true;
+            require_once __DIR__ . '/WebhookQueueService.php';
+            $queueService = new WebhookQueueService($this->db);
+            $result = $queueService->dispatchOrEnqueue($vortexTxnId, $status, $apiClientId);
+            return !empty($result['delivered']);
         } catch (\Throwable $e) {
             Logger::error("Failed to dispatch client webhook for transaction {$vortexTxnId}: " . $e->getMessage());
             return false;

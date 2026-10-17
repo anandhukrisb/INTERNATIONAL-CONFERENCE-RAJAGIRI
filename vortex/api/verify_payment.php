@@ -205,6 +205,36 @@ try {
     $webhook = new Webhook();
     $webhook->dispatchClientWebhook($transaction['vortex_transaction_id'], 'SUCCESS', $transaction['api_client_id']);
 
+    // Dispatch real-time Client Email/SMS Notification & In-App Notification Center Alert
+    try {
+        require_once __DIR__ . '/../classes/NotificationService.php';
+        require_once __DIR__ . '/../classes/NotificationCenter.php';
+
+        $fullTxStmt = $db->prepare("
+            SELECT t.*, e.title as event_name, c.client_name 
+            FROM transactions t 
+            LEFT JOIN events e ON t.event_id = e.event_id 
+            LEFT JOIN api_clients c ON t.api_client_id = c.id
+            WHERE t.id = ?
+        ");
+        $fullTxStmt->execute([$transaction['id']]);
+        $fullTx = $fullTxStmt->fetch(\PDO::FETCH_ASSOC) ?: $transaction;
+        NotificationService::notifyPaymentSuccess($fullTx);
+
+        // High-Value Transaction Alert (> ₹10,000 threshold)
+        if ((float)$transaction['amount'] >= 10000) {
+            NotificationCenter::triggerHighValueTxnAlert(
+                $transaction['vortex_transaction_id'],
+                (float)$transaction['amount'],
+                $transaction['customer_email'],
+                $fullTx['client_name'] ?? '',
+                (int)$transaction['api_client_id']
+            );
+        }
+    } catch (\Throwable $ne) {
+        Logger::error('Notification dispatch error on payment success: ' . $ne->getMessage());
+    }
+
     Logger::info(
         'Payment signature verified successfully. '
         . 'Vortex Transaction ID: ' . $transaction['vortex_transaction_id']

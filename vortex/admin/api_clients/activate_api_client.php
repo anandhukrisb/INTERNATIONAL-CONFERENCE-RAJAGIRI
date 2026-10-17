@@ -11,6 +11,8 @@
 require_once __DIR__ . '/../../classes/ApiClient.php';
 require_once __DIR__ . '/../../classes/Logger.php';
 
+require_once __DIR__ . '/../../classes/RBAC.php';
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -18,6 +20,7 @@ if (empty($_SESSION['vortex_admin_id'])) {
     header('Location: ../login.php');
     exit;
 }
+RBAC::require('clients.edit', null, '../dashboard.php#clients-section');
 
 $clientId = $_POST['client_id'] ?? $_GET['client_id'] ?? null;
 
@@ -36,5 +39,6 @@ if (!empty($clientId) && is_numeric($clientId) && (int)$clientId > 0) {
     $_SESSION['flash_error'] = "Unable to activate API client: Invalid Client ID.";
 }
 
-header('Location: ../dashboard.php#clients-section');
+$returnUrl = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php';
+header('Location: ' . $returnUrl);
 exit;
