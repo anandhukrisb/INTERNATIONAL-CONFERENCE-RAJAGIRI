@@ -11,8 +11,8 @@ try {
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
     
-    $email = $data['email'] ?? '';
-    $enteredOtp = $data['otp'] ?? '';
+    $email = trim($data['email'] ?? '');
+    $enteredOtp = trim($data['otp'] ?? '');
 
     if (empty($email) || empty($enteredOtp)) {
         echo json_encode(['success' => false, 'error' => 'Email and OTP are required.']);
@@ -27,8 +27,6 @@ try {
     }
 
     $storedData = $_SESSION[$sessionKey];
-<<<<<<< HEAD
-=======
     $attempts = ($storedData['attempts'] ?? 0) + 1;
     $_SESSION[$sessionKey]['attempts'] = $attempts;
 
@@ -37,7 +35,6 @@ try {
         echo json_encode(['success' => false, 'error' => 'Too many failed attempts. Please request a new OTP.']);
         exit;
     }
->>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
     
     if (time() > $storedData['expires']) {
         unset($_SESSION[$sessionKey]);
@@ -45,16 +42,6 @@ try {
         exit;
     }
 
-<<<<<<< HEAD
-    if ((string)$enteredOtp !== (string)$storedData['otp']) {
-        echo json_encode(['success' => false, 'error' => 'Invalid OTP. Please try again.']);
-        exit;
-    }
-
-    
-    
-    unset($_SESSION[$sessionKey]);
-=======
     if (!hash_equals((string)$storedData['otp'], (string)$enteredOtp)) {
         $remaining = 5 - $attempts;
         echo json_encode(['success' => false, 'error' => "Invalid OTP. You have {$remaining} attempt(s) remaining."]);
@@ -64,11 +51,10 @@ try {
     unset($_SESSION[$sessionKey]);
     $_SESSION['verified_email'] = $email;
     $_SESSION['verified_email_time'] = time();
->>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
 
     echo json_encode(['success' => true, 'message' => 'Email successfully verified.']);
 
-} catch (Exception $e) {
+} catch (\Throwable $e) {
     http_response_code(500);
     echo json_encode(['success' => false, 'error' => 'An unexpected server error occurred.']);
 }

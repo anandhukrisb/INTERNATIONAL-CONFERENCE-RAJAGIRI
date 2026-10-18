@@ -2,32 +2,22 @@
 
 header('Content-Type: application/json');
 
-
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
 
 session_start();
 
 try {
-    
     $json = file_get_contents('php://input');
     $data = json_decode($json, true);
     
-    $email = $data['email'] ?? '';
+    $email = trim($data['email'] ?? '');
 
     if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echo json_encode(['success' => false, 'error' => 'Valid email is required.']);
         exit;
     }
 
-    
-<<<<<<< HEAD
-    $otp = rand(100000, 999999);
-    $_SESSION['verification_otp_' . $email] = [
-        'otp' => $otp,
-        'expires' => time() + (10 * 60) 
-    ];
-=======
     $sessionKey = 'verification_otp_' . $email;
     $lastTimeKey = 'last_otp_time_' . $email;
 
@@ -44,11 +34,8 @@ try {
         'attempts' => 0
     ];
     $_SESSION[$lastTimeKey] = time();
->>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
 
-    
     require_once __DIR__ . '/db.php';
-    
     
     require_once __DIR__ . '/PHPMailer/src/Exception.php';
     require_once __DIR__ . '/PHPMailer/src/PHPMailer.php';
@@ -88,11 +75,12 @@ try {
         $mail->send();
 
         echo json_encode(['success' => true, 'message' => 'OTP sent successfully']);
-    } catch (Exception $e) {
-        echo json_encode(['success' => false, 'error' => 'Failed to send OTP email. Please check your email configuration.']);
+    } catch (\Throwable $e) {
+        error_log("PHPMailer error: " . $e->getMessage());
+        echo json_encode(['success' => false, 'error' => 'Failed to send OTP email: ' . $e->getMessage()]);
     }
 
-} catch (Exception $e) {
+} catch (\Throwable $e) {
     http_response_code(500);
     echo json_encode(['success' => false, 'error' => 'An unexpected server error occurred.']);
 }
