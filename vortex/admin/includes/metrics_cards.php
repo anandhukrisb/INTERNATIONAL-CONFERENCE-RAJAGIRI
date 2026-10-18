@@ -11,7 +11,7 @@
 $base = $adminBase ?? '';
 ?>
 <div class="metrics-grid">
-    <a href="<?= $base ?>payments/list_payments.php?status=SUCCESS" class="metric-card" title="View all successful transactions">
+    <a href="<?= $base ?>payments/revenue.php" class="metric-card" id="metricCardTotalRevenue" title="View Event Revenue Breakdown & Payments">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <span class="metric-label">Total Revenue</span>
             <div style="width: 32px; height: 32px; border-radius: 8px; background: var(--primary-light); display: flex; align-items: center; justify-content: center;">

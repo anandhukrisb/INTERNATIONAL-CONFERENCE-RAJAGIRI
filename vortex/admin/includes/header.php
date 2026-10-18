@@ -163,6 +163,12 @@ if (empty($_SESSION['vortex_admin_id'])) {
                     </li>
                     <?php if (RBAC::can('payments.view')): ?>
                     <li>
+                        <a href="<?= $adminBase ?>payments/revenue.php" class="<?= $activeNav === 'revenue' ? 'active' : '' ?>">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                            <span>Event Revenue</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="<?= $adminBase ?>payments/list_payments.php" class="<?= $activeNav === 'payments' ? 'active' : '' ?>">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
                             <span>Transactions</span>
@@ -211,14 +217,6 @@ if (empty($_SESSION['vortex_admin_id'])) {
                         </a>
                     </li>
                 </ul>
-                
-                <div class="sidebar-storage">
-                    <div class="storage-details">
-                        <span class="storage-label">System Status</span>
-                        <div class="progress-bar"><div class="progress-fill" style="width: 100%;"></div></div>
-                        <span class="storage-text">All systems operational</span>
-                    </div>
-                </div>
             </aside>
 
             <main class="app-main">

@@ -115,6 +115,10 @@ require_once __DIR__ . '/../includes/header.php';
             <div style="font-size: 1rem; font-weight: 700; color: var(--text-dark);">
                 Transactions Ledger (<?= number_format($totalCount) ?>)
             </div>
+            <a href="revenue.php" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.78rem; padding: 4px 8px;" title="Switch to Event Revenue Analytics">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                <span>Revenue by Event</span>
+            </a>
         </div>
         
         <!-- Search & Filter Controls -->

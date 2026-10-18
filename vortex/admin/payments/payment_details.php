@@ -53,7 +53,7 @@ if ($txnParam !== '') {
 
         // 1. Fetch Primary Transaction Record
         $numericId = is_numeric($txnParam) ? (int)$txnParam : 0;
-        $queryTx = "SELECT t.*, e.event_name, e.department, c.client_name, c.api_key, c.webhook_url
+        $queryTx = "SELECT t.*, e.event_name, e.department, e.webhook_url, c.client_name, c.api_key
                     FROM transactions t
                     LEFT JOIN events e ON t.event_id = e.event_id
                     LEFT JOIN api_clients c ON t.api_client_id = c.id
@@ -84,7 +84,7 @@ if ($txnParam !== '') {
 
             // 2. Fetch Full API Client Details
             if (!empty($transaction['api_client_id'])) {
-                $stmtC = $db->prepare("SELECT id, client_name, api_key, webhook_url, is_active, created_at FROM api_clients WHERE id = ?");
+                $stmtC = $db->prepare("SELECT id, client_name, api_key, email, phone, is_active, created_at FROM api_clients WHERE id = ?");
                 $stmtC->execute([$transaction['api_client_id']]);
                 $apiClient = $stmtC->fetch(PDO::FETCH_ASSOC);
             }
@@ -426,8 +426,8 @@ require_once __DIR__ . '/../includes/header.php';
                     <?php endif; ?>
                 </div>
                 <div class="detail-item">
-                    <span class="detail-label">Client Webhook URL</span>
-                    <span class="detail-value font-mono" style="font-size: 0.82rem;"><?= htmlspecialchars($transaction['webhook_url'] ?? 'Not Configured') ?></span>
+                    <span class="detail-label">Event Webhook URL</span>
+                    <span class="detail-value font-mono" style="font-size: 0.82rem;"><?= htmlspecialchars($transaction['webhook_url'] ?? $event['webhook_url'] ?? 'Not Configured') ?></span>
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">Event Name</span>
