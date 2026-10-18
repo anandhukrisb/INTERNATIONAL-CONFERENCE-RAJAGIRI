@@ -117,6 +117,11 @@ class RBAC
             'description' => 'Change event status, extend deadlines, and update active state.',
             'roles'       => [self::ROLE_SUPER_ADMIN],
         ],
+        'events.delete' => [
+            'label'       => 'Delete Events',
+            'description' => 'Permanently delete events with zero transaction records.',
+            'roles'       => [self::ROLE_SUPER_ADMIN],
+        ],
 
         // API Clients & Credentials
         'clients.view' => [
