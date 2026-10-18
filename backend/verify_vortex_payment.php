@@ -4,18 +4,12 @@ session_start();
 
 require_once __DIR__ . '/db.php';
 
-$isLocal = (!empty($_SERVER['HTTP_HOST']) && (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false));
-$rawApiUrl = $env['VORTEX_API_URL'] ?? getenv('VORTEX_API_URL') ?: '';
-
+$rawApiUrl = !empty($env['VORTEX_API_URL']) ? $env['VORTEX_API_URL'] : (getenv('VORTEX_API_URL') ?: '');
 if (empty($rawApiUrl)) {
     $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? null) == 443;
     $protocol = $isHttps ? 'https://' : 'http://';
-    if ($isLocal) {
-        $rawApiUrl = $protocol . $_SERVER['HTTP_HOST'] . '/vortex/api';
-    } else {
-        $host = $_SERVER['HTTP_HOST'] ?? 'rpay.rajagiri.edu';
-        $rawApiUrl = $protocol . $host . '/api';
-    }
+    $host = $_SERVER['HTTP_HOST'] ?? 'icswhmh.com';
+    $rawApiUrl = $protocol . $host . '/vortex/api';
 }
 
 $vortexApiUrl = rtrim($rawApiUrl, '/') . '/get_payment_status.php';

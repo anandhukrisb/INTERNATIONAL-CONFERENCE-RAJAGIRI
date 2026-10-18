@@ -12,9 +12,11 @@ if ($reg_id !== '') {
         $fetched_user = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if ($fetched_user) {
-            if (($fetched_user['payment_status'] ?? '') === 'Completed') {
+            if (($_GET['status'] ?? '') === 'success' || ($fetched_user['payment_status'] ?? '') === 'Completed') {
                 $reg_status = 'success';
                 $txn_id = $fetched_user['transaction_id'] ?? '';
+            } elseif (($_GET['status'] ?? '') === 'failed') {
+                $reg_status = 'failed';
             }
         }
     } catch (Exception $e) {
@@ -1951,7 +1953,6 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
 
     <main-footer></main-footer>
 
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
         // Fix back button cache issue
         window.addEventListener("pageshow", function(event) {
@@ -1991,7 +1992,7 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
             document.querySelector('.registration-form-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        // Trigger Razorpay Payment Flow natively
+        // Trigger Vortex Payment Gateway Flow
         async function completePayment() {
             const phpRegId = '<?= htmlspecialchars($reg_id, ENT_QUOTES) ?>';
             const btn = document.querySelector('.btn-register');
@@ -2003,127 +2004,30 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
             }
 
             try {
-                // Disable button
                 if (btn) {
                     originalBtnText = btn.innerHTML;
                     btn.disabled = true;
-                    btn.innerHTML = spinnerSvg + 'Processing...';
+                    btn.innerHTML = spinnerSvg + 'Connecting to payment gateway...';
                 }
                 
-                // 1. Create order
-                const createRes = await fetch('razorpay/create_order.php', {
+                const res = await fetch('backend/init_vortex_payment.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ registration_id: phpRegId })
                 });
                 
-                const orderData = await createRes.json();
+                const data = await res.json();
                 
-                if (!orderData.success) {
-                    throw new Error(orderData.error || 'Failed to create order');
+                if (!data.success || !data.payment_url) {
+                    throw new Error(data.error || 'Failed to initialize payment gateway.');
                 }
 
-                // 2. Open Razorpay Checkout
-                const options = {
-                    key: orderData.key,
-                    amount: orderData.amount,
-                    currency: orderData.currency,
-                    name: 'Checkout',
-                    description: 'Payment',
-                    order_id: orderData.order_id,
-                    prefill: {
-                        name: orderData.name,
-                        email: orderData.email,
-                        contact: orderData.phone
-                    },
-                    theme: {
-                        color: '#0b74de'
-                    },
-                    modal: {
-                        ondismiss: async function() {
-                            if (btn) {
-                                btn.disabled = false;
-                                btn.innerHTML = originalBtnText;
-                            }
-                            try {
-                                await fetch('razorpay/log_failure.php', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({
-                                        registration_id: phpRegId,
-                                        razorpay_order_id: orderData.order_id,
-                                        razorpay_payment_id: '',
-                                        error_description: 'User cancelled payment'
-                                    })
-                                });
-                            } catch (e) {
-                                console.error('Failed to log payment cancellation:', e);
-                            }
-                            // The user just closed the window, we don't necessarily want to force them to the fail screen
-                            // so they can try again if they want, but if you want to show failure:
-                            // handleGatewayResponseFinish('Failed', '');
-                        }
-                    },
-                    handler: async function (response) {
-                        // Show loading screen immediately while verifying payment
-                        showView('view-loading');
-                        
-                        // 3. Verify Payment
-                        try {
-                            const verifyRes = await fetch('razorpay/verify_ajax.php', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    registration_id: phpRegId,
-                                    razorpay_payment_id: response.razorpay_payment_id,
-                                    razorpay_order_id: response.razorpay_order_id,
-                                    razorpay_signature: response.razorpay_signature
-                                })
-                            });
-                            
-                            const verifyData = await verifyRes.json();
-                            
-                            // Artificial delay to show processing loader
-                            setTimeout(() => {
-                                if (verifyData.success) {
-                                    handleGatewayResponseFinish('Success', response.razorpay_payment_id);
-                                } else {
-                                    alert(verifyData.error || 'Payment verification failed');
-                                    handleGatewayResponseFinish('Failed', '');
-                                }
-                            }, 2500);
-                        } catch (err) {
-                            alert('An error occurred during verification.');
-                            handleGatewayResponseFinish('Failed', '');
-                        }
-                    }
-                };
-
-                const rzp = new window.Razorpay(options);
-                
-                rzp.on('payment.failed', async function (response){
-                    try {
-                        await fetch('razorpay/log_failure.php', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                                registration_id: phpRegId,
-                                razorpay_order_id: response.error.metadata ? response.error.metadata.order_id : orderData.order_id,
-                                razorpay_payment_id: response.error.metadata ? response.error.metadata.payment_id : '',
-                                error_description: response.error.description
-                            })
-                        });
-                    } catch (e) {
-                        console.error('Failed to log payment failure:', e);
-                    }
-                    alert('Payment failed: ' + response.error.description);
-                    handleGatewayResponseFinish('Failed', '');
-                });
-                
-                rzp.open();
+                // Redirect to Vortex Gateway Checkout
+                window.location.href = data.payment_url;
 
             } catch (err) {
-                alert(err.message);
+                console.error('Payment Error:', err);
+                alert(err.message || 'An error occurred while connecting to the payment gateway.');
                 if (btn) {
                     btn.disabled = false;
                     btn.innerHTML = originalBtnText;
