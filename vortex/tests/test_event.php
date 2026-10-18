@@ -161,6 +161,65 @@ function run_event_tests(): ?string
     $res14 = TestHelper::request('GET', $endpoint);
     TestHelper::assertStatus(405, $res14['http_code'], 'Event 14: GET method rejected with HTTP 405');
 
+    // ------------------------------------------------------------
+    // 15. Event Webhook Creation & Auto-Secret Generation
+    // ------------------------------------------------------------
+    $webhookTestUrl = 'https://example.com/custom_webhook.php';
+    $res15 = TestHelper::request('POST', $endpoint, array_merge($auth, [
+        'action'      => 'create',
+        'event_name'  => 'Webhook Test Event ' . bin2hex(random_bytes(2)),
+        'department'  => 'Computer Science',
+        'start_date'  => $startDate,
+        'end_date'    => $endDate,
+        'webhook_url' => $webhookTestUrl
+    ]));
+    TestHelper::assertStatus(200, $res15['http_code'], 'Event 15: Create event with webhook HTTP 200');
+    TestHelper::assertFieldEquals($webhookTestUrl, $res15['json']['data']['webhook_url'] ?? '', 'webhook_url', 'Event 15: Webhook URL preserved');
+    TestHelper::assertTrue(!empty($res15['json']['data']['webhook_secret']), 'Event 15: Webhook secret auto-generated');
+    $webhookEventId = $res15['json']['data']['event_id'] ?? null;
+    if ($webhookEventId) {
+        TestHelper::trackEventId($webhookEventId);
+    }
+
+    // ------------------------------------------------------------
+    // 16. Event Webhook Update & Retrieval
+    // ------------------------------------------------------------
+    if ($webhookEventId) {
+        $updatedUrl = 'https://example.com/updated_webhook.php';
+        $res16 = TestHelper::request('POST', $endpoint, array_merge($auth, [
+            'action'      => 'update_webhook',
+            'event_id'    => $webhookEventId,
+            'webhook_url' => $updatedUrl
+        ]));
+        TestHelper::assertStatus(200, $res16['http_code'], 'Event 16: update_webhook HTTP 200');
+        TestHelper::assertFieldEquals($updatedUrl, $res16['json']['data']['webhook_url'] ?? '', 'webhook_url', 'Event 16: Webhook URL updated');
+
+        // Verify retrieval via get
+        $res16b = TestHelper::request('POST', $endpoint, array_merge($auth, [
+            'action'   => 'get',
+            'event_id' => $webhookEventId
+        ]));
+        TestHelper::assertFieldEquals($updatedUrl, $res16b['json']['data']['webhook_url'] ?? '', 'webhook_url', 'Event 16: get action returns updated webhook_url');
+        TestHelper::assertTrue(!empty($res16b['json']['data']['webhook_secret']), 'Event 16: get action returns webhook_secret');
+    }
+
+    // ------------------------------------------------------------
+    // 17. Dyuti Event Webhook Database Plan Verification
+    // ------------------------------------------------------------
+    $dyutiStmt = TestHelper::getDb()->prepare("
+        SELECT id, event_id, event_name, department, webhook_url, webhook_secret, is_active
+        FROM events
+        WHERE event_id = 'DYUT20260913MU01TMQ67BK'
+        LIMIT 1
+    ");
+    $dyutiStmt->execute();
+    $dyutiRow = $dyutiStmt->fetch(PDO::FETCH_ASSOC);
+
+    TestHelper::assertTrue(!empty($dyutiRow), 'Event 17.1: Dyuti event exists in events table');
+    TestHelper::assertFieldEquals('Dyuti', $dyutiRow['event_name'] ?? '', 'event_name', 'Event 17.2: Event name matches Dyuti');
+    TestHelper::assertFieldEquals('https://dyuti.in/webhook.php', $dyutiRow['webhook_url'] ?? '', 'webhook_url', 'Event 17.3: Dyuti webhook_url is configured');
+    TestHelper::assertTrue(!empty($dyutiRow['webhook_secret']) && strlen($dyutiRow['webhook_secret']) >= 32, 'Event 17.4: Dyuti webhook_secret is set and cryptographic');
+
     return $createdEventId;
 }
 

@@ -17,8 +17,8 @@ $adminBaseForModal = isset($adminBase) ? $adminBase : '';
         
         <div class="modal-header" style="background: #fef2f2; border-bottom: 1px solid #fee2e2; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between;">
             <div style="display: flex; align-items: center; gap: 10px;">
-                <div style="width: 38px; height: 38px; border-radius: 50%; background: #fee2e2; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
-                    💸
+                <div style="width: 38px; height: 38px; border-radius: 50%; background: #fee2e2; display: flex; align-items: center; justify-content: center;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#991b1b" stroke-width="2.5"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
                 </div>
                 <div>
                     <h2 id="vortexRefundModalTitle" style="font-size: 1.15rem; font-weight: 700; color: #991b1b; margin: 0;">Issue Payment Refund</h2>
@@ -99,7 +99,7 @@ $adminBaseForModal = isset($adminBase) ? $adminBase : '';
                 <button type="button" class="btn btn-secondary" onclick="closeRefundModal()" style="padding: 8px 16px; font-size: 0.88rem; font-weight: 600;">Cancel</button>
                 <button type="submit" id="rfSubmitBtn" class="btn" style="background: #dc2626; color: white; border: none; padding: 8px 20px; font-size: 0.88rem; font-weight: 700; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(220, 38, 38, 0.25);">
                     <span id="rfBtnSpinner" style="display: none;">⏳</span>
-                    <span id="rfBtnText">💸 Confirm Refund</span>
+                    <span id="rfBtnText">Confirm Refund</span>
                 </button>
             </div>
         </form>
@@ -134,7 +134,7 @@ function openRefundModal(vortexTxnId, amount, customerEmail) {
     const btn = document.getElementById('rfSubmitBtn');
     btn.disabled = false;
     document.getElementById('rfBtnSpinner').style.display = 'none';
-    document.getElementById('rfBtnText').textContent = '💸 Confirm Refund';
+    document.getElementById('rfBtnText').textContent = 'Confirm Refund';
 
     // Show modal
     const modal = document.getElementById('vortexRefundModal');
@@ -244,7 +244,7 @@ function handleRefundFormSubmit(e) {
         errAlert.style.display = 'block';
         btn.disabled = false;
         document.getElementById('rfBtnSpinner').style.display = 'none';
-        document.getElementById('rfBtnText').textContent = '💸 Try Again';
+        document.getElementById('rfBtnText').textContent = 'Try Again';
     });
 }
 

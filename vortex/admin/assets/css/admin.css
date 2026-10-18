@@ -94,10 +94,6 @@
     padding: 0;
 }
 
-/* Remove unnecessary borders on all div elements */
-div {
-    border: none !important;
-}
 
 body {
     font-family: var(--font-sans);
@@ -139,14 +135,40 @@ body {
     width: 250px;
 }
 
-.brand-logo svg {
-    width: 32px;
+.brand-link {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    line-height: 1;
+}
+
+.rpay-logo {
+    display: block;
     height: 32px;
+    width: auto;
+    object-fit: contain;
+    transition: opacity 0.2s ease;
+}
+
+.rpay-logo-light {
+    display: block;
+}
+
+.rpay-logo-dark {
+    display: none;
+}
+
+[data-theme="dark"] .rpay-logo-light {
+    display: none !important;
+}
+
+[data-theme="dark"] .rpay-logo-dark {
+    display: block !important;
 }
 
 .brand-name {
     font-size: 1.3rem;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--text-dark);
     letter-spacing: -0.02em;
 }
@@ -744,14 +766,15 @@ body {
 }
 
 .metric-card {
-    background: #f8f9fa;
+    background: var(--bg-surface);
     border-radius: 12px;
     padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 12px;
-    border: none !important;
-    transition: background-color 0.2s, border-color 0.2s;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s ease;
     cursor: default;
     text-decoration: none;
     color: inherit;
@@ -762,8 +785,10 @@ a.metric-card {
 }
 
 .metric-card:hover {
-    background-color: var(--primary-light);
-    border-color: rgba(26, 115, 232, 0.2);
+    background-color: var(--bg-hover);
+    border-color: var(--primary-blue);
+    box-shadow: 0 4px 12px rgba(26, 115, 232, 0.08);
+    transform: translateY(-1px);
 }
 
 .metric-label {
@@ -2146,13 +2171,13 @@ table.admin-table tbody tr:hover {
 
 [data-theme="dark"] .metric-card {
     background-color: #303134 !important;
-    border: none !important;
+    border: 1px solid #3c4043 !important;
     color: #e8eaed !important;
 }
 
 [data-theme="dark"] .metric-card:hover {
     background-color: #35363a !important;
-    border: none !important;
+    border-color: #8ab4f8 !important;
 }
 
 [data-theme="dark"] .metric-label,

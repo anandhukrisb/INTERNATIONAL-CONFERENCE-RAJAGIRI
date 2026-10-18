@@ -488,7 +488,7 @@ class NotificationCenter
         // 3. Failed notification log check
         try {
             $stmt = $db->query("
-                SELECT n.id, n.client_id, n.recipient, n.error_message, c.client_name, c.webhook_url
+                SELECT n.id, n.client_id, n.recipient, n.error_message, c.client_name
                 FROM notification_logs n
                 LEFT JOIN api_clients c ON n.client_id = c.id
                 WHERE n.status = 'FAILED'

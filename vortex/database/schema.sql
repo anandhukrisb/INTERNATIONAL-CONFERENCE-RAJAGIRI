@@ -8,6 +8,8 @@ CREATE TABLE IF NOT EXISTS events (
     department VARCHAR(100) NOT NULL,
     start_date DATETIME NOT NULL,
     end_date DATETIME NOT NULL,
+    webhook_url VARCHAR(255) NULL,
+    webhook_secret VARCHAR(64) NULL,
     is_active TINYINT(1) DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -24,8 +26,6 @@ CREATE TABLE IF NOT EXISTS `api_clients` (
   `api_secret` VARCHAR(64) NOT NULL UNIQUE,
   `test_api_key` VARCHAR(64) UNIQUE NULL,
   `test_api_secret` VARCHAR(64) NULL,
-  `webhook_url` VARCHAR(255) NULL,
-  `webhook_secret` VARCHAR(64) NULL,
   `is_active` TINYINT(1) DEFAULT 1,
   `notify_email_payment` TINYINT(1) DEFAULT 1,
   `notify_email_refund` TINYINT(1) DEFAULT 1,

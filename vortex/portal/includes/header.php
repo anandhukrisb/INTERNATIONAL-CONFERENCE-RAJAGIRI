@@ -11,7 +11,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-$pageTitle = $pageTitle ?? 'Merchant Portal – PayVortex';
+$pageTitle = $pageTitle ?? 'Merchant Portal – Rpay';
 $activeNav  = $activeNav ?? 'dashboard';
 
 // Authentication Guard: require logged-in client session
@@ -43,6 +43,7 @@ $loginMode    = $_SESSION['vortex_client_login_mode'] ?? 'live_key';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle) ?></title>
+    <link rel="icon" type="image/png" href="assets/images/rpay-icon.png">
     <link rel="stylesheet" href="assets/css/portal.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,8 +55,9 @@ $loginMode    = $_SESSION['vortex_client_login_mode'] ?? 'live_key';
     <!-- Sidebar -->
     <aside class="portal-sidebar">
         <div class="portal-brand">
-            <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1789742057/VortexBlue_smpgca.png" alt="PayVortex">
-            <h1>ORTEX</h1>
+            <a href="dashboard.php" style="display: inline-flex; align-items: center; text-decoration: none;">
+                <img src="assets/images/rpay-logo-white-text.png" alt="Rpay Logo" style="height: 30px; width: auto; object-fit: contain;">
+            </a>
             <span class="portal-brand-badge">Merchant</span>
         </div>
 

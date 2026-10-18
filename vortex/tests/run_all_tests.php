@@ -32,6 +32,7 @@ require_once __DIR__ . '/test_global_search.php';
 require_once __DIR__ . '/test_dark_mode.php';
 require_once __DIR__ . '/test_notification_center.php';
 require_once __DIR__ . '/test_webhook_queue.php';
+require_once __DIR__ . '/test_event_revenue.php';
 
 echo "========================================\n";
 echo " STARTING VORTEX TEST SUITE RUNNER\n";
@@ -185,6 +186,11 @@ $suiteResults['Notification Center'] = count(TestHelper::getCounts()['failures']
 $beforeFailures = count(TestHelper::getCounts()['failures']);
 run_webhook_queue_tests();
 $suiteResults['Webhook Retry Queue'] = count(TestHelper::getCounts()['failures']) === $beforeFailures ? 'PASS' : 'FAIL';
+
+// 21. Event Revenue Analytics & Payments Breakdown
+$beforeFailures = count(TestHelper::getCounts()['failures']);
+run_event_revenue_tests();
+$suiteResults['Event Revenue'] = count(TestHelper::getCounts()['failures']) === $beforeFailures ? 'PASS' : 'FAIL';
 
 // ------------------------------------------------------------
 // 4. Safe Resource Cleanup

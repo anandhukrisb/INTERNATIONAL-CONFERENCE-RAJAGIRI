@@ -31,12 +31,16 @@ function run_payment_verification_tests(?array $checkoutContext = null): bool
 
     // Retrieve the Razorpay order ID created for this transaction
     $db = TestHelper::getDb();
-    $stmt = $db->prepare("SELECT razorpay_order_id FROM transactions WHERE vortex_transaction_id = ?");
+    $stmt = $db->prepare("SELECT razorpay_order_id, is_test_mode FROM transactions WHERE vortex_transaction_id = ?");
     $stmt->execute([$vtxTxId]);
-    $rzpOrderId = $stmt->fetchColumn();
+    $txRow = $stmt->fetch(PDO::FETCH_ASSOC);
+    $rzpOrderId = $txRow['razorpay_order_id'] ?? '';
+    $isTestMode = (int) ($txRow['is_test_mode'] ?? 0);
 
     $fakePaymentId = 'pay_test_' . bin2hex(random_bytes(6));
-    $keySecret = trim($_ENV['RAZORPAY_KEY_SECRET'] ?? '');
+    $keySecret = $isTestMode === 1
+        ? trim($_ENV['RAZORPAY_TEST_KEY_SECRET'] ?? $_ENV['RAZORPAY_KEY_SECRET'] ?? '')
+        : trim($_ENV['RAZORPAY_LIVE_KEY_SECRET'] ?? $_ENV['RAZORPAY_KEY_SECRET'] ?? '');
 
     // 1. Invalid signature (tampered signature)
     $res1 = TestHelper::request('POST', $endpoint, [

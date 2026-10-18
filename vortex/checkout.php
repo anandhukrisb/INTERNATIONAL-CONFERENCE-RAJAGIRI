@@ -63,7 +63,8 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vortex Payment Checkout</title>
+    <title>Rpay Payment Checkout</title>
+    <link rel="icon" type="image/png" href="assets/images/rpay-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -519,8 +520,7 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
             <div class="card-content">
                 <div class="card-header">
                     <div class="card-brand">
-                        <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1789740193/VortexLogo_ssrpym.png" alt="Vortex Logo" style="height: 38px; width: auto; object-fit: contain; margin-right: -4px;">
-                        <div class="brand-name">VORTEX</div>
+                        <img src="assets/images/rpay-logo-white-text.png" alt="Rpay Logo" style="height: 38px; width: auto; object-fit: contain;">
                     </div>
                     <div class="timer-badge safe" id="timer-display">
                         ⏱ 5:00
@@ -559,7 +559,7 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
         </div>
 
         <div class="footer-secure">
-            🔒 Secured by Vortex Payment Gateway & Razorpay
+            🔒 Secured by Rpay Payment Gateway & Razorpay
         </div>
     <?php endif; ?>
 </div>
@@ -762,7 +762,7 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
             key: razorpayKeyId,
             amount: amountInPaise,
             currency: currency,
-            name: 'Vortex Payment Gateway',
+            name: 'Rpay Payment Gateway',
             description: 'Payment for ' + <?= json_encode($sessionData['event_name'] ?: $sessionData['event_id']) ?>,
             order_id: razorpayOrderId,
             prefill: {

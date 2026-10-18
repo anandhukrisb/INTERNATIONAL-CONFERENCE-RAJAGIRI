@@ -103,7 +103,7 @@ $timeline = $txn['timeline'] ?? [];
             <div class="card-body" style="padding: 20px 24px;">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                     <div>
-                        <div style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Vortex Internal ID</div>
+                        <div style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Rpay Internal ID</div>
                         <div class="font-mono" style="font-size: 0.86rem; color: var(--text-main); margin-top: 4px;">#<?= (int)$txn['id'] ?></div>
                     </div>
                     <div>
@@ -164,7 +164,7 @@ $timeline = $txn['timeline'] ?? [];
                         <div style="padding-bottom: 20px;">
                             <div style="font-weight: 600; font-size: 0.85rem;">Order Initiated</div>
                             <div style="font-size: 0.75rem; color: var(--text-muted);"><?= date('Y-m-d H:i:s', strtotime($txn['created_at'])) ?></div>
-                            <div style="font-size: 0.8rem; color: #475569; margin-top: 2px;">Vortex transaction created with status <?= htmlspecialchars($status) ?></div>
+                            <div style="font-size: 0.8rem; color: #475569; margin-top: 2px;">Rpay transaction created with status <?= htmlspecialchars($status) ?></div>
                         </div>
                     </div>
                     <?php if ($status === 'SUCCESS'): ?>

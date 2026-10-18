@@ -31,8 +31,8 @@ $buildTxUrl = function($p) {
                     0 transactions
                 <?php endif; ?>
             </span>
-            <a href="<?= $base ?>payments/payment_details.php" class="btn btn-secondary btn-sm" style="font-size: 0.76rem; padding: 4px 10px;">
-                🔍 Search / Audit
+            <a href="<?= $base ?>payments/list_payments.php" class="btn btn-secondary btn-sm" style="font-size: 0.76rem; padding: 4px 10px;">
+                View All Payments
             </a>
         </div>
     </div>
@@ -41,7 +41,7 @@ $buildTxUrl = function($p) {
             <table class="admin-table">
                 <thead>
                     <tr>
-                        <th>Vortex Transaction ID</th>
+                        <th>Rpay Transaction ID</th>
                         <th>Amount</th>
                         <th>Status</th>
                         <th>Razorpay Payment ID</th>
@@ -63,7 +63,8 @@ $buildTxUrl = function($p) {
                                     </a>
                                     <?php if (!empty($tx['customer_email'])): ?>
                                         <div style="font-size: 0.76rem; color: var(--text-gray); margin-top: 3px; display: flex; align-items: center; gap: 4px;" title="Customer / User">
-                                            <span>👤</span> <span style="max-width: 175px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?= htmlspecialchars($tx['customer_email']) ?></span>
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity: 0.7;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                            <span style="max-width: 175px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?= htmlspecialchars($tx['customer_email']) ?></span>
                                         </div>
                                     <?php endif; ?>
                                 </td>
@@ -81,11 +82,11 @@ $buildTxUrl = function($p) {
                                     <span class="badge <?= $bClass ?>"><?= htmlspecialchars($displayStatus) ?></span>
                                     <?php if (!empty($tx['latest_event'])): ?>
                                         <div style="margin-top: 3px;">
-                                            <span class="badge badge-event" title="Latest Razorpay Event">📡 <?= htmlspecialchars($tx['latest_event']) ?></span>
+                                            <span class="badge badge-event" title="Latest Razorpay Event"><?= htmlspecialchars($tx['latest_event']) ?></span>
                                         </div>
                                     <?php endif; ?>
-                                    <?php if (!empty($tx['latest_reason'])): ?>
-                                        <div style="margin-top: 4px; font-size: 0.74rem; color: var(--text-gray); max-width: 220px; line-height: 1.25;">
+                                    <?php if (!empty($tx['latest_reason']) && $tx['status'] !== 'SUCCESS'): ?>
+                                        <div style="margin-top: 4px; font-size: 0.74rem; color: var(--danger-text); max-width: 220px; line-height: 1.25;">
                                             <?= htmlspecialchars($tx['latest_reason']) ?>
                                         </div>
                                     <?php endif; ?>
@@ -96,18 +97,20 @@ $buildTxUrl = function($p) {
                                 <td style="font-size: 0.82rem; color: var(--text-gray); white-space: nowrap;"><?= htmlspecialchars($tx['created_at']) ?></td>
                                 <td>
                                     <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-                                         <a href="<?= $base ?>payments/payment_details.php?vortex_transaction_id=<?= urlencode($tx['vortex_transaction_id']) ?>" class="btn btn-secondary btn-sm" title="View Full Status History & Audit Trail">
-                                            📜 Timeline (<?= (int)($tx['timeline_count'] ?? 0) ?>)
+                                         <a href="<?= $base ?>payments/payment_details.php?vortex_transaction_id=<?= urlencode($tx['vortex_transaction_id']) ?>" class="btn btn-secondary btn-sm" title="View Full Status History & Audit Trail" style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.76rem; padding: 4px 8px;">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                            <span>Timeline (<?= (int)($tx['timeline_count'] ?? 0) ?>)</span>
                                         </a>
                                         <?php if ($tx['status'] === 'SUCCESS'): ?>
                                             <button type="button" class="btn btn-sm"
                                                     onclick="openRefundModal('<?= htmlspecialchars($tx['vortex_transaction_id'], ENT_QUOTES) ?>', '<?= htmlspecialchars($tx['amount'], ENT_QUOTES) ?>', '<?= htmlspecialchars(addslashes($tx['customer_email'] ?? ''), ENT_QUOTES) ?>')"
                                                     title="Process Refund via Razorpay"
-                                                    style="background-color: #dc2626; color: white; border: none; font-weight: 600; padding: 5px 10px; border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-size: 0.78rem;">
-                                                💸 Refund
+                                                    style="background-color: #dc2626; color: white; border: none; font-weight: 600; padding: 4px 9px; border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-size: 0.76rem;">
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                                                <span>Refund</span>
                                             </button>
                                         <?php elseif ($tx['status'] === 'REFUNDED'): ?>
-                                            <span class="badge badge-refunded" style="font-size: 0.74rem; padding: 4px 8px;">↩ Refunded</span>
+                                            <span class="badge badge-refunded" style="font-size: 0.74rem; padding: 4px 8px;">Refunded</span>
                                         <?php else: ?>
                                             <button type="button" class="btn btn-sm" disabled style="opacity: 0.45; cursor: not-allowed; background: #e2e8f0; color: #64748b; border: none; font-size: 0.75rem; padding: 5px 8px; border-radius: 4px;" title="Refund available only for successful payments">
                                                 Refund

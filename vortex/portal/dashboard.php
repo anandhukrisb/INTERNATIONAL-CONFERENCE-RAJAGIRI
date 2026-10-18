@@ -27,9 +27,26 @@ $avgTicket   = (float)($metrics['avg_ticket_size'] ?? 0);
 $successCount = (int)($metrics['success_count'] ?? 0);
 $pendingCount = (int)($metrics['pending_count'] ?? 0);
 $failedCount  = (int)($metrics['failed_count'] ?? 0);
-$refundedCount = (int)($metrics['refunded_count'] ?? 0);
+$clientEventStmt = $db->prepare("
+    SELECT e.event_id, e.event_name, e.webhook_url, e.webhook_secret
+    FROM events e
+    WHERE e.event_id IN (SELECT DISTINCT event_id FROM transactions WHERE api_client_id = ?)
+       OR LOWER(e.event_name) = LOWER(?)
+    ORDER BY (e.webhook_url IS NOT NULL AND e.webhook_url != '') DESC, e.id ASC
+    LIMIT 1
+");
+$clientEventStmt->execute([$clientId, $currentClient['client_name'] ?? '']);
+$primaryEvent = $clientEventStmt->fetch(PDO::FETCH_ASSOC);
 
-$hasWebhook = !empty($currentClient['webhook_url']);
+$eventCountStmt = $db->prepare("
+    SELECT COUNT(DISTINCT e.id)
+    FROM events e
+    WHERE (e.event_id IN (SELECT DISTINCT event_id FROM transactions WHERE api_client_id = ?)
+       OR LOWER(e.event_name) = LOWER(?))
+      AND e.webhook_url IS NOT NULL AND e.webhook_url != ''
+");
+$eventCountStmt->execute([$clientId, $currentClient['client_name'] ?? '']);
+$activeEventWebhooks = (int) ($eventCountStmt ? $eventCountStmt->fetchColumn() : 0);
 ?>
 
 <!-- Welcome Banner -->
@@ -223,23 +240,39 @@ $hasWebhook = !empty($currentClient['webhook_url']);
                     </div>
                 </div>
 
+                <?php if ($primaryEvent && !empty($primaryEvent['webhook_secret'])): ?>
                 <div style="margin-bottom: 14px;">
-                    <div style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 4px;">Webhook Endpoint</div>
-                    <?php if ($hasWebhook): ?>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <span style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 700;">Event Webhook Secret</span>
+                        <span class="font-mono" style="font-size: 0.72rem; color: var(--primary);"><?= htmlspecialchars($primaryEvent['event_id']) ?></span>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: #f8fafc; padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border); gap: 8px;">
+                        <span class="font-mono" id="dashWebhookSecretSpan" style="font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">••••••••••••••••••••••••</span>
+                        <div style="display: flex; gap: 4px; flex-shrink: 0;">
+                            <button type="button" class="btn-copy" id="dashSecretRevealBtn" onclick="toggleDashSecret('<?= htmlspecialchars($primaryEvent['webhook_secret'], ENT_QUOTES) ?>')">Reveal</button>
+                            <button type="button" class="btn-copy" onclick="copyToClipboard('<?= htmlspecialchars($primaryEvent['webhook_secret'], ENT_QUOTES) ?>', this)">Copy</button>
+                        </div>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <div style="margin-bottom: 14px;">
+                    <div style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 4px;">Event Webhook Status</div>
+                    <?php if ($activeEventWebhooks > 0): ?>
                         <div style="display: flex; align-items: center; gap: 6px; color: var(--success); font-weight: 600; font-size: 0.8rem;">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
                             Active &amp; Configured
                         </div>
-                        <div class="font-mono text-truncate" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;" title="<?= htmlspecialchars($currentClient['webhook_url']) ?>">
-                            <?= htmlspecialchars($currentClient['webhook_url']) ?>
+                        <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px;">
+                            <?= $activeEventWebhooks ?> event webhook<?= $activeEventWebhooks > 1 ? 's' : '' ?> active
                         </div>
                     <?php else: ?>
                         <div style="display: flex; align-items: center; gap: 6px; color: var(--warning); font-weight: 600; font-size: 0.8rem;">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                            No Webhook Configured
+                            No Event Webhooks Configured
                         </div>
-                        <p style="font-size: 0.76rem; color: var(--text-muted); margin: 4px 0 8px;">Configure webhooks to receive real-time server callbacks.</p>
-                        <a href="webhooks.php" class="btn btn-secondary btn-sm" style="width: 100%;">Setup Webhook</a>
+                        <p style="font-size: 0.76rem; color: var(--text-muted); margin: 4px 0 8px;">Configure webhooks on your events to receive callbacks.</p>
+                        <a href="webhooks.php" class="btn btn-secondary btn-sm" style="width: 100%;">Configure Webhooks</a>
                     <?php endif; ?>
                 </div>
 
@@ -263,7 +296,7 @@ $hasWebhook = !empty($currentClient['webhook_url']);
                 </h3>
             </div>
             <div class="card-body" style="padding: 16px 20px; font-size: 0.8rem; color: #94a3b8;">
-                <p style="margin-bottom: 10px;">Post payment requests to PayVortex unified endpoint:</p>
+                <p style="margin-bottom: 10px;">Post payment requests to Rpay unified endpoint:</p>
                 <div class="font-mono" style="background: rgba(0,0,0,0.4); padding: 8px; border-radius: 4px; color: #93c5fd; font-size: 0.74rem; word-break: break-all;">
                     POST /vortex/api/v1/create_order.php
                 </div>
@@ -274,8 +307,25 @@ $hasWebhook = !empty($currentClient['webhook_url']);
                 </div>
             </div>
         </div>
-    </div>
 </div>
+
+<script>
+let secretRevealed = false;
+function toggleDashSecret(fullSecret) {
+    const span = document.getElementById('dashWebhookSecretSpan');
+    const btn = document.getElementById('dashSecretRevealBtn');
+    if (!span || !btn) return;
+    if (secretRevealed) {
+        span.innerText = '••••••••••••••••••••••••';
+        btn.innerText = 'Reveal';
+        secretRevealed = false;
+    } else {
+        span.innerText = fullSecret;
+        btn.innerText = 'Hide';
+        secretRevealed = true;
+    }
+}
+</script>
 
 <?php
 require_once __DIR__ . '/includes/footer.php';

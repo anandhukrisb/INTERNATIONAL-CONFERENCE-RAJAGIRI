@@ -61,7 +61,7 @@ class Event
 
             // SQL query to find the active event.
             $query = "SELECT id, event_id, event_name, department,
-                             start_date, end_date, is_active
+                             start_date, end_date, webhook_url, webhook_secret, is_active
                       FROM events
                       WHERE event_id = ?
                       AND is_active = 1";
@@ -114,7 +114,8 @@ class Event
         $eventName,
         $department,
         $startDate,
-        $endDate
+        $endDate,
+        $webhookUrl = null
     ) {
         try {
 
@@ -209,6 +210,22 @@ class Event
                 ];
             }
 
+            // Validate webhook URL if provided
+            $webhookSecret = null;
+            if (!empty($webhookUrl)) {
+                $webhookUrl = trim($webhookUrl);
+                if (!filter_var($webhookUrl, FILTER_VALIDATE_URL) || !in_array(parse_url($webhookUrl, PHP_URL_SCHEME), ['http', 'https'], true)) {
+                    Logger::error('Event creation failed: Invalid webhook URL: ' . $webhookUrl);
+                    return [
+                        'success' => false,
+                        'message' => 'Invalid webhook URL. Must start with http:// or https://'
+                    ];
+                }
+                $webhookSecret = bin2hex(random_bytes(24));
+            } else {
+                $webhookUrl = null;
+            }
+
 
             // Generate a unique event ID.
             $eventId = EventIdGenerator::generate(
@@ -219,8 +236,8 @@ class Event
 
             // SQL query to insert the event.
             $query = "INSERT INTO events
-                    (event_id, event_name, department, start_date, end_date)
-                    VALUES (?, ?, ?, ?, ?)";
+                    (event_id, event_name, department, start_date, end_date, webhook_url, webhook_secret)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)";
 
 
             // Prepare the query.
@@ -233,7 +250,9 @@ class Event
                 $eventName,
                 $department,
                 $startDate,
-                $endDate
+                $endDate,
+                $webhookUrl,
+                $webhookSecret
             ]);
 
 
@@ -250,7 +269,9 @@ class Event
                 'success' => true,
                 'message' => 'Event created successfully.',
                 'data' => [
-                    'event_id' => $eventId
+                    'event_id' => $eventId,
+                    'webhook_url' => $webhookUrl,
+                    'webhook_secret' => $webhookSecret
                 ]
             ];
 
@@ -469,7 +490,7 @@ class Event
         try {
             $limit = max(1, min((int) $limit, 200));
             $query = "SELECT id, event_id, event_name, department,
-                             start_date, end_date, is_active, created_at
+                             start_date, end_date, webhook_url, webhook_secret, is_active, created_at
                       FROM events
                       ORDER BY id DESC
                       LIMIT " . $limit;
@@ -485,6 +506,85 @@ class Event
         } catch (\Throwable $e) {
             Logger::error('Unexpected error fetching events: ' . $e->getMessage());
             return [];
+        }
+    }
+
+
+    /**
+     * --------------------------------------------------------
+     * Update Event Webhook
+     * --------------------------------------------------------
+     * Updates or resets the webhook_url and secret for an event.
+     *
+     * @param string $eventId
+     * @param string|null $webhookUrl
+     * @param string|null $customSecret
+     * @return array
+     * --------------------------------------------------------
+     */
+    public function updateWebhook($eventId, $webhookUrl, ?string $customSecret = null)
+    {
+        try {
+            $eventId = trim((string) $eventId);
+            if (!Validator::eventId($eventId)) {
+                return ['success' => false, 'message' => 'Event ID is required.'];
+            }
+
+            // Check if event exists
+            $stmt = $this->db->prepare("SELECT id, webhook_secret FROM events WHERE event_id = ? LIMIT 1");
+            $stmt->execute([$eventId]);
+            $event = $stmt->fetch();
+            if (!$event) {
+                return ['success' => false, 'message' => 'Event not found.'];
+            }
+
+            $webhookUrl = trim((string) $webhookUrl);
+            if (empty($webhookUrl)) {
+                // Clear webhook
+                $upd = $this->db->prepare("UPDATE events SET webhook_url = NULL, webhook_secret = NULL WHERE event_id = ?");
+                $upd->execute([$eventId]);
+                Logger::info("Cleared webhook for event #{$eventId}");
+                return [
+                    'success' => true,
+                    'message' => 'Webhook URL removed successfully.',
+                    'webhook_url' => null,
+                    'webhook_secret' => null,
+                    'data' => [
+                        'event_id' => $eventId,
+                        'webhook_url' => null,
+                        'webhook_secret' => null
+                    ]
+                ];
+            }
+
+            if (!filter_var($webhookUrl, FILTER_VALIDATE_URL) || !in_array(parse_url($webhookUrl, PHP_URL_SCHEME), ['http', 'https'], true)) {
+                return ['success' => false, 'message' => 'Invalid webhook URL format. Must start with http:// or https://'];
+            }
+
+            // Determine secret: custom secret passed, or preserve existing, or generate new
+            $secret = trim((string)$customSecret);
+            if ($secret === '') {
+                $secret = !empty($event['webhook_secret']) ? $event['webhook_secret'] : bin2hex(random_bytes(24));
+            }
+
+            $upd = $this->db->prepare("UPDATE events SET webhook_url = ?, webhook_secret = ? WHERE event_id = ?");
+            $upd->execute([$webhookUrl, $secret, $eventId]);
+            Logger::info("Updated webhook for event #{$eventId} to {$webhookUrl}");
+
+            return [
+                'success' => true,
+                'message' => 'Webhook URL updated successfully.',
+                'webhook_url' => $webhookUrl,
+                'webhook_secret' => $secret,
+                'data' => [
+                    'event_id' => $eventId,
+                    'webhook_url' => $webhookUrl,
+                    'webhook_secret' => $secret
+                ]
+            ];
+        } catch (\PDOException $e) {
+            Logger::error("Failed to update event webhook: " . $e->getMessage());
+            return ['success' => false, 'message' => 'Database error updating webhook.'];
         }
     }
 

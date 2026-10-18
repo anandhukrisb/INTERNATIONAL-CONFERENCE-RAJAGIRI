@@ -18,7 +18,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Developer Callback & Order Status - Vortex Gateway</title>
+    <title>Developer Callback & Order Status - Rpay Gateway</title>
+    <link rel="icon" type="image/png" href="assets/images/rpay-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -315,7 +316,7 @@
         </div>
         <h1>Unified Payment Return Page</h1>
         <p class="desc">
-            This page receives the redirect from Vortex Gateway. When Vortex redirects back with <code>?status_code=200</code> or <code>?status_code=400</code>, the appropriate modal activates automatically.
+            This page receives the redirect from Rpay Gateway. When Rpay redirects back with <code>?status_code=200</code> or <code>?status_code=400</code>, the appropriate modal activates automatically.
         </p>
 
         <div class="test-controls">

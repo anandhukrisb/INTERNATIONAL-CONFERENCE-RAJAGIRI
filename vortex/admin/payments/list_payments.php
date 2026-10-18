@@ -21,11 +21,17 @@ require_once __DIR__ . '/../../classes/Database.php';
 $pageTitle = "Transactions List";
 $activeNav = "payments";
 
-$statusFilter = $_GET['status'] ?? '';
-$eventIdFilter = $_GET['event_id'] ?? '';
+$statusFilter = trim($_GET['status'] ?? '');
+$eventIdFilter = trim($_GET['event_id'] ?? '');
+$searchQ = trim($_GET['q'] ?? '');
 
+$allEvents = [];
 try {
     $db = Database::getInstance()->getConnection();
+
+    // Fetch events for filter dropdown
+    $evStmt = $db->query("SELECT event_id, event_name FROM events ORDER BY is_active DESC, event_name ASC");
+    $allEvents = $evStmt->fetchAll(PDO::FETCH_ASSOC);
     
     $query = "SELECT t.*, e.event_name, c.client_name,
                      (SELECT w.event_type FROM webhooks w 
@@ -43,23 +49,31 @@ try {
               WHERE 1=1";
     $params = [];
     
-    if ($statusFilter !== '') {
+    if ($statusFilter !== '' && $statusFilter !== 'ALL') {
         $query .= " AND t.status = :status";
         $params[':status'] = $statusFilter;
     }
     
-    if ($eventIdFilter !== '') {
+    if ($eventIdFilter !== '' && $eventIdFilter !== 'ALL') {
         $query .= " AND t.event_id = :event_id";
         $params[':event_id'] = $eventIdFilter;
+    }
+
+    if ($searchQ !== '') {
+        $query .= " AND (t.vortex_transaction_id LIKE :search OR t.razorpay_order_id LIKE :search OR t.razorpay_payment_id LIKE :search OR t.customer_email LIKE :search)";
+        $params[':search'] = '%' . $searchQ . '%';
     }
     
     // Count total records for pagination
     $countQuery = "SELECT COUNT(*) FROM transactions t WHERE 1=1";
-    if ($statusFilter !== '') {
+    if ($statusFilter !== '' && $statusFilter !== 'ALL') {
         $countQuery .= " AND t.status = :status";
     }
-    if ($eventIdFilter !== '') {
+    if ($eventIdFilter !== '' && $eventIdFilter !== 'ALL') {
         $countQuery .= " AND t.event_id = :event_id";
+    }
+    if ($searchQ !== '') {
+        $countQuery .= " AND (t.vortex_transaction_id LIKE :search OR t.razorpay_order_id LIKE :search OR t.razorpay_payment_id LIKE :search OR t.customer_email LIKE :search)";
     }
     $countStmt = $db->prepare($countQuery);
     $countStmt->execute($params);
@@ -95,12 +109,44 @@ require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="section-card">
-    <div class="section-header">
-        <h2>💳 Transactions 
-            <?php if ($statusFilter) echo "- " . htmlspecialchars($statusFilter); ?>
-            <?php if ($eventIdFilter) echo "- Event: " . htmlspecialchars($eventIdFilter); ?>
-        </h2>
-        <a href="../dashboard.php" class="btn btn-secondary btn-sm">← Back to Dashboard</a>
+    <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; padding: 14px 20px; border-bottom: 1px solid var(--border-color); background: var(--bg-hover);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--primary-blue);"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+            <div style="font-size: 1rem; font-weight: 700; color: var(--text-dark);">
+                Transactions Ledger (<?= number_format($totalCount) ?>)
+            </div>
+            <a href="revenue.php" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.78rem; padding: 4px 8px;" title="Switch to Event Revenue Analytics">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                <span>Revenue by Event</span>
+            </a>
+        </div>
+        
+        <!-- Search & Filter Controls -->
+        <form method="GET" action="list_payments.php" style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <input type="text" name="q" class="form-control" placeholder="Search Tx ID, order, email..." value="<?= htmlspecialchars($searchQ) ?>" style="font-size: 0.82rem; padding: 5px 10px; width: 210px;">
+            
+            <select name="event_id" class="form-control" style="font-size: 0.82rem; padding: 5px 10px; width: 160px;" onchange="this.form.submit()">
+                <option value="">All Events</option>
+                <?php foreach ($allEvents as $evt): ?>
+                    <option value="<?= htmlspecialchars($evt['event_id']) ?>" <?= $eventIdFilter === $evt['event_id'] ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($evt['event_name']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+
+            <select name="status" class="form-control" style="font-size: 0.82rem; padding: 5px 10px; width: 120px;" onchange="this.form.submit()">
+                <option value="">All Statuses</option>
+                <option value="SUCCESS" <?= $statusFilter === 'SUCCESS' ? 'selected' : '' ?>>Success</option>
+                <option value="PENDING" <?= $statusFilter === 'PENDING' ? 'selected' : '' ?>>Pending</option>
+                <option value="FAILED" <?= $statusFilter === 'FAILED' ? 'selected' : '' ?>>Failed</option>
+                <option value="REFUNDED" <?= $statusFilter === 'REFUNDED' ? 'selected' : '' ?>>Refunded</option>
+            </select>
+
+            <button type="submit" class="btn btn-secondary btn-sm" style="padding: 5px 10px;">Filter</button>
+            <?php if ($searchQ !== '' || $statusFilter !== '' || $eventIdFilter !== ''): ?>
+                <a href="list_payments.php" class="btn btn-secondary btn-sm" style="padding: 5px 10px; color: #dc2626;">Reset</a>
+            <?php endif; ?>
+        </form>
     </div>
     <div class="section-body" style="padding: 0;">
         <?php if (isset($error)): ?>
@@ -110,7 +156,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <table class="admin-table">
                     <thead>
                         <tr>
-                            <th>Vortex Tx ID</th>
+                            <th>Rpay Tx ID</th>
                             <th>Amount</th>
                             <th>Status</th>
                             <th>RZP Payment ID</th>
@@ -122,21 +168,22 @@ require_once __DIR__ . '/../includes/header.php';
                     </thead>
                     <tbody>
                         <?php if (empty($transactions)): ?>
-                            <tr><td colspan="8" style="text-align:center; padding: 24px;">No transactions found.</td></tr>
+                            <tr><td colspan="8" style="text-align:center; padding: 28px; color: var(--text-gray);">No transactions matching criteria found.</td></tr>
                         <?php else: ?>
                             <?php foreach ($transactions as $tx): ?>
                                 <tr>
                                     <td>
-                                        <a href="payment_details.php?vortex_transaction_id=<?= urlencode($tx['vortex_transaction_id']) ?>" class="font-mono" style="color: var(--primary); font-weight: 700; text-decoration: underline;">
+                                        <a href="payment_details.php?vortex_transaction_id=<?= urlencode($tx['vortex_transaction_id']) ?>" class="font-mono" style="color: var(--primary-blue); font-weight: 700; text-decoration: underline;">
                                             <?= htmlspecialchars($tx['vortex_transaction_id']) ?>
                                         </a>
                                         <?php if (!empty($tx['customer_email'])): ?>
                                             <div style="font-size: 0.76rem; color: var(--text-gray); margin-top: 3px; display: flex; align-items: center; gap: 4px;" title="Customer / User">
-                                                <span>👤</span> <span style="max-width: 175px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?= htmlspecialchars($tx['customer_email']) ?></span>
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                                <span style="max-width: 175px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?= htmlspecialchars($tx['customer_email']) ?></span>
                                             </div>
                                         <?php endif; ?>
                                     </td>
-                                    <td style="font-weight: 700; color: var(--text-main);">₹<?= number_format($tx['amount'], 2) ?></td>
+                                    <td style="font-weight: 700; color: var(--text-dark);">₹<?= number_format((float)$tx['amount'], 2) ?></td>
                                     <td>
                                         <?php
                                         $bClass = 'badge-pending';
@@ -148,37 +195,45 @@ require_once __DIR__ . '/../includes/header.php';
                                         if ($tx['status'] === 'DISPUTED') $bClass = 'badge-disputed';
                                         ?>
                                         <span class="badge <?= $bClass ?>"><?= htmlspecialchars($displayStatus) ?></span>
-                                        <?php if (!empty($tx['latest_event'])): ?>
+                                        <?php if (!empty($tx['latest_event']) && $tx['status'] !== 'SUCCESS'): ?>
                                             <div style="margin-top: 3px;">
-                                                <span class="badge badge-event" title="Latest Razorpay Event">📡 <?= htmlspecialchars($tx['latest_event']) ?></span>
+                                                <span class="badge badge-event" title="Latest Gateway Event" style="display: inline-flex; align-items: center; gap: 3px; font-size: 0.7rem;">
+                                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"></path><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"></path><circle cx="12" cy="12" r="2"></circle><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"></path><path d="M19.1 4.9C23 8.8 23 15.2 19.1 19.1"></path></svg>
+                                                    <?= htmlspecialchars($tx['latest_event']) ?>
+                                                </span>
                                             </div>
                                         <?php endif; ?>
                                         <?php if (!empty($tx['latest_reason'])): ?>
-                                            <div style="margin-top: 4px; font-size: 0.74rem; color: var(--text-muted); max-width: 220px; line-height: 1.25;">
+                                            <div style="margin-top: 4px; font-size: 0.74rem; color: var(--text-gray); max-width: 220px; line-height: 1.25;">
                                                 <?= htmlspecialchars($tx['latest_reason']) ?>
                                             </div>
                                         <?php endif; ?>
                                     </td>
-                                    <td><span class="font-mono"><?= htmlspecialchars($tx['razorpay_payment_id'] ?? 'N/A') ?></span></td>
+                                    <td><span class="font-mono"><?= htmlspecialchars($tx['razorpay_payment_id'] ?? '—') ?></span></td>
                                     <td><?= htmlspecialchars($tx['event_name'] ?? $tx['event_id']) ?></td>
                                     <td><?= htmlspecialchars($tx['client_name'] ?? 'Default Client') ?></td>
-                                    <td style="font-size: 0.85rem; color: var(--text-muted);"><?= htmlspecialchars($tx['created_at']) ?></td>
+                                    <td style="font-size: 0.82rem; color: var(--text-gray); white-space: nowrap;"><?= date('M d, Y H:i', strtotime($tx['created_at'])) ?></td>
                                     <td>
                                         <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-                                            <a href="payment_details.php?vortex_transaction_id=<?= urlencode($tx['vortex_transaction_id']) ?>" class="btn btn-secondary btn-sm" title="View Full Status History & Audit Trail">
-                                                📜 Timeline (<?= (int)($tx['timeline_count'] ?? 0) ?>)
+                                            <a href="payment_details.php?vortex_transaction_id=<?= urlencode($tx['vortex_transaction_id']) ?>" class="btn btn-secondary btn-sm" title="View Full Status History & Audit Trail" style="display: inline-flex; align-items: center; gap: 4px;">
+                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                                <span>Timeline (<?= (int)($tx['timeline_count'] ?? 0) ?>)</span>
                                             </a>
                                             <?php if ($tx['status'] === 'SUCCESS'): ?>
                                                 <button type="button" class="btn btn-sm"
                                                         onclick="openRefundModal('<?= htmlspecialchars($tx['vortex_transaction_id'], ENT_QUOTES) ?>', '<?= htmlspecialchars($tx['amount'], ENT_QUOTES) ?>', '<?= htmlspecialchars(addslashes($tx['customer_email'] ?? ''), ENT_QUOTES) ?>')"
                                                         title="Process Refund via Razorpay"
-                                                        style="background-color: #dc2626; color: white; border: none; font-weight: 600; padding: 5px 10px; border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-size: 0.78rem;">
-                                                    💸 Refund
+                                                        style="background-color: #dc2626; color: white; border: none; font-weight: 600; padding: 4px 8px; border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-size: 0.76rem;">
+                                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                                                    <span>Refund</span>
                                                 </button>
                                             <?php elseif ($tx['status'] === 'REFUNDED'): ?>
-                                                <span class="badge badge-refunded" style="font-size: 0.74rem; padding: 4px 8px;">↩ Refunded</span>
+                                                <span class="badge badge-refunded" style="font-size: 0.74rem; padding: 3px 7px; display: inline-flex; align-items: center; gap: 4px;">
+                                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                                                    <span>Refunded</span>
+                                                </span>
                                             <?php else: ?>
-                                                <button type="button" class="btn btn-sm" disabled style="opacity: 0.45; cursor: not-allowed; background: #e2e8f0; color: #64748b; border: none; font-size: 0.75rem; padding: 5px 8px; border-radius: 4px;" title="Refund available only for successful payments">
+                                                <button type="button" class="btn btn-secondary btn-sm" disabled style="opacity: 0.45; cursor: not-allowed; font-size: 0.74rem; padding: 4px 8px;" title="Refund available only for successful payments">
                                                     Refund
                                                 </button>
                                             <?php endif; ?>

@@ -36,7 +36,7 @@ class TestHelper
      */
     public static function getBaseUrl(): string
     {
-        return $_ENV['TEST_BASE_URL'] ?? getenv('TEST_BASE_URL') ?: 'http://localhost:8000';
+        return $_ENV['TEST_BASE_URL'] ?? getenv('TEST_BASE_URL') ?: 'http://localhost:8080/vortex';
     }
 
     /**
@@ -44,7 +44,7 @@ class TestHelper
      */
     public static function isRazorpayTestMode(): bool
     {
-        $keyId = $_ENV['RAZORPAY_KEY_ID'] ?? '';
+        $keyId = $_ENV['RAZORPAY_KEY_ID'] ?? $_ENV['RAZORPAY_TEST_KEY_ID'] ?? '';
         return str_starts_with($keyId, 'rzp_test_');
     }
 

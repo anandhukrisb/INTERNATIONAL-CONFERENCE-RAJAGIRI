@@ -430,7 +430,7 @@ class ApiClient
     {
         try {
             $limit = max(1, min((int) $limit, 200));
-            $query = "SELECT id, client_name, api_key, api_secret, test_api_key, test_api_secret, webhook_url, webhook_secret, is_active, created_at
+            $query = "SELECT id, client_name, api_key, api_secret, test_api_key, test_api_secret, is_active, created_at
                       FROM api_clients
                       ORDER BY id DESC
                       LIMIT " . $limit;
@@ -470,66 +470,25 @@ class ApiClient
                 return ['success' => false, 'message' => 'Invalid client ID.'];
             }
 
-            // Validate URL format (allow empty to clear)
-            $webhookUrl = trim($webhookUrl);
-            if ($webhookUrl !== '' && !filter_var($webhookUrl, FILTER_VALIDATE_URL)) {
-                return ['success' => false, 'message' => 'Invalid webhook URL format.'];
+            // Webhooks are now per-event. Delegate to the primary event associated with this client.
+            $stmt = $this->db->prepare("
+                SELECT event_id FROM events
+                WHERE event_id IN (SELECT DISTINCT event_id FROM transactions WHERE api_client_id = ?)
+                   OR LOWER(event_name) = (SELECT LOWER(client_name) FROM api_clients WHERE id = ?)
+                ORDER BY id ASC LIMIT 1
+            ");
+            $stmt->execute([$clientId, $clientId]);
+            $row = $stmt->fetch();
+            if ($row && !empty($row['event_id'])) {
+                require_once __DIR__ . '/Event.php';
+                $eventModel = new Event();
+                return $eventModel->updateWebhook($row['event_id'], $webhookUrl, $customSecret);
             }
-
-            if ($webhookUrl === '') {
-                // Clear webhook configuration
-                $stmt = $this->db->prepare(
-                    "UPDATE api_clients SET webhook_url = NULL, webhook_secret = NULL WHERE id = ?"
-                );
-                $stmt->execute([$clientId]);
-
-                Logger::info('Webhook cleared for client ID: ' . $clientId);
-
-                return [
-                    'success'        => true,
-                    'message'        => 'Webhook configuration cleared.',
-                    'data'           => ['webhook_url' => null, 'webhook_secret' => null]
-                ];
-            }
-
-            // Determine webhook secret: use custom secret if provided, else keep existing, else generate new
-            $webhookSecret = trim((string)$customSecret);
-            if ($webhookSecret === '') {
-                $curStmt = $this->db->prepare("SELECT webhook_secret FROM api_clients WHERE id = ?");
-                $curStmt->execute([$clientId]);
-                $cur = $curStmt->fetch();
-                $webhookSecret = trim((string)($cur['webhook_secret'] ?? ''));
-                if ($webhookSecret === '') {
-                    $webhookSecret = bin2hex(random_bytes(24));  // 48-char hex secret
-                }
-            }
-
-            $stmt = $this->db->prepare(
-                "UPDATE api_clients SET webhook_url = ?, webhook_secret = ? WHERE id = ?"
-            );
-            $stmt->execute([$webhookUrl, $webhookSecret, $clientId]);
-
-            Logger::info('Webhook updated for client ID: ' . $clientId);
-
-            AuditLogger::logClientAction(
-                $clientId,
-                AuditLogger::CLIENT_WEBHOOK_UPDATED,
-                ['webhook_url' => $cur['webhook_url'] ?? null],
-                ['webhook_url' => $webhookUrl],
-                empty($webhookUrl) ? "API Client #{$clientId} webhook configuration cleared" : "API Client #{$clientId} webhook endpoint updated"
-            );
 
             return [
-                'success'        => true,
-                'message'        => 'Webhook URL updated successfully.',
-                'webhook_url'    => $webhookUrl,
-                'webhook_secret' => $webhookSecret,
-                'data'           => [
-                    'webhook_url'    => $webhookUrl,
-                    'webhook_secret' => $webhookSecret
-                ]
+                'success' => false,
+                'message' => 'Webhooks are managed per-event. No associated event found for client #' . $clientId
             ];
-
         } catch (\PDOException $e) {
             Logger::error('Webhook update database error: ' . $e->getMessage());
             return ['success' => false, 'message' => 'Database error while updating webhook.'];
@@ -903,22 +862,6 @@ class ApiClient
                 return ['success' => false, 'message' => 'Invalid phone number format.'];
             }
 
-            $webhookUrl = trim((string)($data['webhook_url'] ?? ''));
-            if ($webhookUrl !== '') {
-                $scheme = strtolower((string)parse_url($webhookUrl, PHP_URL_SCHEME));
-                if (!filter_var($webhookUrl, FILTER_VALIDATE_URL) || !in_array($scheme, ['http', 'https'], true)) {
-                    return ['success' => false, 'message' => 'Invalid webhook URL format. Must start with http:// or https://'];
-                }
-            }
-
-            $webhookSecret = trim((string)($data['webhook_secret'] ?? ''));
-            if ($webhookUrl !== '' && $webhookSecret === '') {
-                $webhookSecret = bin2hex(random_bytes(24));
-            } elseif ($webhookUrl === '') {
-                $webhookSecret = null;
-                $webhookUrl = null;
-            }
-
             // Generate Cryptographic Credentials
             $apiKey        = bin2hex(random_bytes(16));
             $apiSecret     = bin2hex(random_bytes(16));
@@ -938,13 +881,13 @@ class ApiClient
                 INSERT INTO api_clients (
                     client_name, email, phone,
                     api_key, api_secret, test_api_key, test_api_secret,
-                    webhook_url, webhook_secret, is_active,
+                    is_active,
                     notify_email_payment, notify_email_refund, notify_email_dispute,
                     notify_sms_payment, notify_sms_refund, notify_sms_dispute
                 ) VALUES (
                     ?, ?, ?,
                     ?, ?, ?, ?,
-                    ?, ?, ?,
+                    ?,
                     ?, ?, ?,
                     ?, ?, ?
                 )
@@ -958,8 +901,6 @@ class ApiClient
                 $apiSecret,
                 $testApiKey,
                 $testApiSecret,
-                $webhookUrl,
-                $webhookSecret,
                 $isActive,
                 $nep, $ner, $ned,
                 $nsp, $nsr, $nsd
@@ -975,8 +916,7 @@ class ApiClient
                     'client_name' => $clientName,
                     'email'       => $email,
                     'phone'       => $phone,
-                    'is_active'   => $isActive,
-                    'webhook_url' => $webhookUrl
+                    'is_active'   => $isActive
                 ],
                 "Merchant '{$clientName}' onboarded via Enterprise Wizard (#{$clientId})"
             );
@@ -994,8 +934,6 @@ class ApiClient
                     'api_secret'      => $apiSecret,
                     'test_api_key'    => $testApiKey,
                     'test_api_secret' => $testApiSecret,
-                    'webhook_url'     => $webhookUrl,
-                    'webhook_secret'  => $webhookSecret,
                     'is_active'       => $isActive
                 ]
             ];

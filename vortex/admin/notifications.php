@@ -16,7 +16,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-$pageTitle = 'Notification Center — Vortex Admin';
+$pageTitle = 'Notification Center — Rpay Admin';
 $activeNav = 'notifications';
 
 require_once __DIR__ . '/../classes/Database.php';

@@ -100,6 +100,7 @@ switch ($action) {
         $department = $data['department'] ?? null;
         $startDate  = $data['start_date'] ?? null;
         $endDate    = $data['end_date'] ?? null;
+        $webhookUrl = $data['webhook_url'] ?? null;
 
         if (!Validator::required($eventName)) {
             Response::error('Event name is required.', [], 400);
@@ -121,7 +122,8 @@ switch ($action) {
             $eventName,
             $department,
             $startDate,
-            $endDate
+            $endDate,
+            $webhookUrl
         );
 
         if (!$result['success']) {
@@ -133,11 +135,13 @@ switch ($action) {
         Response::success(
             'Event created successfully.',
             [
-                'event_id'   => $result['data']['event_id'],
-                'event_name' => trim($eventName),
-                'department' => trim($department),
-                'start_date' => trim($startDate),
-                'end_date'   => trim($endDate)
+                'event_id'       => $result['data']['event_id'],
+                'event_name'     => trim($eventName),
+                'department'     => trim($department),
+                'start_date'     => trim($startDate),
+                'end_date'       => trim($endDate),
+                'webhook_url'    => $result['data']['webhook_url'] ?? null,
+                'webhook_secret' => $result['data']['webhook_secret'] ?? null
             ]
         );
         break;
@@ -164,13 +168,40 @@ switch ($action) {
         Response::success(
             'Event retrieved successfully.',
             [
-                'event_id'   => $eventData['event_id'],
-                'event_name' => $eventData['event_name'],
-                'department' => $eventData['department'],
-                'start_date' => $eventData['start_date'],
-                'end_date'   => $eventData['end_date'],
-                'is_active'  => (int) $eventData['is_active']
+                'event_id'       => $eventData['event_id'],
+                'event_name'     => $eventData['event_name'],
+                'department'     => $eventData['department'],
+                'start_date'     => $eventData['start_date'],
+                'end_date'       => $eventData['end_date'],
+                'webhook_url'    => $eventData['webhook_url'] ?? null,
+                'webhook_secret' => $eventData['webhook_secret'] ?? null,
+                'is_active'      => (int) $eventData['is_active']
             ]
+        );
+        break;
+
+    // --------------------------------------------------------
+    // Action: UPDATE EVENT WEBHOOK
+    // --------------------------------------------------------
+    case 'update_webhook':
+        $eventId    = $data['event_id'] ?? null;
+        $webhookUrl = $data['webhook_url'] ?? null;
+
+        if (!Validator::eventId($eventId)) {
+            Response::error('Event ID is required.', [], 400);
+        }
+
+        $result = $event->updateWebhook($eventId, $webhookUrl);
+
+        if (!$result['success']) {
+            http_response_code(400);
+            Response::error($result['message'], [], 400);
+        }
+
+        http_response_code(200);
+        Response::success(
+            $result['message'],
+            $result['data'] ?? []
         );
         break;
 

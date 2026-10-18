@@ -103,43 +103,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: index.php');
         exit;
     }
-
-    // 4. Update Webhook
-    if ($action === 'update_webhook') {
-        RBAC::require('clients.edit', null, 'index.php');
-        $clientId      = (int)($_POST['client_id'] ?? 0);
-        $webhookUrl    = trim($_POST['webhook_url'] ?? '');
-        $webhookSecret = trim($_POST['webhook_secret'] ?? '');
-
-        if ($clientId > 0) {
-            $res = $apiClientModel->updateWebhook($clientId, $webhookUrl, $webhookSecret !== '' ? $webhookSecret : null);
-            if ($res['success']) {
-                if ($webhookUrl === '') {
-                    AuditLogger::log('api_client', (string)$clientId, AuditLogger::CLIENT_WEBHOOK_UPDATED, null, ['webhook_url' => null], "Cleared webhook endpoint for Client #{$clientId}");
-                    $_SESSION['flash_success'] = "Webhook cleared for Client #{$clientId}.";
-                } else {
-                    AuditLogger::log('api_client', (string)$clientId, AuditLogger::CLIENT_WEBHOOK_UPDATED, null, ['webhook_url' => $webhookUrl], "Configured webhook endpoint for Client #{$clientId}");
-                    $_SESSION['flash_success'] = "Webhook configuration saved for Client #{$clientId}.";
-                    $_SESSION['new_webhook_secret'] = [
-                        'client_id' => $clientId,
-                        'secret'    => $res['data']['webhook_secret']
-                    ];
-                }
-            } else {
-                $_SESSION['flash_error'] = "Webhook update failed: " . $res['message'];
-            }
-        }
-        header('Location: index.php');
-        exit;
-    }
 }
 
 // Flash Messages
 $flashSuccess         = $_SESSION['flash_success'] ?? null;
 $flashError           = $_SESSION['flash_error'] ?? null;
 $createdClientDetails = $_SESSION['created_client'] ?? null;
-$newWebhookSecret     = $_SESSION['new_webhook_secret'] ?? null;
-unset($_SESSION['flash_success'], $_SESSION['flash_error'], $_SESSION['created_client'], $_SESSION['new_webhook_secret']);
+unset($_SESSION['flash_success'], $_SESSION['flash_error'], $_SESSION['created_client']);
 
 // Fetch All Clients
 $allClients = $apiClientModel->getAllClients(200) ?: [];
@@ -148,7 +118,6 @@ $allClients = $apiClientModel->getAllClients(200) ?: [];
 $totalClientsCount     = count($allClients);
 $activeClientsCount    = count(array_filter($allClients, fn($c) => (int)($c['is_active'] ?? 0) === 1));
 $disabledClientsCount  = $totalClientsCount - $activeClientsCount;
-$webhookConfiguredCount= count(array_filter($allClients, fn($c) => !empty($c['webhook_url'])));
 
 // Search & Filter
 $searchQ = trim($_GET['q'] ?? '');
@@ -165,7 +134,7 @@ $filteredClients = array_filter($allClients, function($c) use ($searchQ, $status
     return true;
 });
 
-$pageTitle = "API Clients Management - Vortex Admin";
+$pageTitle = "API Clients Management - Rpay Admin";
 $activeNav = "clients";
 require_once __DIR__ . '/../includes/header.php';
 ?>
@@ -221,8 +190,10 @@ require_once __DIR__ . '/../includes/header.php';
         <span class="metric-value danger"><?= number_format($disabledClientsCount) ?></span>
     </div>
     <div class="metric-card">
-        <span class="metric-label">Webhook Endpoints</span>
-        <span class="metric-value"><?= number_format($webhookConfiguredCount) ?></span>
+        <span class="metric-label">Event Webhooks</span>
+        <span class="metric-value" style="font-size: 1rem; padding-top: 6px;">
+            <a href="../events/index.php" style="color: var(--primary-blue); text-decoration: none; font-weight: 600;">Managed per Event &rarr;</a>
+        </span>
     </div>
 </div>
 
@@ -282,14 +253,13 @@ require_once __DIR__ . '/../includes/header.php';
                         <th>Merchant / Client</th>
                         <th>API Keys (Live &amp; Test)</th>
                         <th>API Secrets (Live &amp; Test)</th>
-                        <th>Webhook Endpoint</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($filteredClients)): ?>
-                        <tr><td colspan="7" style="text-align: center; padding: 28px; color: var(--text-gray);">No clients matching criteria found.</td></tr>
+                        <tr><td colspan="6" style="text-align: center; padding: 28px; color: var(--text-gray);">No clients matching criteria found.</td></tr>
                     <?php else: ?>
                         <?php foreach ($filteredClients as $client): ?>
                             <tr>
@@ -341,34 +311,6 @@ require_once __DIR__ . '/../includes/header.php';
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <?php if (!empty($client['webhook_url'])): ?>
-                                        <div class="copy-wrapper" title="<?= htmlspecialchars($client['webhook_url']) ?>">
-                                            <span style="font-size: 0.7rem; color: #15803d; font-weight: 700; margin-right: 2px;">URL</span>
-                                            <span class="font-mono" style="font-size: 0.78rem; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: middle;">
-                                                <?= htmlspecialchars($client['webhook_url']) ?>
-                                            </span>
-                                            <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($client['webhook_url'], ENT_QUOTES) ?>', this)" title="Copy Webhook URL">📋</button>
-                                        </div>
-                                        <?php if (!empty($client['webhook_secret'])): ?>
-                                            <div class="copy-wrapper" style="margin-top: 4px;" title="<?= htmlspecialchars($client['webhook_secret']) ?>">
-                                                <span style="font-size: 0.7rem; color: #64748b; font-weight: 700; margin-right: 2px;">SECRET</span>
-                                                <span class="font-mono" style="font-size: 0.78rem; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: middle; color: var(--danger-text);">
-                                                    <?php if (RBAC::can('clients.view_secret')): ?>
-                                                        <?= htmlspecialchars($client['webhook_secret']) ?>
-                                                    <?php else: ?>
-                                                        ••••••••••••
-                                                    <?php endif; ?>
-                                                </span>
-                                                <?php if (RBAC::can('clients.view_secret')): ?>
-                                                <button type="button" class="btn-copy btn-copy-sm" onclick="copyToClipboard('<?= htmlspecialchars($client['webhook_secret'], ENT_QUOTES) ?>', this)" title="Copy Webhook Secret">📋</button>
-                                                <?php endif; ?>
-                                            </div>
-                                        <?php endif; ?>
-                                    <?php else: ?>
-                                        <span style="color: var(--text-muted); font-size: 0.82rem; font-style: italic;">Not configured</span>
-                                    <?php endif; ?>
-                                </td>
-                                <td>
                                     <span class="badge <?= (int)$client['is_active'] === 1 ? 'badge-success' : 'badge-danger' ?>">
                                         <?= (int)$client['is_active'] === 1 ? 'Active' : 'Disabled' ?>
                                     </span>
@@ -387,13 +329,6 @@ require_once __DIR__ . '/../includes/header.php';
                                                 <button type="submit" class="btn btn-primary btn-sm">Activate</button>
                                             <?php endif; ?>
                                         </form>
-
-                                        <!-- Configure Webhook Modal Trigger -->
-                                        <button type="button"
-                                                class="btn btn-secondary btn-sm"
-                                                onclick="openWebhookModal(<?= (int)$client['id'] ?>, '<?= htmlspecialchars(addslashes($client['webhook_url'] ?? ''), ENT_QUOTES) ?>', '<?= htmlspecialchars(addslashes($client['webhook_secret'] ?? ''), ENT_QUOTES) ?>')">
-                                            🔗 Webhook
-                                        </button>
                                         <?php endif; ?>
 
                                         <!-- View Client Payments -->
@@ -415,11 +350,5 @@ require_once __DIR__ . '/../includes/header.php';
         </div>
     </div>
 </div>
-
-<!-- Webhook Modal Component -->
-<?php
-$webhookFormAction = 'index.php';
-require_once __DIR__ . '/../includes/webhook_modal.php';
-?>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

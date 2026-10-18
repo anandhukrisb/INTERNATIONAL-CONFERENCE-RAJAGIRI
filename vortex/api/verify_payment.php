@@ -211,7 +211,7 @@ try {
         require_once __DIR__ . '/../classes/NotificationCenter.php';
 
         $fullTxStmt = $db->prepare("
-            SELECT t.*, e.title as event_name, c.client_name 
+            SELECT t.*, e.event_name, c.client_name 
             FROM transactions t 
             LEFT JOIN events e ON t.event_id = e.event_id 
             LEFT JOIN api_clients c ON t.api_client_id = c.id

@@ -90,15 +90,15 @@ function run_client_onboarding_tests()
         "Onboarding 3.2: Rejects onboarding with invalid email format"
     );
 
-    // 3.3 Invalid webhook URL
-    $resBadUrl = $apiClientModel->onboardClient([
+    // 3.3 Invalid phone number
+    $resBadPhone = $apiClientModel->onboardClient([
         'client_name' => 'Test Corp',
         'email'       => 'test@corp.com',
-        'webhook_url' => 'ftp://invalid-scheme.com'
+        'phone'       => '123'
     ]);
     TestHelper::assertTrue(
-        $resBadUrl['success'] === false,
-        "Onboarding 3.3: Rejects onboarding with invalid webhook URL format"
+        $resBadPhone['success'] === false,
+        "Onboarding 3.3: Rejects onboarding with invalid phone format"
     );
 
     // 3.4 Valid Onboarding with Full Profile
@@ -108,8 +108,6 @@ function run_client_onboarding_tests()
         'email'                => 'merchant_' . bin2hex(random_bytes(3)) . '@example.com',
         'phone'                => '+91 9876543210',
         'is_active'            => 1,
-        'webhook_url'          => 'https://example.com/api/vortex_listener',
-        'webhook_secret'       => '', // auto-generate
         'notify_email_payment' => 1,
         'notify_email_refund'  => 1,
         'notify_email_dispute' => 1,
@@ -149,8 +147,8 @@ function run_client_onboarding_tests()
         "Onboarding 3.9: Test API Secret is 32-character hex"
     );
     TestHelper::assertTrue(
-        !empty($createdData['webhook_secret']) && strlen($createdData['webhook_secret']) === 48,
-        "Onboarding 3.10: Webhook secret auto-generated 48-character hex"
+        !isset($createdData['webhook_url']) && !isset($createdData['webhook_secret']),
+        "Onboarding 3.10: Client record created without webhook columns (managed per event)"
     );
 
     // Verify DB columns
@@ -220,8 +218,6 @@ function run_client_onboarding_tests()
         'api_secret'      => $createdData['api_secret'],
         'test_api_key'    => $createdData['test_api_key'],
         'test_api_secret' => $createdData['test_api_secret'],
-        'webhook_url'     => 'https://example.com/webhook',
-        'webhook_secret'  => $createdData['webhook_secret'],
     ]);
 
     TestHelper::assertTrue(

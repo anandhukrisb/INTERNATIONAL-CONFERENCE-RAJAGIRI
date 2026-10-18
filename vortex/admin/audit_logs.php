@@ -38,7 +38,7 @@ $filters = [
 // Handle CSV Export
 if (isset($_GET['export']) && $_GET['export'] === 'csv') {
     $exportLogs = AuditLogger::getRecentLogs($filters, 10000, 0);
-    $filename = "payvortex_audit_trail_" . date('Ymd_His') . ".csv";
+    $filename = "rpay_audit_trail_" . date('Ymd_His') . ".csv";
 
     header('Content-Type: text/csv; charset=UTF-8');
     header('Content-Disposition: attachment; filename="' . $filename . '"');

@@ -18,6 +18,8 @@ CREATE TABLE `events` (
   `department` varchar(100) NOT NULL,
   `start_date` datetime NOT NULL,
   `end_date` datetime NOT NULL,
+  `webhook_url` varchar(255) DEFAULT NULL,
+  `webhook_secret` varchar(64) DEFAULT NULL,
   `is_active` tinyint(1) DEFAULT 1,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -26,8 +28,8 @@ CREATE TABLE `events` (
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Data for `events` (2 rows)
-INSERT INTO `events` (`id`, `event_id`, `event_name`, `department`, `start_date`, `end_date`, `is_active`, `created_at`, `updated_at`) VALUES ('3', 'DYUT20260913MU01TMQ67BK', 'Dyuti', 'Social work', '2026-09-13 00:00:00', '2026-09-13 23:59:59', '1', '2026-09-13 22:19:02', '2026-10-11 00:44:43');
-INSERT INTO `events` (`id`, `event_id`, `event_name`, `department`, `start_date`, `end_date`, `is_active`, `created_at`, `updated_at`) VALUES ('4', 'ICSW20261011MV3SALAS2FM', 'ICSWHMH', 'Computer science', '2026-10-11 00:00:00', '2026-10-31 23:59:59', '1', '2026-10-11 17:43:04', '2026-10-11 17:43:04');
+INSERT INTO `events` (`id`, `event_id`, `event_name`, `department`, `start_date`, `end_date`, `webhook_url`, `webhook_secret`, `is_active`, `created_at`, `updated_at`) VALUES ('3', 'DYUT20260913MU01TMQ67BK', 'Dyuti', 'Social work', '2026-09-13 00:00:00', '2026-09-13 23:59:59', 'https://dyuti.in/webhook.php', '95050b2f9741d9cc8493e9d1452a486fa6730ff7c0f1ece0', '1', '2026-09-13 22:19:02', '2026-10-11 00:44:43');
+INSERT INTO `events` (`id`, `event_id`, `event_name`, `department`, `start_date`, `end_date`, `webhook_url`, `webhook_secret`, `is_active`, `created_at`, `updated_at`) VALUES ('4', 'ICSW20261011MV3SALAS2FM', 'ICSWHMH', 'Computer science', '2026-10-11 00:00:00', '2026-10-31 23:59:59', 'https://icswhmh.com/backend/vortex_webhook.php', '99efbe6734deac163928c46bca906f4671f431ba8290be56', '1', '2026-10-11 17:43:04', '2026-10-11 17:43:04');
 
 -- ------------------------------------------------------------
 -- Table structure for `api_clients`
@@ -40,8 +42,6 @@ CREATE TABLE `api_clients` (
   `api_secret` varchar(64) NOT NULL,
   `test_api_key` varchar(64) DEFAULT NULL,
   `test_api_secret` varchar(64) DEFAULT NULL,
-  `webhook_url` varchar(255) DEFAULT NULL,
-  `webhook_secret` varchar(64) DEFAULT NULL,
   `is_active` tinyint(1) DEFAULT 1,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
@@ -51,12 +51,12 @@ CREATE TABLE `api_clients` (
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Data for `api_clients` (6 rows)
-INSERT INTO `api_clients` (`id`, `client_name`, `api_key`, `api_secret`, `test_api_key`, `test_api_secret`, `webhook_url`, `webhook_secret`, `is_active`, `created_at`) VALUES ('1', 'Vortex Demo Developer', '94ce1b35051583b7036e6feb28645918', '971e0404236dd20ff0de44fed7e68441', 'test_3cf4b54ea6ed86484d76a5aa52d051cf', 'da5c50180eaef1f0c4cec50e6ef90cc7', 'https://icswhmh.com/backend/vortex_webhook.php', 'e64fc7c61716a79c0be7ec39f2615f77', '1', '2026-09-13 16:34:01');
-INSERT INTO `api_clients` (`id`, `client_name`, `api_key`, `api_secret`, `test_api_key`, `test_api_secret`, `webhook_url`, `webhook_secret`, `is_active`, `created_at`) VALUES ('2', 'icswhmh', '1bbf421c74cce8e03d5f49a63cabfd4e', 'f6408d7d631210e8d8ab5c0be6110fea', 'test_9bd173fb42afbd6219ade0242398b55c', 'e6e3f76155bd5ced1a3cc7f945843658', NULL, NULL, '1', '2026-09-13 17:31:40');
-INSERT INTO `api_clients` (`id`, `client_name`, `api_key`, `api_secret`, `test_api_key`, `test_api_secret`, `webhook_url`, `webhook_secret`, `is_active`, `created_at`) VALUES ('3', 'icswhmh', '0969a93d1b3767668c822d0cd8998f10', '254604c04726dcf75af9de4f52e2de88', 'test_5637a9071b9d3d0e476eefd2cc766858', '57c3f0904f24133bae1c559f90f1d1cd', 'https://icswhmh.com/backend/vortex_webhook.php', '806ba73cf5a067c1735d3ac0285b7aac5d4039f3f13ed126', '1', '2026-09-13 22:01:36');
-INSERT INTO `api_clients` (`id`, `client_name`, `api_key`, `api_secret`, `test_api_key`, `test_api_secret`, `webhook_url`, `webhook_secret`, `is_active`, `created_at`) VALUES ('4', 'Dyuti', 'abed8fb455b441017c49ac564ff83309', '81e4661ce69c6aa89e56bfe1275583f9', 'test_6c2560c51cc443612919df226e3cc757', '473dd3a147aee5422663bf8b328cc99c', NULL, NULL, '1', '2026-09-13 22:19:24');
-INSERT INTO `api_clients` (`id`, `client_name`, `api_key`, `api_secret`, `test_api_key`, `test_api_secret`, `webhook_url`, `webhook_secret`, `is_active`, `created_at`) VALUES ('5', 'Dyuti', '51e60f98b5b217688d0fe537a1a58033', 'e605e71a192a6eba29416f3931e5abf3', 'test_cc69d7b50a831ed60ab57ea5fab1e7fd', '1d09938b691d7a0358145f7b51361e76', NULL, NULL, '1', '2026-09-13 22:28:06');
-INSERT INTO `api_clients` (`id`, `client_name`, `api_key`, `api_secret`, `test_api_key`, `test_api_secret`, `webhook_url`, `webhook_secret`, `is_active`, `created_at`) VALUES ('7', 'icswhmhOriginal', '839109936a140f77e293b0c17c50173f', '0b48b7bd0f581246fc3f80130ba8c2e9', 'test_ea1b4a6263fc0b0fb0ad8680be4d4087', 'e415495af5e85622c1ab65cf45199165', NULL, NULL, '1', '2026-10-11 18:22:27');
+INSERT INTO `api_clients` (`id`, `client_name`, `api_key`, `api_secret`, `test_api_key`, `test_api_secret`, `is_active`, `created_at`) VALUES ('1', 'Vortex Demo Developer', '94ce1b35051583b7036e6feb28645918', '971e0404236dd20ff0de44fed7e68441', 'test_3cf4b54ea6ed86484d76a5aa52d051cf', 'da5c50180eaef1f0c4cec50e6ef90cc7', '1', '2026-09-13 16:34:01');
+INSERT INTO `api_clients` (`id`, `client_name`, `api_key`, `api_secret`, `test_api_key`, `test_api_secret`, `is_active`, `created_at`) VALUES ('2', 'icswhmh', '1bbf421c74cce8e03d5f49a63cabfd4e', 'f6408d7d631210e8d8ab5c0be6110fea', 'test_9bd173fb42afbd6219ade0242398b55c', 'e6e3f76155bd5ced1a3cc7f945843658', '1', '2026-09-13 17:31:40');
+INSERT INTO `api_clients` (`id`, `client_name`, `api_key`, `api_secret`, `test_api_key`, `test_api_secret`, `is_active`, `created_at`) VALUES ('3', 'icswhmh', '0969a93d1b3767668c822d0cd8998f10', '254604c04726dcf75af9de4f52e2de88', 'test_5637a9071b9d3d0e476eefd2cc766858', '57c3f0904f24133bae1c559f90f1d1cd', '1', '2026-09-13 22:01:36');
+INSERT INTO `api_clients` (`id`, `client_name`, `api_key`, `api_secret`, `test_api_key`, `test_api_secret`, `is_active`, `created_at`) VALUES ('4', 'Dyuti', 'abed8fb455b441017c49ac564ff83309', '81e4661ce69c6aa89e56bfe1275583f9', 'test_6c2560c51cc443612919df226e3cc757', '473dd3a147aee5422663bf8b328cc99c', '1', '2026-09-13 22:19:24');
+INSERT INTO `api_clients` (`id`, `client_name`, `api_key`, `api_secret`, `test_api_key`, `test_api_secret`, `is_active`, `created_at`) VALUES ('5', 'Dyuti', '51e60f98b5b217688d0fe537a1a58033', 'e605e71a192a6eba29416f3931e5abf3', 'test_cc69d7b50a831ed60ab57ea5fab1e7fd', '1d09938b691d7a0358145f7b51361e76', '1', '2026-09-13 22:28:06');
+INSERT INTO `api_clients` (`id`, `client_name`, `api_key`, `api_secret`, `test_api_key`, `test_api_secret`, `is_active`, `created_at`) VALUES ('7', 'icswhmhOriginal', '839109936a140f77e293b0c17c50173f', '0b48b7bd0f581246fc3f80130ba8c2e9', 'test_ea1b4a6263fc0b0fb0ad8680be4d4087', 'e415495af5e85622c1ab65cf45199165', '1', '2026-10-11 18:22:27');
 
 -- ------------------------------------------------------------
 -- Table structure for `transactions`
