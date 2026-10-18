@@ -186,7 +186,7 @@ $buildTxUrl = function($p) {
 <!-- Transaction Details & Timeline Modal (Two Fragments) -->
 <!-- ============================================================ -->
 <div class="modal-overlay" id="txOverviewModal" role="dialog" aria-modal="true" aria-labelledby="txOverviewModalTitle" style="z-index: 9998;">
-    <div class="modal-box modal-lg" style="max-width: 680px; border-radius: 12px; box-shadow: 0 20px 45px rgba(0,0,0,0.25); overflow: hidden; display: flex; flex-direction: column; max-height: 85vh;">
+    <div class="modal-box modal-lg" id="txOverviewModalBox" style="max-width: 680px; width: 100%; height: 575px; max-height: 88vh; min-height: 420px; border-radius: 12px; box-shadow: 0 20px 45px rgba(0,0,0,0.25); overflow: hidden; display: flex; flex-direction: column;">
         
         <!-- Modal Top Header -->
         <div class="modal-header" style="background: var(--bg-hover); border-bottom: 1px solid var(--border-color); padding: 16px 22px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;">
@@ -219,7 +219,7 @@ $buildTxUrl = function($p) {
         </div>
 
         <!-- Modal Body: Fragment 1 & Fragment 2 -->
-        <div class="modal-body" style="padding: 0; overflow-y: auto; flex: 1;">
+        <div class="modal-body" style="padding: 0; overflow-y: auto; flex: 1 1 0; min-height: 0;">
             
             <!-- Fragment 1: Two-Column Details -->
             <div id="txFragmentDetails" class="tx-fragment-panel active" role="tabpanel" aria-labelledby="txTabBtnDetails">
@@ -344,11 +344,6 @@ $buildTxUrl = function($p) {
         <!-- Modal Footer Actions -->
         <div class="modal-footer" style="padding: 14px 22px; border-top: 1px solid var(--border-color); background: var(--bg-hover); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; flex-shrink: 0;">
             <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                <!-- Full Inspection Page Button -->
-                <a href="#" id="dtModalTimelineBtn" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 6px;">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                    <span>Full Inspection Page</span>
-                </a>
 
                 <!-- Refund Action Button -->
                 <button type="button" id="dtModalRefundBtn" class="btn btn-sm" style="display: none; background-color: #dc2626; color: white; border: none; font-weight: 600; padding: 6px 12px; border-radius: 4px; cursor: pointer; align-items: center; gap: 5px;">
@@ -419,6 +414,34 @@ $buildTxUrl = function($p) {
     border-radius: 10px;
     font-weight: 700;
     line-height: 1.4;
+}
+
+/* Fixed Consistent Modal Height & Smooth Internal Scroll */
+#txOverviewModal .modal-box {
+    height: 575px !important;
+    max-height: 88vh !important;
+    min-height: 420px !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+#txOverviewModal .modal-body {
+    flex: 1 1 0 !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+}
+#txOverviewModal .modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+#txOverviewModal .modal-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+#txOverviewModal .modal-body::-webkit-scrollbar-thumb {
+    background: rgba(150, 150, 150, 0.35);
+    border-radius: 4px;
+}
+#txOverviewModal .modal-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(150, 150, 150, 0.6);
 }
 
 /* Details Table */
@@ -565,6 +588,11 @@ function switchTxModalTab(tab) {
         fragTimeline.style.display = 'none';
         fragDetails.style.display = 'block';
     }
+
+    const modalBody = document.querySelector('#txOverviewModal .modal-body');
+    if (modalBody) {
+        modalBody.scrollTop = 0;
+    }
 }
 
 function openTxOverviewModal(row) {
@@ -641,10 +669,6 @@ function openTxOverviewModal(row) {
 
     // 9. Action Buttons Setup
     const base = '<?= $base ?>';
-    const timelineBtn = document.getElementById('dtModalTimelineBtn');
-    if (timelineBtn) {
-        timelineBtn.href = base + 'payments/payment_details.php?vortex_transaction_id=' + encodeURIComponent(txId);
-    }
 
     const refundBtn = document.getElementById('dtModalRefundBtn');
     if (refundBtn) {
@@ -704,6 +728,16 @@ function loadTxTimelineData(txId, base) {
                 countText.textContent = (data.timeline ? data.timeline.length : 0) + ' lifecycle event(s)';
             }
 
+            // Ensure recent milestone is on top (descending order)
+            if (data.timeline && Array.isArray(data.timeline)) {
+                data.timeline.sort((a, b) => {
+                    const tA = new Date(a.created_at || 0).getTime();
+                    const tB = new Date(b.created_at || 0).getTime();
+                    if (tA === tB) return (b.id || 0) - (a.id || 0);
+                    return tB - tA;
+                });
+            }
+
             // Render Timeline items
             if (listElem) {
                 if (!data.timeline || data.timeline.length === 0) {
@@ -723,11 +757,12 @@ function loadTxTimelineData(txId, base) {
                         return `
                             <div class="tx-timeline-node">
                                 <div class="tx-timeline-bullet ${bulletClass}"></div>
-                                <div class="tx-timeline-card">
+                                <div class="tx-timeline-card"${idx === 0 ? ' style="border-left: 3px solid var(--primary-blue);"' : ''}>
                                     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-bottom:6px;">
                                         <div style="display:flex; align-items:center; gap:6px;">
                                             <span class="badge badge-event" style="font-size:0.72rem; padding:2px 6px;">${escapeHtml(item.event_type || 'EVENT')}</span>
                                             <span class="badge ${bClass}" style="font-size:0.72rem; padding:2px 6px;">${escapeHtml(st === 'PENDING' ? 'UNPAID' : st)}</span>
+                                            ${idx === 0 ? '<span class="badge" style="background:var(--primary-light); color:var(--primary-blue); font-size:0.68rem; padding:1px 5px; font-weight:700;">LATEST</span>' : ''}
                                         </div>
                                         <div style="font-size:0.74rem; color:var(--text-gray);">${escapeHtml(item.created_at || '')}</div>
                                     </div>

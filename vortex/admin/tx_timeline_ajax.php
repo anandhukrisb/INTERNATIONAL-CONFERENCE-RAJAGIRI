@@ -158,6 +158,16 @@ try {
         }
     }
 
+    // Sort timeline descending so the most recent milestone is always on top
+    usort($timeline, function($a, $b) {
+        $timeA = strtotime($a['created_at'] ?? '1970-01-01');
+        $timeB = strtotime($b['created_at'] ?? '1970-01-01');
+        if ($timeA === $timeB) {
+            return ($b['id'] ?? 0) <=> ($a['id'] ?? 0);
+        }
+        return $timeB <=> $timeA;
+    });
+
     // 3. Fetch Admin Audit Logs associated with this transaction
     $auditLogs = [];
     try {
