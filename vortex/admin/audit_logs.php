@@ -7,8 +7,18 @@
  * ------------------------------------------------------------
  */
 
-require_once __DIR__ . '/includes/header.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+require_once __DIR__ . '/../classes/RBAC.php';
 require_once __DIR__ . '/../classes/AuditLogger.php';
+
+// Auth Guard
+if (empty($_SESSION['vortex_admin_id'])) {
+    header('Location: login.php');
+    exit;
+}
 
 // RBAC Check
 RBAC::require('dashboard.view');
@@ -35,7 +45,7 @@ $filters = [
     'to_date'     => $toDate,
 ];
 
-// Handle CSV Export
+// Handle CSV Export (must run before any HTML output)
 if (isset($_GET['export']) && $_GET['export'] === 'csv') {
     $exportLogs = AuditLogger::getRecentLogs($filters, 10000, 0);
     $filename = "rpay_audit_trail_" . date('Ymd_His') . ".csv";
@@ -71,6 +81,10 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
     fclose($out);
     exit;
 }
+
+$pageTitle = 'Audit Trail & Governance Log – Rpay Admin';
+$activeNav = 'audit';
+require_once __DIR__ . '/includes/header.php';
 
 // Fetch total count and paginated rows
 $totalLogs  = AuditLogger::countLogs($filters);

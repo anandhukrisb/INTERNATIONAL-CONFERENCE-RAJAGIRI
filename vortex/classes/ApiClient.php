@@ -838,6 +838,32 @@ class ApiClient
 
     /**
      * --------------------------------------------------------
+     * Rename Client
+     * --------------------------------------------------------
+     * Quickly renames an API client/merchant while maintaining
+     * existing email, keys, and logging audit history.
+     * --------------------------------------------------------
+     */
+    public function renameClient(int $clientId, string $newClientName): array
+    {
+        $newClientName = trim($newClientName);
+        if ($newClientName === '') {
+            return ['success' => false, 'message' => 'Merchant / Client name cannot be empty.'];
+        }
+        if (mb_strlen($newClientName) > 150) {
+            return ['success' => false, 'message' => 'Client name is too long (max 150 characters).'];
+        }
+
+        $client = $this->getClientById($clientId);
+        if (!$client) {
+            return ['success' => false, 'message' => 'API Client not found.'];
+        }
+
+        return $this->updateClientProfile($clientId, $newClientName, $client['email'] ?? null);
+    }
+
+    /**
+     * --------------------------------------------------------
      * Onboard Client (Enterprise Wizard)
      * --------------------------------------------------------
      * Comprehensive onboarding creating client profile,

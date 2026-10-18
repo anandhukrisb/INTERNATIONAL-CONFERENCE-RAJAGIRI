@@ -125,15 +125,58 @@ if (empty($_SESSION['vortex_admin_id'])) {
                     </span>
                 </button>
 
-                <a href="<?= $adminBase ?>profile.php" class="user-profile <?= ($activeNav === 'profile') ? 'active-profile' : '' ?>" title="Admin Profile & Settings">
-                    <span class="user-avatar" style="<?= !empty($_SESSION['vortex_admin_avatar_color']) ? 'background-color: ' . htmlspecialchars($_SESSION['vortex_admin_avatar_color']) . ';' : '' ?>"><?= strtoupper(substr($_SESSION['vortex_admin_fullname'] ?? $_SESSION['vortex_admin_username'] ?? 'A', 0, 1)) ?></span>
-                    <span class="user-name"><?= htmlspecialchars($_SESSION['vortex_admin_fullname'] ?? $_SESSION['vortex_admin_username'] ?? 'Admin') ?></span>
-                    <?= RBAC::getRoleBadge() ?>
-                    <svg class="profile-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                </a>
-                <a href="<?= $adminBase ?>logout.php" class="btn-logout" title="Sign out" onclick="return confirm('Sign out of Rpay Admin?');">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                </a>
+                <!-- User Profile Dropdown Menu -->
+                <div class="topbar-user-wrapper" style="position: relative;">
+                    <button type="button" class="user-profile <?= ($activeNav === 'profile') ? 'active-profile' : '' ?>" id="userProfileDropdownBtn" aria-haspopup="true" aria-expanded="false" title="Admin Account Menu">
+                        <span class="user-avatar" style="<?= !empty($_SESSION['vortex_admin_avatar_color']) ? 'background-color: ' . htmlspecialchars($_SESSION['vortex_admin_avatar_color']) . ';' : '' ?>"><?= strtoupper(substr($_SESSION['vortex_admin_fullname'] ?? $_SESSION['vortex_admin_username'] ?? 'A', 0, 1)) ?></span>
+                        <span class="user-name"><?= htmlspecialchars($_SESSION['vortex_admin_fullname'] ?? $_SESSION['vortex_admin_username'] ?? 'Admin') ?></span>
+                        <?= RBAC::getRoleBadge() ?>
+                        <svg class="profile-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+
+                    <!-- Profile Dropdown Palette -->
+                    <div id="userProfileDropdown" class="user-profile-dropdown" style="display: none;">
+                        <div class="user-dropdown-header">
+                            <div class="user-dropdown-avatar" style="<?= !empty($_SESSION['vortex_admin_avatar_color']) ? 'background-color: ' . htmlspecialchars($_SESSION['vortex_admin_avatar_color']) . ';' : '' ?>">
+                                <?= strtoupper(substr($_SESSION['vortex_admin_fullname'] ?? $_SESSION['vortex_admin_username'] ?? 'A', 0, 1)) ?>
+                            </div>
+                            <div class="user-dropdown-info">
+                                <div class="user-dropdown-name"><?= htmlspecialchars($_SESSION['vortex_admin_fullname'] ?? $_SESSION['vortex_admin_username'] ?? 'Admin') ?></div>
+                                <div class="user-dropdown-meta">@<?= htmlspecialchars($_SESSION['vortex_admin_username'] ?? 'admin') ?></div>
+                            </div>
+                        </div>
+
+                        <div class="user-dropdown-divider"></div>
+
+                        <ul class="user-dropdown-menu">
+                            <li>
+                                <a href="<?= $adminBase ?>profile.php" class="user-dropdown-item">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                    <span>Profile &amp; Settings</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?= $adminBase ?>profile.php#security" class="user-dropdown-item">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                                    <span>Security &amp; Password</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="<?= $adminBase ?>audit_logs.php" class="user-dropdown-item">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                                    <span>Audit Logs</span>
+                                </a>
+                            </li>
+                            <li class="user-dropdown-divider"></li>
+                            <li>
+                                <a href="<?= $adminBase ?>logout.php" class="user-dropdown-item user-dropdown-logout" onclick="return confirm('Sign out of Rpay Admin?');">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                                    <span>Log Out</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -155,26 +198,6 @@ if (empty($_SESSION['vortex_admin_id'])) {
                             <span>Overview</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="<?= $adminBase ?>search.php" class="<?= $activeNav === 'search' ? 'active' : '' ?>">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                            <span>Global Search</span>
-                        </a>
-                    </li>
-                    <?php if (RBAC::can('payments.view')): ?>
-                    <li>
-                        <a href="<?= $adminBase ?>payments/revenue.php" class="<?= $activeNav === 'revenue' ? 'active' : '' ?>">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                            <span>Event Revenue</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="<?= $adminBase ?>payments/list_payments.php" class="<?= $activeNav === 'payments' ? 'active' : '' ?>">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
-                            <span>Transactions</span>
-                        </a>
-                    </li>
-                    <?php endif; ?>
                     <?php if (RBAC::can('clients.view')): ?>
                     <li>
                         <a href="<?= $adminBase ?>api_clients/index.php" class="<?= $activeNav === 'clients' ? 'active' : '' ?>">
@@ -191,10 +214,24 @@ if (empty($_SESSION['vortex_admin_id'])) {
                         </a>
                     </li>
                     <?php endif; ?>
+                    <?php if (RBAC::can('payments.view')): ?>
                     <li>
-                        <a href="<?= $adminBase ?>profile.php" class="<?= $activeNav === 'profile' ? 'active' : '' ?>">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                            <span>Admin Profile</span>
+                        <a href="<?= $adminBase ?>payments/list_payments.php" class="<?= $activeNav === 'payments' ? 'active' : '' ?>">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+                            <span>Transactions</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="<?= $adminBase ?>payments/revenue.php" class="<?= $activeNav === 'revenue' ? 'active' : '' ?>">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                            <span>Event Revenue</span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
+                    <li>
+                        <a href="<?= $adminBase ?>audit_logs.php" class="<?= $activeNav === 'audit' ? 'active' : '' ?>">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                            <span>Audit Trail</span>
                         </a>
                     </li>
                     <li>
@@ -205,9 +242,9 @@ if (empty($_SESSION['vortex_admin_id'])) {
                         </a>
                     </li>
                     <li>
-                        <a href="<?= $adminBase ?>audit_logs.php" class="<?= $activeNav === 'audit' ? 'active' : '' ?>">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                            <span>Audit Trail</span>
+                        <a href="<?= $adminBase ?>profile.php" class="<?= $activeNav === 'profile' ? 'active' : '' ?>">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            <span>Admin Profile</span>
                         </a>
                     </li>
                     <li>

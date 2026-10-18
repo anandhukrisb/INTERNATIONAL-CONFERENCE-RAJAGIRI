@@ -553,6 +553,15 @@
         // Toggle Dropdown
         bellBtn.addEventListener('click', function(e) {
             e.stopPropagation();
+            const userDropdown = document.getElementById('userProfileDropdown');
+            if (userDropdown) {
+                userDropdown.style.display = 'none';
+                const userBtn = document.getElementById('userProfileDropdownBtn');
+                if (userBtn) userBtn.setAttribute('aria-expanded', 'false');
+                const userWrap = userBtn?.closest('.topbar-user-wrapper');
+                if (userWrap) userWrap.classList.remove('open');
+            }
+
             const isOpen = dropdown.style.display === 'block';
             if (isOpen) {
                 dropdown.style.display = 'none';
@@ -610,6 +619,61 @@
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#039;');
         }
+    })();
+    </script>
+
+    <!-- Admin User Profile Dropdown Controller -->
+    <script>
+    (function() {
+        const profileBtn = document.getElementById('userProfileDropdownBtn');
+        const dropdown = document.getElementById('userProfileDropdown');
+        if (!profileBtn || !dropdown) return;
+
+        const wrapper = profileBtn.closest('.topbar-user-wrapper');
+        const notifDropdown = document.getElementById('notifDropdown');
+        const notifBellBtn = document.getElementById('notifBellBtn');
+
+        function closeProfileDropdown() {
+            dropdown.style.display = 'none';
+            profileBtn.setAttribute('aria-expanded', 'false');
+            if (wrapper) wrapper.classList.remove('open');
+        }
+
+        function openProfileDropdown() {
+            // Close notification dropdown if open
+            if (notifDropdown) {
+                notifDropdown.style.display = 'none';
+                if (notifBellBtn) notifBellBtn.setAttribute('aria-expanded', 'false');
+            }
+            dropdown.style.display = 'block';
+            profileBtn.setAttribute('aria-expanded', 'true');
+            if (wrapper) wrapper.classList.add('open');
+        }
+
+        profileBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const isOpen = dropdown.style.display === 'block';
+            if (isOpen) {
+                closeProfileDropdown();
+            } else {
+                openProfileDropdown();
+            }
+        });
+
+        // Close on Click Outside
+        document.addEventListener('click', function(e) {
+            if (!dropdown.contains(e.target) && !profileBtn.contains(e.target)) {
+                closeProfileDropdown();
+            }
+        });
+
+        // Close on ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeProfileDropdown();
+            }
+        });
     })();
     </script>
 </body>

@@ -180,6 +180,43 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         header('Location: index.php');
         exit;
     }
+
+    // 5. Rename Event
+    if ($action === 'rename_event') {
+        RBAC::require('events.edit', null, 'index.php');
+        $eventId   = trim($_POST['event_id'] ?? '');
+        $eventName = trim($_POST['event_name'] ?? '');
+
+        $res = $eventModel->renameEvent($eventId, $eventName);
+
+        if ($res['success']) {
+            AuditLogger::log(
+                'event',
+                $eventId,
+                AuditLogger::EVENT_EDITED,
+                ['event_name' => $res['old_name'] ?? null],
+                ['event_name' => $eventName],
+                "Renamed event #{$eventId} to '{$eventName}'"
+            );
+            $_SESSION['flash_success'] = "Event '{$eventId}' renamed to '{$eventName}' successfully.";
+        } else {
+            $_SESSION['flash_error'] = "Failed to rename event: " . $res['message'];
+        }
+
+        if ($isAjax) {
+            header('Content-Type: application/json; charset=UTF-8');
+            echo json_encode([
+                'success'    => $res['success'],
+                'message'    => $res['success'] ? "Event '{$eventId}' renamed to '{$eventName}' successfully." : $res['message'],
+                'event_id'   => $eventId,
+                'event_name' => $eventName
+            ]);
+            exit;
+        }
+
+        header('Location: index.php');
+        exit;
+    }
 }
 
 // Flash Messages
@@ -387,7 +424,7 @@ require_once __DIR__ . '/../includes/header.php';
 
                                 <!-- 2. Event Name & Department -->
                                 <td>
-                                    <div style="font-weight: 700; color: var(--text-dark); font-size: 0.92rem;">
+                                    <div class="event-name-cell-text" style="font-weight: 700; color: var(--text-dark); font-size: 0.92rem;">
                                         <?= htmlspecialchars($event['event_name']) ?>
                                     </div>
                                     <div style="font-size: 0.78rem; color: var(--text-gray); margin-top: 3px; display: flex; align-items: center; gap: 4px;">
@@ -474,7 +511,28 @@ require_once __DIR__ . '/../includes/header.php';
                         </tr>
                         <tr>
                             <td class="dt-label">Event Name</td>
-                            <td class="dt-value" id="dtModalEventName" style="font-weight: 700;"></td>
+                            <td class="dt-value" id="dtModalEventNameWrapper">
+                                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                                    <span id="dtModalEventName" style="font-weight: 700; color: var(--text-dark); word-break: break-word;"></span>
+                                    <?php if (RBAC::can('events.edit')): ?>
+                                    <button type="button" class="btn btn-secondary btn-sm" id="btnEditEventName" onclick="toggleEditEventName(true)" style="padding: 2px 8px; font-size: 0.74rem; display: inline-flex; align-items: center; gap: 4px;" title="Rename Event">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                                        <span>Rename</span>
+                                    </button>
+                                    <?php endif; ?>
+                                </div>
+                                <?php if (RBAC::can('events.edit')): ?>
+                                <div id="eventRenameFormContainer" style="display: none; margin-top: 8px; padding: 10px; background: var(--bg-hover); border: 1px solid var(--border-color); border-radius: 6px;">
+                                    <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-gray); margin-bottom: 6px;">Rename Event</div>
+                                    <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+                                        <input type="text" id="inputEditEventName" class="form-control" style="font-size: 0.85rem; padding: 5px 10px; flex: 1; min-width: 180px;" maxlength="255" placeholder="Enter new event name" onkeydown="if(event.key==='Enter'){event.preventDefault();saveEventName();}">
+                                        <button type="button" class="btn btn-primary btn-sm" id="btnSaveEventName" onclick="saveEventName()" style="padding: 5px 12px; font-size: 0.78rem;">Save</button>
+                                        <button type="button" class="btn btn-secondary btn-sm" onclick="toggleEditEventName(false)" style="padding: 5px 10px; font-size: 0.78rem;">Cancel</button>
+                                    </div>
+                                    <div id="eventRenameFeedback" style="font-size: 0.75rem; margin-top: 6px; display: none;"></div>
+                                </div>
+                                <?php endif; ?>
+                            </td>
                         </tr>
                         <tr>
                             <td class="dt-label">Department / Host School</td>
@@ -1028,6 +1086,111 @@ function switchEventModalTab(tab) {
     }
 }
 
+function toggleEditEventName(show) {
+    const container = document.getElementById('eventRenameFormContainer');
+    const btn = document.getElementById('btnEditEventName');
+    const input = document.getElementById('inputEditEventName');
+    const feedback = document.getElementById('eventRenameFeedback');
+    if (!container) return;
+
+    if (show) {
+        container.style.display = 'block';
+        if (btn) btn.style.display = 'none';
+        if (feedback) feedback.style.display = 'none';
+        const currentName = (document.getElementById('dtModalEventName')?.textContent || '').trim();
+        if (input) {
+            input.value = currentName === '—' || currentName === 'Loading details...' ? '' : currentName;
+            input.focus();
+            input.select();
+        }
+    } else {
+        container.style.display = 'none';
+        if (btn) btn.style.display = 'inline-flex';
+        if (feedback) feedback.style.display = 'none';
+    }
+}
+
+function saveEventName() {
+    const input = document.getElementById('inputEditEventName');
+    const feedback = document.getElementById('eventRenameFeedback');
+    const saveBtn = document.getElementById('btnSaveEventName');
+    if (!input || !currentOverviewEventId) return;
+
+    const newName = input.value.trim();
+    if (!newName) {
+        if (feedback) {
+            feedback.style.display = 'block';
+            feedback.style.color = '#dc2626';
+            feedback.textContent = 'Event name cannot be empty.';
+        }
+        input.focus();
+        return;
+    }
+
+    if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving...';
+    }
+
+    const formData = new FormData();
+    formData.append('action', 'rename_event');
+    formData.append('event_id', currentOverviewEventId);
+    formData.append('event_name', newName);
+
+    fetch('index.php', {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        },
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (saveBtn) {
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Save';
+        }
+        if (!data.success) {
+            if (feedback) {
+                feedback.style.display = 'block';
+                feedback.style.color = '#dc2626';
+                feedback.textContent = data.message || 'Failed to rename event.';
+            }
+            return;
+        }
+
+        // Update modal text
+        const nameEl = document.getElementById('dtModalEventName');
+        if (nameEl) nameEl.textContent = newName;
+        if (currentEventData) currentEventData.event_name = newName;
+
+        // Update main table row if present
+        const tableRow = document.getElementById('event-row-' + currentOverviewEventId);
+        if (tableRow) {
+            const nameCell = tableRow.querySelector('.event-name-cell-text');
+            if (nameCell) nameCell.textContent = newName;
+            tableRow.setAttribute('data-event-name', newName);
+            tableRow.setAttribute('aria-label', 'View details for ' + newName);
+        }
+
+        toggleEditEventName(false);
+        showToast("Event renamed to '" + newName + "' successfully.", 'success');
+    })
+    .catch(err => {
+        console.error('Rename event error:', err);
+        if (saveBtn) {
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Save';
+        }
+        if (feedback) {
+            feedback.style.display = 'block';
+            feedback.style.color = '#dc2626';
+            feedback.textContent = 'Network error while updating event name.';
+        }
+    });
+}
+
 function openEventOverviewModal(eventId, sourceRow = null) {
     if (!eventId) return;
     currentOverviewEventId = eventId;
@@ -1038,6 +1201,9 @@ function openEventOverviewModal(eventId, sourceRow = null) {
 
     const modal = document.getElementById('eventOverviewModal');
     if (!modal) return;
+
+    // Reset rename edit state
+    toggleEditEventName(false);
 
     // Open modal container
     modal.classList.add('open');
@@ -1116,6 +1282,8 @@ function renderEventDetails(resData) {
     // Two-Column Table
     document.getElementById('dtModalEventId').textContent = event.event_id;
     document.getElementById('dtModalEventName').textContent = event.event_name;
+    const inputEditEventName = document.getElementById('inputEditEventName');
+    if (inputEditEventName) inputEditEventName.value = event.event_name || '';
     document.getElementById('dtModalDepartment').textContent = event.department || 'General';
 
     // Dates

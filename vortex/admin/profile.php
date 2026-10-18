@@ -62,8 +62,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // 1. UPDATE PROFILE
     if ($action === 'update_profile') {
-        $fullName    = trim($_POST['full_name'] ?? '');
-        $username    = trim($_POST['username'] ?? '');
+        $fullName = trim($_POST['full_name'] ?? '');
+        if (empty($fullName) && (!empty($_POST['first_name']) || !empty($_POST['last_name']))) {
+            $fullName = trim(($_POST['first_name'] ?? '') . ' ' . ($_POST['last_name'] ?? ''));
+        }
+        $username = trim($_POST['username'] ?? '');
+        if (empty($username)) {
+            $username = $admin['username'];
+        }
         $email       = trim($_POST['email'] ?? '');
         $phone       = trim($_POST['phone'] ?? '');
         $avatarColor = trim($_POST['avatar_color'] ?? '#1a73e8');
@@ -370,14 +376,465 @@ $initial = strtoupper(substr($admin['full_name'] ?: $admin['username'], 0, 1));
 $is2FA = !empty($admin['two_factor_enabled']);
 $securityScore = 70 + ($is2FA ? 30 : 0);
 
+$nameParts = explode(' ', trim($admin['full_name'] ?: $admin['username']), 2);
+$firstName = $nameParts[0] ?? '';
+$lastName  = $nameParts[1] ?? '';
+
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<div class="profile-page-wrapper">
+<style>
+/* ============================================================
+   Profile Page Layout (Matching Reference Design)
+   ============================================================ */
+.hire-profile-container {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 6px 0 40px;
+}
+
+.profile-page-head {
+    margin-bottom: 22px;
+}
+
+.profile-page-head h1 {
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: var(--text-dark, #1e293b);
+    letter-spacing: -0.02em;
+    margin: 0;
+}
+
+/* 2-Column Split Layout */
+.hire-profile-grid {
+    display: grid;
+    grid-template-columns: 295px 1fr;
+    gap: 26px;
+    align-items: start;
+}
+
+@media (max-width: 992px) {
+    .hire-profile-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Left Profile Summary Card */
+.hire-sidebar-card {
+    background: var(--bg-card, #ffffff);
+    border: 1px solid var(--border-color, #eef2f6);
+    border-radius: 16px;
+    padding: 32px 22px 22px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    text-align: center;
+    position: relative;
+}
+
+.hire-avatar-wrap {
+    position: relative;
+    width: 96px;
+    height: 96px;
+    margin: 0 auto 16px;
+}
+
+.hire-avatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+    transition: background-color 0.25s ease;
+    user-select: none;
+}
+
+.hire-avatar-badge {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--primary-blue, #2563eb);
+    color: #ffffff;
+    border: 2px solid var(--bg-card, #ffffff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+}
+
+.hire-avatar-badge:hover {
+    transform: scale(1.12);
+}
+
+.hire-admin-name {
+    font-size: 1.18rem;
+    font-weight: 700;
+    color: var(--text-dark, #1e293b);
+    margin: 0 0 4px;
+}
+
+.hire-admin-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-gray, #94a3b8);
+    margin: 0 0 22px;
+}
+
+.hire-stats-list {
+    margin: 0 0 18px;
+    text-align: left;
+}
+
+.hire-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 0;
+    border-top: 1px solid var(--border-subtle, #f1f5f9);
+    font-size: 0.88rem;
+}
+
+.hire-stat-row:last-child {
+    border-bottom: 1px solid var(--border-subtle, #f1f5f9);
+}
+
+.hire-stat-label {
+    color: var(--text-gray, #64748b);
+    font-weight: 500;
+}
+
+.hire-stat-val {
+    font-weight: 700;
+    font-size: 0.92rem;
+}
+
+.hire-stat-val.val-amber { color: #f59e0b; }
+.hire-stat-val.val-green { color: #10b981; }
+.hire-stat-val.val-blue  { color: #2563eb; }
+.hire-stat-val.val-purple{ color: #8b5cf6; }
+
+.hire-card-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.btn-hire-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px 16px;
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-dark, #334155);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.btn-hire-outline:hover {
+    background: var(--bg-hover, #f8fafc);
+    border-color: var(--primary-blue, #2563eb);
+    color: var(--primary-blue, #2563eb);
+}
+
+.hire-copy-link-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-hover, #f8fafc);
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.82rem;
+    color: var(--text-gray, #64748b);
+    font-family: var(--font-mono, monospace);
+    overflow: hidden;
+}
+
+.hire-copy-link-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 8px;
+}
+
+.btn-hire-copy {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--text-gray, #64748b);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    border-radius: 4px;
+    transition: color 0.2s;
+    flex-shrink: 0;
+}
+
+.btn-hire-copy:hover {
+    color: var(--primary-blue, #2563eb);
+}
+
+/* Right Main Card with Tabs & Form */
+.hire-main-card {
+    background: var(--bg-card, #ffffff);
+    border: 1px solid var(--border-color, #eef2f6);
+    border-radius: 16px;
+    padding: 24px 32px 32px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+}
+
+/* Modern Minimalist Tabs (Underline Active) */
+.hire-tabs-bar {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    border-bottom: 1px solid var(--border-color, #eef2f6);
+    margin-bottom: 28px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.hire-tabs-bar::-webkit-scrollbar {
+    display: none;
+}
+
+.hire-tab-item {
+    font-size: 0.94rem;
+    font-weight: 500;
+    color: var(--text-gray, #64748b);
+    padding: 0 0 14px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+}
+
+.hire-tab-item:hover {
+    color: var(--primary-blue, #2563eb);
+}
+
+.hire-tab-item.active {
+    color: var(--primary-blue, #2563eb);
+    font-weight: 700;
+}
+
+.hire-tab-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--primary-blue, #2563eb);
+    border-radius: 2px 2px 0 0;
+}
+
+/* Tab Panels */
+.hire-tab-content {
+    display: none;
+}
+
+.hire-tab-content.active {
+    display: block;
+    animation: hireFadeIn 0.22s ease-out;
+}
+
+@keyframes hireFadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 2-Column Form Grid (Directly matching user image) */
+.hire-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 24px;
+}
+
+@media (max-width: 640px) {
+    .hire-form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.hire-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.hire-form-label {
+    font-size: 0.83rem;
+    font-weight: 600;
+    color: var(--text-dark, #334155);
+    margin-bottom: 7px;
+}
+
+.hire-form-control {
+    width: 100%;
+    height: 44px;
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 8px;
+    padding: 0 14px;
+    font-size: 0.92rem;
+    color: var(--text-dark, #0f172a);
+    background: var(--bg-card, #ffffff);
+    font-family: inherit;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.hire-form-control:focus {
+    outline: none;
+    border-color: var(--primary-blue, #2563eb);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+}
+
+.hire-form-control[readonly] {
+    background: var(--bg-hover, #f8fafc);
+    color: var(--text-gray, #64748b);
+    cursor: default;
+}
+
+/* Primary Blue "Update" Button */
+.btn-hire-primary {
+    background: var(--primary-blue, #2563eb);
+    color: #ffffff;
+    font-size: 0.92rem;
+    font-weight: 600;
+    padding: 11px 32px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 24px;
+    box-shadow: 0 2px 6px rgba(37,99,235,0.25);
+    transition: all 0.2s ease;
+}
+
+.btn-hire-primary:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(37,99,235,0.32);
+}
+
+.btn-hire-primary:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Color Swatches Palette inside Account Settings */
+.hire-color-palette {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 44px;
+}
+
+.hire-color-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.15s, border-color 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.hire-color-dot:hover {
+    transform: scale(1.15);
+}
+
+.hire-color-dot.active {
+    border-color: var(--text-dark, #0f172a);
+    box-shadow: 0 0 0 2px #fff;
+}
+
+/* Dark Mode Overrides */
+[data-theme="dark"] .hire-sidebar-card,
+[data-theme="dark"] .hire-main-card {
+    background: #252830;
+    border-color: #383d47;
+}
+
+[data-theme="dark"] .hire-form-control {
+    background: #1c1e24;
+    border-color: #3c4048;
+    color: #f1f5f9;
+}
+
+[data-theme="dark"] .hire-form-control[readonly] {
+    background: #20232a;
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .hire-stat-row {
+    border-color: #333842;
+}
+
+[data-theme="dark"] .btn-hire-outline {
+    border-color: #3c4048;
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .btn-hire-outline:hover {
+    background: #2d313b;
+    color: #8ab4f8;
+    border-color: #8ab4f8;
+}
+
+[data-theme="dark"] .hire-copy-link-box {
+    background: #1c1e24;
+    border-color: #383d47;
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .hire-tabs-bar {
+    border-color: #383d47;
+}
+
+[data-theme="dark"] .hire-tab-item {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .hire-tab-item.active {
+    color: #8ab4f8;
+}
+
+[data-theme="dark"] .hire-tab-item.active::after {
+    background: #8ab4f8;
+}
+</style>
+
+<div class="hire-profile-container">
 
     <!-- Flash Alerts -->
     <?php if ($flashSuccess): ?>
-        <div class="alert alert-success" id="profileFlashSuccess" style="display: flex; align-items: center; justify-content: space-between;">
+        <div class="alert alert-success" id="profileFlashSuccess" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
             <div style="display: flex; align-items: center; gap: 10px;">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                 <span><?= htmlspecialchars($flashSuccess) ?></span>
@@ -387,7 +844,7 @@ require_once __DIR__ . '/includes/header.php';
     <?php endif; ?>
 
     <?php if ($flashError): ?>
-        <div class="alert alert-danger" id="profileFlashError" style="display: flex; align-items: center; justify-content: space-between;">
+        <div class="alert alert-danger" id="profileFlashError" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
             <div style="display: flex; align-items: center; gap: 10px;">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
                 <span><?= htmlspecialchars($flashError) ?></span>
@@ -396,273 +853,191 @@ require_once __DIR__ . '/includes/header.php';
         </div>
     <?php endif; ?>
 
-    <!-- Profile Hero Card -->
-    <div class="profile-hero-card">
-        <div class="profile-hero-cover">
-            <div class="profile-hero-cover-pattern">
-                <svg width="260" height="140" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
-                    <path d="M2 12h20"></path>
-                </svg>
-            </div>
-        </div>
+    <!-- Header Title (Matching Reference Design) -->
+    <div class="profile-page-head">
+        <h1>Profile</h1>
+    </div>
 
-        <div class="profile-hero-body">
-            <div class="profile-hero-left">
-                <div class="profile-avatar-large-wrap">
-                    <div class="profile-avatar-large" id="mainAvatarDisplay" style="background-color: <?= htmlspecialchars($avatarColor) ?>;">
-                        <span id="mainAvatarInitial"><?= $initial ?></span>
-                    </div>
-                    <button type="button" class="profile-avatar-edit-btn" title="Change Avatar Theme Color" onclick="openModal('editProfileModal')">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+    <!-- 2-Column Split Layout Grid -->
+    <div class="hire-profile-grid">
+
+        <!-- Left Column: Profile Summary Card -->
+        <div class="hire-sidebar-card">
+            <div class="hire-avatar-wrap">
+                <div class="hire-avatar" id="mainAvatarDisplay" style="background-color: <?= htmlspecialchars($avatarColor) ?>;">
+                    <span id="mainAvatarInitial"><?= $initial ?></span>
+                </div>
+                <button type="button" class="hire-avatar-badge" title="Change Avatar Theme Color" onclick="openModal('editProfileModal')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                </button>
+            </div>
+
+            <h2 class="hire-admin-name" id="heroFullNameText"><?= htmlspecialchars($admin['full_name']) ?></h2>
+            <div class="hire-admin-subtitle">Rajagiri College of Social Sciences</div>
+
+            <div class="hire-stats-list">
+                <div class="hire-stat-row">
+                    <span class="hire-stat-label">Total Transactions</span>
+                    <span class="hire-stat-val val-amber"><?= number_format($totalTransactions) ?></span>
+                </div>
+                <div class="hire-stat-row">
+                    <span class="hire-stat-label">Processed Volume</span>
+                    <span class="hire-stat-val val-green">₹<?= number_format($successfulVolume) ?></span>
+                </div>
+                <div class="hire-stat-row">
+                    <span class="hire-stat-label">Active API Clients</span>
+                    <span class="hire-stat-val val-blue"><?= $totalClients ?></span>
+                </div>
+                <div class="hire-stat-row">
+                    <span class="hire-stat-label">Security Health</span>
+                    <span class="hire-stat-val val-purple"><?= $securityScore ?>%</span>
+                </div>
+            </div>
+
+            <div class="hire-card-actions">
+                <button type="button" class="btn-hire-outline" onclick="switchHireTab('#tab-activity')">
+                    View Activity Log
+                </button>
+                <div class="hire-copy-link-box">
+                    <span class="hire-copy-link-text">https://rpay.rajagiri.edu/admin/#<?= htmlspecialchars($admin['username']) ?></span>
+                    <button type="button" class="btn-hire-copy" onclick="copyToClipboard('https://rpay.rajagiri.edu/vortex/admin/', this)" title="Copy Gateway URL">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                     </button>
                 </div>
-
-                <div class="profile-hero-details">
-                    <h1 class="profile-hero-name">
-                        <span id="heroFullNameText"><?= htmlspecialchars($admin['full_name']) ?></span>
-                        <span class="badge badge-success" title="Verified Gateway Administrator" style="font-size: 0.72rem; vertical-align: middle;">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 4px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                            Verified Admin
-                        </span>
-                    </h1>
-
-                    <div class="profile-hero-username">
-                        <span>@<span id="heroUsernameText"><?= htmlspecialchars($admin['username']) ?></span></span>
-                        <span style="color: var(--border-color);">•</span>
-                        <span style="color: var(--primary-blue); font-weight: 500;"><?= htmlspecialchars($admin['role'] ?? 'Super Administrator') ?></span>
-                    </div>
-
-                    <div class="profile-hero-meta">
-                        <span class="profile-meta-item" title="Last Active Timestamp">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                            <span>Last Login: <?= $admin['last_login'] ? date('M d, Y h:i A', strtotime($admin['last_login'])) : 'Just now' ?></span>
-                        </span>
-                        <span style="color: var(--border-color);">•</span>
-                        <span class="profile-meta-item" title="Registered Account Date">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                            <span>Created <?= date('M Y', strtotime($admin['created_at'])) ?></span>
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Hero Action Buttons Cluster -->
-            <div class="profile-hero-actions">
-                <button type="button" class="btn btn-primary" onclick="openModal('editProfileModal')">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                    <span>Edit Profile</span>
-                </button>
-                <button type="button" class="btn btn-secondary" onclick="openModal('changePasswordModal')">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                    <span>Password</span>
-                </button>
-                <button type="button" class="btn btn-secondary" onclick="openModal('twoFactorModal')">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                    <span>2FA Security</span>
-                </button>
-                <button type="button" class="btn btn-secondary" onclick="openModal('activeSessionsModal')" title="View Active Devices & Sessions">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-                    <span>Sessions</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Metrics Row -->
-    <div class="profile-stats-grid">
-        <div class="profile-stat-card">
-            <div class="profile-stat-icon blue">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-            </div>
-            <div class="profile-stat-content">
-                <span class="profile-stat-label">Security Health</span>
-                <span class="profile-stat-value">
-                    <span id="statSecurityScore"><?= $securityScore ?>%</span>
-                    <span class="badge <?= $is2FA ? 'badge-success' : 'badge-pending' ?>" style="font-size: 0.7rem; font-weight:600;">
-                        <?= $is2FA ? 'Strong' : 'Moderate' ?>
-                    </span>
-                </span>
-                <span class="profile-stat-sub">
-                    <?= $is2FA ? '✓ 2FA Active • SSL Enforced' : 'Enable 2FA to achieve 100%' ?>
-                </span>
             </div>
         </div>
 
-        <div class="profile-stat-card">
-            <div class="profile-stat-icon green">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+        <!-- Right Column: Tabbed Content Card -->
+        <div class="hire-main-card">
+            <!-- Tabs Bar -->
+            <div class="hire-tabs-bar">
+                <button type="button" class="hire-tab-item profile-tab-btn active" data-tab-target="#tab-profile">Account Settings</button>
+                <button type="button" class="hire-tab-item profile-tab-btn" data-tab-target="#tab-security">Security &amp; Password</button>
+                <?php if (RBAC::can('admins.manage')): ?>
+                    <button type="button" class="hire-tab-item profile-tab-btn" data-tab-target="#tab-permissions">Roles &amp; Permissions</button>
+                <?php endif; ?>
+                <button type="button" class="hire-tab-item profile-tab-btn" data-tab-target="#tab-activity">Activity &amp; Logs</button>
+                <button type="button" class="hire-tab-item profile-tab-btn" data-tab-target="#tab-api">Diagnostics &amp; Token</button>
             </div>
-            <div class="profile-stat-content">
-                <span class="profile-stat-label">Processed Volume</span>
-                <span class="profile-stat-value amount">₹<?= number_format($successfulVolume, 2) ?></span>
-                <span class="profile-stat-sub"><?= number_format($totalTransactions) ?> total transactions</span>
-            </div>
-        </div>
 
-        <div class="profile-stat-card">
-            <div class="profile-stat-icon amber">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-            </div>
-            <div class="profile-stat-content">
-                <span class="profile-stat-label">Gateway Oversight</span>
-                <span class="profile-stat-value"><?= $totalEvents ?> Events</span>
-                <span class="profile-stat-sub"><?= $totalClients ?> Active API clients connected</span>
-            </div>
-        </div>
-
-        <div class="profile-stat-card">
-            <div class="profile-stat-icon purple">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-            </div>
-            <div class="profile-stat-content">
-                <span class="profile-stat-label">Current Device</span>
-                <span class="profile-stat-value" style="font-size: 1.05rem;"><?= htmlspecialchars($browser) ?></span>
-                <span class="profile-stat-sub"><?= htmlspecialchars($platform) ?> • IP: <?= htmlspecialchars($clientIp) ?></span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Interactive Navigation Tabs -->
-    <div class="profile-tabs-header">
-        <button type="button" class="profile-tab-btn active" data-tab-target="#tab-profile">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-            <span>Personal Information</span>
-        </button>
-        <button type="button" class="profile-tab-btn" data-tab-target="#tab-security">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-            <span>Security & Authentication</span>
-        </button>
-        <button type="button" class="profile-tab-btn" data-tab-target="#tab-permissions">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-            <span>Roles & Permissions</span>
-        </button>
-        <button type="button" class="profile-tab-btn" data-tab-target="#tab-activity">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-            <span>Activity & Audit Trail</span>
-        </button>
-        <button type="button" class="profile-tab-btn" data-tab-target="#tab-api">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-            <span>Diagnostics & Token</span>
-        </button>
-    </div>
-
-    <!-- TAB 1: PERSONAL INFORMATION -->
+    <!-- TAB 1: ACCOUNT SETTINGS (DIRECT FORM MATCHING REFERENCE DESIGN) -->
     <div class="profile-tab-panel active" id="tab-profile">
-        <div class="profile-card">
-            <div class="profile-card-header">
-                <div>
-                    <h3 class="profile-card-title">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                        Admin Profile Details
-                    </h3>
-                    <p class="profile-card-desc">Your basic account credentials and administrative identity across Rpay Gateway.</p>
+        <form id="editProfileForm" method="POST" action="profile.php">
+            <input type="hidden" name="action" value="update_profile">
+            <input type="hidden" name="ajax_request" value="1">
+            <input type="hidden" name="full_name" id="inputFullName" value="<?= htmlspecialchars($admin['full_name']) ?>">
+            <input type="hidden" name="avatar_color" id="inputAvatarColor" value="<?= htmlspecialchars($avatarColor) ?>">
+
+            <div class="hire-form-grid">
+                <div class="hire-form-group">
+                    <label class="hire-form-label" for="first_name">First Name</label>
+                    <input type="text" class="hire-form-control" id="first_name" name="first_name" value="<?= htmlspecialchars($firstName) ?>" placeholder="First Name" required oninput="syncFullNameFromInputs()">
                 </div>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="openModal('editProfileModal')">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                    <span>Edit Information</span>
+
+                <div class="hire-form-group">
+                    <label class="hire-form-label" for="last_name">Last Name</label>
+                    <input type="text" class="hire-form-control" id="last_name" name="last_name" value="<?= htmlspecialchars($lastName) ?>" placeholder="Last Name" oninput="syncFullNameFromInputs()">
+                </div>
+
+                <div class="hire-form-group">
+                    <label class="hire-form-label" for="username">Username</label>
+                    <input type="text" class="hire-form-control" id="username" name="username" value="<?= htmlspecialchars($admin['username']) ?>" required placeholder="username">
+                </div>
+
+                <div class="hire-form-group">
+                    <label class="hire-form-label" for="email">Email address</label>
+                    <input type="email" class="hire-form-control" id="email" name="email" value="<?= htmlspecialchars($admin['email'] ?? '') ?>" placeholder="admin@rajagiri.edu">
+                </div>
+
+                <div class="hire-form-group">
+                    <label class="hire-form-label" for="phone">Phone Number</label>
+                    <input type="tel" class="hire-form-control" id="phone" name="phone" value="<?= htmlspecialchars($admin['phone'] ?? '') ?>" placeholder="+91 98765 43210">
+                </div>
+
+                <div class="hire-form-group" id="hireAvatarPalette">
+                    <label class="hire-form-label">Avatar Theme Color</label>
+                    <div class="hire-color-palette">
+                        <?php
+                        $colorSwatches = [
+                            '#1a73e8' => 'Drive Blue',
+                            '#4f46e5' => 'Indigo',
+                            '#059669' => 'Emerald',
+                            '#dc2626' => 'Crimson',
+                            '#d97706' => 'Amber',
+                            '#7c3aed' => 'Purple',
+                            '#374151' => 'Slate'
+                        ];
+                        foreach ($colorSwatches as $hex => $name):
+                            $isSelected = (strtolower($hex) === strtolower($avatarColor));
+                        ?>
+                            <div class="hire-color-dot <?= $isSelected ? 'active' : '' ?>"
+                                 style="background-color: <?= $hex ?>;"
+                                 data-color="<?= $hex ?>"
+                                 title="<?= $name ?>"
+                                 onclick="pickHireAvatarColor('<?= $hex ?>', this)">
+                                <?= $isSelected ? '✓' : '' ?>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action button matching reference screenshot -->
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-top: 10px;">
+                <button type="submit" class="btn-hire-primary" id="btnSaveProfile">
+                    Update
                 </button>
-            </div>
-
-            <div class="profile-info-grid">
-                <div class="profile-info-item">
-                    <span class="profile-info-label">Full Name</span>
-                    <span class="profile-info-value" id="cardFullName"><?= htmlspecialchars($admin['full_name']) ?></span>
-                </div>
-
-                <div class="profile-info-item">
-                    <span class="profile-info-label">Username</span>
-                    <div class="profile-info-value">
-                        <span id="cardUsername">@<?= htmlspecialchars($admin['username']) ?></span>
-                        <button type="button" class="btn-copy" onclick="copyToClipboard('<?= htmlspecialchars($admin['username']) ?>', this)">Copy</button>
-                    </div>
-                </div>
-
-                <div class="profile-info-item">
-                    <span class="profile-info-label">Email Address</span>
-                    <span class="profile-info-value" id="cardEmail"><?= htmlspecialchars($admin['email'] ?: 'Not configured') ?></span>
-                </div>
-
-                <div class="profile-info-item">
-                    <span class="profile-info-label">Phone Number</span>
-                    <span class="profile-info-value" id="cardPhone"><?= htmlspecialchars($admin['phone'] ?: 'Not configured') ?></span>
-                </div>
-
-                <div class="profile-info-item">
-                    <span class="profile-info-label">Assigned Role</span>
-                    <span class="profile-info-value">
-                        <span class="badge badge-success"><?= htmlspecialchars($admin['role'] ?? 'Super Administrator') ?></span>
-                    </span>
-                </div>
-
-                <div class="profile-info-item">
-                    <span class="profile-info-label">Admin ID</span>
-                    <div class="profile-info-value">
-                        <span class="font-mono">#ADM-<?= str_pad($admin['id'], 4, '0', STR_PAD_LEFT) ?></span>
-                        <button type="button" class="btn-copy" onclick="copyToClipboard('ADM-<?= str_pad($admin['id'], 4, '0', STR_PAD_LEFT) ?>', this)">Copy</button>
-                    </div>
-                </div>
-
-                <div class="profile-info-item">
-                    <span class="profile-info-label">Avatar Theme</span>
-                    <div class="profile-info-value" style="display:flex; align-items:center; gap:10px;">
-                        <span id="cardAvatarSwatch" style="width:20px; height:20px; border-radius:50%; background-color:<?= htmlspecialchars($avatarColor) ?>; display:inline-block; border:1px solid rgba(0,0,0,0.1);"></span>
-                        <span id="cardAvatarHex"><?= htmlspecialchars($avatarColor) ?></span>
-                        <button type="button" class="btn-copy" onclick="openModal('editProfileModal')">Change</button>
-                    </div>
-                </div>
-
-                <div class="profile-info-item">
-                    <span class="profile-info-label">Account Status</span>
-                    <span class="profile-info-value">
-                        <span class="badge badge-success">✓ Active &amp; Functional</span>
-                    </span>
+                <div style="font-size: 0.85rem; color: var(--text-gray); display: flex; align-items: center; gap: 8px;">
+                    <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981;"></span>
+                    Role: <strong style="color:var(--text-dark);"><?= htmlspecialchars($admin['role'] ?? 'Super Administrator') ?></strong> &bull; ID: <code>#ADM-<?= str_pad($admin['id'], 4, '0', STR_PAD_LEFT) ?></code>
                 </div>
             </div>
-        </div>
+        </form>
 
-        <!-- Appearance & Theme Card -->
-        <div class="profile-card" style="margin-top: 24px;">
-            <div class="profile-card-header">
-                <div>
-                    <h3 class="profile-card-title">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                        Appearance &amp; Theme Settings
-                    </h3>
-                    <p class="profile-card-desc">Customize your visual interface. Switch between Google Drive Light and Google Dark Mode.</p>
-                </div>
+        <!-- Hidden elements for backward-compatibility with live status updates -->
+        <span id="cardFullName" style="display:none;"><?= htmlspecialchars($admin['full_name']) ?></span>
+        <span id="cardUsername" style="display:none;">@<?= htmlspecialchars($admin['username']) ?></span>
+        <span id="cardEmail" style="display:none;"><?= htmlspecialchars($admin['email'] ?: '') ?></span>
+        <span id="cardPhone" style="display:none;"><?= htmlspecialchars($admin['phone'] ?: '') ?></span>
+        <span id="cardAvatarSwatch" style="display:none;"></span>
+        <span id="cardAvatarHex" style="display:none;"></span>
+
+        <!-- Appearance & Theme Mode Section -->
+        <div style="margin-top: 40px; padding-top: 28px; border-top: 1px solid var(--border-color, #eef2f6);">
+            <div style="margin-bottom: 16px;">
+                <h4 style="margin: 0 0 4px; font-size: 1rem; font-weight: 700; color: var(--text-dark);">Appearance &amp; Theme</h4>
+                <p style="margin: 0; font-size: 0.82rem; color: var(--text-gray);">Select your preferred interface display mode across administrative panels.</p>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 16px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px;">
                 <!-- Light Theme Option -->
-                <div class="theme-choice-card" id="themeChoiceLight" onclick="setAdminTheme('light')" style="border: 2px solid var(--border-color); border-radius: 10px; padding: 18px; cursor: pointer; transition: all 0.2s ease;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <span style="font-size: 1.5rem;">☀️</span>
+                <div class="theme-choice-card" id="themeChoiceLight" onclick="setAdminTheme('light')" style="border: 2px solid var(--border-color); border-radius: 10px; padding: 16px; cursor: pointer; transition: all 0.2s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-size: 1.4rem;">☀️</span>
                         <input type="radio" name="profile_theme_choice" id="radioThemeLight" value="light" style="width: 18px; height: 18px; accent-color: #1a73e8;">
                     </div>
-                    <div style="font-weight: 700; font-size: 0.95rem;">Google Drive Light</div>
-                    <div style="font-size: 0.8rem; color: var(--text-gray); margin-top: 4px;">Crisp white surfaces with signature Google Drive blue accents.</div>
+                    <div style="font-weight: 700; font-size: 0.92rem;">Google Drive Light</div>
+                    <div style="font-size: 0.78rem; color: var(--text-gray); margin-top: 4px;">Crisp white surfaces with blue accents.</div>
                 </div>
 
                 <!-- Dark Theme Option -->
-                <div class="theme-choice-card" id="themeChoiceDark" onclick="setAdminTheme('dark')" style="border: 2px solid var(--border-color); border-radius: 10px; padding: 18px; cursor: pointer; transition: all 0.2s ease;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <span style="font-size: 1.5rem;">🌙</span>
+                <div class="theme-choice-card" id="themeChoiceDark" onclick="setAdminTheme('dark')" style="border: 2px solid var(--border-color); border-radius: 10px; padding: 16px; cursor: pointer; transition: all 0.2s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-size: 1.4rem;">🌙</span>
                         <input type="radio" name="profile_theme_choice" id="radioThemeDark" value="dark" style="width: 18px; height: 18px; accent-color: #8ab4f8;">
                     </div>
-                    <div style="font-weight: 700; font-size: 0.95rem;">Google Dark Mode</div>
-                    <div style="font-size: 0.8rem; color: var(--text-gray); margin-top: 4px;">Comfortable #202124 charcoal canvas with #8ab4f8 Google blue.</div>
+                    <div style="font-weight: 700; font-size: 0.92rem;">Google Dark Mode</div>
+                    <div style="font-size: 0.78rem; color: var(--text-gray); margin-top: 4px;">Charcoal canvas with subtle blue highlights.</div>
                 </div>
 
                 <!-- System Auto Option -->
-                <div class="theme-choice-card" id="themeChoiceAuto" onclick="setAdminTheme('auto')" style="border: 2px solid var(--border-color); border-radius: 10px; padding: 18px; cursor: pointer; transition: all 0.2s ease;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <span style="font-size: 1.5rem;">💻</span>
+                <div class="theme-choice-card" id="themeChoiceAuto" onclick="setAdminTheme('auto')" style="border: 2px solid var(--border-color); border-radius: 10px; padding: 16px; cursor: pointer; transition: all 0.2s ease;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-size: 1.4rem;">💻</span>
                         <input type="radio" name="profile_theme_choice" id="radioThemeAuto" value="auto" style="width: 18px; height: 18px;">
                     </div>
-                    <div style="font-weight: 700; font-size: 0.95rem;">System Default</div>
-                    <div style="font-size: 0.8rem; color: var(--text-gray); margin-top: 4px;">Automatically follows your operating system appearance.</div>
+                    <div style="font-weight: 700; font-size: 0.92rem;">System Default</div>
+                    <div style="font-size: 0.78rem; color: var(--text-gray); margin-top: 4px;">Follows your OS appearance setting.</div>
                 </div>
             </div>
         </div>
@@ -976,7 +1351,9 @@ require_once __DIR__ . '/includes/header.php';
         </div>
     </div>
 
-</div>
+        </div><!-- /.hire-main-card -->
+    </div><!-- /.hire-profile-grid -->
+</div><!-- /.hire-profile-container -->
 
 <!-- ============================================================
      INTERACTIVE MODALS
@@ -996,10 +1373,10 @@ require_once __DIR__ . '/includes/header.php';
             <button class="modal-close" onclick="closeModal('editProfileModal')" title="Close">&times;</button>
         </div>
 
-        <form id="editProfileForm" method="POST" action="profile.php">
+        <form id="modalEditProfileForm" method="POST" action="profile.php">
             <input type="hidden" name="action" value="update_profile">
             <input type="hidden" name="ajax_request" value="1">
-            <input type="hidden" name="avatar_color" id="inputAvatarColor" value="<?= htmlspecialchars($avatarColor) ?>">
+            <input type="hidden" name="avatar_color" id="modalInputAvatarColor" value="<?= htmlspecialchars($avatarColor) ?>">
 
             <div class="modal-body">
                 <!-- Live Avatar Preview & Palette -->
@@ -1063,7 +1440,7 @@ require_once __DIR__ . '/includes/header.php';
 
             <div class="modal-footer">
                 <button type="button" class="btn-cancel" onclick="closeModal('editProfileModal')">Cancel</button>
-                <button type="submit" class="btn btn-primary" id="btnSaveProfile">Save Changes</button>
+                <button type="submit" class="btn btn-primary" id="btnModalSaveProfile">Save Changes</button>
             </div>
         </form>
     </div>
@@ -1422,10 +1799,10 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="form-group" style="margin-bottom:12px;">
                     <label class="form-label">Assigned RBAC Role</label>
                     <select name="role" class="form-control" style="font-weight:600;" required>
-                        <option value="super_admin">⚡ Super Administrator (Full Governance)</option>
-                        <option value="finance" selected>💳 Finance Manager (Refunds & Reconciliations)</option>
-                        <option value="support">🎧 Support Specialist (Order Inquiries & Timeline)</option>
-                        <option value="read_only">👁️ Auditor / Read-Only (Read-Only Views)</option>
+                        <option value="super_admin">Super Administrator (Full Governance)</option>
+                        <option value="finance" selected>Finance Manager (Refunds & Reconciliations)</option>
+                        <option value="support">Support Specialist (Order Inquiries & Timeline)</option>
+                        <option value="read_only">Auditor / Read-Only (Read-Only Views)</option>
                     </select>
                 </div>
             </div>
@@ -1458,10 +1835,10 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="form-group" style="margin-bottom:14px;">
                     <label class="form-label">New Role Tier</label>
                     <select name="new_role" id="editRoleSelect" class="form-control" style="font-weight:600;" required>
-                        <option value="super_admin">⚡ Super Administrator</option>
-                        <option value="finance">💳 Finance Manager</option>
-                        <option value="support">🎧 Support Specialist</option>
-                        <option value="read_only">👁️ Auditor / Read-Only</option>
+                        <option value="super_admin">Super Administrator</option>
+                        <option value="finance">Finance Manager</option>
+                        <option value="support">Support Specialist</option>
+                        <option value="read_only">Auditor / Read-Only</option>
                     </select>
                 </div>
             </div>
@@ -1731,18 +2108,67 @@ function checkPasswordMatch() {
     }
 }
 
-// --- Avatar Color Picker ---
+// --- Synchronize First and Last Name into full_name ---
+function syncFullNameFromInputs() {
+    const fn = (document.getElementById('first_name')?.value || '').trim();
+    const ln = (document.getElementById('last_name')?.value || '').trim();
+    const combined = (fn + ' ' + ln).trim();
+    const hiddenFullName = document.getElementById('inputFullName');
+    if (hiddenFullName) hiddenFullName.value = combined;
+}
+
+// --- Direct Avatar Color Picker (Reference Design) ---
+function pickHireAvatarColor(hex, swatchElement) {
+    document.querySelectorAll('.hire-color-dot').forEach(d => {
+        d.classList.remove('active');
+        d.innerHTML = '';
+    });
+    if (swatchElement) {
+        swatchElement.classList.add('active');
+        swatchElement.innerHTML = '✓';
+    }
+
+    const inputColor = document.getElementById('inputAvatarColor');
+    if (inputColor) inputColor.value = hex;
+
+    const modalInputColor = document.getElementById('modalInputAvatarColor');
+    if (modalInputColor) modalInputColor.value = hex;
+
+    // Live preview on left sidebar avatar
+    const mainAvatar = document.getElementById('mainAvatarDisplay');
+    if (mainAvatar) mainAvatar.style.backgroundColor = hex;
+}
+
+// --- Quick Tab Switching from Sidebar Actions ---
+function switchHireTab(targetSelector) {
+    const targetBtn = document.querySelector(`.profile-tab-btn[data-tab-target="${targetSelector}"]`);
+    if (targetBtn) {
+        targetBtn.click();
+        targetBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+}
+
+// --- Modal Avatar Color Picker ---
 function selectAvatarColor(hex, swatchElement) {
     document.querySelectorAll('.avatar-color-swatch').forEach(s => {
         s.classList.remove('selected');
         s.innerHTML = '';
     });
 
-    swatchElement.classList.add('selected');
-    swatchElement.innerHTML = '✓';
+    if (swatchElement) {
+        swatchElement.classList.add('selected');
+        swatchElement.innerHTML = '✓';
+    }
 
-    document.getElementById('inputAvatarColor').value = hex;
-    document.getElementById('modalAvatarPreview').style.backgroundColor = hex;
+    const modalInput = document.getElementById('modalInputAvatarColor') || document.getElementById('inputAvatarColor');
+    if (modalInput) modalInput.value = hex;
+    const inputColor = document.getElementById('inputAvatarColor');
+    if (inputColor) inputColor.value = hex;
+
+    const modalPreview = document.getElementById('modalAvatarPreview');
+    if (modalPreview) modalPreview.style.backgroundColor = hex;
+    const mainAvatar = document.getElementById('mainAvatarDisplay');
+    if (mainAvatar) mainAvatar.style.backgroundColor = hex;
 }
 
 // --- Copy All Recovery Codes ---
@@ -1754,67 +2180,142 @@ function copyAllRecoveryCodes(btn) {
 
 // --- AJAX Form Handlers for Seamless Interactivity ---
 
-// 1. Edit Profile Form
-document.getElementById('editProfileForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const form = this;
-    const btn = document.getElementById('btnSaveProfile');
-    const origBtnText = btn.innerHTML;
+// 1. Edit Profile Form (Account Settings)
+const editProfileFormEl = document.getElementById('editProfileForm');
+if (editProfileFormEl) {
+    editProfileFormEl.addEventListener('submit', function(e) {
+        e.preventDefault();
+        syncFullNameFromInputs();
 
-    btn.disabled = true;
-    btn.innerHTML = 'Saving...';
+        const form = this;
+        const btn = document.getElementById('btnSaveProfile');
+        const origBtnText = btn ? btn.innerHTML : 'Update';
 
-    const formData = new FormData(form);
-
-    fetch('profile.php', {
-        method: 'POST',
-        headers: { 'X-Requested-With': 'XMLHttpRequest' },
-        body: formData
-    })
-    .then(r => r.json())
-    .then(data => {
-        btn.disabled = false;
-        btn.innerHTML = origBtnText;
-
-        if (data.success) {
-            closeModal('editProfileModal');
-            showToast(data.message, 'success');
-
-            // Update DOM in-place
-            const d = data.data;
-            document.getElementById('heroFullNameText').innerText = d.full_name;
-            document.getElementById('heroUsernameText').innerText = d.username;
-            document.getElementById('cardFullName').innerText = d.full_name;
-            document.getElementById('cardUsername').innerText = '@' + d.username;
-            document.getElementById('cardEmail').innerText = d.email || 'Not configured';
-            document.getElementById('cardPhone').innerText = d.phone || 'Not configured';
-
-            // Update Avatar color
-            document.getElementById('mainAvatarDisplay').style.backgroundColor = d.avatar_color;
-            document.getElementById('mainAvatarInitial').innerText = d.initial;
-            document.getElementById('cardAvatarSwatch').style.backgroundColor = d.avatar_color;
-            document.getElementById('cardAvatarHex').innerText = d.avatar_color;
-
-            // Also update topbar avatar and name if present
-            const topbarAvatar = document.querySelector('.topbar-actions .user-avatar');
-            if (topbarAvatar) {
-                topbarAvatar.style.backgroundColor = d.avatar_color;
-                topbarAvatar.innerText = d.initial;
-            }
-            const topbarName = document.querySelector('.topbar-actions .user-name');
-            if (topbarName) {
-                topbarName.innerText = d.full_name || d.username;
-            }
-        } else {
-            showToast(data.message || 'Failed to update profile.', 'error');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 10 10"></path></svg> Updating...';
         }
-    })
-    .catch(err => {
-        btn.disabled = false;
-        btn.innerHTML = origBtnText;
-        showToast('A network error occurred. Please try again.', 'error');
+
+        const formData = new FormData(form);
+
+        fetch('profile.php', {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: formData
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = origBtnText;
+            }
+
+            if (data.success) {
+                if (typeof closeModal === 'function') closeModal('editProfileModal');
+                showToast(data.message || 'Profile updated successfully!', 'success');
+
+                // Update DOM in-place
+                const d = data.data;
+                const heroName = document.getElementById('heroFullNameText');
+                if (heroName) heroName.innerText = d.full_name;
+
+                const heroUser = document.getElementById('heroUsernameText');
+                if (heroUser) heroUser.innerText = d.username;
+
+                const cardName = document.getElementById('cardFullName');
+                if (cardName) cardName.innerText = d.full_name;
+
+                const cardUser = document.getElementById('cardUsername');
+                if (cardUser) cardUser.innerText = '@' + d.username;
+
+                const cardEmail = document.getElementById('cardEmail');
+                if (cardEmail) cardEmail.innerText = d.email || 'Not configured';
+
+                const cardPhone = document.getElementById('cardPhone');
+                if (cardPhone) cardPhone.innerText = d.phone || 'Not configured';
+
+                // Update Avatar color
+                const mainAvatar = document.getElementById('mainAvatarDisplay');
+                if (mainAvatar) mainAvatar.style.backgroundColor = d.avatar_color;
+
+                const mainInitial = document.getElementById('mainAvatarInitial');
+                if (mainInitial) mainInitial.innerText = d.initial;
+
+                const cardSwatch = document.getElementById('cardAvatarSwatch');
+                if (cardSwatch) cardSwatch.style.backgroundColor = d.avatar_color;
+
+                const cardHex = document.getElementById('cardAvatarHex');
+                if (cardHex) cardHex.innerText = d.avatar_color;
+
+                // Also update topbar avatar and name if present
+                const topbarAvatar = document.querySelector('.topbar-actions .user-avatar');
+                if (topbarAvatar) {
+                    topbarAvatar.style.backgroundColor = d.avatar_color;
+                    topbarAvatar.innerText = d.initial;
+                }
+                const topbarName = document.querySelector('.topbar-actions .user-name');
+                if (topbarName) {
+                    topbarName.innerText = d.full_name || d.username;
+                }
+            } else {
+                showToast(data.message || 'Failed to update profile.', 'error');
+            }
+        })
+        .catch(err => {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = origBtnText;
+            }
+            showToast('A network error occurred. Please try again.', 'error');
+        });
     });
-});
+}
+
+// Modal Form submit handler (if modal is used)
+const modalEditProfileFormEl = document.getElementById('modalEditProfileForm');
+if (modalEditProfileFormEl) {
+    modalEditProfileFormEl.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const form = this;
+        const btn = document.getElementById('btnModalSaveProfile');
+        const origBtnText = btn ? btn.innerHTML : 'Save Changes';
+
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = 'Saving...';
+        }
+
+        const formData = new FormData(form);
+
+        fetch('profile.php', {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: formData
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = origBtnText;
+            }
+
+            if (data.success) {
+                if (typeof closeModal === 'function') closeModal('editProfileModal');
+                showToast(data.message, 'success');
+                setTimeout(() => window.location.reload(), 600);
+            } else {
+                showToast(data.message || 'Failed to update profile.', 'error');
+            }
+        })
+        .catch(err => {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = origBtnText;
+            }
+            showToast('A network error occurred. Please try again.', 'error');
+        });
+    });
+}
 
 // 2. Change Password Form
 document.getElementById('changePasswordForm').addEventListener('submit', function(e) {

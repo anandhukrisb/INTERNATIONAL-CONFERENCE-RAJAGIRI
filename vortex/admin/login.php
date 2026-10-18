@@ -778,18 +778,18 @@ $loggedOut = isset($_GET['logged_out']);
         <div class="brand-showcase">
             <div class="brand-kicker-pill">
                 <img src="assets/images/rpay-icon.png" alt="Rpay Icon" class="brand-kicker-icon">
-                <span>Vortex Payment Orchestration</span>
+                <span>Rpay Administration Console</span>
             </div>
 
             <!-- Primary Headline matching logo font aesthetics -->
             <h1 class="brand-primary-text">
                 Unified Payments.<br>
-                <span class="gradient-accent">Engineered for Speed.</span>
+                <span class="gradient-accent">Simple &amp; Secure.</span>
             </h1>
 
             <!-- Secondary Descriptive Text -->
             <p class="brand-secondary-text">
-                A unified gateway platform delivering sub-second multi-rail routing, intelligent auto-failover, and enterprise-grade security. Engineered by RLabz for resilient modern commerce.
+                A secure, centralized platform to monitor transactions, verify payments, and manage institutional finances across Rajagiri.
             </p>
 
             <!-- Value Highlights -->
@@ -798,26 +798,26 @@ $loggedOut = isset($_GET['logged_out']);
                     <div class="feature-check-icon">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </div>
-                    <span>Sub-second multi-rail routing & auto-failover</span>
+                    <span>Real-time transaction tracking &amp; verification</span>
                 </div>
                 <div class="feature-item">
                     <div class="feature-check-icon">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </div>
-                    <span>Bank-grade cryptographic tokens & PCI-DSS compliance</span>
+                    <span>Secure role-based access &amp; automated audit logs</span>
                 </div>
                 <div class="feature-item">
                     <div class="feature-check-icon">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </div>
-                    <span>Live transaction telemetry & automated webhooks</span>
+                    <span>Instant financial reports &amp; settlement reconciliation</span>
                 </div>
             </div>
 
             <!-- Showcase Action Row -->
             <div class="brand-cta-row">
                 <a href="about.php" class="btn-about-hero">
-                    <span>Explore Architecture & Docs &rarr;</span>
+                    <span>Learn More About Rpay &rarr;</span>
                 </a>
                 <a href="https://rlabz.in" target="_blank" rel="noopener noreferrer" class="btn-rlabz-hero">
                     <span>Engineered by <strong>RLabz</strong></span>

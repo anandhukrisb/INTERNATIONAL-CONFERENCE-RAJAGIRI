@@ -345,20 +345,175 @@ body {
     .user-name { display: block; }
 }
 
-.btn-logout {
-    color: var(--text-gray);
+button.user-profile {
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    border: 1px solid transparent;
+    cursor: pointer;
+    background: transparent;
+}
+
+.topbar-user-wrapper.open .user-profile {
+    background-color: var(--bg-gray);
+    border-color: var(--border-color);
+}
+
+.topbar-user-wrapper.open .user-profile .profile-chevron {
+    transform: rotate(180deg);
+    color: var(--primary-blue);
+}
+
+/* User Profile Floating Dropdown Menu */
+.user-profile-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 250px;
+    background: var(--bg-card, #ffffff);
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 14px;
+    box-shadow: 0 12px 30px -4px rgba(15, 23, 42, 0.12), 0 4px 10px -2px rgba(15, 23, 42, 0.05);
+    z-index: 1050;
+    overflow: hidden;
+    animation: userDropdownFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes userDropdownFadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.user-dropdown-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--bg-hover, #f8fafc);
+    border-bottom: 1px solid var(--border-color, #eef2f6);
+}
+
+.user-dropdown-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: var(--primary-blue, #2563eb);
+    color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    transition: background-color 0.2s;
+    font-weight: 700;
+    font-size: 1rem;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-.btn-logout:hover {
-    background-color: rgba(0,0,0,0.05);
-    color: var(--text-dark);
+.user-dropdown-info {
+    overflow: hidden;
+    line-height: 1.35;
+}
+
+.user-dropdown-name {
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: var(--text-dark, #0f172a);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-dropdown-meta {
+    font-size: 0.78rem;
+    color: var(--text-gray, #64748b);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-dropdown-divider {
+    height: 1px;
+    background: var(--border-color, #e2e8f0);
+    margin: 4px 0;
+}
+
+.user-dropdown-menu {
+    list-style: none;
+    margin: 0;
+    padding: 6px 0;
+}
+
+.user-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text-dark, #334155);
+    text-decoration: none;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.user-dropdown-item svg {
+    color: var(--text-gray, #64748b);
+    transition: color 0.15s;
+    flex-shrink: 0;
+}
+
+.user-dropdown-item:hover {
+    background: var(--bg-hover, #f1f5f9);
+    color: var(--primary-blue, #2563eb);
+}
+
+.user-dropdown-item:hover svg {
+    color: var(--primary-blue, #2563eb);
+}
+
+.user-dropdown-logout {
+    color: #dc2626 !important;
+}
+
+.user-dropdown-logout svg {
+    color: #dc2626 !important;
+}
+
+.user-dropdown-logout:hover {
+    background: #fef2f2 !important;
+    color: #b91c1c !important;
+}
+
+/* Dark Mode Support */
+[data-theme="dark"] .user-profile-dropdown {
+    background: #202124;
+    border-color: #3c4043;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="dark"] .user-dropdown-header {
+    background: #282a2d;
+    border-bottom-color: #3c4043;
+}
+
+[data-theme="dark"] .user-dropdown-divider {
+    background: #3c4043;
+}
+
+[data-theme="dark"] .user-dropdown-item {
+    color: #e8eaed;
+}
+
+[data-theme="dark"] .user-dropdown-item:hover {
+    background: #303134;
+    color: #8ab4f8;
+}
+
+[data-theme="dark"] .user-dropdown-item:hover svg {
+    color: #8ab4f8;
+}
+
+[data-theme="dark"] .user-dropdown-logout:hover {
+    background: rgba(239, 68, 68, 0.15) !important;
+    color: #f87171 !important;
 }
 
 /* Google Material Theme Toggle Button */

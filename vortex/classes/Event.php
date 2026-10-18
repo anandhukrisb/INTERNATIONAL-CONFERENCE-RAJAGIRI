@@ -727,6 +727,68 @@ class Event
             ];
         }
     }
+
+    /**
+     * --------------------------------------------------------
+     * Get Event By ID
+     * --------------------------------------------------------
+     * Fetches any event record by its alphanumeric event_id
+     * regardless of whether it is active or inactive.
+     * --------------------------------------------------------
+     */
+    public function getEventById(string $eventId)
+    {
+        try {
+            $stmt = $this->db->prepare("SELECT * FROM events WHERE event_id = ?");
+            $stmt->execute([$eventId]);
+            return $stmt->fetch(\PDO::FETCH_ASSOC) ?: false;
+        } catch (\PDOException $e) {
+            Logger::error("Failed to fetch event by ID {$eventId}: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * --------------------------------------------------------
+     * Rename Event
+     * --------------------------------------------------------
+     * Renames an event after validation.
+     * --------------------------------------------------------
+     */
+    public function renameEvent(string $eventId, string $newEventName): array
+    {
+        $newEventName = trim($newEventName);
+        if ($newEventName === '') {
+            return ['success' => false, 'message' => 'Event name cannot be empty.'];
+        }
+        if (mb_strlen($newEventName) > 255) {
+            return ['success' => false, 'message' => 'Event name exceeds 255 characters.'];
+        }
+
+        try {
+            $event = $this->getEventById($eventId);
+            if (!$event) {
+                return ['success' => false, 'message' => 'Event not found.'];
+            }
+
+            $oldName = $event['event_name'];
+            $stmt = $this->db->prepare("UPDATE events SET event_name = ? WHERE event_id = ?");
+            $stmt->execute([$newEventName, $eventId]);
+
+            Logger::info("Event #{$eventId} renamed from '{$oldName}' to '{$newEventName}'.");
+
+            return [
+                'success'    => true,
+                'message'    => "Event renamed to '{$newEventName}' successfully.",
+                'old_name'   => $oldName,
+                'event_name' => $newEventName,
+                'event_id'   => $eventId
+            ];
+        } catch (\PDOException $e) {
+            Logger::error("Database error renaming event #{$eventId}: " . $e->getMessage());
+            return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
+        }
+    }
 }
 
 ?>

@@ -296,14 +296,7 @@ class RBAC
 
         $style = "display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:12px; font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; background:{$meta['bg_color']}; color:{$meta['color']}; border:1px solid rgba(0,0,0,0.06);";
 
-        $icon = match ($normalized) {
-            self::ROLE_SUPER_ADMIN => '⚡',
-            self::ROLE_FINANCE     => '💳',
-            self::ROLE_SUPPORT     => '🎧',
-            self::ROLE_READ_ONLY   => '👁️',
-        };
-
-        return "<span class=\"vortex-role-badge {$meta['badge_class']}\" style=\"{$style}\"><span>{$icon}</span><span>" . htmlspecialchars($meta['short_label']) . "</span></span>";
+        return "<span class=\"vortex-role-badge {$meta['badge_class']}\" style=\"{$style}\"><span>" . htmlspecialchars($meta['short_label']) . "</span></span>";
     }
 
     /**
