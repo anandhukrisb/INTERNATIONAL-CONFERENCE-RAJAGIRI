@@ -72,7 +72,7 @@ $txOffset = ($txPage - 1) * $txPerPage;
 
 $recentTx = [];
 try {
-    $recentTxSql = "SELECT t.*, e.event_name, c.client_name,
+    $recentTxSql = "SELECT t.*, e.event_name, e.department, c.client_name,
                            (SELECT w.event_type FROM webhooks w 
                             WHERE (w.order_id IS NOT NULL AND w.order_id != '' AND w.order_id = t.razorpay_order_id)
                                OR (w.payment_id IS NOT NULL AND w.payment_id != '' AND w.payment_id = t.razorpay_payment_id)
