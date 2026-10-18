@@ -21,6 +21,15 @@
  * ------------------------------------------------------------
  */
 
+// Explicitly load .env from project root
+if (file_exists(__DIR__ . '/../helpers/env_loader.php')) {
+    require_once __DIR__ . '/../helpers/env_loader.php';
+    if (function_exists('loadEnv')) {
+        if (file_exists(__DIR__ . '/../.env')) loadEnv(__DIR__ . '/../.env');
+        if (file_exists(__DIR__ . '/../../.env')) loadEnv(__DIR__ . '/../../.env');
+    }
+}
+
 require_once __DIR__ . '/../classes/Auth.php';
 require_once __DIR__ . '/../classes/Payment.php';
 require_once __DIR__ . '/../classes/Event.php';
@@ -45,6 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // ------------------------------------------------------------
 
 $rawBody = file_get_contents('php://input');
+if (($rawBody === '' || $rawBody === false) && php_sapi_name() === 'cli') {
+    $rawBody = @file_get_contents('php://stdin');
+}
 $data = json_decode($rawBody, true);
 
 // ------------------------------------------------------------
@@ -70,14 +82,15 @@ if (empty($apiKey) || empty($apiSecret)) {
     Response::error('Invalid API credentials.', [], 401);
 }
 
-$auth = new Auth();
-$client = $auth->authenticate($apiKey, $apiSecret);
+try {
+    $auth = new Auth();
+    $client = $auth->authenticate($apiKey, $apiSecret);
 
-if ($client === false) {
-    Logger::error('Payment API authentication failed for provided credentials.');
-    http_response_code(401);
-    Response::error('Invalid API credentials.', [], 401);
-}
+    if ($client === false) {
+        Logger::error('Payment API authentication failed for provided credentials.');
+        http_response_code(401);
+        Response::error('Invalid API credentials.', [], 401);
+    }
 
 // ------------------------------------------------------------
 // 5. Validate Required Fields
@@ -153,7 +166,8 @@ $result = $payment->createPayment(
     $email,
     $mobile,
     $amount,
-    $normalizedCurrency
+    $normalizedCurrency,
+    $client['is_test_mode']
 );
 
 if (!is_array($result) || ($result['success'] ?? false) === false) {
@@ -189,15 +203,19 @@ $paymentUrl = CheckoutSession::buildPaymentUrl($sessionToken);
 // 8. Return Standardized Developer Response
 // ------------------------------------------------------------
 
-http_response_code(200);
-Response::success(
-    'Payment created successfully.',
-    [
-        'vortex_transaction_id' => $vortexTransactionId,
-        'payment_url'           => $paymentUrl,
-        'date_time'             => date('Y-m-d H:i:s'),
-        'payment_status'        => 'PENDING'
-    ]
-);
-
+    http_response_code(200);
+    Response::success(
+        'Payment created successfully.',
+        [
+            'vortex_transaction_id' => $vortexTransactionId,
+            'payment_url'           => $paymentUrl,
+            'date_time'             => date('Y-m-d H:i:s'),
+            'payment_status'        => 'PENDING'
+        ]
+    );
+} catch (\Throwable $e) {
+    Logger::error('Payment order creation error: ' . $e->getMessage());
+    http_response_code(500);
+    Response::error('Failed to create payment order: ' . $e->getMessage(), [], 500);
+}
 ?>

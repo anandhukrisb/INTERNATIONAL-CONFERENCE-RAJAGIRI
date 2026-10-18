@@ -2,11 +2,32 @@
 // backend/verify_vortex_payment.php
 session_start();
 
-$env = parse_ini_file(__DIR__ . '/../.env');
+require_once __DIR__ . '/db.php';
 
-$vortexApiUrl = rtrim($env['VORTEX_API_URL'], '/') . '/get_payment_status.php';
-$vortexApiKey = $env['VORTEX_API_KEY'];
-$vortexApiSecret = $env['VORTEX_API_SECRET'];
+$isLocal = (!empty($_SERVER['HTTP_HOST']) && (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false));
+$rawApiUrl = $env['VORTEX_API_URL'] ?? getenv('VORTEX_API_URL') ?: '';
+
+if (empty($rawApiUrl)) {
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? null) == 443;
+    $protocol = $isHttps ? 'https://' : 'http://';
+    if ($isLocal) {
+        $rawApiUrl = $protocol . $_SERVER['HTTP_HOST'] . '/vortex/api';
+    } else {
+        $host = $_SERVER['HTTP_HOST'] ?? 'rpay.rajagiri.edu';
+        $rawApiUrl = $protocol . $host . '/api';
+    }
+}
+
+$vortexApiUrl = rtrim($rawApiUrl, '/') . '/get_payment_status.php';
+if (!preg_match('#^https?://#i', $vortexApiUrl)) {
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? null) == 443;
+    $protocol = $isHttps ? 'https://' : 'http://';
+    $host = $_SERVER['HTTP_HOST'] ?? 'rpay.rajagiri.edu';
+    $vortexApiUrl = $protocol . $host . '/' . ltrim($vortexApiUrl, '/');
+}
+
+$vortexApiKey = $env['VORTEX_API_KEY'] ?? getenv('VORTEX_API_KEY') ?: '839109936a140f77e293b0c17c50173f';
+$vortexApiSecret = $env['VORTEX_API_SECRET'] ?? getenv('VORTEX_API_SECRET') ?: '0b48b7bd0f581246fc3f80130ba8c2e9';
 
 $regId = $_GET['reg_id'] ?? '';
 $vortexTxnId = $_GET['vortex_transaction_id'] ?? '';
@@ -26,7 +47,6 @@ if (empty($regId) || empty($vortexTxnId)) {
 }
 
 try {
-    require_once __DIR__ . '/db.php';
     
     // 1. We must verify the transaction with Vortex API securely
     $payload = [

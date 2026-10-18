@@ -23,12 +23,15 @@ if (empty($reg_id)) {
 try {
     require_once __DIR__ . '/../backend/db.php';
 <<<<<<< HEAD
+<<<<<<< HEAD
     require_once __DIR__ . '/../razorpay/config.php';
     
     // Ensure the registration is 'Completed'
     $stmt = $pdo->prepare("SELECT payment_status FROM user_registrations WHERE registration_id = :reg_id");
 =======
     $env = parse_ini_file(__DIR__ . '/../.env');
+=======
+>>>>>>> a79ebf8ea4f9f6c41eeedaf353bd09cab1d586de
     
     // Ensure the registration is 'Completed'
     $stmt = $pdo->prepare("SELECT payment_status, transaction_id, base_amount FROM user_registrations WHERE registration_id = :reg_id");
@@ -101,9 +104,23 @@ try {
     $vortexTxnId = $reg['transaction_id'];
     
     // Call Vortex API to create refund
-    $vortexApiUrl = rtrim($env['VORTEX_API_URL'], '/') . '/create_refund.php';
-    $vortexApiKey = $env['VORTEX_API_KEY'] ?? $env['KEY'] ?? '';
-    $vortexApiSecret = $env['VORTEX_API_SECRET'] ?? $env['SECRET'] ?? '';
+    $rawApiUrl = $env['VORTEX_API_URL'] ?? getenv('VORTEX_API_URL') ?: '';
+    if (empty($rawApiUrl)) {
+        $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? null) == 443;
+        $protocol = $isHttps ? 'https://' : 'http://';
+        $host = $_SERVER['HTTP_HOST'] ?? 'rpay.rajagiri.edu';
+        $rawApiUrl = $protocol . $host . '/api';
+    }
+
+    $vortexApiUrl = rtrim($rawApiUrl, '/') . '/create_refund.php';
+    if (!preg_match('#^https?://#i', $vortexApiUrl)) {
+        $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? null) == 443;
+        $protocol = $isHttps ? 'https://' : 'http://';
+        $host = $_SERVER['HTTP_HOST'] ?? 'rpay.rajagiri.edu';
+        $vortexApiUrl = $protocol . $host . '/' . ltrim($vortexApiUrl, '/');
+    }
+    $vortexApiKey = $env['VORTEX_API_KEY'] ?? $env['KEY'] ?? getenv('VORTEX_API_KEY') ?: '839109936a140f77e293b0c17c50173f';
+    $vortexApiSecret = $env['VORTEX_API_SECRET'] ?? $env['SECRET'] ?? getenv('VORTEX_API_SECRET') ?: '0b48b7bd0f581246fc3f80130ba8c2e9';
     
     $payload = [
         'api_key' => $vortexApiKey,

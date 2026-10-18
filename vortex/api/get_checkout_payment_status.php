@@ -90,41 +90,17 @@ try {
     // 4. Return standardized response based on payment state
     // --------------------------------------------------------
 
-    if ($paymentStatus === 'SUCCESS') {
-        Response::success(
-            'Payment status retrieved successfully.',
-            [
-                'vortex_transaction_id' => $data['vortex_transaction_id'],
-                'payment_status'        => 'SUCCESS',
-                'redirect_url'          => $data['redirect_url'],
-                'amount'                => (float) $data['amount'],
-                'currency'              => $data['currency']
-            ],
-            200
-        );
-    } elseif ($paymentStatus === 'FAILED') {
-        Response::success(
-            'Payment failed.',
-            [
-                'vortex_transaction_id' => $data['vortex_transaction_id'],
-                'payment_status'        => 'FAILED',
-                'redirect_url'          => $data['redirect_url'],
-                'amount'                => (float) $data['amount'],
-                'currency'              => $data['currency']
-            ],
-            200
-        );
-    } else {
-        // PENDING / PROCESSING
-        Response::success(
-            'Payment is still being processed.',
-            [
-                'vortex_transaction_id' => $data['vortex_transaction_id'],
-                'payment_status'        => 'PENDING'
-            ],
-            200
-        );
-    }
+    Response::success(
+        'Payment status retrieved successfully.',
+        [
+            'vortex_transaction_id' => $data['vortex_transaction_id'],
+            'payment_status'        => $paymentStatus,
+            'redirect_url'          => $data['redirect_url'] ?? null,
+            'amount'                => (float) ($data['amount'] ?? 0),
+            'currency'              => $data['currency'] ?? 'INR'
+        ],
+        200
+    );
 
 } catch (\Throwable $e) {
     Logger::error('Checkout payment status unexpected error: ' . $e->getMessage());

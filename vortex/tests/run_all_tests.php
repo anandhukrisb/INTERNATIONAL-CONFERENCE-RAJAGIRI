@@ -22,6 +22,16 @@ require_once __DIR__ . '/test_payment_verification.php';
 require_once __DIR__ . '/test_refund.php';
 require_once __DIR__ . '/test_webhook.php';
 require_once __DIR__ . '/test_security.php';
+require_once __DIR__ . '/test_rbac.php';
+require_once __DIR__ . '/test_portal.php';
+require_once __DIR__ . '/test_audit_logger.php';
+require_once __DIR__ . '/test_notifications.php';
+require_once __DIR__ . '/test_modular_admin.php';
+require_once __DIR__ . '/test_client_onboarding.php';
+require_once __DIR__ . '/test_global_search.php';
+require_once __DIR__ . '/test_dark_mode.php';
+require_once __DIR__ . '/test_notification_center.php';
+require_once __DIR__ . '/test_webhook_queue.php';
 
 echo "========================================\n";
 echo " STARTING VORTEX TEST SUITE RUNNER\n";
@@ -125,6 +135,56 @@ $securityPass = count(TestHelper::getCounts()['failures']) === $beforeFailures;
 $suiteResults['Security'] = $securityPass ? 'PASS' : 'FAIL';
 $suiteResults['Database'] = $securityPass ? 'PASS' : 'FAIL';
 $suiteResults['Single Redirect'] = $securityPass ? 'PASS' : 'FAIL';
+
+// 11. Role-Based Access Control (RBAC)
+$beforeFailures = count(TestHelper::getCounts()['failures']);
+run_rbac_tests();
+$suiteResults['RBAC'] = count(TestHelper::getCounts()['failures']) === $beforeFailures ? 'PASS' : 'FAIL';
+
+// 12. Merchant Client Portal & Tenant Isolation
+$beforeFailures = count(TestHelper::getCounts()['failures']);
+run_portal_tests();
+$suiteResults['Merchant Portal'] = count(TestHelper::getCounts()['failures']) === $beforeFailures ? 'PASS' : 'FAIL';
+
+// 13. Enterprise Audit Trail & Governance
+$beforeFailures = count(TestHelper::getCounts()['failures']);
+run_audit_logger_tests();
+$suiteResults['Audit Trail'] = count(TestHelper::getCounts()['failures']) === $beforeFailures ? 'PASS' : 'FAIL';
+
+// 14. Real-Time Client Notifications & Alerts
+$beforeFailures = count(TestHelper::getCounts()['failures']);
+run_notifications_tests();
+$suiteResults['Notifications'] = count(TestHelper::getCounts()['failures']) === $beforeFailures ? 'PASS' : 'FAIL';
+
+// 15. Modular Admin Dashboard & Component Structure
+$beforeFailures = count(TestHelper::getCounts()['failures']);
+run_modular_admin_tests();
+$suiteResults['Modular Admin'] = count(TestHelper::getCounts()['failures']) === $beforeFailures ? 'PASS' : 'FAIL';
+
+// 16. Client Onboarding Wizard & Webhook Testing
+$beforeFailures = count(TestHelper::getCounts()['failures']);
+run_client_onboarding_tests();
+$suiteResults['Client Onboarding'] = count(TestHelper::getCounts()['failures']) === $beforeFailures ? 'PASS' : 'FAIL';
+
+// 17. Global Gateway Search Engine
+$beforeFailures = count(TestHelper::getCounts()['failures']);
+run_global_search_tests();
+$suiteResults['Global Search'] = count(TestHelper::getCounts()['failures']) === $beforeFailures ? 'PASS' : 'FAIL';
+
+// 18. Google-Coloured Dark Mode & Theme Toggle
+$beforeFailures = count(TestHelper::getCounts()['failures']);
+run_dark_mode_tests();
+$suiteResults['Dark Mode Toggle'] = count(TestHelper::getCounts()['failures']) === $beforeFailures ? 'PASS' : 'FAIL';
+
+// 19. In-App Notification Center & Gateway Alerts
+$beforeFailures = count(TestHelper::getCounts()['failures']);
+run_notification_center_tests();
+$suiteResults['Notification Center'] = count(TestHelper::getCounts()['failures']) === $beforeFailures ? 'PASS' : 'FAIL';
+
+// 20. Outbound Webhook Retry Queue (Exponential Backoff: 3, 9, 27 min)
+$beforeFailures = count(TestHelper::getCounts()['failures']);
+run_webhook_queue_tests();
+$suiteResults['Webhook Retry Queue'] = count(TestHelper::getCounts()['failures']) === $beforeFailures ? 'PASS' : 'FAIL';
 
 // ------------------------------------------------------------
 // 4. Safe Resource Cleanup

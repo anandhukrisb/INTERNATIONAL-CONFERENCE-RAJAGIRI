@@ -28,6 +28,7 @@ class Payment
      * Database connection.
      */
     private $db;
+    private $lastRazorpayError = null;
 
 
     /**
@@ -256,7 +257,8 @@ class Payment
         $email,
         $mobile,
         $amount,
-        $currency
+        $currency,
+        $isTestMode = 0
     ) {
         $query = "INSERT INTO transactions (
                     vortex_transaction_id,
@@ -266,9 +268,10 @@ class Payment
                     customer_mobile,
                     amount,
                     currency,
-                    status
+                    status,
+                    is_test_mode
                   )
-                  VALUES (?, ?, ?, ?, ?, ?, ?, 'PENDING')";
+                  VALUES (?, ?, ?, ?, ?, ?, ?, 'PENDING', ?)";
 
 
         $statement = $this->db->prepare($query);
@@ -281,7 +284,8 @@ class Payment
             $email,
             $mobile,
             $amount,
-            $currency
+            $currency,
+            $isTestMode
         ]);
 
 
@@ -329,16 +333,29 @@ class Payment
     private function createRazorpayOrder(
         $amount,
         $currency,
-        $vortexTransactionId
+        $vortexTransactionId,
+        $isTestMode = 0
     ) {
         try {
 
             /**
              * Create Razorpay SDK object.
              */
+            if ($isTestMode) {
+                $keyId = trim($_ENV['RAZORPAY_TEST_KEY_ID'] ?? $_ENV['RAZORPAY_KEY_ID'] ?? getenv('RAZORPAY_TEST_KEY_ID') ?: (getenv('RAZORPAY_KEY_ID') ?: 'rzp_test_SzpEmCgPhS6q2u'));
+                $keySecret = trim($_ENV['RAZORPAY_TEST_KEY_SECRET'] ?? $_ENV['RAZORPAY_KEY_SECRET'] ?? getenv('RAZORPAY_TEST_KEY_SECRET') ?: (getenv('RAZORPAY_KEY_SECRET') ?: 'Aoj0qRP2XI7jXh66MTssn9f3'));
+            } else {
+                $keyId = trim($_ENV['RAZORPAY_LIVE_KEY_ID'] ?? $_ENV['RAZORPAY_KEY_ID'] ?? getenv('RAZORPAY_LIVE_KEY_ID') ?: (getenv('RAZORPAY_KEY_ID') ?: 'rzp_live_T1nKWvHiz4Mqkq'));
+                $keySecret = trim($_ENV['RAZORPAY_LIVE_KEY_SECRET'] ?? $_ENV['RAZORPAY_KEY_SECRET'] ?? getenv('RAZORPAY_LIVE_KEY_SECRET') ?: (getenv('RAZORPAY_KEY_SECRET') ?: 'MSnDGsBR6PJ9mvuUZXJB05VN'));
+            }
+
+            if (empty($keyId) || empty($keySecret)) {
+                throw new Exception("Razorpay API credentials not found in environment.");
+            }
+
             $razorpay = new \Razorpay\Api\Api(
-                $_ENV['RAZORPAY_KEY_ID'],
-                $_ENV['RAZORPAY_KEY_SECRET']
+                $keyId,
+                $keySecret
             );
 
 
@@ -382,11 +399,8 @@ class Payment
 
 
         } catch (\Throwable $e) {
+            $this->lastRazorpayError = $e->getMessage();
 
-            /**
-             * Do NOT expose the Razorpay technical error
-             * to the external developer.
-             */
             Logger::error(
                 'Razorpay order creation failed. '
                 . 'Vortex Transaction ID: '
@@ -444,7 +458,8 @@ class Payment
         $email,
         $mobile,
         $amount,
-        $currency
+        $currency,
+        $isTestMode = 0
     ) {
         try {
 
@@ -503,7 +518,8 @@ class Payment
                 $email,
                 $mobile,
                 $amount,
-                strtoupper(trim($currency))
+                strtoupper(trim($currency)),
+                $isTestMode
             );
 
 
@@ -514,7 +530,8 @@ class Payment
             $razorpayOrder = $this->createRazorpayOrder(
                 $amount,
                 $currency,
-                $vortexTransactionId
+                $vortexTransactionId,
+                $isTestMode
             );
 
 
@@ -545,10 +562,10 @@ class Payment
                 );
 
 
+                $detailedError = !empty($this->lastRazorpayError) ? ' (' . $this->lastRazorpayError . ')' : '';
                 return [
                     'success' => false,
-                    'message' =>
-                        'Unable to create Razorpay order.'
+                    'message' => 'Unable to create Razorpay order' . $detailedError
                 ];
             }
 

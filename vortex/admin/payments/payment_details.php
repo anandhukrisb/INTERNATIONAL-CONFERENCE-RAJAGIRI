@@ -8,13 +8,34 @@
  * ------------------------------------------------------------
  */
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+if (empty($_SESSION['vortex_admin_id'])) {
+    header('Location: ../login.php');
+    exit;
+}
+
 require_once __DIR__ . '/../../classes/Database.php';
 require_once __DIR__ . '/../../classes/Logger.php';
+require_once __DIR__ . '/../../classes/TransactionTimeline.php';
 
 $pageTitle = "Vortex Transaction Details & Search";
 $activeNav = "payments";
 
-$txnParam = trim((string)($_GET['vortex_transaction_id'] ?? $_GET['id'] ?? $_GET['txn_id'] ?? $_GET['q'] ?? ''));
+$txnParam = trim((string)($_GET['vortex_transaction_id'] ?? $_GET['id'] ?? $_GET['txn_id'] ?? $_GET['q'] ?? $_GET['search'] ?? $_GET['query'] ?? ''));
+
+// Fetch top recent transactions for Quick Switcher
+$recentSwitcherTx = [];
+try {
+    $db = Database::getInstance()->getConnection();
+    $recentSwitcherTx = $db->query("SELECT id, vortex_transaction_id, amount, status, razorpay_payment_id FROM transactions ORDER BY id DESC LIMIT 8")->fetchAll(PDO::FETCH_ASSOC);
+
+    // If no search parameter provided, default to the most recent transaction so the page is never blank!
+    if ($txnParam === '' && !empty($recentSwitcherTx)) {
+        $txnParam = $recentSwitcherTx[0]['vortex_transaction_id'];
+    }
+} catch (\Throwable $e) {}
 
 $transaction     = null;
 $apiClient       = null;
@@ -22,6 +43,7 @@ $event           = null;
 $webhookLogs     = [];
 $refundLogs      = [];
 $sessionLogs     = [];
+$timelineEvents  = [];
 $errorMessage    = null;
 $allSearchResults= [];
 
@@ -35,15 +57,21 @@ if ($txnParam !== '') {
                     FROM transactions t
                     LEFT JOIN events e ON t.event_id = e.event_id
                     LEFT JOIN api_clients c ON t.api_client_id = c.id
-                    WHERE t.vortex_transaction_id = :param
+                    WHERE t.vortex_transaction_id = :param1
                        OR t.id = :num
-                       OR t.razorpay_order_id = :param
-                       OR t.razorpay_payment_id = :param
-                       OR t.customer_email = :param
+                       OR t.razorpay_order_id = :param2
+                       OR t.razorpay_payment_id = :param3
+                       OR t.customer_email = :param4
                     ORDER BY t.id DESC";
 
         $stmtTx = $db->prepare($queryTx);
-        $stmtTx->execute(['param' => $txnParam, 'num' => $numericId]);
+        $stmtTx->execute([
+            'param1' => $txnParam,
+            'param2' => $txnParam,
+            'param3' => $txnParam,
+            'param4' => $txnParam,
+            'num'    => $numericId,
+        ]);
         $allSearchResults = $stmtTx->fetchAll(PDO::FETCH_ASSOC);
 
         if (!empty($allSearchResults)) {
@@ -109,6 +137,13 @@ if ($txnParam !== '') {
                 $sessionLogs = [];
             }
 
+            // 7. Fetch Transaction Timeline (Ordered Audit Trail)
+            try {
+                $timelineEvents = TransactionTimeline::getTimeline($vortexTxId, $txDbId);
+            } catch (\Throwable $e) {
+                $timelineEvents = [];
+            }
+
         } else {
             $errorMessage = "No record found matching identifier: \"" . htmlspecialchars($txnParam) . "\"";
         }
@@ -137,6 +172,33 @@ require_once __DIR__ . '/../includes/header.php';
         <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">
             * You can search by Vortex Transaction ID (`VTX_...`), Database ID, Razorpay Order ID (`order_...`), Razorpay Payment ID (`pay_...`), or Customer Email.
         </p>
+
+        <!-- Quick Switcher Bar -->
+        <?php if (!empty($recentSwitcherTx)): ?>
+            <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-color); display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-gray); text-transform: uppercase;">Quick Switch:</span>
+                <?php foreach ($recentSwitcherTx as $rtx): ?>
+                    <?php 
+                        $isActive = ($transaction && $transaction['vortex_transaction_id'] === $rtx['vortex_transaction_id']);
+                        $st = strtoupper((string)$rtx['status']);
+                        $badgeStyle = 'background:#f1f5f9; color:#475569;';
+                        if ($st === 'SUCCESS') $badgeStyle = 'background:var(--success-bg); color:var(--success-text);';
+                        elseif ($st === 'FAILED') $badgeStyle = 'background:var(--danger-bg); color:var(--danger-text);';
+                        elseif ($st === 'REFUNDED') $badgeStyle = 'background:var(--purple-bg); color:var(--purple-text);';
+                        elseif ($st === 'DISPUTED') $badgeStyle = 'background:#fee2e2; color:#b91c1c;';
+                        elseif ($st === 'PENDING') $badgeStyle = 'background:var(--warning-bg); color:var(--warning-text);';
+                    ?>
+                    <a href="payment_details.php?vortex_transaction_id=<?= urlencode($rtx['vortex_transaction_id']) ?>" 
+                       class="btn btn-secondary btn-sm" 
+                       style="<?= $isActive ? 'border-color: var(--primary-blue); background: var(--primary-light); font-weight: 700;' : '' ?> font-size: 0.78rem; padding: 3px 8px;">
+                        <span class="font-mono" style="font-size: 0.75rem;"><?= htmlspecialchars(substr($rtx['vortex_transaction_id'], 0, 15)) ?>...</span>
+                        <span style="display:inline-block; padding: 1px 5px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; <?= $badgeStyle ?>">
+                            <?= htmlspecialchars($st === 'PENDING' ? 'UNPAID' : $st) ?>
+                        </span>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -164,14 +226,29 @@ require_once __DIR__ . '/../includes/header.php';
     <div class="section-card">
         <div class="section-header">
             <h2>Transaction Master Overview: <span class="font-mono"><?= htmlspecialchars($transaction['vortex_transaction_id']) ?></span></h2>
-            <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
                 <?php
                     $st = strtoupper((string)$transaction['status']);
                     if ($st === 'SUCCESS') echo '<span class="badge badge-success">✓ SUCCESS</span>';
                     elseif ($st === 'FAILED') echo '<span class="badge badge-danger">✕ FAILED</span>';
                     elseif ($st === 'REFUNDED') echo '<span class="badge badge-refunded">↩ REFUNDED</span>';
-                    else echo '<span class="badge badge-pending">⏳ ' . htmlspecialchars($st) . '</span>';
+                    elseif ($st === 'DISPUTED') echo '<span class="badge badge-disputed">⚠️ DISPUTED</span>';
+                    else {
+                        $displaySt = ($st === 'PENDING') ? 'UNPAID' : $st;
+                        echo '<span class="badge badge-pending">⏳ ' . htmlspecialchars($displaySt) . '</span>';
+                    }
+
+                    if (!empty($webhookLogs[0]['event_type'])) {
+                        echo ' <span class="badge badge-event" title="Latest Razorpay Webhook Event">📡 ' . htmlspecialchars($webhookLogs[0]['event_type']) . '</span>';
+                    }
                 ?>
+                <?php if ($st === 'SUCCESS' && RBAC::can('payments.refund')): ?>
+                    <button type="button" class="btn btn-sm"
+                            onclick="openRefundModal('<?= htmlspecialchars($transaction['vortex_transaction_id'], ENT_QUOTES) ?>', '<?= htmlspecialchars($transaction['amount'], ENT_QUOTES) ?>', '<?= htmlspecialchars(addslashes($transaction['customer_email'] ?? ''), ENT_QUOTES) ?>')"
+                            style="background-color: #dc2626; color: white; border: none; font-weight: 700; padding: 6px 14px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem; box-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);">
+                        💸 Process Refund
+                    </button>
+                <?php endif; ?>
             </div>
         </div>
         <div class="section-body">
@@ -195,7 +272,12 @@ require_once __DIR__ . '/../includes/header.php';
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">Payment Status</span>
-                    <span class="detail-value"><strong><?= htmlspecialchars($transaction['status']) ?></strong></span>
+                    <span class="detail-value">
+                        <strong><?= htmlspecialchars($transaction['status'] === 'PENDING' ? 'UNPAID' : $transaction['status']) ?></strong>
+                        <?php if (!empty($webhookLogs[0]['event_type'])): ?>
+                            <span class="badge badge-event" style="margin-left: 6px;">📡 <?= htmlspecialchars($webhookLogs[0]['event_type']) ?></span>
+                        <?php endif; ?>
+                    </span>
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">Customer Email</span>
@@ -217,7 +299,80 @@ require_once __DIR__ . '/../includes/header.php';
         </div>
     </div>
 
-    <!-- 2. Gateway Integration & Processor Details -->
+    <!-- 2. Chronological Status Lifecycle & Timeline History -->
+    <div class="section-card">
+        <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <h2>📜 Status Lifecycle History & Audit Trail (<?= count($timelineEvents) ?>)</h2>
+            <span style="font-size: 0.85rem; color: var(--text-muted);">Sequential order of customer attempts, failures, chargebacks, and refunds</span>
+        </div>
+        <div class="section-body" style="padding: 0;">
+            <?php if (empty($timelineEvents)): ?>
+                <div style="padding: 24px; color: var(--text-muted);">
+                    No lifecycle events recorded yet for this transaction. When a customer attempts, fails, chargebacks, or is refunded, all events are logged here in chronological order.
+                </div>
+            <?php else: ?>
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">#</th>
+                                <th>Lifecycle Event</th>
+                                <th>Resulting Status</th>
+                                <th>Payment / Reference ID</th>
+                                <th>Amount</th>
+                                <th>Reason / Explanation</th>
+                                <th>Source</th>
+                                <th>Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($timelineEvents as $idx => $item): ?>
+                                <tr>
+                                    <td style="font-weight: 700; color: var(--text-muted);"><?= $idx + 1 ?></td>
+                                    <td>
+                                        <span class="badge badge-event" style="font-size: 0.76rem; font-weight: 600;">
+                                            <?= htmlspecialchars($item['event_type']) ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <?php
+                                        $itSt = strtoupper((string)$item['status']);
+                                        if ($itSt === 'SUCCESS') echo '<span class="badge badge-success">✓ SUCCESS</span>';
+                                        elseif ($itSt === 'FAILED') echo '<span class="badge badge-failed">✕ FAILED</span>';
+                                        elseif ($itSt === 'REFUNDED') echo '<span class="badge badge-refunded">↩ REFUNDED</span>';
+                                        elseif ($itSt === 'DISPUTED') echo '<span class="badge badge-disputed">⚠️ DISPUTED</span>';
+                                        else echo '<span class="badge badge-pending">⏳ ' . htmlspecialchars($itSt === 'PENDING' ? 'UNPAID' : $itSt) . '</span>';
+                                        ?>
+                                    </td>
+                                    <td>
+                                        <span class="font-mono" style="font-size: 0.82rem;">
+                                            <?= htmlspecialchars($item['payment_id'] ?: ($item['order_id'] ?: 'N/A')) ?>
+                                        </span>
+                                    </td>
+                                    <td style="font-weight: 600;">
+                                        <?= !empty($item['amount']) ? (htmlspecialchars($item['currency'] ?? 'INR') . ' ₹' . number_format((float)$item['amount'], 2)) : '—' ?>
+                                    </td>
+                                    <td style="max-width: 320px; font-size: 0.88rem; color: var(--text-main);">
+                                        <?= htmlspecialchars($item['reason'] ?? 'Status updated') ?>
+                                    </td>
+                                    <td>
+                                        <span style="font-size: 0.75rem; color: var(--text-muted); background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">
+                                            <?= htmlspecialchars($item['source']) ?>
+                                        </span>
+                                    </td>
+                                    <td style="font-size: 0.82rem; color: var(--text-muted); white-space: nowrap;">
+                                        <?= htmlspecialchars($item['created_at']) ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- 3. Gateway Integration & Processor Details -->
     <div class="section-card">
         <div class="section-header">
             <h2>💳 Payment Processor (Razorpay) Details</h2>
@@ -405,4 +560,5 @@ require_once __DIR__ . '/../includes/header.php';
     </div>
 <?php endif; ?>
 
+<?php require_once __DIR__ . '/../includes/refund_modal.php'; ?>
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

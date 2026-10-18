@@ -1,4 +1,7 @@
 <?php
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
 
 /**
  * ------------------------------------------------------------
@@ -28,7 +31,26 @@ $sessionData = $sessionResult['data'] ?? null;
 $errorMessage = $sessionResult['message'] ?? 'Invalid or expired checkout session.';
 $errorCode = $sessionResult['error_code'] ?? 400;
 
-$razorpayKeyId = trim($_ENV['RAZORPAY_KEY_ID'] ?? '');
+require_once __DIR__ . '/classes/Database.php';
+
+// Ensure is_test_mode is accurately resolved even if CheckoutSession.php query on server is not updated
+if ($isValid && $sessionData && !isset($sessionData['is_test_mode']) && !empty($sessionData['transaction_id'])) {
+    try {
+        $db = Database::getInstance()->getConnection();
+        $stmtTx = $db->prepare("SELECT is_test_mode FROM transactions WHERE id = ? LIMIT 1");
+        $stmtTx->execute([$sessionData['transaction_id']]);
+        $sessionData['is_test_mode'] = (int) $stmtTx->fetchColumn();
+    } catch (\Throwable $e) {
+        Logger::error("Failed to fetch is_test_mode for transaction in checkout: " . $e->getMessage());
+    }
+}
+
+$isTestMode = isset($sessionData['is_test_mode']) ? ((int) $sessionData['is_test_mode'] === 1) : false;
+$razorpayKeyId = trim(
+    $isTestMode
+        ? ($_ENV['RAZORPAY_TEST_KEY_ID'] ?? $_ENV['RAZORPAY_KEY_ID'] ?? '')
+        : ($_ENV['RAZORPAY_LIVE_KEY_ID'] ?? $_ENV['RAZORPAY_KEY_ID'] ?? '')
+);
 
 // Check if transaction is already completed
 $isAlreadyPaid = false;
@@ -47,13 +69,13 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0b0f19;
-            --bg-card: rgba(23, 30, 48, 0.85);
-            --border-color: rgba(255, 255, 255, 0.1);
-            --border-accent: rgba(99, 102, 241, 0.4);
+            --bg-page: #eef2f9;
+            --card-navy: #0A1938;
+            --card-blue: #3165EC;
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
-            --accent-purple: #6366f1;
+            --text-dark: #1e293b;
+            --accent-purple: #133989;
             --accent-cyan: #06b6d4;
             --accent-emerald: #10b981;
             --accent-rose: #f43f5e;
@@ -68,11 +90,11 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
         }
 
         body {
-            background-color: var(--bg-primary);
+            background-color: var(--bg-page);
             background-image: 
-                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.18) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.15) 0px, transparent 50%);
-            color: var(--text-main);
+                radial-gradient(circle at 10% 20%, rgba(200, 220, 255, 0.6) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(220, 230, 255, 0.6) 0%, transparent 50%);
+            color: var(--text-dark);
             font-family: var(--font-main);
             min-height: 100vh;
             display: flex;
@@ -82,94 +104,168 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
             padding: 1.5rem;
         }
 
-        .checkout-container {
+        .checkout-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             width: 100%;
-            max-width: 480px;
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 2.25rem;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-            position: relative;
-            overflow: hidden;
+            max-width: 540px;
+            gap: 1.5rem;
         }
 
-        .checkout-container::before {
-            content: '';
+        .checkout-card {
+            width: 100%;
+            max-width: 540px;
+            background-color: var(--card-navy);
+            border-radius: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(14, 23, 62, 0.2);
+            padding: 2.25rem 2rem;
+            color: white;
+            z-index: 10;
+            animation: cardSpringIn 1.2s cubic-bezier(0.25, 1.3, 0.5, 1) forwards;
+        }
+
+        @keyframes cardSpringIn {
+            0% {
+                transform: translateY(-80px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .card-bg-shape {
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan));
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            background-size: cover;
+            background-position: center;
+            transform: translateY(-100%);
+            opacity: 0;
         }
 
-        .brand-header {
+        .shape-1 {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 800' preserveAspectRatio='none'%3E%3Cpath d='M500,0 L0,0 L0,300 C150,550 350,150 500,400 Z' fill='%230A1938' opacity='0.8'/%3E%3C/svg%3E");
+            animation: slideDownShape 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards;
+        }
+
+        .shape-2 {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 800' preserveAspectRatio='none'%3E%3Cpath d='M500,0 L0,0 L0,200 C200,400 300,50 500,250 Z' fill='%23133989' opacity='0.9'/%3E%3C/svg%3E");
+            animation: slideDownShape 1.3s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards;
+        }
+
+        @keyframes slideDownShape {
+            0% {
+                transform: translateY(-100%) scaleY(1.2);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0) scaleY(1);
+                opacity: 1;
+            }
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 2;
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            gap: 1.75rem;
+        }
+
+        .card-header {
+            display: flex;
             justify-content: space-between;
-            margin-bottom: 1.75rem;
+            align-items: center;
         }
 
-        .brand {
+        .card-brand {
             display: flex;
             align-items: center;
-            gap: 0.65rem;
+            gap: 0;
         }
 
-        .brand-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+        .brand-logo {
+            width: 28px;
+            height: 28px;
+            background: white;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
+            color: var(--card-navy);
+            font-weight: 800;
+            font-size: 1rem;
+            transform: rotate(-10deg);
+        }
+
+        .brand-name {
             font-size: 1.1rem;
-        }
-
-        .brand-title {
-            font-size: 1.25rem;
             font-weight: 700;
-            letter-spacing: -0.01em;
-            color: #fff;
+            letter-spacing: 0.02em;
         }
 
-        .session-timer {
+        .timer-badge {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            border-radius: 12px;
+            padding: 0.4rem 0.75rem;
             font-family: var(--font-mono);
-            font-size: 0.75rem;
-            padding: 0.25rem 0.55rem;
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid var(--border-color);
-            color: #38bdf8;
+            font-size: 0.85rem;
+            color: #fca5a5;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .timer-badge.safe {
+            color: #86efac;
         }
 
-        .amount-display {
-            background: rgba(11, 15, 25, 0.6);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 1.25rem;
-            text-align: center;
-            margin-bottom: 1.5rem;
+        .balance-section {
+            margin-top: 0.5rem;
         }
 
-        .amount-label {
+        .balance-label {
             font-size: 0.8rem;
-            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            color: #ffffff;
             margin-bottom: 0.25rem;
+            font-weight: 500;
         }
 
-        .amount-value {
-            font-size: 2.25rem;
+        .balance-amount {
+            font-size: 2.75rem;
             font-weight: 700;
-            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             letter-spacing: -0.02em;
+        }
+
+        .currency-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-top: 1rem;
+        }
+
+        .details-container {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 16px;
+            padding: 1.25rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .detail-row {
@@ -177,135 +273,177 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
             justify-content: space-between;
             align-items: center;
             padding: 0.75rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            font-size: 0.88rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.95rem;
         }
 
         .detail-row:last-of-type {
             border-bottom: none;
-            margin-bottom: 1.5rem;
+            padding-bottom: 0;
+        }
+
+        .detail-row:first-of-type {
+            padding-top: 0;
         }
 
         .detail-label {
-            color: var(--text-muted);
+            color: #ffffff;
+            font-weight: 500;
         }
 
         .detail-value {
-            font-weight: 500;
-            color: #fff;
+            font-weight: 700;
+            color: #ffffff;
+            text-align: right;
         }
 
         .btn-pay {
             width: 100%;
-            background: linear-gradient(135deg, var(--accent-purple), #4f46e5);
-            color: #fff;
+            background: white;
+            color: var(--card-navy);
             border: none;
-            border-radius: 12px;
-            padding: 0.95rem 1.5rem;
+            border-radius: 14px;
+            padding: 1.1rem 1.5rem;
             font-family: var(--font-main);
-            font-size: 1.05rem;
-            font-weight: 600;
+            font-size: 1.15rem;
+            font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            margin-top: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-pay::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 80%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(49, 101, 236, 0.5), transparent);
+            transform: skewX(-25deg);
+            animation: shinySweep 2s ease-in-out 1s forwards;
+            pointer-events: none;
+        }
+
+        @keyframes shinySweep {
+            0% { left: -150%; }
+            100% { left: 200%; }
         }
 
         .btn-pay:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 22px rgba(99, 102, 241, 0.6);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+            background: #f8fafc;
         }
 
         .btn-pay:disabled {
-            opacity: 0.6;
+            opacity: 0.7;
             cursor: not-allowed;
             transform: none;
         }
 
-        .error-card {
-            text-align: center;
-            padding: 2rem 1rem;
-        }
-
-        .error-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: rgba(244, 63, 94, 0.15);
-            color: var(--accent-rose);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.75rem;
-            margin: 0 auto 1.25rem;
-            border: 1px solid rgba(244, 63, 94, 0.3);
-        }
-
-        .error-title {
-            font-size: 1.25rem;
+        .btn-back {
+            align-self: flex-start;
+            background: transparent;
+            color: var(--text-dark);
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 0.5rem 1rem;
+            font-family: var(--font-main);
+            font-size: 0.95rem;
             font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
             margin-bottom: 0.5rem;
-            color: #fff;
+            text-decoration: none;
+        }
+        .btn-back:hover {
+            background: #f1f5f9;
         }
 
-        .error-desc {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
-
-        .success-card {
+        .error-card, .success-card {
+            background: white;
+            border-radius: 20px;
             text-align: center;
-            padding: 1.5rem 0.5rem;
+            padding: 3rem 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            width: 100%;
         }
 
-        .success-icon {
-            width: 56px;
-            height: 56px;
+        .status-icon {
+            width: 64px;
+            height: 64px;
             border-radius: 50%;
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--accent-emerald);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.75rem;
-            margin: 0 auto 1.25rem;
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            font-size: 2rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        .status-error {
+            background: rgba(244, 63, 94, 0.1);
+            color: var(--accent-rose);
+        }
+
+        .status-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-emerald);
+        }
+
+        .status-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+
+        .status-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
         }
 
         .alert-box {
-            padding: 0.75rem 1rem;
-            border-radius: 10px;
-            font-size: 0.82rem;
-            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            margin-top: 1.5rem;
             display: none;
         }
 
         .alert-error {
-            background: rgba(244, 63, 94, 0.12);
-            border: 1px solid rgba(244, 63, 94, 0.3);
-            color: #fca5a5;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #ef4444;
         }
 
         .alert-info {
-            background: rgba(6, 182, 212, 0.12);
-            border: 1px solid rgba(6, 182, 212, 0.3);
-            color: #67e8f9;
+            background: #f0fdfa;
+            border: 1px solid #ccfbf1;
+            color: #0d9488;
         }
 
         .alert-success {
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            color: #6ee7b7;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #16a34a;
         }
 
         .spinner {
             display: inline-block;
-            width: 14px;
-            height: 14px;
+            width: 18px;
+            height: 18px;
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
             border-top-color: #fff;
@@ -320,35 +458,26 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
 
         .footer-secure {
             text-align: center;
-            margin-top: 1.25rem;
-            font-size: 0.78rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
             color: var(--text-muted);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.4rem;
+            gap: 0.5rem;
         }
     </style>
 </head>
 <body>
 
-<div class="checkout-container">
-    <div class="brand-header">
-        <div class="brand">
-            <div class="brand-icon">⚡</div>
-            <div class="brand-title">VORTEX PAYMENT</div>
-        </div>
-        <?php if ($isValid && !$isAlreadyPaid): ?>
-            <div class="session-timer" id="timer-display">5:00</div>
-        <?php endif; ?>
-    </div>
+<div class="checkout-wrapper">
 
     <?php if (!$isValid): ?>
         <!-- Invalid or Expired Session -->
         <div class="error-card">
-            <div class="error-icon">✕</div>
-            <div class="error-title">Unable to Process Payment</div>
-            <div class="error-desc"><?= htmlspecialchars($errorMessage) ?></div>
+            <div class="status-icon status-error">✕</div>
+            <div class="status-title">Unable to Process Payment</div>
+            <div class="status-desc"><?= htmlspecialchars($errorMessage) ?></div>
         </div>
 
     <?php elseif ($isAlreadyPaid): ?>
@@ -366,47 +495,71 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
             ]);
         ?>
         <div class="success-card">
-            <div class="success-icon">✓</div>
-            <div class="error-title">Payment Already Completed</div>
-            <div class="error-desc">This transaction (<?= htmlspecialchars($sessionData['vortex_transaction_id']) ?>) has already been processed successfully.</div>
-            <div style="margin-top: 1.5rem;">
-                <a href="<?= htmlspecialchars($alreadyPaidRedirectUrl) ?>" style="color: var(--accent-cyan); text-decoration: none; font-size: 0.95rem; font-weight: 500;">Return to Merchant →</a>
+            <div class="status-icon status-success">✓</div>
+            <div class="status-title">Payment Already Completed</div>
+            <div class="status-desc">This transaction (<?= htmlspecialchars($sessionData['vortex_transaction_id']) ?>) has already been processed successfully.</div>
+            <div style="margin-top: 2rem;">
+                <a href="<?= htmlspecialchars($alreadyPaidRedirectUrl) ?>" style="color: var(--card-blue); text-decoration: none; font-size: 1rem; font-weight: 600;">Return to Merchant →</a>
             </div>
         </div>
 
     <?php else: ?>
         <!-- Valid Active Checkout Session -->
-        <div class="amount-display">
-            <div class="amount-label">Total Amount Due</div>
-            <div class="amount-value">
-                <?= $sessionData['currency'] === 'INR' ? '₹' : '$' ?><?= number_format((float)$sessionData['amount'], 2) ?>
-                <span style="font-size: 0.9rem; font-weight: 500; color: var(--text-muted);"><?= htmlspecialchars($sessionData['currency']) ?></span>
+        
+        <a href="javascript:history.back()" class="btn-back">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Back
+        </a>
+
+        <!-- The Single Checkout Card -->
+        <div class="checkout-card">
+            <div class="card-bg-shape shape-1"></div>
+            <div class="card-bg-shape shape-2"></div>
+            
+            <div class="card-content">
+                <div class="card-header">
+                    <div class="card-brand">
+                        <img src="https://res.cloudinary.com/dswfp5fwx/image/upload/v1789740193/VortexLogo_ssrpym.png" alt="Vortex Logo" style="height: 38px; width: auto; object-fit: contain; margin-right: -4px;">
+                        <div class="brand-name">VORTEX</div>
+                    </div>
+                    <div class="timer-badge safe" id="timer-display">
+                        ⏱ 5:00
+                    </div>
+                </div>
+
+                <div class="balance-section">
+                    <div class="balance-label">Total Amount Due</div>
+                    <div class="balance-amount">
+                        <?= $sessionData['currency'] === 'INR' ? '₹' : '$' ?><?= number_format((float)$sessionData['amount'], 2) ?>
+                        <span class="currency-label"><?= htmlspecialchars($sessionData['currency']) ?></span>
+                    </div>
+                </div>
+
+                <div class="details-container">
+                    <div class="detail-row">
+                        <span class="detail-label">Event</span>
+                        <span class="detail-value"><?= htmlspecialchars($sessionData['event_name'] ?: $sessionData['event_id']) ?></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Email</span>
+                        <span class="detail-value"><?= htmlspecialchars($sessionData['customer_email']) ?></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Mobile</span>
+                        <span class="detail-value"><?= htmlspecialchars($sessionData['customer_mobile']) ?></span>
+                    </div>
+                </div>
+
+                <button class="btn-pay" id="pay-btn" onclick="launchRazorpayCheckout()">
+                    <span>Pay <?= $sessionData['currency'] === 'INR' ? '₹' : '$' ?><?= number_format((float)$sessionData['amount'], 2) ?></span>
+                </button>
+
+                <div class="alert-box alert-error" id="checkout-alert" style="margin-top:0;"></div>
             </div>
         </div>
 
-        <div class="detail-row">
-            <span class="detail-label">Event</span>
-            <span class="detail-value"><?= htmlspecialchars($sessionData['event_name'] ?: $sessionData['event_id']) ?></span>
-        </div>
-
-        <div class="detail-row">
-            <span class="detail-label">Customer Email</span>
-            <span class="detail-value"><?= htmlspecialchars($sessionData['customer_email']) ?></span>
-        </div>
-
-        <div class="detail-row">
-            <span class="detail-label">Customer Mobile</span>
-            <span class="detail-value"><?= htmlspecialchars($sessionData['customer_mobile']) ?></span>
-        </div>
-
-        <button class="btn-pay" id="pay-btn" onclick="launchRazorpayCheckout()">
-            <span>Pay <?= $sessionData['currency'] === 'INR' ? '₹' : '$' ?><?= number_format((float)$sessionData['amount'], 2) ?></span>
-        </button>
-
-        <div class="alert-box alert-error" id="checkout-alert"></div>
-
         <div class="footer-secure">
-            <span>🔒 Secured by Vortex Payment Gateway & Razorpay</span>
+            🔒 Secured by Vortex Payment Gateway & Razorpay
         </div>
     <?php endif; ?>
 </div>
@@ -450,7 +603,12 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
 
             const minutes = Math.floor(diff / 60000);
             const seconds = Math.floor((diff % 60000) / 1000);
-            timerEl.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            if (minutes > 1) {
+                timerEl.classList.add('safe');
+            } else {
+                timerEl.classList.remove('safe');
+            }
+            timerEl.innerHTML = `⏱ ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
         }, 1000);
     }
     startTimer();

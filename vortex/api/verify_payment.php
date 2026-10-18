@@ -103,7 +103,7 @@ try {
 
     $db = Database::getInstance()->getConnection();
 
-    $query = "SELECT id, vortex_transaction_id, razorpay_order_id, razorpay_payment_id, amount, currency, status
+    $query = "SELECT id, vortex_transaction_id, razorpay_order_id, razorpay_payment_id, amount, currency, status, api_client_id, is_test_mode
               FROM transactions
               WHERE vortex_transaction_id = ?
               LIMIT 1";
@@ -150,8 +150,13 @@ try {
     // 7. Verify Signature using Razorpay SDK
     // --------------------------------------------------------
 
-    $keyId = trim($_ENV['RAZORPAY_KEY_ID'] ?? '');
-    $keySecret = trim($_ENV['RAZORPAY_KEY_SECRET'] ?? '');
+    if (isset($transaction['is_test_mode']) && $transaction['is_test_mode'] == 1) {
+        $keyId = trim($_ENV['RAZORPAY_TEST_KEY_ID'] ?? $_ENV['RAZORPAY_KEY_ID'] ?? '');
+        $keySecret = trim($_ENV['RAZORPAY_TEST_KEY_SECRET'] ?? $_ENV['RAZORPAY_KEY_SECRET'] ?? '');
+    } else {
+        $keyId = trim($_ENV['RAZORPAY_LIVE_KEY_ID'] ?? $_ENV['RAZORPAY_KEY_ID'] ?? '');
+        $keySecret = trim($_ENV['RAZORPAY_LIVE_KEY_SECRET'] ?? $_ENV['RAZORPAY_KEY_SECRET'] ?? '');
+    }
 
     if (empty($keyId) || empty($keySecret)) {
         Logger::error('Payment verification failed: Razorpay credentials not configured in environment.');
@@ -195,6 +200,40 @@ try {
         $razorpaySignature,
         $transaction['id']
     ]);
+
+    require_once __DIR__ . '/../classes/Webhook.php';
+    $webhook = new Webhook();
+    $webhook->dispatchClientWebhook($transaction['vortex_transaction_id'], 'SUCCESS', $transaction['api_client_id']);
+
+    // Dispatch real-time Client Email/SMS Notification & In-App Notification Center Alert
+    try {
+        require_once __DIR__ . '/../classes/NotificationService.php';
+        require_once __DIR__ . '/../classes/NotificationCenter.php';
+
+        $fullTxStmt = $db->prepare("
+            SELECT t.*, e.title as event_name, c.client_name 
+            FROM transactions t 
+            LEFT JOIN events e ON t.event_id = e.event_id 
+            LEFT JOIN api_clients c ON t.api_client_id = c.id
+            WHERE t.id = ?
+        ");
+        $fullTxStmt->execute([$transaction['id']]);
+        $fullTx = $fullTxStmt->fetch(\PDO::FETCH_ASSOC) ?: $transaction;
+        NotificationService::notifyPaymentSuccess($fullTx);
+
+        // High-Value Transaction Alert (> ₹10,000 threshold)
+        if ((float)$transaction['amount'] >= 10000) {
+            NotificationCenter::triggerHighValueTxnAlert(
+                $transaction['vortex_transaction_id'],
+                (float)$transaction['amount'],
+                $transaction['customer_email'],
+                $fullTx['client_name'] ?? '',
+                (int)$transaction['api_client_id']
+            );
+        }
+    } catch (\Throwable $ne) {
+        Logger::error('Notification dispatch error on payment success: ' . $ne->getMessage());
+    }
 
     Logger::info(
         'Payment signature verified successfully. '

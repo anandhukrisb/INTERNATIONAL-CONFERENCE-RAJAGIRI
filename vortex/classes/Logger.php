@@ -36,6 +36,14 @@ class Logger
     }
 
     /**
+     * Log a warning message.
+     */
+    public static function warning($message)
+    {
+        self::writeLog("WARNING", $message);
+    }
+
+    /**
      * Write the log message into the log file.
      */
     private static function writeLog($type, $message)

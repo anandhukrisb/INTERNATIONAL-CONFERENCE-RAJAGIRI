@@ -2,17 +2,43 @@
 // backend/init_vortex_payment.php
 header('Content-Type: application/json');
 
-$env = parse_ini_file(__DIR__ . '/../.env');
+// 1. Load database & environment configuration
+require_once __DIR__ . '/db.php';
 
 // Vortex Gateway Configuration
-$vortexApiUrl = rtrim($env['VORTEX_API_URL'], '/') . '/create_payment_order.php';
-$vortexApiKey = $env['VORTEX_API_KEY'];
-$vortexApiSecret = $env['VORTEX_API_SECRET'];
-$vortexEventId = $env['VORTEX_EVENT_ID'];
+$isLocal = (!empty($_SERVER['HTTP_HOST']) && (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false));
+$rawApiUrl = $env['VORTEX_API_URL'] ?? getenv('VORTEX_API_URL') ?: '';
+
+if (empty($rawApiUrl)) {
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? null) == 443;
+    $protocol = $isHttps ? 'https://' : 'http://';
+    if ($isLocal) {
+        $rawApiUrl = $protocol . $_SERVER['HTTP_HOST'] . '/vortex/api';
+    } else {
+        $host = $_SERVER['HTTP_HOST'] ?? 'rpay.rajagiri.edu';
+        $rawApiUrl = $protocol . $host . '/api';
+    }
+}
+
+$vortexApiUrl = rtrim($rawApiUrl, '/') . '/create_payment_order.php';
+// Safety check: ensure URL has protocol and host
+if (!preg_match('#^https?://#i', $vortexApiUrl)) {
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? null) == 443;
+    $protocol = $isHttps ? 'https://' : 'http://';
+    $host = $_SERVER['HTTP_HOST'] ?? 'rpay.rajagiri.edu';
+    $vortexApiUrl = $protocol . $host . '/' . ltrim($vortexApiUrl, '/');
+}
+
+$vortexApiKey = $env['VORTEX_API_KEY'] ?? getenv('VORTEX_API_KEY') ?: '839109936a140f77e293b0c17c50173f';
+$vortexApiSecret = $env['VORTEX_API_SECRET'] ?? getenv('VORTEX_API_SECRET') ?: '0b48b7bd0f581246fc3f80130ba8c2e9';
+$vortexEventId = $env['VORTEX_EVENT_ID'] ?? getenv('VORTEX_EVENT_ID') ?: 'ICSW20261011MV3SALAS2FM';
 
 try {
-    // 1. Get raw input data
+    // 2. Get raw input data
     $json = file_get_contents('php://input');
+    if (($json === '' || $json === false) && php_sapi_name() === 'cli') {
+        $json = @file_get_contents('php://stdin');
+    }
     $data = json_decode($json, true);
     
     $regId = $data['registration_id'] ?? '';
@@ -20,8 +46,7 @@ try {
         throw new Exception("Registration ID is missing.");
     }
     
-    // 2. Fetch user data from database
-    require_once __DIR__ . '/db.php';
+    // 3. Fetch user data from database
     $stmt = $pdo->prepare("SELECT * FROM user_registrations WHERE registration_id = :reg_id LIMIT 1");
     $stmt->execute([':reg_id' => $regId]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -90,9 +115,26 @@ try {
     $stmtUpdate->execute([':txn_id' => $vortexTxnId, ':reg_id' => $regId]);
     
     // 6. Return Success Response
+    $paymentUrl = $result['data']['payment_url'] ?? '';
+
+    // Align checkout URL host with VORTEX_API_URL only if the gateway returned a mismatched host
+    $gatewayHost = parse_url($vortexApiUrl, PHP_URL_HOST);
+    $gatewayPath = parse_url($vortexApiUrl, PHP_URL_PATH) ?: '';
+    $gatewayBasePath = preg_replace('#/api/?.*$#i', '', $gatewayPath); // e.g. "/vortex" or ""
+    $gatewayScheme = parse_url($vortexApiUrl, PHP_URL_SCHEME) ?: 'https';
+
+    $paymentUrlHost = parse_url($paymentUrl, PHP_URL_HOST);
+    if ($gatewayHost && $paymentUrlHost && strcasecmp($gatewayHost, $paymentUrlHost) !== 0) {
+        $token = '';
+        if (preg_match('/[?&]token=([^&]+)/', $paymentUrl, $m)) {
+            $token = $m[1];
+        }
+        $paymentUrl = $gatewayScheme . '://' . $gatewayHost . rtrim($gatewayBasePath, '/') . '/checkout.php?token=' . $token;
+    }
+
     echo json_encode([
         'success' => true,
-        'payment_url' => $result['data']['payment_url'],
+        'payment_url' => $paymentUrl,
         'vortex_transaction_id' => $vortexTxnId
     ]);
 
