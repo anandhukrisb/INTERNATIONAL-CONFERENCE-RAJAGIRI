@@ -33,12 +33,20 @@ try {
         'has_abstract' => $hasAbstract
     ]);
 
+<<<<<<< HEAD
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'error' => 'Database error.'
+=======
 } catch (\Throwable $e) {
     error_log("check_email error: " . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'success' => false,
         'error' => 'A server error occurred while checking email.'
+>>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
     ]);
 }
 ?>

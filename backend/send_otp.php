@@ -21,6 +21,13 @@ try {
     }
 
     
+<<<<<<< HEAD
+    $otp = rand(100000, 999999);
+    $_SESSION['verification_otp_' . $email] = [
+        'otp' => $otp,
+        'expires' => time() + (10 * 60) 
+    ];
+=======
     $sessionKey = 'verification_otp_' . $email;
     $lastTimeKey = 'last_otp_time_' . $email;
 
@@ -37,6 +44,7 @@ try {
         'attempts' => 0
     ];
     $_SESSION[$lastTimeKey] = time();
+>>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
 
     
     require_once __DIR__ . '/db.php';

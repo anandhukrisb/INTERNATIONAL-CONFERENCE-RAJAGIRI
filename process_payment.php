@@ -15,12 +15,10 @@ if ($reg_id !== '') {
             if (($fetched_user['payment_status'] ?? '') === 'Completed') {
                 $reg_status = 'success';
                 $txn_id = $fetched_user['transaction_id'] ?? '';
-            } elseif (isset($_GET['status']) && $_GET['status'] === 'failed') {
-                $reg_status = 'failed';
             }
         }
     } catch (Exception $e) {
-        // Ignore DB error 
+        // Ignore DB error
     }
 }
 
@@ -368,28 +366,25 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
 
         /* ================= MOBILE RESPONSIVENESS ================= */
         @media (max-width: 768px) {
-            img, video, canvas, svg {
+            * {
                 max-width: 100%;
-                height: auto;
             }
 
             .main-container {
-                padding: 0 16px;
+                padding: 0 15px;
                 width: 100%;
-                max-width: 100%;
+                max-width: 100vw;
                 box-sizing: border-box;
             }
 
             .title-section {
-                margin-top: 100px;
-                margin-bottom: 30px;
+                margin-top: 120px;
                 text-align: center;
                 width: 100%;
             }
 
             #pageTitle {
-                font-size: 1.85rem;
-                line-height: 1.25;
+                font-size: 2rem;
             }
 
             #pageTitle::after {
@@ -397,16 +392,14 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
             }
 
             .intro-text {
-                font-size: 0.95rem;
-                line-height: 1.6;
+                font-size: 1rem;
                 text-align: left;
                 width: 100%;
                 max-width: 100%;
             }
 
             .section-header {
-                font-size: 1.4rem;
-                line-height: 1.3;
+                font-size: 1.5rem;
             }
 
             .inclusions-grid {
@@ -416,7 +409,7 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
             }
 
             .inclusion-card {
-                padding: 22px 18px;
+                padding: 25px;
                 width: 100%;
                 box-sizing: border-box;
             }
@@ -425,23 +418,18 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
                 width: 100%;
-                margin-left: -16px;
-                margin-right: -16px;
-                padding: 0 16px;
-            }
-
-            .pricing-cards-container {
-                grid-template-columns: 1fr;
-                gap: 16px;
+                margin-left: -15px;
+                margin-right: -15px;
+                padding: 0 15px;
             }
 
             .pricing-table {
-                min-width: 550px;
+                min-width: 600px;
             }
 
             .pricing-table th,
             .pricing-table td {
-                padding: 10px 12px;
+                padding: 12px 15px;
                 font-size: 0.85rem;
             }
 
@@ -465,25 +453,21 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
             }
 
             .info-header {
-                font-size: 0.95rem;
-                padding: 12px 16px;
+                font-size: 1rem;
+                padding: 12px 20px;
             }
 
             .info-content {
-                padding: 0 16px;
+                padding: 0 20px;
             }
 
             .info-content-inner {
-                padding: 16px 0;
+                padding: 20px 0;
             }
 
             .btn-register {
-                width: 100%;
-                padding: 15px 20px;
-                font-size: 1rem;
-                border-radius: 10px;
-                display: block;
-                box-sizing: border-box;
+                padding: 14px 35px;
+                font-size: 0.9rem;
             }
         }
 
@@ -777,7 +761,6 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
             background-repeat: no-repeat;
             background-position: right 15px center;
             background-size: 12px;
-            padding-right: 38px;
         }
 
         .checkbox-group {
@@ -803,37 +786,11 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
         @media (max-width: 768px) {
             .form-row {
                 flex-direction: column;
-                gap: 16px;
-                margin-bottom: 16px;
+                gap: 15px;
             }
 
             .registration-form-section {
-                padding: 24px 18px;
-                margin-bottom: 40px;
-                border-radius: 12px;
-            }
-
-            .form-control {
-                font-size: 16px; /* Prevents auto-zoom on iOS */
-                min-height: 48px;
-                padding: 12px 14px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .registration-form-section {
-                padding: 18px 14px;
-                margin-bottom: 30px;
-                border-radius: 10px;
-            }
-
-            .title-section {
-                margin-top: 85px;
-                margin-bottom: 20px;
-            }
-
-            #pageTitle {
-                font-size: 1.6rem;
+                padding: 25px;
             }
         }
 
@@ -893,17 +850,14 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
         @media (max-width: 768px) {
             .sticky-sidebar-buttons {
                 top: auto;
-                bottom: 15px;
-                right: 15px;
-                z-index: 1000;
+                bottom: 20px;
+                right: 20px;
             }
 
             .sidebar-btn {
-                border-radius: 25px;
-                min-width: auto;
-                padding: 10px 18px;
+                border-radius: 8px;
+                min-width: 120px;
                 font-size: 0.85rem;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
             }
         }
 
@@ -1355,126 +1309,6 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
         .payment-error-box.active {
             display: flex;
         }
-
-        /* ================= MOBILE STYLES FOR INVOICE & REVIEW ================= */
-        @media (max-width: 768px) {
-            .invoice-card {
-                border-radius: 10px;
-                margin-bottom: 24px;
-            }
-
-            .invoice-header {
-                padding: 16px 18px;
-                flex-wrap: wrap;
-                gap: 10px;
-            }
-
-            .invoice-header h4 {
-                font-size: 1.1rem;
-            }
-
-            .invoice-body {
-                padding: 20px 16px;
-            }
-
-            .receipt-grid {
-                grid-template-columns: 1fr;
-                gap: 14px;
-                margin-bottom: 24px;
-            }
-
-            .receipt-item[style*="grid-column"] {
-                grid-column: span 1 !important;
-            }
-
-            .receipt-value {
-                word-break: break-word;
-            }
-
-            .invoice-table th,
-            .invoice-table td {
-                padding: 10px 10px;
-                font-size: 0.88rem;
-            }
-
-            .invoice-table tr.total-row td {
-                font-size: 1rem;
-                padding-top: 14px;
-            }
-
-            .btn-container {
-                flex-direction: column;
-                gap: 12px;
-                margin-top: 25px;
-            }
-
-            .btn-container .btn-register,
-            .btn-container .btn-back {
-                width: 100%;
-                text-align: center;
-                justify-content: center;
-                padding: 16px 20px;
-                font-size: 1rem;
-                min-height: 50px;
-                border-radius: 10px;
-                box-sizing: border-box;
-            }
-
-            .btn-register:active,
-            .btn-back:active {
-                transform: scale(0.98);
-            }
-
-            .success-celebration {
-                padding: 30px 10px;
-            }
-
-            .success-celebration h3 {
-                font-size: 1.45rem;
-            }
-
-            .receipt-summary-box {
-                padding: 18px 14px;
-                margin-bottom: 30px;
-            }
-
-            .receipt-row {
-                flex-direction: column;
-                gap: 4px;
-                padding: 8px 0;
-            }
-
-            .receipt-row span:last-child {
-                word-break: break-word;
-            }
-
-            .success-celebration .btn-register {
-                width: 100%;
-                box-sizing: border-box;
-                display: block;
-                padding: 15px 20px;
-                border-radius: 10px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .invoice-header {
-                padding: 14px;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
-            }
-
-            .invoice-body {
-                padding: 16px 12px;
-            }
-
-            .invoice-table th,
-            .invoice-table td {
-                padding: 8px 6px;
-                font-size: 0.84rem;
-            }
-        }
     </style>
 
 </head>
@@ -1900,7 +1734,7 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
                         <h4>REGISTRATION SUMMARY</h4>
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <div id="invoiceReference" style="font-weight: 600; font-size: 0.9rem; opacity: 0.9;">Ref: <?= htmlspecialchars($reg_id) ?></div>
-                            <button type="button" onclick="copyRegId('<?= htmlspecialchars($reg_id, ENT_QUOTES) ?>')" style="background: none; border: none; cursor: pointer; color: white; opacity: 0.85; padding: 6px; display: inline-flex; align-items: center; justify-content: center; min-width: 32px; min-height: 32px; border-radius: 4px; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.85'" title="Copy Registration ID" aria-label="Copy Registration ID">
+                            <button type="button" onclick="copyRegId('<?= htmlspecialchars($reg_id, ENT_QUOTES) ?>')" style="background: none; border: none; cursor: pointer; color: white; opacity: 0.8; padding: 0; display: flex; align-items: center; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'" title="Copy Registration ID">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/></svg>
                             </button>
                         </div>
@@ -2117,8 +1951,7 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
 
     <main-footer></main-footer>
 
-    <!-- Project's native Payment Gateway (Razorpay) - Commented out for Vortex integration -->
-    <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script> -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
         // Fix back button cache issue
         window.addEventListener("pageshow", function(event) {
@@ -2158,10 +1991,7 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
             document.querySelector('.registration-form-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        /* 
-        ====================================================================
-        PROJECT PAYMENT GATEWAY (RAZORPAY) - COMMENTED OUT FOR VORTEX GATEWAY
-        ====================================================================
+        // Trigger Razorpay Payment Flow natively
         async function completePayment() {
             const phpRegId = '<?= htmlspecialchars($reg_id, ENT_QUOTES) ?>';
             const btn = document.querySelector('.btn-register');
@@ -2229,10 +2059,16 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
                             } catch (e) {
                                 console.error('Failed to log payment cancellation:', e);
                             }
+                            // The user just closed the window, we don't necessarily want to force them to the fail screen
+                            // so they can try again if they want, but if you want to show failure:
+                            // handleGatewayResponseFinish('Failed', '');
                         }
                     },
                     handler: async function (response) {
+                        // Show loading screen immediately while verifying payment
                         showView('view-loading');
+                        
+                        // 3. Verify Payment
                         try {
                             const verifyRes = await fetch('razorpay/verify_ajax.php', {
                                 method: 'POST',
@@ -2247,6 +2083,7 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
                             
                             const verifyData = await verifyRes.json();
                             
+                            // Artificial delay to show processing loader
                             setTimeout(() => {
                                 if (verifyData.success) {
                                     handleGatewayResponseFinish('Success', response.razorpay_payment_id);
@@ -2284,51 +2121,6 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
                 });
                 
                 rzp.open();
-
-            } catch (err) {
-                alert(err.message);
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = originalBtnText;
-                }
-            }
-        }
-        */
-
-        // Vortex Gateway Integration
-        async function completePayment() {
-            const phpRegId = '<?= htmlspecialchars($reg_id, ENT_QUOTES) ?>';
-            const btn = document.querySelector('.btn-register');
-            let originalBtnText = '';
-            
-            if (!phpRegId) {
-                alert('Registration ID not found. Please try registering again.');
-                return;
-            }
-
-            try {
-                // Disable button
-                if (btn) {
-                    originalBtnText = btn.innerHTML;
-                    btn.disabled = true;
-                    btn.innerHTML = spinnerSvg + 'Processing...';
-                }
-                
-                // 1. Initialize Vortex Payment
-                const initRes = await fetch('backend/init_vortex_payment.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ registration_id: phpRegId })
-                });
-                
-                const initData = await initRes.json();
-                
-                if (!initData.success) {
-                    throw new Error(initData.error || 'Failed to initialize payment gateway.');
-                }
-
-                // 2. Redirect to Vortex Hosted Checkout Page
-                window.location.href = initData.payment_url;
 
             } catch (err) {
                 alert(err.message);

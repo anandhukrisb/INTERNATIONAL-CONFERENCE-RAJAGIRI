@@ -333,30 +333,26 @@
         }
 
         
-        /* ================= RESPONSIVE STYLES ================= */
         @media (max-width: 768px) {
-            img, video, canvas, svg {
+            * {
                 max-width: 100%;
-                height: auto;
             }
 
             .main-container {
-                padding: 0 16px;
+                padding: 0 15px;
                 width: 100%;
-                max-width: 100%;
+                max-width: 100vw;
                 box-sizing: border-box;
             }
 
             .title-section {
-                margin-top: 100px;
-                margin-bottom: 30px;
+                margin-top: 120px;
                 text-align: center;
                 width: 100%;
             }
 
             #pageTitle {
-                font-size: 1.85rem;
-                line-height: 1.25;
+                font-size: 2rem;
             }
 
             #pageTitle::after {
@@ -364,16 +360,14 @@
             }
 
             .intro-text {
-                font-size: 0.95rem;
-                line-height: 1.6;
+                font-size: 1rem;
                 text-align: left;
                 width: 100%;
                 max-width: 100%;
             }
 
             .section-header {
-                font-size: 1.4rem;
-                line-height: 1.3;
+                font-size: 1.5rem;
             }
 
             .inclusions-grid {
@@ -383,7 +377,7 @@
             }
 
             .inclusion-card {
-                padding: 22px 18px;
+                padding: 25px;
                 width: 100%;
                 box-sizing: border-box;
             }
@@ -392,23 +386,18 @@
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
                 width: 100%;
-                margin-left: -16px;
-                margin-right: -16px;
-                padding: 0 16px;
-            }
-
-            .pricing-cards-container {
-                grid-template-columns: 1fr;
-                gap: 16px;
+                margin-left: -15px;
+                margin-right: -15px;
+                padding: 0 15px;
             }
 
             .pricing-table {
-                min-width: 550px;
+                min-width: 600px;
             }
 
             .pricing-table th,
             .pricing-table td {
-                padding: 10px 12px;
+                padding: 12px 15px;
                 font-size: 0.85rem;
             }
 
@@ -432,25 +421,21 @@
             }
 
             .info-header {
-                font-size: 0.95rem;
-                padding: 12px 16px;
+                font-size: 1rem;
+                padding: 12px 20px;
             }
 
             .info-content {
-                padding: 0 16px;
+                padding: 0 20px;
             }
 
             .info-content-inner {
-                padding: 16px 0;
+                padding: 20px 0;
             }
 
             .btn-register {
-                width: 100%;
-                padding: 15px 20px;
-                font-size: 1rem;
-                border-radius: 10px;
-                display: block;
-                box-sizing: border-box;
+                padding: 14px 35px;
+                font-size: 0.9rem;
             }
         }
 
@@ -754,66 +739,36 @@
             background-repeat: no-repeat;
             background-position: right 15px center;
             background-size: 12px;
-            padding-right: 38px;
         }
 
         .checkbox-group {
             display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            margin-top: 12px;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
         }
 
         .checkbox-group input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             cursor: pointer;
             accent-color: var(--primary-purple);
-            flex-shrink: 0;
-            margin-top: 2px;
         }
 
         .checkbox-label {
-            font-size: 0.92rem;
+            font-size: 0.95rem;
             color: var(--text-dark);
             cursor: pointer;
-            line-height: 1.45;
         }
 
         @media (max-width: 768px) {
             .form-row {
                 flex-direction: column;
-                gap: 16px;
-                margin-bottom: 16px;
+                gap: 15px;
             }
 
             .registration-form-section {
-                padding: 24px 18px;
-                margin-bottom: 40px;
-                border-radius: 12px;
-            }
-
-            .form-control {
-                font-size: 16px; /* Prevents auto-zoom on iOS */
-                min-height: 48px;
-                padding: 12px 14px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .registration-form-section {
-                padding: 18px 14px;
-                margin-bottom: 30px;
-                border-radius: 10px;
-            }
-
-            .title-section {
-                margin-top: 85px;
-                margin-bottom: 20px;
-            }
-
-            #pageTitle {
-                font-size: 1.6rem;
+                padding: 25px;
             }
         }
 
@@ -873,17 +828,14 @@
         @media (max-width: 768px) {
             .sticky-sidebar-buttons {
                 top: auto;
-                bottom: 15px;
-                right: 15px;
-                z-index: 1000;
+                bottom: 20px;
+                right: 20px;
             }
 
             .sidebar-btn {
-                border-radius: 25px;
-                min-width: auto;
-                padding: 10px 18px;
+                border-radius: 8px;
+                min-width: 120px;
                 font-size: 0.85rem;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
             }
         }
 
@@ -926,84 +878,11 @@
             transform: translateY(-2px);
         }
 
-        .btn-verify:active,
-        .btn-check-details-inline:active,
-        .btn-register:active {
-            transform: scale(0.98);
-        }
-
         .btn-verify:disabled {
             background-color: #CBD5E0;
             color: #718096;
             cursor: not-allowed;
             transform: none;
-        }
-
-        .verification-buttons-group {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 15px;
-            align-items: flex-start;
-        }
-
-        .btn-check-details-inline {
-            background-color: var(--accent-gold, #C9A227);
-            color: #1D0A3F;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            height: 48px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 180px;
-            text-decoration: none;
-            box-sizing: border-box;
-        }
-
-        .btn-check-details-inline:hover {
-            background-color: var(--primary-purple, #1D0A3F);
-            color: #FFFFFF;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        @media (max-width: 600px) {
-            .verification-box {
-                padding: 18px 14px;
-            }
-
-            .verification-row {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 12px;
-            }
-
-            .verification-row .form-group {
-                width: 100%;
-            }
-
-            .verification-row .btn-verify {
-                width: 100% !important;
-                min-width: 100% !important;
-            }
-
-            .verification-buttons-group {
-                width: 100%;
-            }
-
-            .verification-buttons-group .btn-verify,
-            .btn-check-details-inline {
-                width: 100% !important;
-                min-width: 100% !important;
-                text-align: center;
-                justify-content: center;
-            }
         }
 
         .verification-status {
@@ -1057,7 +936,10 @@
 
     <floating-navbar></floating-navbar>
 
-
+    
+    <div class="sticky-sidebar-buttons">
+        <a href="view_transaction.php" class="sidebar-btn">Check Details</a>
+    </div>
 
     <main class="main-container">
 
@@ -1306,15 +1188,14 @@
                         style="font-family: 'Outfit', sans-serif; color: var(--primary-purple); margin-bottom: 12px; font-weight: 700;">
                         Start Registration</h4>
                     <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">Please enter your email address to begin. We will check your abstract submission status.</p>
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label for="checkEmail" class="form-label">Email Address <span style="color: red;">*</span></label>
-                        <input type="email" id="checkEmail" class="form-control"
-                            placeholder="you@example.com">
-                    </div>
-                    <div class="verification-buttons-group">
+                    <div class="verification-row">
+                        <div class="form-group" style="margin-bottom: 0; flex: 1;">
+                            <label for="checkEmail" class="form-label">Email Address <span style="color: red;">*</span></label>
+                            <input type="email" id="checkEmail" class="form-control"
+                                placeholder="you@example.com">
+                        </div>
                         <button type="button" class="btn-verify" id="btnCheckEmail"
-                            onclick="checkInitialEmail()" style="min-width: 180px;">Proceed</button>
-                        <a href="view_transaction.php" class="btn-check-details-inline">Check Details</a>
+                            onclick="checkInitialEmail()">Proceed</button>
                     </div>
                     <div id="initialCheckStatus" class="verification-status"></div>
                     
@@ -1710,7 +1591,8 @@
             },
             student: {
                 developed: [
-                    { label: "In-Person (Offline)", value: "100 USD" },
+                    // { label: "In-Person (Offline)", value: "100 USD" },
+                    { label: "In-Person (Offline)", value: "1 USD" },
                     { label: "Online (Recorded)", value: "50 USD" }
                 ],
                 developing: [
@@ -1718,8 +1600,10 @@
                     { label: "Online (Recorded)", value: "40 USD" }
                 ],
                 national: [
-                    { label: "In-Person (Offline)", value: "1,200 INR" },
-                    { label: "Online (Recorded)", value: "600 INR" }
+                    
+                    
+                    { label: "In-Person (Offline)", value: "1 INR" },
+                    { label: "Online (Recorded)", value: "1 INR" }
                 ]
             }
         };
@@ -2146,7 +2030,7 @@
                 countryCategory: registrationState.countryCategory,
                 requiredPackage: `${registrationState.requirementLabel} (${rawCost})`,
                 abstractSubmitted: status,
-                abstractEmail: status === 'yes' ? registrationState.email : '',
+                abstractEmail: status === 'yes' ? document.getElementById('verifyEmail').value.trim() : '',
                 baseAmount: registrationState.basePrice,
                 paymentStatus: 'Not Completed'
             };

@@ -961,6 +961,31 @@ table.admin-table tbody tr:hover {
     border-color: transparent;
 }
 
+.btn-outline-danger {
+    background-color: transparent;
+    color: var(--danger-text);
+    border: 1px solid var(--danger-text);
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--danger-bg);
+    color: var(--danger-text);
+    border-color: var(--danger-text);
+}
+
+.btn-danger {
+    background-color: var(--danger-text);
+    color: #ffffff;
+    border: 1px solid var(--danger-text);
+}
+
+.btn-danger:hover {
+    background-color: #b01b18;
+    color: #ffffff;
+    border-color: #b01b18;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
+
 .btn-sm {
     padding: 6px 12px;
     font-size: 0.85rem;

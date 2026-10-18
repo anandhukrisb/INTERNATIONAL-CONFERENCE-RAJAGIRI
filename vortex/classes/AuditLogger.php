@@ -36,6 +36,7 @@ class AuditLogger
     public const EVENT_WEBHOOK_UPDATED   = 'event.webhook_updated';
     public const EVENT_ACTIVATED         = 'event.activated';
     public const EVENT_DEACTIVATED       = 'event.deactivated';
+    public const EVENT_DELETED           = 'event.deleted';
 
     public const REFUND_PROCESSED        = 'refund.processed';
 
@@ -426,6 +427,8 @@ class AuditLogger
                 return "{$actor} toggled active status for admin {$idStr}";
             case self::REFUND_PROCESSED:
                 return "{$actor} authorized a refund for transaction {$idStr}";
+            case self::EVENT_DELETED:
+                return "{$actor} deleted event {$idStr}";
             default:
                 return "{$actor} executed {$action} on {$entityType} {$idStr}";
         }

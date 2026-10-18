@@ -611,6 +611,122 @@ class Event
             return 0;
         }
     }
+
+
+    /**
+     * --------------------------------------------------------
+     * Delete Event
+     * --------------------------------------------------------
+     * Safely deletes an event if and only if it has zero transactions
+     * and zero collected revenue.
+     * Operates within a single database transaction.
+     *
+     * @param string $eventId
+     * @return array
+     * --------------------------------------------------------
+     */
+    public function deleteEvent($eventId)
+    {
+        try {
+            $eventId = trim((string) $eventId);
+
+            // Validate event ID
+            if (!Validator::eventId($eventId)) {
+                return [
+                    'success'    => false,
+                    'message'    => 'Valid Event ID is required.',
+                    'error_code' => 400
+                ];
+            }
+
+            // Start atomic database transaction
+            $this->db->beginTransaction();
+
+            // 1. Fetch event record with lock
+            $stmt = $this->db->prepare("SELECT id, event_id, event_name, department, webhook_url, is_active FROM events WHERE event_id = ? FOR UPDATE");
+            $stmt->execute([$eventId]);
+            $event = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if (!$event) {
+                if ($this->db->inTransaction()) {
+                    $this->db->rollBack();
+                }
+                return [
+                    'success'    => false,
+                    'message'    => 'Event not found.',
+                    'error_code' => 404
+                ];
+            }
+
+            // 2. Safety Rule for Financial Data:
+            // Check whether the event has ANY transactions (successful or otherwise) or collected revenue > 0
+            $txStmt = $this->db->prepare("
+                SELECT COUNT(*) as tx_count, COALESCE(SUM(amount), 0) as total_rev 
+                FROM transactions 
+                WHERE event_id = ?
+            ");
+            $txStmt->execute([$eventId]);
+            $txSummary = $txStmt->fetch(\PDO::FETCH_ASSOC);
+
+            $txCount  = (int)($txSummary['tx_count'] ?? 0);
+            $totalRev = (float)($txSummary['total_rev'] ?? 0.0);
+
+            if ($txCount > 0 || $totalRev > 0) {
+                if ($this->db->inTransaction()) {
+                    $this->db->rollBack();
+                }
+                Logger::warning("Blocked deletion of event #{$eventId} ('{$event['event_name']}'): has {$txCount} transactions and ₹{$totalRev} collected revenue.");
+                return [
+                    'success'      => false,
+                    'message'      => "This event has payment records and can't be deleted. Deactivate it instead.",
+                    'error_code'   => 400,
+                    'has_payments' => true
+                ];
+            }
+
+            // 3. Events with zero transactions can be deleted.
+            // Cascade / clean up any event-specific references inside this transaction
+            $delStmt = $this->db->prepare("DELETE FROM events WHERE event_id = ?");
+            $delStmt->execute([$eventId]);
+
+            // Commit atomic transaction
+            $this->db->commit();
+
+            Logger::info("Event #{$eventId} ('{$event['event_name']}') successfully deleted.");
+
+            return [
+                'success' => true,
+                'message' => "Event '{$event['event_name']}' (#{$eventId}) was deleted successfully.",
+                'data'    => [
+                    'event_id'   => $eventId,
+                    'event_name' => $event['event_name'],
+                    'department' => $event['department'],
+                    'is_active'  => (int)$event['is_active']
+                ]
+            ];
+
+        } catch (\PDOException $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            Logger::error("Database error deleting event #{$eventId}: " . $e->getMessage());
+            return [
+                'success'    => false,
+                'message'    => 'A database error occurred while deleting the event.',
+                'error_code' => 500
+            ];
+        } catch (\Throwable $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            Logger::error("Unexpected error deleting event #{$eventId}: " . $e->getMessage());
+            return [
+                'success'    => false,
+                'message'    => 'An unexpected error occurred while deleting the event.',
+                'error_code' => 500
+            ];
+        }
+    }
 }
 
 ?>

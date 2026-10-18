@@ -28,6 +28,12 @@ if (empty($_SESSION['vortex_admin_id'])) {
 // RBAC Guard
 RBAC::require('events.view', null, '../dashboard.php');
 
+// CSRF Token Initialization
+if (empty($_SESSION['vortex_csrf_token'])) {
+    $_SESSION['vortex_csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrfToken = $_SESSION['vortex_csrf_token'];
+
 $eventModel = new Event();
 $db = Database::getInstance()->getConnection();
 
@@ -213,7 +219,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--primary-blue);"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
             </div>
         </div>
-        <span class="metric-value"><?= number_format($totalEventsCount) ?></span>
+        <span class="metric-value" id="statTotalEvents"><?= number_format($totalEventsCount) ?></span>
     </div>
     <div class="metric-card">
         <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -222,7 +228,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--success-text);"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
             </div>
         </div>
-        <span class="metric-value success"><?= number_format($activeEventsCount) ?></span>
+        <span class="metric-value success" id="statActiveEvents"><?= number_format($activeEventsCount) ?></span>
     </div>
     <div class="metric-card">
         <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -231,58 +237,15 @@ require_once __DIR__ . '/../includes/header.php';
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--danger-text);"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
             </div>
         </div>
-        <span class="metric-value danger"><?= number_format($inactiveEventsCount) ?></span>
+        <span class="metric-value danger" id="statInactiveEvents"><?= number_format($inactiveEventsCount) ?></span>
     </div>
 </div>
-
-<!-- Create Event Box (inline, Super Admin & Event Managers) -->
-<?php if (RBAC::can('events.create')): ?>
-<div class="section-card" style="margin-bottom: 24px;">
-    <div class="section-header" style="background: #fafbfc; border-bottom: 1px solid var(--border-color); padding: 14px 20px;">
-        <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-dark); margin: 0; display: flex; align-items: center; gap: 8px;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--primary-blue);"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            <span>Register New Event</span>
-        </h3>
-    </div>
-    <div class="section-body" style="padding: 20px;">
-        <form action="index.php" method="POST">
-            <input type="hidden" name="action" value="create_event">
-            <div class="form-grid">
-                <div class="form-group" style="grid-column: span 2;">
-                    <label>Event Name *</label>
-                    <input type="text" name="event_name" class="form-control" placeholder="e.g. International AI Summit 2026" required>
-                </div>
-                <div class="form-group" style="grid-column: span 2;">
-                    <label>Department / Host School *</label>
-                    <input type="text" name="department" class="form-control" placeholder="e.g. Department of Computer Science &amp; Engineering" required>
-                </div>
-                <div class="form-group">
-                    <label>Start Date *</label>
-                    <input type="date" name="start_date" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label>End Date *</label>
-                    <input type="date" name="end_date" class="form-control" required>
-                </div>
-                <div class="form-group" style="grid-column: span 2;">
-                    <label>Webhook Delivery URL (Optional)</label>
-                    <input type="url" name="webhook_url" class="form-control" placeholder="e.g. https://dyuti.in/webhook.php">
-                    <small style="color: var(--text-gray); font-size: 0.76rem; display: block; margin-top: 4px;">
-                        Outbound payment callbacks will be signed with HMAC and sent directly to this URL.
-                    </small>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary" style="margin-top: 14px;">Create Event</button>
-        </form>
-    </div>
-</div>
-<?php endif; ?>
 
 <!-- Events Table & Filter Card -->
 <div class="section-card">
     <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding: 14px 20px; border-bottom: 1px solid var(--border-color); background: #fafbfc;">
         <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-dark);">
-            Configured Events (<?= count($filteredEvents) ?>)
+            Configured Events (<span id="tableEventsCount"><?= count($filteredEvents) ?></span>)
         </div>
         <!-- Search & Status Filter Form -->
         <form method="GET" action="index.php" style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
@@ -322,7 +285,7 @@ require_once __DIR__ . '/../includes/header.php';
                             $revData = $eventRevenueMap[$eId] ?? ['tx_count' => 0, 'total_rev' => 0.0];
                             $hasCustomWebhook = !empty($event['webhook_url']);
                             ?>
-                            <tr>
+                            <tr id="event-row-<?= htmlspecialchars($eId) ?>" data-event-id="<?= htmlspecialchars($eId) ?>" data-event-name="<?= htmlspecialchars($event['event_name']) ?>" data-is-active="<?= (int)$event['is_active'] ?>" data-tx-count="<?= (int)$revData['tx_count'] ?>" data-total-rev="<?= (float)$revData['total_rev'] ?>">
                                 <td>
                                     <div class="copy-wrapper">
                                         <span class="font-mono" style="font-weight: 700; color: var(--primary-blue);"><?= htmlspecialchars($eId) ?></span>
@@ -410,6 +373,14 @@ require_once __DIR__ . '/../includes/header.php';
                                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                                             <span>Audit</span>
                                         </a>
+
+                                        <!-- Delete Event (Super Admin Only) -->
+                                        <?php if (RBAC::hasRole(RBAC::ROLE_SUPER_ADMIN)): ?>
+                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="openDeleteModal('<?= htmlspecialchars($eId, ENT_QUOTES) ?>', '<?= htmlspecialchars($event['event_name'], ENT_QUOTES) ?>')" title="Delete this event" style="display: inline-flex; align-items: center; gap: 4px;">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                            <span>Delete</span>
+                                        </button>
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                             </tr>
@@ -469,6 +440,222 @@ require_once __DIR__ . '/../includes/header.php';
     </div>
 </div>
 
+<!-- Delete Event Confirmation Modal -->
+<div class="modal-overlay" id="deleteEventModal" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+    <div class="modal-box modal-md">
+        <div class="modal-header">
+            <h2 id="deleteModalTitle" style="display: flex; align-items: center; gap: 8px; color: var(--danger-text);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                <span>Delete Event</span>
+            </h2>
+            <button type="button" class="modal-close" onclick="closeDeleteModal()" title="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p style="color: var(--text-dark); font-size: 0.92rem; margin-bottom: 14px; line-height: 1.4;">
+                Are you sure you want to delete this event? This action cannot be undone.
+            </p>
+            <div style="background: var(--bg-gray); padding: 14px 16px; border-radius: 8px; margin-bottom: 14px; border: 1px solid var(--border-color);">
+                <div style="font-size: 0.74rem; text-transform: uppercase; font-weight: 700; color: var(--text-gray); margin-bottom: 4px; letter-spacing: 0.5px;">Event Name</div>
+                <div id="deleteModalEventName" style="font-weight: 700; font-size: 0.98rem; color: var(--text-dark); margin-bottom: 10px; word-break: break-word;"></div>
+                <div style="font-size: 0.74rem; text-transform: uppercase; font-weight: 700; color: var(--text-gray); margin-bottom: 4px; letter-spacing: 0.5px;">Event ID</div>
+                <div id="deleteModalEventId" class="font-mono" style="font-size: 0.85rem; font-weight: 700; color: var(--primary-blue);"></div>
+            </div>
+            <div class="alert alert-danger" style="margin: 0; font-size: 0.82rem; padding: 12px 14px; display: flex; align-items: flex-start; gap: 8px; border-radius: 6px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0; margin-top: 1px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                <div>
+                    <strong>Financial Safety Guard:</strong> If this event has any transaction or payment records, permanent deletion will be blocked to maintain compliance and audit logs.
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancel" id="cancelDeleteEventBtn" onclick="closeDeleteModal()">Cancel</button>
+            <button type="button" id="confirmDeleteEventBtn" class="btn btn-danger" onclick="executeDeleteEvent()">
+                Delete Event
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Toast Notifications Container -->
+<div class="vortex-toast-container" id="vortexToastContainer"></div>
+
+<script>
+const VORTEX_CSRF_TOKEN = '<?= htmlspecialchars($csrfToken, ENT_QUOTES) ?>';
+let currentDeleteEventId = null;
+
+function openDeleteModal(eventId, eventName) {
+    currentDeleteEventId = eventId;
+    const nameEl = document.getElementById('deleteModalEventName');
+    const idEl = document.getElementById('deleteModalEventId');
+    if (nameEl) nameEl.textContent = eventName;
+    if (idEl) idEl.textContent = eventId;
+
+    const modal = document.getElementById('deleteEventModal');
+    if (modal) {
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeDeleteModal() {
+    const modal = document.getElementById('deleteEventModal');
+    if (modal) {
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+    currentDeleteEventId = null;
+}
+
+function decrementStat(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const current = parseInt(el.textContent.replace(/,/g, ''), 10);
+    if (!isNaN(current) && current > 0) {
+        el.textContent = (current - 1).toLocaleString();
+    }
+}
+
+function executeDeleteEvent() {
+    if (!currentDeleteEventId) return;
+
+    const eventId = currentDeleteEventId;
+    const confirmBtn = document.getElementById('confirmDeleteEventBtn');
+    const cancelBtn = document.getElementById('cancelDeleteEventBtn');
+    const originalText = confirmBtn.innerHTML;
+
+    // In-flight state: disable buttons & show spinner
+    confirmBtn.disabled = true;
+    if (cancelBtn) cancelBtn.disabled = true;
+    confirmBtn.innerHTML = '<span class="vortex-btn-spinner" style="display:inline-block; width:14px; height:14px; border:2px solid #fff; border-top-color:transparent; border-radius:50%; animation:btn-spinner-anim 0.8s linear infinite; vertical-align:middle; margin-right:6px;"></span> Deleting...';
+
+    // Also disable delete buttons in row to prevent double submit
+    const row = document.getElementById('event-row-' + eventId);
+    if (row) {
+        const rowDeleteBtn = row.querySelector('.btn-outline-danger');
+        if (rowDeleteBtn) rowDeleteBtn.disabled = true;
+    }
+
+    fetch('delete.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': VORTEX_CSRF_TOKEN,
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+            event_id: eventId,
+            csrf_token: VORTEX_CSRF_TOKEN
+        })
+    })
+    .then(async response => {
+        const data = await response.json();
+        return { ok: response.ok, status: response.status, data };
+    })
+    .then(res => {
+        closeDeleteModal();
+        if (res.ok && res.data.success) {
+            showToast(res.data.message || 'Event deleted successfully.', 'success');
+            
+            // Fade out the row
+            if (row) {
+                const isActive = row.getAttribute('data-is-active') === '1';
+                row.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+                row.style.opacity = '0';
+                row.style.transform = 'translateX(20px)';
+                
+                setTimeout(() => {
+                    row.remove();
+                    // Update stat cards
+                    decrementStat('statTotalEvents');
+                    if (isActive) {
+                        decrementStat('statActiveEvents');
+                    } else {
+                        decrementStat('statInactiveEvents');
+                    }
+                    // Update Configured Events (N) header count
+                    decrementStat('tableEventsCount');
+
+                    // Check if table is empty
+                    const tbody = document.querySelector('.admin-table tbody');
+                    if (tbody) {
+                        const remaining = tbody.querySelectorAll('tr[id^="event-row-"]');
+                        if (remaining.length === 0) {
+                            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 28px; color: var(--text-gray);">No events configured.</td></tr>';
+                        }
+                    }
+                }, 350);
+            }
+        } else {
+            showToast(res.data.message || 'Failed to delete event.', 'error', 4500);
+            if (row) {
+                const rowDeleteBtn = row.querySelector('.btn-outline-danger');
+                if (rowDeleteBtn) rowDeleteBtn.disabled = false;
+            }
+        }
+    })
+    .catch(err => {
+        closeDeleteModal();
+        showToast('Network error or server error occurred.', 'error');
+        if (row) {
+            const rowDeleteBtn = row.querySelector('.btn-outline-danger');
+            if (rowDeleteBtn) rowDeleteBtn.disabled = false;
+        }
+    })
+    .finally(() => {
+        confirmBtn.disabled = false;
+        if (cancelBtn) cancelBtn.disabled = false;
+        confirmBtn.innerHTML = originalText;
+    });
+}
+
+function showToast(message, type = 'success', duration = 3500) {
+    const container = document.getElementById('vortexToastContainer');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `vortex-toast toast-${type}`;
+
+    let iconSvg = '';
+    if (type === 'success') {
+        iconSvg = '<span class="toast-icon" style="color:var(--success-text)">✓</span>';
+    } else if (type === 'error') {
+        iconSvg = '<span class="toast-icon" style="color:var(--danger-text)">⚠</span>';
+    } else {
+        iconSvg = '<span class="toast-icon" style="color:var(--primary-blue)">ℹ</span>';
+    }
+
+    toast.innerHTML = `
+        ${iconSvg}
+        <span class="toast-message">${escapeHtml(message)}</span>
+        <button type="button" class="toast-close" title="Dismiss">&times;</button>
+    `;
+
+    toast.querySelector('.toast-close').addEventListener('click', () => {
+        toast.classList.add('toast-leave');
+        setTimeout(() => toast.remove(), 250);
+    });
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        if (toast.parentElement) {
+            toast.classList.add('toast-leave');
+            setTimeout(() => toast.remove(), 250);
+        }
+    }, duration);
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+</script>
+
 <script>
 function openWebhookModal(eventId, currentUrl, currentSecret) {
     document.getElementById('modalWebhookEventId').value = eventId;
@@ -509,6 +696,18 @@ function closeWebhookModal() {
             if (e.target === modal) closeWebhookModal();
         });
     }
+    var delModal = document.getElementById('deleteEventModal');
+    if (delModal) {
+        delModal.addEventListener('click', function(e) {
+            if (e.target === delModal) closeDeleteModal();
+        });
+    }
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            if (delModal && delModal.classList.contains('open')) closeDeleteModal();
+            if (modal && modal.classList.contains('open')) closeWebhookModal();
+        }
+    });
 })();
 </script>
 
