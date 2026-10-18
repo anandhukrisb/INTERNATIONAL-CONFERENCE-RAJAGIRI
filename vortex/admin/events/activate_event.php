@@ -25,6 +25,9 @@ RBAC::require('events.edit', null, '../dashboard.php#events-section');
 
 $eventId = trim((string)($_POST['event_id'] ?? $_GET['event_id'] ?? ''));
 
+$isAjax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
+    || (strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false);
+
 if (Validator::eventId($eventId)) {
     $eventModel = new Event();
     $result = $eventModel->activateEvent($eventId);
@@ -37,7 +40,19 @@ if (Validator::eventId($eventId)) {
         $_SESSION['flash_error'] = "Failed to activate event: " . htmlspecialchars($result['message']);
         Logger::error("Admin failed to activate event " . $eventId . ": " . $result['message']);
     }
+
+    if ($isAjax) {
+        header('Content-Type: application/json; charset=UTF-8');
+        echo json_encode($result);
+        exit;
+    }
 } else {
+    if ($isAjax) {
+        header('Content-Type: application/json; charset=UTF-8');
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Unable to activate event: Valid Event ID is required.']);
+        exit;
+    }
     $_SESSION['flash_error'] = "Unable to activate event: Valid Event ID is required.";
 }
 
