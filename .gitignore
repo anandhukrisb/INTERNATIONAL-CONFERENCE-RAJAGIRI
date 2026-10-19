@@ -1,3 +1,19 @@
+# Environment and sensitive credentials
 .env
+.env.*
+.env.local
+.env.*.local
+.env.backup
+.env.production
+.env.staging
+!.env.example
+
+# PayVortex environment
+vortex/.env
+vortex/.env.*
+!vortex/.env.example
+
+# Logs & temp files
 logs/*.log
+*.log
 scratch/
