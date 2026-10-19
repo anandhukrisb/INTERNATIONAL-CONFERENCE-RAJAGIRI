@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
     header("Location: login.php");
     exit;
@@ -14,10 +16,6 @@ $reg_id = $_GET['reg_id'];
 try {
     require_once __DIR__ . '/../backend/db.php';
     
-<<<<<<< HEAD
-    
-=======
->>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
     $stmtUser = $pdo->prepare("SELECT * FROM user_registrations WHERE registration_id = :reg_id");
     $stmtUser->execute([':reg_id' => $reg_id]);
     $user = $stmtUser->fetch(PDO::FETCH_ASSOC);
@@ -26,66 +24,39 @@ try {
         die("User not found.");
     }
 
-<<<<<<< HEAD
-    
-    $query = "
-        SELECT 
-            po.razorpay_order_id,
-            pa.razorpay_payment_id,
-            pa.status as attempt_status,
-            pa.error_description,
-            COALESCE(pa.created_at, po.created_at) as event_date
-        FROM payment_orders po
-        LEFT JOIN payment_attempts pa ON po.razorpay_order_id = pa.razorpay_order_id
-        WHERE po.registration_id = :reg_id
-        ORDER BY event_date DESC
-    ";
-    
-    $stmtHistory = $pdo->prepare($query);
-    $stmtHistory->execute([':reg_id' => $reg_id]);
-    $historyRaw = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
-    
-    
-    $uniqueHistory = [];
-    $totalAttempts = 0;
-    
-    foreach ($historyRaw as $row) {
-        if (!empty($row['attempt_status'])) {
-            $totalAttempts++;
+    $currencySymbol = '₹';
+    if (!empty($user['currency'])) {
+        $c = strtoupper(trim($user['currency']));
+        if ($c === 'USD' || $c === '$') {
+            $currencySymbol = '$';
+        } elseif ($c === 'INR' || $c === '₹') {
+            $currencySymbol = '₹';
         }
-        
-        $pid = $row['razorpay_payment_id'] ?? '';
-        $oid = $row['razorpay_order_id'];
-        
-        
-        
-        
-        $uniqueKey = $pid ? $pid : $oid;
-        
-        if (!isset($uniqueHistory[$uniqueKey])) {
-            $uniqueHistory[$uniqueKey] = $row;
+    } else {
+        $countryCat = strtolower($user['country_category'] ?? '');
+        $country = strtolower($user['country'] ?? '');
+        $pkg = strtolower($user['package'] ?? '');
+
+        if (strpos($pkg, 'usd') !== false || strpos($countryCat, 'international') !== false || strpos($countryCat, 'foreign') !== false) {
+            $currencySymbol = '$';
+        } elseif (strpos($countryCat, 'india') !== false || $countryCat === 'national' || strpos($country, 'india') !== false) {
+            $currencySymbol = '₹';
         } else {
-            
-            $currentStatus = strtolower($uniqueHistory[$uniqueKey]['attempt_status'] ?? '');
-            $newStatus = strtolower($row['attempt_status'] ?? '');
-            
-            $isNewSuccessful = in_array($newStatus, ['captured', 'authorized', 'paid']);
-            $isCurrentSuccessful = in_array($currentStatus, ['captured', 'authorized', 'paid']);
-            
-            if ($isNewSuccessful && !$isCurrentSuccessful) {
-                $uniqueHistory[$uniqueKey] = $row;
-            }
+            $currencySymbol = '$';
         }
     }
-    
-    
-    $history = array_values($uniqueHistory);
-    usort($history, function($a, $b) {
-        return strtotime($b['event_date']) - strtotime($a['event_date']);
-    });
 
-=======
->>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
+    $timeline = [];
+    if (!empty($user['transaction_id'])) {
+        $stmtTl = $pdo->prepare("
+            SELECT * FROM transaction_timeline 
+            WHERE vortex_transaction_id = :vtx_id 
+            ORDER BY created_at DESC
+        ");
+        $stmtTl->execute([':vtx_id' => $user['transaction_id']]);
+        $timeline = $stmtTl->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 } catch (PDOException $e) {
     $error = "Database error: " . $e->getMessage();
 }
@@ -95,15 +66,9 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
-    <title>User History - <?php echo htmlspecialchars($reg_id); ?></title>
+    <title>User Payment History - <?php echo htmlspecialchars($reg_id); ?></title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
-
     <script src="../footer.js" defer></script>
-=======
-    <title>User Payment Info - <?php echo htmlspecialchars($reg_id); ?></title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
->>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
     <style>
         :root {
             --primary-purple: #1d0a3f;
@@ -120,8 +85,7 @@ try {
         }
         .container {
             padding: 40px;
-<<<<<<< HEAD
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 20px auto 40px auto;
             min-height: calc(100vh - 440px);
         }
@@ -129,20 +93,16 @@ try {
             font-family: 'Outfit', sans-serif; 
             color: var(--primary-purple); 
             margin-top: 0;
-            font-size: 2.2rem;
+            font-size: 2rem;
         }
         h2 {
             font-family: 'Outfit', sans-serif; 
             color: var(--primary-purple); 
-            font-size: 1.5rem;
+            font-size: 1.35rem;
             margin-top: 30px;
             margin-bottom: 20px;
             border-bottom: 2px solid #e2e8f0;
             padding-bottom: 10px;
-=======
-            max-width: 800px;
-            margin: 20px auto 40px auto;
->>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
         }
         .card {
             background: var(--white);
@@ -150,22 +110,13 @@ try {
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
             border-top: 4px solid var(--accent-gold);
             padding: 30px;
-<<<<<<< HEAD
             margin-bottom: 30px;
         }
         .summary-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 20px;
             margin-bottom: 20px;
-=======
-        }
-        h1, h2 { font-family: 'Outfit', sans-serif; color: var(--primary-purple); }
-        .summary-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
->>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
         }
         .summary-item {
             background: #f8fafc;
@@ -173,7 +124,6 @@ try {
             border-radius: 8px;
             border: 1px solid #e2e8f0;
         }
-<<<<<<< HEAD
         .summary-label {
             font-size: 0.8rem;
             color: #64748b;
@@ -183,23 +133,41 @@ try {
             margin-bottom: 5px;
         }
         .summary-value {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 600;
             color: var(--primary-purple);
+            word-break: break-all;
+        }
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background-color: #e2e8f0;
+            color: #475569;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: background-color 0.2s;
+        }
+        .btn-back:hover {
+            background-color: #cbd5e1;
         }
         .table-responsive {
             overflow-x: auto;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
+            margin-top: 15px;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             white-space: nowrap;
         }
         th, td {
-            padding: 16px 24px;
+            padding: 14px 20px;
             text-align: left;
             border-bottom: 1px solid #e2e8f0;
         }
@@ -208,7 +176,7 @@ try {
             color: #475569;
             font-weight: 700;
             text-transform: uppercase;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             letter-spacing: 0.05em;
         }
         tbody tr:nth-child(even) {
@@ -220,43 +188,33 @@ try {
         tr:last-child td {
             border-bottom: none;
         }
-        .status-captured { color: #15803d; font-weight: 600; }
-        .status-failed { color: #b91c1c; font-weight: 600; }
-        .status-created { color: #c2410c; font-weight: 600; }
-        
         .badge {
+            display: inline-block;
             padding: 4px 8px;
             border-radius: 4px;
             font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
         }
-        .badge-completed { background-color: #dcfce7; color: #166534; }
+        .badge-completed, .badge-success { background-color: #dcfce7; color: #166534; }
         .badge-pending { background-color: #ffedd5; color: #9a3412; }
         .badge-failed { background-color: #fee2e2; color: #991b1b; }
+        .badge-refunded { background-color: #f3e8ff; color: #6b21a8; }
         
-=======
-        .summary-label { font-size: 0.85rem; color: #64748b; text-transform: uppercase; font-weight: 600; margin-bottom: 5px; }
-        .summary-value { font-size: 1.1rem; font-weight: 500; color: var(--primary-purple); word-break: break-all; }
->>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
-        .btn-back {
-            display: inline-flex;
-            align-items: center;
-            padding: 8px 16px;
-            background-color: #e2e8f0;
-            color: #475569;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 600;
-            margin-bottom: 20px;
-<<<<<<< HEAD
-            transition: background-color 0.2s;
+        .notice {
+            background: #e0f2fe;
+            border-left: 4px solid #0284c7;
+            padding: 15px 18px;
+            margin-top: 25px;
+            border-radius: 4px;
+            color: #0369a1;
+            font-size: 0.92rem;
+            line-height: 1.5;
         }
-        .btn-back:hover {
-            background-color: #cbd5e1;
-        }
-        .btn-back svg {
-            margin-right: 8px;
+        .notice a {
+            color: #0284c7;
+            font-weight: 700;
+            text-decoration: underline;
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
@@ -282,7 +240,6 @@ try {
     </script>
 </head>
 <body>
-
     <div class="container">
         <a href="dashboard.php" onclick="showLinkLoading(this, 'Returning...')" class="btn-back">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
@@ -293,130 +250,47 @@ try {
             <h1>User Payment History</h1>
             
             <?php if (isset($error)): ?>
-                <div style="padding: 20px; color: #b91c1c; background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; margin-bottom: 20px;">
+                <div style="padding: 16px 20px; color: #b91c1c; background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px; margin-bottom: 20px;">
                     <?php echo htmlspecialchars($error); ?>
                 </div>
             <?php else: ?>
                 
-                <h2>User Summary</h2>
+                <h2>Participant Information</h2>
                 <div class="summary-grid">
                     <div class="summary-item">
                         <div class="summary-label">Name</div>
                         <div class="summary-value"><?php echo htmlspecialchars(trim($user['first_name'] . ' ' . (!empty($user['middle_name']) ? $user['middle_name'] . ' ' : '') . $user['last_name'])); ?></div>
-=======
-        }
-        .notice {
-            background: #e0f2fe;
-            border-left: 4px solid #0284c7;
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 4px;
-            color: #0369a1;
-            font-size: 0.95rem;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <a href="dashboard.php" class="btn-back">← Back to Dashboard</a>
-        <div class="card">
-            <h1>User Payment Info</h1>
-            <?php if (isset($error)): ?>
-                <div style="color: red;"><?php echo htmlspecialchars($error); ?></div>
-            <?php else: ?>
-                <div class="summary-grid">
-                    <div class="summary-item">
-                        <div class="summary-label">Name</div>
-                        <div class="summary-value"><?php echo htmlspecialchars(trim($user['first_name'] . ' ' . $user['last_name'])); ?></div>
->>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
                     </div>
                     <div class="summary-item">
                         <div class="summary-label">Registration ID</div>
                         <div class="summary-value"><?php echo htmlspecialchars($user['registration_id']); ?></div>
                     </div>
                     <div class="summary-item">
-                        <div class="summary-label">Current Status</div>
-<<<<<<< HEAD
-                        <div class="summary-value">
-                            <?php 
-                                $statusClass = 'badge-pending';
-                                if ($user['payment_status'] === 'Completed') $statusClass = 'badge-completed';
-                                elseif ($user['payment_status'] === 'Failed') $statusClass = 'badge-failed';
-                            ?>
-                            <span class="badge <?php echo $statusClass; ?>"><?php echo htmlspecialchars($user['payment_status']); ?></span>
+                        <div class="summary-label">Contact</div>
+                        <div class="summary-value" style="font-size: 0.95rem;">
+                            <div><?php echo htmlspecialchars($user['email']); ?></div>
+                            <div style="color: #64748b; font-size: 0.85rem; margin-top: 2px;"><?php echo htmlspecialchars($user['phone'] ?? 'N/A'); ?></div>
                         </div>
                     </div>
                     <div class="summary-item">
-                        <div class="summary-label">Total Attempts</div>
-                        <div class="summary-value"><?php echo $totalAttempts; ?></div>
+                        <div class="summary-label">Package & Amount</div>
+                        <div class="summary-value">
+                            <?php echo $currencySymbol . number_format($user['base_amount'], 2); ?>
+                            <div style="color: #64748b; font-size: 0.85rem; font-weight: 500; margin-top: 2px;"><?php echo htmlspecialchars($user['package']); ?></div>
+                        </div>
                     </div>
-                </div>
-
-                <h2>Detailed Transaction History Table</h2>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Date & Time</th>
-                                <th>Order ID</th>
-                                <th>Payment ID</th>
-                                <th>Action / Status</th>
-                                <th>Error Description</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (count($history) > 0): ?>
-                                <?php foreach ($history as $row): ?>
-                                    <tr>
-                                        <td><?php echo date('M d, g:i A', strtotime($row['event_date'])); ?></td>
-                                        <td><?php echo htmlspecialchars($row['razorpay_order_id']); ?></td>
-                                        <td><?php echo htmlspecialchars($row['razorpay_payment_id'] ?? '-'); ?></td>
-                                        <td>
-                                            <?php 
-                                                $displayStatus = '';
-                                                $statusClass = '';
-                                                
-                                                if (in_array(strtolower($row['attempt_status'] ?? ''), ['captured', 'authorized', 'paid'])) {
-                                                    $displayStatus = '✅ Successful';
-                                                    $statusClass = 'status-captured';
-                                                } elseif ($row['attempt_status'] === 'failed') {
-                                                    
-                                                    if (stripos($row['error_description'], 'cancel') !== false) {
-                                                        $displayStatus = '❌ Cancelled';
-                                                        $statusClass = 'status-failed';
-                                                    } else {
-                                                        $displayStatus = '❌ Failed';
-                                                        $statusClass = 'status-failed';
-                                                    }
-                                                } elseif (empty($row['attempt_status'])) {
-                                                    $displayStatus = '⏳ Initiated';
-                                                    $statusClass = 'status-created';
-                                                } else {
-                                                    $displayStatus = '⏳ Pending'; 
-                                                    $statusClass = 'status-created';
-                                                }
-                                            ?>
-                                            <span class="<?php echo $statusClass; ?>"><?php echo $displayStatus; ?></span>
-                                        </td>
-                                        <td><?php echo htmlspecialchars($row['error_description'] ?: 'None'); ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php else: ?>
-                                <tr>
-                                    <td colspan="5" style="text-align: center; color: #64748b; padding: 30px;">No transaction history found for this user.</td>
-                                </tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
-
-            <?php endif; ?>
-        </div>
-    </div>
-    
-    <main-footer base-path="../"></main-footer>
-=======
-                        <div class="summary-value"><?php echo htmlspecialchars($user['payment_status']); ?></div>
+                    <div class="summary-item">
+                        <div class="summary-label">Current Status</div>
+                        <div class="summary-value">
+                            <?php 
+                                $status = $user['payment_status'];
+                                $statusClass = 'badge-pending';
+                                if ($status === 'Completed') $statusClass = 'badge-completed';
+                                elseif ($status === 'Failed') $statusClass = 'badge-failed';
+                                elseif ($status === 'Refund Approved' || $status === 'Refunded') $statusClass = 'badge-refunded';
+                            ?>
+                            <span class="badge <?php echo $statusClass; ?>"><?php echo htmlspecialchars($status); ?></span>
+                        </div>
                     </div>
                     <div class="summary-item">
                         <div class="summary-label">Vortex Transaction ID</div>
@@ -424,12 +298,60 @@ try {
                     </div>
                 </div>
 
+                <h2>Transaction Timeline & Events</h2>
+                <?php if (!empty($timeline)): ?>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date & Time</th>
+                                    <th>Event</th>
+                                    <th>Status</th>
+                                    <th>Order / Payment ID</th>
+                                    <th>Details / Reason</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($timeline as $row): ?>
+                                    <?php
+                                        $rowStatus = strtoupper($row['status'] ?? '');
+                                        $rowBadgeClass = 'badge-pending';
+                                        if ($rowStatus === 'SUCCESS' || $rowStatus === 'PAID' || $rowStatus === 'CAPTURED') $rowBadgeClass = 'badge-success';
+                                        elseif ($rowStatus === 'FAILED' || $rowStatus === 'CANCELLED') $rowBadgeClass = 'badge-failed';
+                                        elseif (strpos($rowStatus, 'REFUND') !== false) $rowBadgeClass = 'badge-refunded';
+                                    ?>
+                                    <tr>
+                                        <td><?php echo date('M d, Y g:i A', strtotime($row['created_at'])); ?></td>
+                                        <td><strong><?php echo htmlspecialchars(str_replace('_', ' ', $row['event_type'] ?? '')); ?></strong></td>
+                                        <td><span class="badge <?php echo $rowBadgeClass; ?>"><?php echo htmlspecialchars($row['status']); ?></span></td>
+                                        <td>
+                                            <?php if (!empty($row['payment_id'])): ?>
+                                                <div><code><?php echo htmlspecialchars($row['payment_id']); ?></code></div>
+                                            <?php endif; ?>
+                                            <?php if (!empty($row['order_id'])): ?>
+                                                <div style="color: #64748b; font-size: 0.85em;"><code><?php echo htmlspecialchars($row['order_id']); ?></code></div>
+                                            <?php endif; ?>
+                                            <?php if (empty($row['payment_id']) && empty($row['order_id'])): ?>
+                                                <span style="color: #94a3b8;">-</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td><?php echo htmlspecialchars($row['reason'] ?: 'None'); ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php else: ?>
+                    <p style="color: #64748b; font-size: 0.95rem; margin-top: 10px;">No transaction timeline events logged yet for this registration.</p>
+                <?php endif; ?>
+
                 <div class="notice">
-                    <strong>Note:</strong> Detailed transaction logs and attempts are securely managed by the Vortex Payment Gateway. To view the full history or process refunds for this transaction, please log into the <a href="../vortex/admin/dashboard.php" style="color: #0284c7; font-weight: bold;">Vortex Admin Dashboard</a>.
+                    <strong>Note:</strong> Detailed gateway transaction logs, webhook audits, and security metrics are securely managed by the Vortex Payment Gateway. To view the full system audit or process refunds, please log into the <a href="../vortex/admin/dashboard.php">Vortex Admin Dashboard</a>.
                 </div>
             <?php endif; ?>
         </div>
     </div>
->>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
+    
+    <main-footer base-path="../"></main-footer>
 </body>
 </html>

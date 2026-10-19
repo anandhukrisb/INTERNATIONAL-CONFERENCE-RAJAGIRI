@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
     header("Location: login.php");
     exit;
@@ -76,11 +78,6 @@ try {
         header('Content-Disposition: attachment; filename=registrations_' . date('Y-m-d') . '.csv');
         $output = fopen('php://output', 'w');
         
-<<<<<<< HEAD
-        fputcsv($output, ['Registration ID', 'First Name', 'Middle Name', 'Last Name', 'Email', 'Organization', 'Phone', 'Participant Category', 'Country', 'Country Category', 'Package', 'Abstract Submitted', 'Base Amount', 'Payment Status', 'Transaction ID', 'Registration Date']);
-        
-        foreach ($registrations as $row) {
-=======
         fputcsv($output, ['Registration ID', 'First Name', 'Middle Name', 'Last Name', 'Email', 'Organization', 'Phone', 'Participant Category', 'Country', 'Country Category', 'Package', 'Abstract Submitted', 'Base Amount', 'Currency', 'Payment Status', 'Transaction ID', 'Registration Date']);
         
         foreach ($registrations as $row) {
@@ -105,8 +102,6 @@ try {
                     $rowCurrency = 'USD';
                 }
             }
-
->>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
             fputcsv($output, [
                 $row['registration_id'],
                 $row['first_name'],
@@ -121,10 +116,7 @@ try {
                 $row['package'],
                 $row['abstract_submitted'],
                 $row['base_amount'],
-<<<<<<< HEAD
-=======
                 $rowCurrency,
->>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
                 $row['payment_status'],
                 $row['transaction_id'],
                 $row['created_at']
@@ -728,7 +720,7 @@ try {
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h1>Dashboard</h1>
             <div>
-                <span style="margin-right: 15px; font-weight: 500;">Welcome, <?php echo htmlspecialchars($_SESSION['admin_email']); ?></span>
+                <span style="margin-right: 15px; font-weight: 500;">Welcome, <?php echo htmlspecialchars($_SESSION['admin_email'] ?? 'Admin'); ?></span>
                 <a href="logout.php" onclick="showLinkLoading(this, 'Logging Out...')" style="background: var(--accent-gold); color: var(--primary-purple); font-weight: 600; padding: 10px 20px; border-radius: 6px; text-decoration: none; display: inline-block;">Log Out</a>
             </div>
         </div>
@@ -825,9 +817,6 @@ try {
                                         $badgeClass = 'badge-refunded';
                                         $amountClass = 'amount-failed';
                                     }
-<<<<<<< HEAD
-=======
-
                                     $currencySymbol = '₹';
                                     if (!empty($reg['currency'])) {
                                         $c = strtoupper(trim($reg['currency']));
@@ -849,7 +838,6 @@ try {
                                             $currencySymbol = '$';
                                         }
                                     }
->>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
                                 ?>
                                 <tr>
                                     <td><strong style="color: var(--primary-purple);"><?php echo htmlspecialchars($reg['registration_id']); ?></strong></td>
@@ -860,11 +848,7 @@ try {
                                     </td>
                                     <td><?php echo htmlspecialchars($reg['participant_category']); ?></td>
                                     <td><?php echo htmlspecialchars($reg['package']); ?></td>
-<<<<<<< HEAD
-                                    <td class="<?php echo $amountClass; ?>">₹<?php echo number_format($reg['base_amount'], 2); ?></td>
-=======
                                     <td class="<?php echo $amountClass; ?>"><?php echo $currencySymbol . number_format($reg['base_amount'], 2); ?></td>
->>>>>>> 6724e6266f8bcb714445e130d556e785792d7e0d
                                     <td><span class="badge <?php echo $badgeClass; ?>"><?php echo htmlspecialchars($status); ?></span></td>
                                     <td style="color: #64748b; font-size: 0.85em;"><?php echo date('M d, Y', strtotime($reg['created_at'])); ?></td>
                                     <td>
