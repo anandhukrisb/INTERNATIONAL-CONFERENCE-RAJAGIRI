@@ -19,7 +19,7 @@ PayVortex is a solid, standalone PHP payment gateway orchestrator sitting on top
 | Gap | What to Add |
 |-----|------------|
 | Single admin role only | ✅ **RBAC (Role-Based Access Control) [COMPLETED]** — `super_admin`, `finance`, `support`, `read-only` |
-| No 2FA in login flow | **TOTP / Google Authenticator 2FA** (schema field exists but not implemented) |
+| No 2FA in login flow | **TOTP / Google Authenticator 2FA** (planned for future release; placeholder removed from UI to prevent false security assurance) |
 | No rate limiting on API endpoints | **Rate limiter** per `api_key` (e.g. 100 req/min) with 429 responses |
 | No IP allowlisting per client | **IP whitelist per API client** stored in `api_clients` table |
 | No API key rotation | **Key rotation endpoint** — rotate live/test keys without downtime |

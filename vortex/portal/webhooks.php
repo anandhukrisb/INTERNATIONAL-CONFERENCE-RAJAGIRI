@@ -23,6 +23,7 @@ $eventModel = new Event();
 
 // Retrieve events associated with this client (via transactions, matching name, or fallback to all active events)
 $clientName = $currentClient['client_name'] ?? '';
+$db = $db ?? Database::getInstance()->getConnection();
 $eventStmt = $db->prepare("
     SELECT DISTINCT e.id, e.event_id, e.event_name, e.department, e.webhook_url, e.webhook_secret, e.is_active
     FROM events e

@@ -23,6 +23,7 @@ if (empty($_SESSION['vortex_client_id'])) {
 require_once __DIR__ . '/../../classes/Database.php';
 require_once __DIR__ . '/../../classes/ApiClient.php';
 
+$db = Database::getInstance()->getConnection();
 $clientId = (int)$_SESSION['vortex_client_id'];
 $clientModel = new ApiClient();
 $currentClient = $clientModel->getClientById($clientId);

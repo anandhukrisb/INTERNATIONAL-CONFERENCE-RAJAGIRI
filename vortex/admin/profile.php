@@ -6,7 +6,6 @@
  * Interactive administrative profile with rich modals for:
  *  - Edit Profile & Custom Avatar Color
  *  - Secure Password Change with Strength Meter
- *  - Two-Factor Authentication (2FA) Setup & Recovery Codes
  *  - Active Sessions & Device Security Management
  *  - Super Admin Permissions Matrix
  *  - Diagnostic API Access Tokens
@@ -229,22 +228,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // 3. TOGGLE 2FA
-    if ($action === 'toggle_2fa') {
-        $enable = !empty($_POST['enable']) && $_POST['enable'] === '1' ? 1 : 0;
-        $db->prepare("UPDATE admin SET two_factor_enabled = :two WHERE id = :id")->execute([':two' => $enable, ':id' => $adminId]);
-
-        $msg = $enable ? 'Two-Factor Authentication has been enabled.' : 'Two-Factor Authentication has been disabled.';
-        if ($isAjax) {
-            header('Content-Type: application/json');
-            echo json_encode(['success' => true, 'message' => $msg, 'enabled' => (bool)$enable]);
-            exit;
-        }
-
-        $_SESSION['flash_success'] = $msg;
-        header('Location: profile.php#security');
-        exit;
-    }
 
     // 4. TERMINATE SESSIONS
     if ($action === 'terminate_sessions') {
@@ -373,8 +356,7 @@ if (strpos($userAgent, 'Linux') !== false) {
 
 $avatarColor = !empty($admin['avatar_color']) ? $admin['avatar_color'] : '#1a73e8';
 $initial = strtoupper(substr($admin['full_name'] ?: $admin['username'], 0, 1));
-$is2FA = !empty($admin['two_factor_enabled']);
-$securityScore = 70 + ($is2FA ? 30 : 0);
+$securityScore = 100;
 
 $nameParts = explode(' ', trim($admin['full_name'] ?: $admin['username']), 2);
 $firstName = $nameParts[0] ?? '';
@@ -1073,23 +1055,6 @@ require_once __DIR__ . '/includes/header.php';
                 </div>
             </div>
 
-            <div class="session-item">
-                <div class="session-icon" style="<?= $is2FA ? 'background:#ceead6; color:#188038;' : 'background:#fef7e0; color:#b06000;' ?>">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                </div>
-                <div class="session-details">
-                    <span class="session-title">
-                        Two-Factor Authentication (2FA)
-                        <span class="badge <?= $is2FA ? 'badge-success' : 'badge-pending' ?>" id="badge2FAStatus">
-                            <?= $is2FA ? 'Enabled' : 'Disabled' ?>
-                        </span>
-                    </span>
-                    <span class="session-meta">Adds an extra layer of defense using TOTP Authenticator apps (Google Authenticator, Authy).</span>
-                </div>
-                <div>
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="openModal('twoFactorModal')">Configure 2FA</button>
-                </div>
-            </div>
         </div>
 
         <!-- Active Sessions Card -->
@@ -1519,116 +1484,7 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 </div>
 
-<!-- 3. TWO-FACTOR AUTHENTICATION (2FA) MODAL -->
-<div class="modal-overlay" id="twoFactorModal" role="dialog" aria-modal="true" aria-labelledby="twoFactorTitle">
-    <div class="modal-box modal-lg">
-        <div class="modal-header">
-            <div>
-                <h2 id="twoFactorTitle">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                    Two-Factor Authentication (TOTP)
-                </h2>
-                <p class="modal-subtitle">Secure admin logins with Google Authenticator, Microsoft Authenticator, or Authy.</p>
-            </div>
-            <button class="modal-close" onclick="closeModal('twoFactorModal')" title="Close">&times;</button>
-        </div>
 
-        <div class="modal-body">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding:16px; background:var(--bg-gray); border-radius:10px;">
-                <div>
-                    <strong style="font-size:1rem; color:var(--text-dark);">2FA Status</strong>
-                    <div style="font-size:0.85rem; color:var(--text-gray);">
-                        Current state: <span class="badge <?= $is2FA ? 'badge-success' : 'badge-pending' ?>" id="modal2FAStateBadge"><?= $is2FA ? 'Active & Enforced' : 'Currently Disabled' ?></span>
-                    </div>
-                </div>
-                <form id="toggle2FAForm" method="POST" action="profile.php" style="margin:0;">
-                    <input type="hidden" name="action" value="toggle_2fa">
-                    <input type="hidden" name="ajax_request" value="1">
-                    <input type="hidden" name="enable" id="input2FAState" value="<?= $is2FA ? '0' : '1' ?>">
-                    <button type="submit" class="btn <?= $is2FA ? 'btn-secondary' : 'btn-primary' ?>" id="btnToggle2FA">
-                        <?= $is2FA ? 'Disable 2FA' : 'Enable 2FA' ?>
-                    </button>
-                </form>
-            </div>
-
-            <div class="two-factor-setup-card">
-                <div class="qr-code-display">
-                    <!-- Clean SVG Mock QR Code for Vortex 2FA -->
-                    <svg width="160" height="160" viewBox="0 0 100 100">
-                        <rect width="100" height="100" fill="#ffffff"/>
-                        <!-- Top Left Position Detection Pattern -->
-                        <rect x="10" y="10" width="28" height="28" fill="#1a73e8" rx="4"/>
-                        <rect x="14" y="14" width="20" height="20" fill="#ffffff" rx="2"/>
-                        <rect x="18" y="18" width="12" height="12" fill="#1a73e8" rx="2"/>
-                        <!-- Top Right Position Detection Pattern -->
-                        <rect x="62" y="10" width="28" height="28" fill="#1a73e8" rx="4"/>
-                        <rect x="66" y="14" width="20" height="20" fill="#ffffff" rx="2"/>
-                        <rect x="70" y="18" width="12" height="12" fill="#1a73e8" rx="2"/>
-                        <!-- Bottom Left Position Detection Pattern -->
-                        <rect x="10" y="62" width="28" height="28" fill="#1a73e8" rx="4"/>
-                        <rect x="14" y="66" width="20" height="20" fill="#ffffff" rx="2"/>
-                        <rect x="18" y="70" width="12" height="12" fill="#1a73e8" rx="2"/>
-                        <!-- Simulated Data Grid -->
-                        <rect x="42" y="12" width="6" height="6" fill="#202124"/>
-                        <rect x="50" y="12" width="6" height="6" fill="#202124"/>
-                        <rect x="42" y="24" width="6" height="6" fill="#202124"/>
-                        <rect x="50" y="32" width="6" height="6" fill="#202124"/>
-                        <rect x="12" y="44" width="6" height="6" fill="#202124"/>
-                        <rect x="24" y="44" width="6" height="6" fill="#202124"/>
-                        <rect x="36" y="44" width="6" height="6" fill="#202124"/>
-                        <rect x="48" y="44" width="6" height="6" fill="#202124"/>
-                        <rect x="60" y="44" width="6" height="6" fill="#202124"/>
-                        <rect x="72" y="44" width="6" height="6" fill="#202124"/>
-                        <rect x="84" y="44" width="6" height="6" fill="#202124"/>
-                        <rect x="42" y="56" width="6" height="6" fill="#202124"/>
-                        <rect x="54" y="56" width="6" height="6" fill="#202124"/>
-                        <rect x="66" y="56" width="6" height="6" fill="#202124"/>
-                        <rect x="78" y="56" width="6" height="6" fill="#202124"/>
-                        <rect x="48" y="68" width="6" height="6" fill="#202124"/>
-                        <rect x="60" y="68" width="6" height="6" fill="#202124"/>
-                        <rect x="72" y="68" width="6" height="6" fill="#202124"/>
-                        <rect x="84" y="68" width="6" height="6" fill="#202124"/>
-                        <rect x="42" y="80" width="6" height="6" fill="#202124"/>
-                        <rect x="66" y="80" width="6" height="6" fill="#202124"/>
-                        <rect x="78" y="80" width="6" height="6" fill="#202124"/>
-                    </svg>
-                </div>
-
-                <div>
-                    <h4 style="font-size:0.95rem; font-weight:600; color:var(--text-dark);">Manual Setup Key</h4>
-                    <p style="font-size:0.8rem; color:var(--text-gray); margin-bottom:8px;">If your camera cannot scan the QR code, enter this key manually:</p>
-                    <div class="two-factor-secret">
-                        <span id="txt2FASecretKey">VTX-ADM-<?= strtoupper(substr(md5($admin['username'] . 'vortex_salt'), 0, 16)) ?></span>
-                        <button type="button" class="btn-copy" onclick="copyToClipboard(document.getElementById('txt2FASecretKey').innerText, this)">Copy</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Emergency Recovery Codes -->
-            <div>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                    <label style="font-size:0.85rem; font-weight:600; color:var(--text-dark);">Emergency Backup Recovery Codes</label>
-                    <button type="button" class="btn-copy" onclick="copyAllRecoveryCodes(this)">Copy All Codes</button>
-                </div>
-                <div class="recovery-codes-grid">
-                    <?php
-                    $recCodes = [];
-                    for ($i = 0; $i < 6; $i++) {
-                        $code = strtoupper(substr(md5($admin['id'] . 'code_' . $i), 0, 4)) . '-' . strtoupper(substr(md5($admin['username'] . 'code_' . $i), 0, 4));
-                        $recCodes[] = $code;
-                        echo '<div class="recovery-code-chip recovery-code-val">' . $code . '</div>';
-                    }
-                    ?>
-                </div>
-                <small style="color:var(--text-gray); font-size:0.75rem;">Keep these recovery codes stored securely offline in case you lose access to your device.</small>
-            </div>
-        </div>
-
-        <div class="modal-footer">
-            <button type="button" class="btn btn-primary" onclick="closeModal('twoFactorModal')">Done</button>
-        </div>
-    </div>
-</div>
 
 <!-- 4. ACTIVE SESSIONS & DEVICE SECURITY MODAL -->
 <div class="modal-overlay" id="activeSessionsModal" role="dialog" aria-modal="true" aria-labelledby="activeSessionsTitle">
@@ -2171,12 +2027,6 @@ function selectAvatarColor(hex, swatchElement) {
     if (mainAvatar) mainAvatar.style.backgroundColor = hex;
 }
 
-// --- Copy All Recovery Codes ---
-function copyAllRecoveryCodes(btn) {
-    const codes = Array.from(document.querySelectorAll('.recovery-code-val')).map(el => el.innerText.trim());
-    const allText = "RPAY ADMIN RECOVERY CODES\n" + codes.join("\n");
-    copyToClipboard(allText, btn);
-}
 
 // --- AJAX Form Handlers for Seamless Interactivity ---
 
@@ -2363,60 +2213,6 @@ document.getElementById('changePasswordForm').addEventListener('submit', functio
     });
 });
 
-// 3. Toggle 2FA Form
-document.getElementById('toggle2FAForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const form = this;
-    const btn = document.getElementById('btnToggle2FA');
-    const origBtnText = btn.innerHTML;
-
-    btn.disabled = true;
-    btn.innerHTML = 'Updating...';
-
-    const formData = new FormData(form);
-
-    fetch('profile.php', {
-        method: 'POST',
-        headers: { 'X-Requested-With': 'XMLHttpRequest' },
-        body: formData
-    })
-    .then(r => r.json())
-    .then(data => {
-        btn.disabled = false;
-
-        if (data.success) {
-            showToast(data.message, 'success');
-            const isEnabled = data.enabled;
-
-            document.getElementById('input2FAState').value = isEnabled ? '0' : '1';
-            btn.innerHTML = isEnabled ? 'Disable 2FA' : 'Enable 2FA';
-            btn.className = `btn ${isEnabled ? 'btn-secondary' : 'btn-primary'}`;
-
-            const badge = document.getElementById('modal2FAStateBadge');
-            badge.innerText = isEnabled ? 'Active & Enforced' : 'Currently Disabled';
-            badge.className = `badge ${isEnabled ? 'badge-success' : 'badge-pending'}`;
-
-            const badge2 = document.getElementById('badge2FAStatus');
-            if (badge2) {
-                badge2.innerText = isEnabled ? 'Enabled' : 'Disabled';
-                badge2.className = `badge ${isEnabled ? 'badge-success' : 'badge-pending'}`;
-            }
-
-            const statScore = document.getElementById('statSecurityScore');
-            if (statScore) {
-                statScore.innerText = (isEnabled ? '100%' : '70%');
-            }
-        } else {
-            btn.innerHTML = origBtnText;
-            showToast(data.message || 'Failed to toggle 2FA.', 'error');
-        }
-    })
-    .catch(err => {
-        btn.disabled = false;
-        btn.innerHTML = origBtnText;
-        showToast('Network error updating 2FA.', 'error');
-    });
-});
 
 // 4. Terminate Sessions Form
 document.getElementById('terminateSessionsForm').addEventListener('submit', function(e) {

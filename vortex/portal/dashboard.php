@@ -27,6 +27,8 @@ $avgTicket   = (float)($metrics['avg_ticket_size'] ?? 0);
 $successCount = (int)($metrics['success_count'] ?? 0);
 $pendingCount = (int)($metrics['pending_count'] ?? 0);
 $failedCount  = (int)($metrics['failed_count'] ?? 0);
+
+$db = $db ?? Database::getInstance()->getConnection();
 $clientEventStmt = $db->prepare("
     SELECT e.event_id, e.event_name, e.webhook_url, e.webhook_secret
     FROM events e
