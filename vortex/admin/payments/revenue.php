@@ -619,20 +619,17 @@ require_once __DIR__ . '/../includes/header.php';
                 <table class="admin-table">
                     <thead>
                         <tr>
-                            <th>Rpay Tx ID &amp; Customer</th>
-                            <th>Event Campaign</th>
+                            <th>Email</th>
+                            <th>Event Name</th>
                             <th>Amount</th>
                             <th>Status</th>
-                            <th>Gateway Payment ID</th>
-                            <th>Client / Host</th>
-                            <th>Date &amp; Time</th>
-                            <th>Actions</th>
+                            <th>Timestamp</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (empty($transactions)): ?>
                             <tr>
-                                <td colspan="8" style="text-align: center; padding: 48px 20px;">
+                                <td colspan="5" style="text-align: center; padding: 48px 20px;">
                                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;">
                                         <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--bg-hover); display: flex; align-items: center; justify-content: center; color: var(--text-gray);">
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg>
@@ -647,59 +644,47 @@ require_once __DIR__ . '/../includes/header.php';
                             </tr>
                         <?php else: ?>
                             <?php foreach ($transactions as $tx): ?>
-                                <tr>
-                                    <!-- Transaction ID & Customer details -->
+                                <?php
+                                $txJson = htmlspecialchars(json_encode($tx, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP), ENT_QUOTES, 'UTF-8');
+                                ?>
+                                <tr class="tx-overview-row"
+                                    tabindex="0"
+                                    role="button"
+                                    aria-label="View details for transaction <?= htmlspecialchars($tx['vortex_transaction_id']) ?>"
+                                    title="Click / tap to view transaction details & actions"
+                                    data-transaction-id="<?= htmlspecialchars($tx['vortex_transaction_id']) ?>"
+                                    data-tx='<?= $txJson ?>'
+                                    onclick="openTxOverviewModal(this)"
+                                    onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openTxOverviewModal(this);}">
+
+                                    <!-- 1. Email -->
                                     <td>
-                                        <a href="payment_details.php?vortex_transaction_id=<?= urlencode($tx['vortex_transaction_id']) ?>" class="font-mono" style="color: var(--primary-blue); font-weight: 700; text-decoration: underline; font-size: 0.88rem;">
-                                            <?= htmlspecialchars($tx['vortex_transaction_id']) ?>
-                                        </a>
-                                        <?php if (!empty($tx['customer_email'])): ?>
-                                            <div style="font-size: 0.76rem; color: var(--text-gray); margin-top: 3px; display: flex; align-items: center; gap: 4px;" title="Customer Email">
-                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                                                <span style="max-width: 175px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?= htmlspecialchars($tx['customer_email']) ?></span>
-                                            </div>
-                                        <?php endif; ?>
-                                        <?php if (!empty($tx['customer_mobile'])): ?>
-                                            <div style="font-size: 0.72rem; color: var(--text-gray); margin-top: 2px;">
-                                                <?= htmlspecialchars($tx['customer_mobile']) ?>
-                                            </div>
-                                        <?php endif; ?>
+                                        <?= htmlspecialchars(!empty($tx['customer_email']) ? $tx['customer_email'] : '—') ?>
                                     </td>
 
-                                    <!-- Event Campaign Name (clickable pill to filter by this event!) -->
+                                    <!-- 2. Event Name -->
                                     <td>
-                                        <a href="revenue.php?event_id=<?= urlencode($tx['event_id']) ?>&status=<?= urlencode($statusFilter) ?>"
-                                           class="badge badge-event"
-                                           style="text-decoration: none; font-size: 0.76rem; padding: 4px 8px; display: inline-flex; align-items: center; gap: 4px;"
-                                           title="Filter by event: <?= htmlspecialchars($tx['event_name'] ?? $tx['event_id']) ?>">
-                                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                                            <span><?= htmlspecialchars($tx['event_name'] ?? $tx['event_id']) ?></span>
-                                        </a>
+                                        <span style="font-weight: 600; color: var(--text-dark);"><?= htmlspecialchars($tx['event_name'] ?? $tx['event_id'] ?? '–') ?></span>
                                         <?php if (!empty($tx['department'])): ?>
-                                            <div style="font-size: 0.72rem; color: var(--text-gray); margin-top: 3px;">
+                                            <div style="font-size: 0.74rem; color: var(--text-gray); margin-top: 2px;">
                                                 <?= htmlspecialchars($tx['department']) ?>
                                             </div>
                                         <?php endif; ?>
                                     </td>
 
-                                    <!-- Amount -->
-                                    <td>
+                                    <!-- 3. Amount -->
+                                    <td style="font-weight: 700; color: var(--text-dark); font-size: 0.95rem; white-space: nowrap;">
                                         <?php 
                                         $curr = strtoupper($tx['currency'] ?? 'INR');
                                         $currSymbol = ($curr === 'USD') ? '$' : '₹';
                                         ?>
-                                        <span style="font-size: 0.95rem; font-weight: 800; color: var(--text-dark); white-space: nowrap;">
-                                            <?= $currSymbol ?> <?= number_format((float)$tx['amount'], 2) ?>
-                                        </span>
-                                        <div style="font-size: 0.72rem; color: var(--text-gray); text-transform: uppercase;">
-                                            <?= htmlspecialchars($curr) ?>
-                                            <?php if ($curr === 'USD'): ?>
-                                                <span class="badge" style="font-size: 0.62rem; padding: 1px 4px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; margin-left: 2px;">International</span>
-                                            <?php endif; ?>
-                                        </div>
+                                        <span><?= $currSymbol ?><?= number_format((float)$tx['amount'], 2) ?></span>
+                                        <?php if ($curr === 'USD'): ?>
+                                            <span class="badge" style="font-size: 0.65rem; padding: 2px 5px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; margin-left: 3px;" title="International USD Payment">USD</span>
+                                        <?php endif; ?>
                                     </td>
 
-                                    <!-- Status Badge -->
+                                    <!-- 4. Status -->
                                     <td>
                                         <?php
                                         $bClass = 'badge-pending';
@@ -711,62 +696,26 @@ require_once __DIR__ . '/../includes/header.php';
                                         if ($tx['status'] === 'DISPUTED') $bClass = 'badge-disputed';
                                         ?>
                                         <span class="badge <?= $bClass ?>"><?= htmlspecialchars($displayStatus) ?></span>
-                                        
+
                                         <?php if (!empty($tx['latest_event']) && $tx['status'] !== 'SUCCESS'): ?>
-                                            <div style="margin-top: 4px;">
+                                            <div style="margin-top: 3px;">
                                                 <span class="badge badge-event" style="font-size: 0.68rem; padding: 2px 5px;" title="Latest Gateway Event">
                                                     <?= htmlspecialchars($tx['latest_event']) ?>
                                                 </span>
                                             </div>
                                         <?php endif; ?>
-                                    </td>
 
-                                    <!-- Razorpay Payment ID -->
-                                    <td>
-                                        <span class="font-mono" style="font-size: 0.82rem; color: var(--text-dark);">
-                                            <?= htmlspecialchars($tx['razorpay_payment_id'] ?? '—') ?>
-                                        </span>
-                                        <?php if (!empty($tx['razorpay_order_id'])): ?>
-                                            <div class="font-mono" style="font-size: 0.72rem; color: var(--text-gray);" title="Razorpay Order ID">
-                                                <?= htmlspecialchars($tx['razorpay_order_id']) ?>
+                                        <?php if (!empty($tx['latest_reason']) && $tx['status'] !== 'SUCCESS'): ?>
+                                            <div style="margin-top: 4px; font-size: 0.72rem; color: var(--danger-text); max-width: 220px; line-height: 1.25;">
+                                                <?= htmlspecialchars($tx['latest_reason']) ?>
                                             </div>
                                         <?php endif; ?>
                                     </td>
 
-                                    <!-- Client / Host -->
-                                    <td style="font-size: 0.84rem; color: var(--text-dark);">
-                                        <?= htmlspecialchars($tx['client_name'] ?? 'Default Client') ?>
-                                    </td>
-
-                                    <!-- Timestamp -->
+                                    <!-- 5. Timestamp -->
                                     <td style="font-size: 0.82rem; color: var(--text-gray); white-space: nowrap;">
-                                        <?= date('M d, Y H:i', strtotime($tx['created_at'])) ?>
-                                    </td>
-
-                                    <!-- Action Buttons -->
-                                    <td>
-                                        <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-                                            <!-- Details Link -->
-                                            <a href="payment_details.php?vortex_transaction_id=<?= urlencode($tx['vortex_transaction_id']) ?>" class="btn btn-secondary btn-sm" title="Inspect status audit timeline" style="display: inline-flex; align-items: center; gap: 4px;">
-                                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                                                <span>Timeline (<?= (int)($tx['timeline_count'] ?? 0) ?>)</span>
-                                            </a>
-
-                                            <!-- Refund Button -->
-                                            <?php if ($tx['status'] === 'SUCCESS'): ?>
-                                                <button type="button" class="btn btn-sm"
-                                                        onclick="openRefundModal('<?= htmlspecialchars($tx['vortex_transaction_id'], ENT_QUOTES) ?>', '<?= htmlspecialchars($tx['amount'], ENT_QUOTES) ?>', '<?= htmlspecialchars(addslashes($tx['customer_email'] ?? ''), ENT_QUOTES) ?>')"
-                                                        title="Process Refund via Razorpay"
-                                                        style="background-color: #dc2626; color: white; border: none; font-weight: 600; padding: 4px 8px; border-radius: 4px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-size: 0.76rem;">
-                                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
-                                                    <span>Refund</span>
-                                                </button>
-                                            <?php elseif ($tx['status'] === 'REFUNDED'): ?>
-                                                <span class="badge badge-refunded" style="font-size: 0.74rem; padding: 3px 7px;">
-                                                    Refunded
-                                                </span>
-                                            <?php endif; ?>
-                                        </div>
+                                        <div><?= date('M d, Y', strtotime($tx['created_at'])) ?></div>
+                                        <div style="font-size: 0.74rem; color: var(--text-gray);"><?= date('H:i:s', strtotime($tx['created_at'])) ?></div>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -784,40 +733,56 @@ require_once __DIR__ . '/../includes/header.php';
                     return 'revenue.php?' . http_build_query($params);
                 };
                 ?>
-                <div class="pagination-container" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-top: 1px solid var(--border-color); flex-wrap: wrap; gap: 10px; background: var(--bg-hover);">
-                    <div class="pagination-info" style="font-size: 0.85rem; color: var(--text-gray);">
-                        Showing <strong style="color: var(--text-dark);"><?= number_format($fromTx) ?></strong> to <strong style="color: var(--text-dark);"><?= number_format($toTx) ?></strong> of <strong style="color: var(--text-dark);"><?= number_format($filteredCount) ?></strong> transactions
+                <div class="pagination-wrapper" style="padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); background: var(--bg-hover); flex-wrap: wrap; gap: 10px;">
+                    <div class="pagination-info" style="font-size: 0.82rem; color: var(--text-gray);">
+                        Showing <strong style="color: var(--text-dark);"><?= number_format($fromTx) ?>–<?= number_format($toTx) ?></strong> of <strong style="color: var(--text-dark);"><?= number_format($filteredCount) ?></strong> transactions
+                        <span style="color: var(--border-color); margin: 0 4px;">•</span>
+                        Page <strong style="color: var(--text-dark);"><?= (int)$page ?></strong> of <strong style="color: var(--text-dark);"><?= (int)$totalPages ?></strong>
                     </div>
 
                     <?php if ($totalPages > 1): ?>
-                        <div class="pagination-controls" style="display: flex; gap: 4px; align-items: center;">
+                        <div class="pagination-controls" style="display: flex; gap: 4px;">
                             <?php if ($page > 1): ?>
-                                <a href="<?= htmlspecialchars($buildPaginationUrl($page - 1)) ?>" class="btn btn-secondary btn-sm" style="padding: 4px 10px;">&laquo; Prev</a>
+                                <a href="<?= htmlspecialchars($buildPaginationUrl(1)) ?>" class="pagination-btn pagination-nav-btn" title="First Page">« First</a>
+                                <a href="<?= htmlspecialchars($buildPaginationUrl($page - 1)) ?>" class="pagination-btn pagination-nav-btn" title="Previous Page">‹ Prev</a>
                             <?php else: ?>
-                                <button type="button" class="btn btn-secondary btn-sm" disabled style="opacity: 0.45; cursor: not-allowed; padding: 4px 10px;">&laquo; Prev</button>
+                                <span class="pagination-btn pagination-nav-btn disabled" aria-disabled="true">« First</span>
+                                <span class="pagination-btn pagination-nav-btn disabled" aria-disabled="true">‹ Prev</span>
                             <?php endif; ?>
 
                             <?php
-                            $startPage = max(1, $page - 2);
-                            $endPage = min($totalPages, $page + 2);
-                            if ($startPage > 1) {
-                                echo '<a href="' . htmlspecialchars($buildPaginationUrl(1)) . '" class="btn btn-secondary btn-sm" style="padding: 4px 8px;">1</a>';
-                                if ($startPage > 2) echo '<span style="padding: 0 4px; color: var(--text-gray);">...</span>';
-                            }
-                            for ($p = $startPage; $p <= $endPage; $p++) {
-                                $isActive = ($p === $page);
-                                echo '<a href="' . htmlspecialchars($buildPaginationUrl($p)) . '" class="btn ' . ($isActive ? 'btn-primary' : 'btn-secondary') . ' btn-sm" style="padding: 4px 8px; font-weight: ' . ($isActive ? '700' : '500') . ';">' . $p . '</a>';
-                            }
-                            if ($endPage < $totalPages) {
-                                if ($endPage < $totalPages - 1) echo '<span style="padding: 0 4px; color: var(--text-gray);">...</span>';
-                                echo '<a href="' . htmlspecialchars($buildPaginationUrl($totalPages)) . '" class="btn btn-secondary btn-sm" style="padding: 4px 8px;">' . $totalPages . '</a>';
-                            }
-                            ?>
+                            $window = 2;
+                            $startPage = max(1, $page - $window);
+                            $endPage = min($totalPages, $page + $window);
+
+                            if ($startPage > 1): ?>
+                                <a href="<?= htmlspecialchars($buildPaginationUrl(1)) ?>" class="pagination-btn">1</a>
+                                <?php if ($startPage > 2): ?>
+                                    <span class="pagination-ellipsis" style="padding: 0 4px; color: var(--text-gray); display: inline-flex; align-items: center;">…</span>
+                                <?php endif; ?>
+                            <?php endif; ?>
+
+                            <?php for ($p = $startPage; $p <= $endPage; $p++): ?>
+                                <?php if ($p === $page): ?>
+                                    <span class="pagination-btn active" aria-current="page"><?= $p ?></span>
+                                <?php else: ?>
+                                    <a href="<?= htmlspecialchars($buildPaginationUrl($p)) ?>" class="pagination-btn"><?= $p ?></a>
+                                <?php endif; ?>
+                            <?php endfor; ?>
+
+                            <?php if ($endPage < $totalPages): ?>
+                                <?php if ($endPage < $totalPages - 1): ?>
+                                    <span class="pagination-ellipsis" style="padding: 0 4px; color: var(--text-gray); display: inline-flex; align-items: center;">…</span>
+                                <?php endif; ?>
+                                <a href="<?= htmlspecialchars($buildPaginationUrl($totalPages)) ?>" class="pagination-btn"><?= $totalPages ?></a>
+                            <?php endif; ?>
 
                             <?php if ($page < $totalPages): ?>
-                                <a href="<?= htmlspecialchars($buildPaginationUrl($page + 1)) ?>" class="btn btn-secondary btn-sm" style="padding: 4px 10px;">Next &raquo;</a>
+                                <a href="<?= htmlspecialchars($buildPaginationUrl($page + 1)) ?>" class="pagination-btn pagination-nav-btn" title="Next Page">Next ›</a>
+                                <a href="<?= htmlspecialchars($buildPaginationUrl($totalPages)) ?>" class="pagination-btn pagination-nav-btn" title="Last Page">Last »</a>
                             <?php else: ?>
-                                <button type="button" class="btn btn-secondary btn-sm" disabled style="opacity: 0.45; cursor: not-allowed; padding: 4px 10px;">Next &raquo;</button>
+                                <span class="pagination-btn pagination-nav-btn disabled" aria-disabled="true">Next ›</span>
+                                <span class="pagination-btn pagination-nav-btn disabled" aria-disabled="true">Last »</span>
                             <?php endif; ?>
                         </div>
                     <?php endif; ?>
@@ -836,6 +801,9 @@ require_once __DIR__ . '/../includes/header.php';
 </style>
 
 <?php
+// Include Shared Transaction Overview Modal
+require_once __DIR__ . '/../includes/tx_overview_modal.php';
+
 // Include Refund Modal Component
 require_once __DIR__ . '/../includes/refund_modal.php';
 
