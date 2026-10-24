@@ -21,9 +21,10 @@ require_once __DIR__ . '/../../classes/Database.php';
 $pageTitle = "Transactions List";
 $activeNav = "payments";
 
-$statusFilter = trim($_GET['status'] ?? '');
-$eventIdFilter = trim($_GET['event_id'] ?? '');
-$searchQ = trim($_GET['q'] ?? '');
+$statusFilter   = trim($_GET['status'] ?? '');
+$eventIdFilter  = trim($_GET['event_id'] ?? '');
+$currencyFilter = strtoupper(trim($_GET['currency'] ?? ''));
+$searchQ        = trim($_GET['q'] ?? '');
 
 $allEvents = [];
 try {
@@ -59,6 +60,11 @@ try {
         $params[':event_id'] = $eventIdFilter;
     }
 
+    if ($currencyFilter !== '' && $currencyFilter !== 'ALL' && in_array($currencyFilter, ['INR', 'USD'])) {
+        $query .= " AND t.currency = :currency";
+        $params[':currency'] = $currencyFilter;
+    }
+
     if ($searchQ !== '') {
         $query .= " AND (t.vortex_transaction_id LIKE :search OR t.razorpay_order_id LIKE :search OR t.razorpay_payment_id LIKE :search OR t.customer_email LIKE :search)";
         $params[':search'] = '%' . $searchQ . '%';
@@ -71,6 +77,9 @@ try {
     }
     if ($eventIdFilter !== '' && $eventIdFilter !== 'ALL') {
         $countQuery .= " AND t.event_id = :event_id";
+    }
+    if ($currencyFilter !== '' && $currencyFilter !== 'ALL' && in_array($currencyFilter, ['INR', 'USD'])) {
+        $countQuery .= " AND t.currency = :currency";
     }
     if ($searchQ !== '') {
         $countQuery .= " AND (t.vortex_transaction_id LIKE :search OR t.razorpay_order_id LIKE :search OR t.razorpay_payment_id LIKE :search OR t.customer_email LIKE :search)";
@@ -142,8 +151,14 @@ require_once __DIR__ . '/../includes/header.php';
                 <option value="REFUNDED" <?= $statusFilter === 'REFUNDED' ? 'selected' : '' ?>>Refunded</option>
             </select>
 
+            <select name="currency" class="form-control" style="font-size: 0.82rem; padding: 5px 10px; width: 140px;" onchange="this.form.submit()">
+                <option value="">All Currencies</option>
+                <option value="INR" <?= $currencyFilter === 'INR' ? 'selected' : '' ?>>₹ INR (Domestic)</option>
+                <option value="USD" <?= $currencyFilter === 'USD' ? 'selected' : '' ?>>$ USD (International)</option>
+            </select>
+
             <button type="submit" class="btn btn-secondary btn-sm" style="padding: 5px 10px;">Filter</button>
-            <?php if ($searchQ !== '' || $statusFilter !== '' || $eventIdFilter !== ''): ?>
+            <?php if ($searchQ !== '' || $statusFilter !== '' || $eventIdFilter !== '' || $currencyFilter !== ''): ?>
                 <a href="list_payments.php" class="btn btn-secondary btn-sm" style="padding: 5px 10px; color: #dc2626;">Reset</a>
             <?php endif; ?>
         </form>
@@ -183,7 +198,16 @@ require_once __DIR__ . '/../includes/header.php';
                                             </div>
                                         <?php endif; ?>
                                     </td>
-                                    <td style="font-weight: 700; color: var(--text-dark);">₹<?= number_format((float)$tx['amount'], 2) ?></td>
+                                    <td style="font-weight: 700; color: var(--text-dark); white-space: nowrap;">
+                                        <?php 
+                                        $curr = strtoupper($tx['currency'] ?? 'INR');
+                                        $currSymbol = ($curr === 'USD') ? '$' : '₹';
+                                        ?>
+                                        <span><?= $currSymbol ?><?= number_format((float)$tx['amount'], 2) ?></span>
+                                        <?php if ($curr === 'USD'): ?>
+                                            <span class="badge" style="font-size: 0.65rem; padding: 2px 5px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; margin-left: 3px;" title="International USD Payment">USD</span>
+                                        <?php endif; ?>
+                                    </td>
                                     <td>
                                         <?php
                                         $bClass = 'badge-pending';

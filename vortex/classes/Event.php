@@ -81,6 +81,20 @@ class Event
 
             // Check whether an event was found.
             if ($event) {
+
+                // Enforce end_date: block payments if the event has concluded.
+                if (!empty($event['end_date'])) {
+                    $endTs = strtotime($event['end_date']);
+                    if ($endTs !== false && $endTs < time()) {
+                        Logger::warning(
+                            'Payment blocked: event has concluded (end_date in the past). '
+                            . 'Event ID: ' . $eventId
+                            . ', end_date: ' . $event['end_date']
+                        );
+                        return false;
+                    }
+                }
+
                 return $event;
             }
 

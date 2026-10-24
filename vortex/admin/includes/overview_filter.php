@@ -13,6 +13,7 @@ $filterEndDate     = $filterEndDate ?? '';
 $filterStatus      = $filterStatus ?? '';
 $filterEventId     = $filterEventId ?? '';
 $filterClientId    = $filterClientId ?? '';
+$filterCurrency    = $filterCurrency ?? '';
 $filterEvents      = $filterEvents ?? [];
 $filterClients     = $filterClients ?? [];
 $activeFilterCount = $activeFilterCount ?? 0;
@@ -130,6 +131,18 @@ $isFiltered        = $isFiltered ?? false;
                     </select>
                 </div>
 
+                <!-- 6. Currency (Domestic / International) -->
+                <div>
+                    <label for="filterCurrency" style="display: block; font-size: 0.74rem; font-weight: 700; color: var(--text-gray, #64748b); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 5px;">
+                        Currency
+                    </label>
+                    <select id="filterCurrency" name="currency" class="form-control" style="width: 100%; font-size: 0.84rem; padding: 7px 10px; height: 38px; cursor: pointer;">
+                        <option value="">All Currencies</option>
+                        <option value="INR" <?= $filterCurrency === 'INR' ? 'selected' : '' ?>>₹ INR (Domestic)</option>
+                        <option value="USD" <?= $filterCurrency === 'USD' ? 'selected' : '' ?>>$ USD (International)</option>
+                    </select>
+                </div>
+
             </div>
 
             <!-- Active Filters Indicator Pills -->
@@ -188,6 +201,13 @@ $isFiltered        = $isFiltered ?? false;
                             <span style="display: inline-flex; align-items: center; gap: 5px; background: var(--bg-hover, #f1f5f9); color: var(--text-dark, #1e293b); padding: 3px 9px; border-radius: 12px; font-size: 0.74rem; border: 1px solid var(--border-color);">
                                 Client: <strong><?= htmlspecialchars($clName) ?></strong>
                                 <a href="#" onclick="removeSingleOverviewFilter(event, 'api_client_id')" style="color: #64748b; font-weight: 700; text-decoration: none; margin-left: 2px;" title="Remove Client filter">&times;</a>
+                            </span>
+                        <?php endif; ?>
+
+                        <?php if ($filterCurrency !== '' && $filterCurrency !== 'ALL'): ?>
+                            <span style="display: inline-flex; align-items: center; gap: 5px; background: #e0f2fe; color: #0369a1; padding: 3px 9px; border-radius: 12px; font-size: 0.74rem; border: 1px solid #bae6fd;">
+                                Currency: <strong><?= htmlspecialchars($filterCurrency) === 'USD' ? '$ USD (International)' : '₹ INR (Domestic)' ?></strong>
+                                <a href="#" onclick="removeSingleOverviewFilter(event, 'currency')" style="color: #0369a1; font-weight: 700; text-decoration: none; margin-left: 2px;" title="Remove Currency filter">&times;</a>
                             </span>
                         <?php endif; ?>
                     </div>
@@ -311,7 +331,7 @@ $isFiltered        = $isFiltered ?? false;
     // Initialize Event Listeners
     document.addEventListener('DOMContentLoaded', function() {
         // Dropdown hot reload on change
-        ['filterStatus', 'filterEventId', 'filterClientId'].forEach(id => {
+        ['filterStatus', 'filterEventId', 'filterClientId', 'filterCurrency'].forEach(id => {
             const el = document.getElementById(id);
             if (el) {
                 el.addEventListener('change', function() {
@@ -376,7 +396,7 @@ $isFiltered        = $isFiltered ?? false;
                 const el = document.getElementById(id);
                 if (el) el.value = '';
             });
-            ['filterStatus', 'filterEventId', 'filterClientId'].forEach(id => {
+            ['filterStatus', 'filterEventId', 'filterClientId', 'filterCurrency'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.value = '';
             });
@@ -391,7 +411,8 @@ $isFiltered        = $isFiltered ?? false;
             'end_date': 'filterEndDate',
             'status': 'filterStatus',
             'event_id': 'filterEventId',
-            'api_client_id': 'filterClientId'
+            'api_client_id': 'filterClientId',
+            'currency': 'filterCurrency'
         };
         const inputId = fieldMap[paramName];
         if (inputId) {

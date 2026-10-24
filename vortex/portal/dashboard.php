@@ -201,8 +201,15 @@ $activeEventWebhooks = (int) ($eventCountStmt ? $eventCountStmt->fetchColumn() :
                                         <span class="badge" style="background: #dcfce7; color: #15803d;">LIVE</span>
                                     <?php endif; ?>
                                 </td>
-                                <td style="font-weight: 700;">
-                                    ₹<?= number_format((float)($tx['amount'] ?? 0), 2) ?>
+                                <td style="font-weight: 700; white-space: nowrap;">
+                                    <?php 
+                                    $cCurr = strtoupper($tx['currency'] ?? 'INR');
+                                    $cSym = ($cCurr === 'USD') ? '$' : '₹';
+                                    ?>
+                                    <span><?= $cSym ?><?= number_format((float)($tx['amount'] ?? 0), 2) ?></span>
+                                    <?php if ($cCurr === 'USD'): ?>
+                                        <span class="badge" style="font-size: 0.65rem; padding: 1px 4px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; margin-left: 2px;">USD</span>
+                                    <?php endif; ?>
                                 </td>
                                 <td>
                                     <span class="badge <?= $badgeClass ?>"><?= htmlspecialchars($status) ?></span>

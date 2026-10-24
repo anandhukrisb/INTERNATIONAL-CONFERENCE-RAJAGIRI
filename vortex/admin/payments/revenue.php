@@ -31,17 +31,20 @@ $db = Database::getInstance()->getConnection();
 // ------------------------------------------------------------
 // Request Parameters & Filters
 // ------------------------------------------------------------
-$eventIdFilter = trim($_GET['event_id'] ?? '');
-$statusFilter  = trim($_GET['status'] ?? 'SUCCESS'); // Default to SUCCESS for revenue perspective
-$searchQ       = trim($_GET['q'] ?? '');
-$fromDate      = trim($_GET['from_date'] ?? '');
-$toDate        = trim($_GET['to_date'] ?? '');
-$exportCsv     = (isset($_GET['export']) && $_GET['export'] === 'csv');
+$eventIdFilter  = trim($_GET['event_id'] ?? '');
+$statusFilter   = trim($_GET['status'] ?? 'SUCCESS'); // Default to SUCCESS for revenue perspective
+$currencyFilter = strtoupper(trim($_GET['currency'] ?? ''));
+$searchQ        = trim($_GET['q'] ?? '');
+$fromDate       = trim($_GET['from_date'] ?? '');
+$toDate         = trim($_GET['to_date'] ?? '');
+$exportCsv      = (isset($_GET['export']) && $_GET['export'] === 'csv');
 
 // ------------------------------------------------------------
 // 1. Fetch Overall Gateway Revenue Metrics
 // ------------------------------------------------------------
 $totalGrossRevenue = 0.00;
+$totalRevenueINR    = 0.00;
+$totalRevenueUSD    = 0.00;
 $totalSuccessCount = 0;
 $totalPendingCount = 0;
 $totalFailedCount  = 0;
@@ -50,6 +53,8 @@ $activeEventsCount = 0;
 
 try {
     $totalGrossRevenue = (float) $db->query("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE status = 'SUCCESS'")->fetchColumn();
+    $totalRevenueINR    = (float) $db->query("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE status = 'SUCCESS' AND currency = 'INR'")->fetchColumn();
+    $totalRevenueUSD    = (float) $db->query("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE status = 'SUCCESS' AND currency = 'USD'")->fetchColumn();
     $totalSuccessCount = (int) $db->query("SELECT COUNT(*) FROM transactions WHERE status = 'SUCCESS'")->fetchColumn();
     $totalPendingCount = (int) $db->query("SELECT COUNT(*) FROM transactions WHERE status = 'PENDING'")->fetchColumn();
     $totalFailedCount  = (int) $db->query("SELECT COUNT(*) FROM transactions WHERE status = 'FAILED'")->fetchColumn();
@@ -104,6 +109,11 @@ if ($eventIdFilter !== '' && $eventIdFilter !== 'ALL') {
 if ($statusFilter !== '' && $statusFilter !== 'ALL') {
     $whereClauses[] = "t.status = :status";
     $queryParams[':status'] = $statusFilter;
+}
+
+if ($currencyFilter !== '' && $currencyFilter !== 'ALL' && in_array($currencyFilter, ['INR', 'USD'])) {
+    $whereClauses[] = "t.currency = :currency";
+    $queryParams[':currency'] = $currencyFilter;
 }
 
 if ($searchQ !== '') {
@@ -314,7 +324,12 @@ require_once __DIR__ . '/../includes/header.php';
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--primary-blue);"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
             </div>
         </div>
-        <span class="metric-value amount">₹ <?= number_format($totalGrossRevenue, 2) ?></span>
+        <div class="metric-value amount" style="font-size: 1.15rem; line-height: 1.35; margin-top: 4px;">
+            <span>₹ <?= number_format($totalRevenueINR, 2) ?> <span style="font-size: 0.7rem; color: var(--text-gray); font-weight: 600;">INR</span></span>
+            <?php if ($totalRevenueUSD > 0): ?>
+                <span style="display: block; font-size: 0.95rem; color: #0284c7; margin-top: 2px;">$ <?= number_format($totalRevenueUSD, 2) ?> <span style="font-size: 0.65rem; color: var(--text-gray); font-weight: 500;">USD</span></span>
+            <?php endif; ?>
+        </div>
         <div style="font-size: 0.74rem; color: var(--text-gray); margin-top: 4px;">
             Across <?= number_format(count($eventRevenueList)) ?> total registered events
         </div>
@@ -506,6 +521,16 @@ require_once __DIR__ . '/../includes/header.php';
                     </select>
                 </div>
 
+                <!-- Filter by Currency -->
+                <div style="display: flex; flex-direction: column; gap: 2px;">
+                    <label for="currencyFilterSelect" style="font-size: 0.74rem; font-weight: 700; color: var(--text-gray); text-transform: uppercase;">Currency</label>
+                    <select name="currency" id="currencyFilterSelect" class="form-control" style="font-size: 0.84rem; padding: 6px 12px; width: 140px;" onchange="this.form.submit()">
+                        <option value="">All Currencies</option>
+                        <option value="INR" <?= ($currencyFilter === 'INR') ? 'selected' : '' ?>>₹ INR (Domestic)</option>
+                        <option value="USD" <?= ($currencyFilter === 'USD') ? 'selected' : '' ?>>$ USD (International)</option>
+                    </select>
+                </div>
+
                 <!-- Search Input -->
                 <div style="display: flex; flex-direction: column; gap: 2px;">
                     <label for="filterSearchInput" style="font-size: 0.74rem; font-weight: 700; color: var(--text-gray); text-transform: uppercase;">Search Keywords</label>
@@ -659,11 +684,18 @@ require_once __DIR__ . '/../includes/header.php';
 
                                     <!-- Amount -->
                                     <td>
-                                        <span style="font-size: 0.95rem; font-weight: 800; color: var(--text-dark);">
-                                            ₹ <?= number_format((float)$tx['amount'], 2) ?>
+                                        <?php 
+                                        $curr = strtoupper($tx['currency'] ?? 'INR');
+                                        $currSymbol = ($curr === 'USD') ? '$' : '₹';
+                                        ?>
+                                        <span style="font-size: 0.95rem; font-weight: 800; color: var(--text-dark); white-space: nowrap;">
+                                            <?= $currSymbol ?> <?= number_format((float)$tx['amount'], 2) ?>
                                         </span>
                                         <div style="font-size: 0.72rem; color: var(--text-gray); text-transform: uppercase;">
-                                            <?= htmlspecialchars($tx['currency'] ?? 'INR') ?>
+                                            <?= htmlspecialchars($curr) ?>
+                                            <?php if ($curr === 'USD'): ?>
+                                                <span class="badge" style="font-size: 0.62rem; padding: 1px 4px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; margin-left: 2px;">International</span>
+                                            <?php endif; ?>
                                         </div>
                                     </td>
 

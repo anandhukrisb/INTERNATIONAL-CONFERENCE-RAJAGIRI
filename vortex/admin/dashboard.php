@@ -48,6 +48,8 @@ $totalPayments      = 0;
 $successfulPayments = 0;
 $failedPayments     = 0;
 $totalPaymentAmount = 0.00;
+$totalRevenueINR    = 0.00;
+$totalRevenueUSD    = 0.00;
 $activeEventsCount  = 0;
 $totalClientsCount  = 0;
 
@@ -56,6 +58,8 @@ try {
     $successfulPayments = (int) $db->query("SELECT COUNT(*) FROM transactions WHERE status = 'SUCCESS'")->fetchColumn();
     $failedPayments     = (int) $db->query("SELECT COUNT(*) FROM transactions WHERE status = 'FAILED'")->fetchColumn();
     $totalPaymentAmount = (float) $db->query("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE status = 'SUCCESS'")->fetchColumn();
+    $totalRevenueINR    = (float) $db->query("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE status = 'SUCCESS' AND currency = 'INR'")->fetchColumn();
+    $totalRevenueUSD    = (float) $db->query("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE status = 'SUCCESS' AND currency = 'USD'")->fetchColumn();
     $activeEventsCount  = (int) $db->query("SELECT COUNT(*) FROM events WHERE is_active = 1")->fetchColumn();
     $totalClientsCount  = (int) $db->query("SELECT COUNT(*) FROM api_clients")->fetchColumn();
 } catch (\Throwable $e) {}
@@ -66,6 +70,7 @@ $filterEndDate   = trim($_GET['end_date'] ?? '');
 $filterStatus    = trim($_GET['status'] ?? '');
 $filterEventId   = trim($_GET['event_id'] ?? '');
 $filterClientId  = trim($_GET['api_client_id'] ?? '');
+$filterCurrency  = strtoupper(trim($_GET['currency'] ?? ''));
 
 // Filter options data
 $filterEvents  = [];
@@ -98,6 +103,10 @@ if ($filterEventId !== '' && $filterEventId !== 'ALL') {
 if ($filterClientId !== '' && $filterClientId !== 'ALL') {
     $whereConditions[] = "t.api_client_id = :api_client_id";
     $queryParams[':api_client_id'] = (int)$filterClientId;
+}
+if ($filterCurrency !== '' && $filterCurrency !== 'ALL' && in_array($filterCurrency, ['INR', 'USD'])) {
+    $whereConditions[] = "t.currency = :currency";
+    $queryParams[':currency'] = $filterCurrency;
 }
 
 $activeFilterCount = count($whereConditions);

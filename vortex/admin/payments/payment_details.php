@@ -213,9 +213,12 @@ require_once __DIR__ . '/../includes/header.php';
         <div class="alert alert-warning">
             <strong>Multiple Matches Found (<?= count($allSearchResults) ?>):</strong> Select the specific transaction below to inspect.
             <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
-                <?php foreach ($allSearchResults as $sr): ?>
+                <?php foreach ($allSearchResults as $sr): 
+                    $srCurr = strtoupper($sr['currency'] ?? 'INR');
+                    $srSym = ($srCurr === 'USD') ? '$' : '₹';
+                ?>
                     <a href="payment_details.php?vortex_transaction_id=<?= urlencode($sr['vortex_transaction_id']) ?>" class="btn btn-secondary btn-sm">
-                        <?= htmlspecialchars($sr['vortex_transaction_id']) ?> (<?= htmlspecialchars($sr['status']) ?> - ₹<?= number_format($sr['amount'], 2) ?>)
+                        <?= htmlspecialchars($sr['vortex_transaction_id']) ?> (<?= htmlspecialchars($sr['status']) ?> - <?= $srSym ?><?= number_format($sr['amount'], 2) ?>)
                     </a>
                 <?php endforeach; ?>
             </div>
@@ -267,7 +270,14 @@ require_once __DIR__ . '/../includes/header.php';
                 <div class="detail-item">
                     <span class="detail-label">Transaction Amount</span>
                     <span class="detail-value" style="font-size: 1.2rem; font-weight: 700; color: var(--success-text);">
-                        <?= htmlspecialchars($transaction['currency'] ?? 'INR') ?> ₹<?= number_format((float)$transaction['amount'], 2) ?>
+                        <?php 
+                        $txCurr = strtoupper($transaction['currency'] ?? 'INR');
+                        $txSym = ($txCurr === 'USD') ? '$' : '₹';
+                        ?>
+                        <?= $txSym ?><?= number_format((float)$transaction['amount'], 2) ?> <?= htmlspecialchars($txCurr) ?>
+                        <?php if ($txCurr === 'USD'): ?>
+                            <span class="badge" style="font-size: 0.68rem; padding: 2px 6px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; margin-left: 4px; vertical-align: middle;">International</span>
+                        <?php endif; ?>
                     </span>
                 </div>
                 <div class="detail-item">
@@ -350,7 +360,14 @@ require_once __DIR__ . '/../includes/header.php';
                                         </span>
                                     </td>
                                     <td style="font-weight: 600;">
-                                        <?= !empty($item['amount']) ? (htmlspecialchars($item['currency'] ?? 'INR') . ' ₹' . number_format((float)$item['amount'], 2)) : '—' ?>
+                                        <?php if (!empty($item['amount'])): 
+                                            $itCurr = strtoupper($item['currency'] ?? $transaction['currency'] ?? 'INR');
+                                            $itSym = ($itCurr === 'USD') ? '$' : '₹';
+                                        ?>
+                                            <?= $itSym ?><?= number_format((float)$item['amount'], 2) ?> <span style="font-size: 0.74rem; color: var(--text-muted);"><?= htmlspecialchars($itCurr) ?></span>
+                                        <?php else: ?>
+                                            —
+                                        <?php endif; ?>
                                     </td>
                                     <td style="max-width: 320px; font-size: 0.88rem; color: var(--text-main);">
                                         <?= htmlspecialchars($item['reason'] ?? 'Status updated') ?>
@@ -518,7 +535,7 @@ require_once __DIR__ . '/../includes/header.php';
                                 <tr>
                                     <td>#<?= $rf['id'] ?></td>
                                     <td><span class="font-mono"><?= htmlspecialchars($rf['razorpay_refund_id'] ?? 'N/A') ?></span></td>
-                                    <td style="font-weight: 700; color: var(--danger-text);">₹<?= number_format($rf['amount'], 2) ?></td>
+                                    <td style="font-weight: 700; color: var(--danger-text);"><?= ($transaction['currency'] === 'USD' ? '$' : '₹') ?><?= number_format($rf['amount'], 2) ?></td>
                                     <td><?= htmlspecialchars($rf['reason'] ?? 'N/A') ?></td>
                                     <td><span class="badge badge-refunded"><?= htmlspecialchars($rf['status']) ?></span></td>
                                     <td><?= htmlspecialchars($rf['created_at']) ?></td>

@@ -599,6 +599,12 @@ class ApiClient
                 $params[':status'] = strtoupper(trim($filters['status']));
             }
 
+            // Filter by Currency
+            if (!empty($filters['currency']) && $filters['currency'] !== 'ALL') {
+                $where[] = "t.currency = :currency";
+                $params[':currency'] = strtoupper(trim($filters['currency']));
+            }
+
             // Filter by Date Range
             if (!empty($filters['from_date'])) {
                 $where[] = "t.created_at >= :from_date";

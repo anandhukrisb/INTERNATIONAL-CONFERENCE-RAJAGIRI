@@ -82,10 +82,17 @@ $timeline = $txn['timeline'] ?? [];
     </div>
 
     <div>
+        <?php 
+        $txnCurr = strtoupper($txn['currency'] ?? 'INR');
+        $txnSym = ($txnCurr === 'USD') ? '$' : '₹';
+        ?>
         <span style="font-size: 1.6rem; font-weight: 800; color: var(--text-main);">
-            ₹<?= number_format((float)($txn['amount'] ?? 0), 2) ?>
+            <?= $txnSym ?><?= number_format((float)($txn['amount'] ?? 0), 2) ?>
         </span>
-        <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;"> <?= htmlspecialchars($txn['currency'] ?? 'INR') ?></span>
+        <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;"> <?= htmlspecialchars($txnCurr) ?></span>
+        <?php if ($txnCurr === 'USD'): ?>
+            <span class="badge" style="font-size: 0.7rem; padding: 2px 6px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; margin-left: 4px;">International</span>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -310,7 +317,7 @@ $timeline = $txn['timeline'] ?? [];
                                     <span class="badge badge-refunded" style="font-size: 0.7rem;"><?= htmlspecialchars($ref['status'] ?? 'PROCESSED') ?></span>
                                 </div>
                                 <div style="font-weight: 700; font-size: 0.88rem; color: var(--purple);">
-                                    ₹<?= number_format((float)($ref['amount'] ?? 0), 2) ?>
+                                    <?= ($txnCurr === 'USD' ? '$' : '₹') ?><?= number_format((float)($ref['amount'] ?? 0), 2) ?>
                                 </div>
                                 <?php if (!empty($ref['reason'])): ?>
                                     <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">

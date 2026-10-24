@@ -13,18 +13,20 @@ $activeNav  = 'transactions';
 require_once __DIR__ . '/includes/header.php';
 
 // Sanitize query filters
-$statusFilter = strtoupper(trim($_GET['status'] ?? 'ALL'));
-$modeFilter   = isset($_GET['mode']) && $_GET['mode'] !== '' ? (int)$_GET['mode'] : '';
-$search       = trim($_GET['search'] ?? '');
-$fromDate     = trim($_GET['from_date'] ?? '');
-$toDate       = trim($_GET['to_date'] ?? '');
-$limit        = max(10, min((int)($_GET['limit'] ?? 20), 100));
-$page         = max(1, (int)($_GET['page'] ?? 1));
-$offset       = ($page - 1) * $limit;
+$statusFilter   = strtoupper(trim($_GET['status'] ?? 'ALL'));
+$currencyFilter = strtoupper(trim($_GET['currency'] ?? 'ALL'));
+$modeFilter     = isset($_GET['mode']) && $_GET['mode'] !== '' ? (int)$_GET['mode'] : '';
+$search         = trim($_GET['search'] ?? '');
+$fromDate       = trim($_GET['from_date'] ?? '');
+$toDate         = trim($_GET['to_date'] ?? '');
+$limit          = max(10, min((int)($_GET['limit'] ?? 20), 100));
+$page           = max(1, (int)($_GET['page'] ?? 1));
+$offset         = ($page - 1) * $limit;
 
 // Build filter array
 $filterParams = [
     'status'       => $statusFilter,
+    'currency'     => $currencyFilter,
     'search'       => $search,
     'from_date'    => $fromDate,
     'to_date'      => $toDate,
@@ -45,6 +47,7 @@ $totalPages   = ceil($totalRecords / $limit);
 // Build export query string
 $exportQuery = http_build_query([
     'status'       => $statusFilter,
+    'currency'     => $currencyFilter,
     'mode'         => $modeFilter,
     'search'       => $search,
     'from_date'    => $fromDate,
@@ -85,6 +88,15 @@ $exportQuery = http_build_query([
                     <option value="PENDING" <?= $statusFilter === 'PENDING' ? 'selected' : '' ?>>PENDING</option>
                     <option value="FAILED" <?= $statusFilter === 'FAILED' ? 'selected' : '' ?>>FAILED</option>
                     <option value="REFUNDED" <?= $statusFilter === 'REFUNDED' ? 'selected' : '' ?>>REFUNDED</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" style="font-size: 0.76rem;">Currency</label>
+                <select name="currency" class="form-control" style="font-size: 0.82rem; padding: 7px 10px;">
+                    <option value="ALL" <?= ($currencyFilter === 'ALL' || $currencyFilter === '') ? 'selected' : '' ?>>All Currencies</option>
+                    <option value="INR" <?= $currencyFilter === 'INR' ? 'selected' : '' ?>>₹ INR (Domestic)</option>
+                    <option value="USD" <?= $currencyFilter === 'USD' ? 'selected' : '' ?>>$ USD (International)</option>
                 </select>
             </div>
 
@@ -203,7 +215,14 @@ $exportQuery = http_build_query([
                                 <?php endif; ?>
                             </td>
                             <td style="font-weight: 700; white-space: nowrap;">
-                                ₹<?= number_format((float)($tx['amount'] ?? 0), 2) ?>
+                                <?php 
+                                $cCurr = strtoupper($tx['currency'] ?? 'INR');
+                                $cSym = ($cCurr === 'USD') ? '$' : '₹';
+                                ?>
+                                <span><?= $cSym ?><?= number_format((float)($tx['amount'] ?? 0), 2) ?></span>
+                                <?php if ($cCurr === 'USD'): ?>
+                                    <span class="badge" style="font-size: 0.65rem; padding: 1px 4px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; margin-left: 2px;">USD</span>
+                                <?php endif; ?>
                             </td>
                             <td>
                                 <span class="badge <?= $badgeClass ?>"><?= htmlspecialchars($status) ?></span>

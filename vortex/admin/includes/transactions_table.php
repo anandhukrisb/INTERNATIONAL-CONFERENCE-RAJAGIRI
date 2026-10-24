@@ -84,8 +84,15 @@ $buildTxUrl = function($p) {
                                 </td>
 
                                 <!-- 3. Amount -->
-                                <td style="font-weight: 700; color: var(--text-dark); font-size: 0.95rem;">
-                                    ₹<?= number_format((float)$tx['amount'], 2) ?>
+                                <td style="font-weight: 700; color: var(--text-dark); font-size: 0.95rem; white-space: nowrap;">
+                                    <?php 
+                                    $curr = strtoupper($tx['currency'] ?? 'INR');
+                                    $currSymbol = ($curr === 'USD') ? '$' : '₹';
+                                    ?>
+                                    <span><?= $currSymbol ?><?= number_format((float)$tx['amount'], 2) ?></span>
+                                    <?php if ($curr === 'USD'): ?>
+                                        <span class="badge" style="font-size: 0.65rem; padding: 2px 5px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; margin-left: 3px;" title="International USD Payment">USD</span>
+                                    <?php endif; ?>
                                 </td>
 
                                 <!-- 4. Status -->
@@ -632,8 +639,11 @@ function openTxOverviewModal(row) {
     document.getElementById('dtModalDepartment').textContent = tx.department || '—';
 
     // 4. Amount
-    const amt = parseFloat(tx.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    document.getElementById('dtModalAmount').textContent = '₹ ' + amt + (tx.currency ? ' ' + tx.currency : ' INR');
+    const curr = (tx.currency || 'INR').toUpperCase();
+    const sym = curr === 'USD' ? '$' : '₹';
+    const loc = curr === 'USD' ? 'en-US' : 'en-IN';
+    const amt = parseFloat(tx.amount || 0).toLocaleString(loc, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    document.getElementById('dtModalAmount').textContent = sym + ' ' + amt + ' ' + curr;
 
     // 5. Status & Badge
     let bClass = 'badge-pending';
@@ -774,7 +784,7 @@ function loadTxTimelineData(txId, base) {
                                     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; font-size:0.74rem; color:var(--text-gray);">
                                         <div>
                                             ${refId ? `<span class="font-mono" style="color:var(--primary-blue); font-weight:600;">${escapeHtml(refId)}</span>` : ''}
-                                            ${item.amount ? `<span style="margin-left:6px; font-weight:700; color:var(--text-dark);">₹${parseFloat(item.amount).toFixed(2)}</span>` : ''}
+                                            ${item.amount ? `<span style="margin-left:6px; font-weight:700; color:var(--text-dark);">${curr === 'USD' ? '$' : '₹'}${parseFloat(item.amount).toFixed(2)}</span>` : ''}
                                         </div>
                                         <span style="background:var(--bg-card); border:1px solid var(--border-color); padding:1px 6px; border-radius:4px; font-size:0.68rem;">
                                             ${escapeHtml(item.source || 'SYSTEM')}
