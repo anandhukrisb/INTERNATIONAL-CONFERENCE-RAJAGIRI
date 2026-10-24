@@ -60,9 +60,67 @@ try {
     $totalClientsCount  = (int) $db->query("SELECT COUNT(*) FROM api_clients")->fetchColumn();
 } catch (\Throwable $e) {}
 
-// Transactions Overview (Paginated)
+// Filter Inputs
+$filterStartDate = trim($_GET['start_date'] ?? '');
+$filterEndDate   = trim($_GET['end_date'] ?? '');
+$filterStatus    = trim($_GET['status'] ?? '');
+$filterEventId   = trim($_GET['event_id'] ?? '');
+$filterClientId  = trim($_GET['api_client_id'] ?? '');
+
+// Filter options data
+$filterEvents  = [];
+$filterClients = [];
+try {
+    $filterEvents  = $db->query("SELECT event_id, event_name FROM events ORDER BY is_active DESC, event_name ASC")->fetchAll(PDO::FETCH_ASSOC);
+    $filterClients = $db->query("SELECT id, client_name FROM api_clients ORDER BY is_active DESC, client_name ASC")->fetchAll(PDO::FETCH_ASSOC);
+} catch (\Throwable $e) {}
+
+// Build filtering WHERE clauses
+$whereConditions = [];
+$queryParams     = [];
+
+if ($filterStartDate !== '') {
+    $whereConditions[] = "t.created_at >= :start_date";
+    $queryParams[':start_date'] = $filterStartDate . ' 00:00:00';
+}
+if ($filterEndDate !== '') {
+    $whereConditions[] = "t.created_at <= :end_date";
+    $queryParams[':end_date'] = $filterEndDate . ' 23:59:59';
+}
+if ($filterStatus !== '' && $filterStatus !== 'ALL') {
+    $whereConditions[] = "t.status = :status";
+    $queryParams[':status'] = $filterStatus;
+}
+if ($filterEventId !== '' && $filterEventId !== 'ALL') {
+    $whereConditions[] = "t.event_id = :event_id";
+    $queryParams[':event_id'] = $filterEventId;
+}
+if ($filterClientId !== '' && $filterClientId !== 'ALL') {
+    $whereConditions[] = "t.api_client_id = :api_client_id";
+    $queryParams[':api_client_id'] = (int)$filterClientId;
+}
+
+$activeFilterCount = count($whereConditions);
+$isFiltered        = ($activeFilterCount > 0);
+$whereSql          = $isFiltered ? (" WHERE " . implode(" AND ", $whereConditions)) : "";
+
+// Transactions Overview (Paginated with filters)
 $txPerPage = 15;
 $txTotalCount = $totalPayments;
+
+try {
+    if ($isFiltered) {
+        $countSql = "SELECT COUNT(*) FROM transactions t" . $whereSql;
+        $countStmt = $db->prepare($countSql);
+        $countStmt->execute($queryParams);
+        $txTotalCount = (int)$countStmt->fetchColumn();
+    } else {
+        $txTotalCount = $totalPayments;
+    }
+} catch (\Throwable $e) {
+    $txTotalCount = 0;
+}
+
 $txTotalPages = max(1, (int) ceil($txTotalCount / $txPerPage));
 $txPage = max(1, (int) ($_GET['page'] ?? $_GET['p'] ?? 1));
 if ($txPage > $txTotalPages && $txTotalCount > 0) {
@@ -85,8 +143,11 @@ try {
                     FROM transactions t 
                     LEFT JOIN events e ON t.event_id = e.event_id 
                     LEFT JOIN api_clients c ON t.api_client_id = c.id
+                    {$whereSql}
                     ORDER BY t.id DESC LIMIT " . (int)$txPerPage . " OFFSET " . (int)$txOffset;
-    $recentTxStmt = $db->query($recentTxSql);
+
+    $recentTxStmt = $db->prepare($recentTxSql);
+    $recentTxStmt->execute($queryParams);
     $recentTx = $recentTxStmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (\Throwable $e) {
     $recentTx = [];
@@ -144,10 +205,13 @@ require_once __DIR__ . '/includes/header.php';
 <!-- Metrics Cards Component -->
 <?php require_once __DIR__ . '/includes/metrics_cards.php'; ?>
 
+<!-- Filtering Section Component (Above Overview Transactions Table) -->
+<?php require_once __DIR__ . '/includes/overview_filter.php'; ?>
+
 <!-- Transactions Table Component -->
-<div style="margin-top: 24px;">
+<div style="margin-top: 0;">
     <?php
-    $tableTitle = 'Real-Time Transactions Stream';
+    $tableTitle = $isFiltered ? 'Filtered Transactions Stream' : 'Real-Time Transactions Stream';
     require_once __DIR__ . '/includes/transactions_table.php';
     ?>
 </div>

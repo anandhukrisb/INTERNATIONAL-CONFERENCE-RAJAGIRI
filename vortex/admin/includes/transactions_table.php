@@ -50,7 +50,9 @@ $buildTxUrl = function($p) {
                 </thead>
                 <tbody>
                     <?php if (empty($recentTx)): ?>
-                        <tr><td colspan="5" style="text-align: center; padding: 28px; color: var(--text-gray);">No transactions recorded yet.</td></tr>
+                        <tr><td colspan="5" style="text-align: center; padding: 28px; color: var(--text-gray);">
+                            <?= !empty($isFiltered) ? 'No transactions matching the selected filter criteria found. <a href="dashboard.php" style="color:var(--primary-blue); font-weight:600; text-decoration:underline; margin-left:6px;">Clear filters</a>' : 'No transactions recorded yet.' ?>
+                        </td></tr>
                     <?php else: ?>
                         <?php foreach ($recentTx as $tx): ?>
                             <?php
