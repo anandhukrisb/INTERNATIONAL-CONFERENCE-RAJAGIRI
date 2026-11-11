@@ -55,6 +55,13 @@ if (empty($_SESSION['vortex_admin_id'])) {
         <!-- Top Navigation Bar -->
         <header class="app-topbar">
             <div class="topbar-brand">
+                <button type="button" class="btn-sidebar-toggle" id="sidebarToggleBtn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="appSidebar" title="Toggle navigation menu">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
                 <a href="<?= $adminBase ?>dashboard.php" class="brand-link" style="display: inline-flex; align-items: center; text-decoration: none;">
                     <img src="<?= $adminBase ?>assets/images/rpay-logo.png" alt="Rpay Logo" class="rpay-logo rpay-logo-light" style="height: 32px; width: auto; object-fit: contain;">
                     <img src="<?= $adminBase ?>assets/images/rpay-logo-white-text.png" alt="Rpay Logo" class="rpay-logo rpay-logo-dark" style="height: 32px; width: auto; object-fit: contain; display: none;">
@@ -181,8 +188,22 @@ if (empty($_SESSION['vortex_admin_id'])) {
         </header>
 
         <div class="app-body">
+            <!-- Sidebar Backdrop Overlay for Mobile/Tablet -->
+            <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
             <!-- Sidebar Navigation -->
-            <aside class="app-sidebar">
+            <aside class="app-sidebar" id="appSidebar" role="navigation" aria-label="Main Navigation">
+                <div class="sidebar-mobile-header">
+                    <div class="sidebar-mobile-brand">
+                        <img src="<?= $adminBase ?>assets/images/rpay-logo-white-text.png" alt="Rpay Logo" style="height: 28px; width: auto; object-fit: contain;">
+                    </div>
+                    <button type="button" class="btn-sidebar-close" id="sidebarCloseBtn" aria-label="Close navigation menu" title="Close menu">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
                 <?php if (RBAC::can('events.create')): ?>
                 <div class="sidebar-primary-action">
                     <button type="button" class="btn-new" id="sidebarCreateEventBtn" onclick="if(typeof openEventModal === 'function') openEventModal(event);">

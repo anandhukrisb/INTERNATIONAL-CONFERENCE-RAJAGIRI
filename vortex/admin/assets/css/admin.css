@@ -2164,6 +2164,344 @@ table.admin-table tbody tr:hover {
 }
 
 /* ============================================================
+   RESPONSIVE COMPONENT BASES (Desktop Defaults)
+   ============================================================ */
+.btn-sidebar-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border-radius: 8px;
+    background-color: transparent;
+    border: 1px solid transparent;
+    color: var(--text-dark);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-sidebar-toggle:hover {
+    background-color: var(--bg-hover);
+    color: var(--primary-blue);
+}
+
+.btn-sidebar-toggle:focus-visible {
+    outline: 2px solid var(--primary-blue);
+    outline-offset: 2px;
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 1150;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.sidebar-mobile-header {
+    display: none;
+}
+
+.btn-sidebar-close {
+    display: none;
+}
+
+/* ============================================================
+   RESPONSIVE LAYOUT & OFF-CANVAS SIDEBAR (<= 992px)
+   ============================================================ */
+@media (max-width: 992px) {
+    /* Prevent page-level horizontal scroll jitter */
+    html, body {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    .app-layout {
+        max-width: 100vw;
+        overflow-x: hidden;
+    }
+
+    /* 1. Hamburger button visible only on mobile/tablet */
+    .btn-sidebar-toggle {
+        display: inline-flex;
+    }
+
+    /* 2. Off-canvas sidebar */
+    .app-sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        bottom: 0 !important;
+        height: 100% !important;
+        height: 100dvh !important;
+        width: 280px !important;
+        max-width: 85% !important;
+        margin-right: 0 !important;
+        border-radius: 0 !important;
+        transform: translateX(-100%) !important;
+        transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+        z-index: 1160 !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+        box-shadow: none;
+        padding-top: 14px;
+    }
+
+    .app-sidebar.open {
+        transform: translateX(0) !important;
+        box-shadow: 4px 0 25px rgba(0, 0, 0, 0.28) !important;
+    }
+
+    /* Mobile Header inside drawer with close button */
+    .sidebar-mobile-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 4px 20px 14px 20px;
+        margin-bottom: 14px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-sidebar-close {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        background: transparent;
+        border: none;
+        color: #ffffff;
+        border-radius: 50%;
+        cursor: pointer;
+        padding: 0;
+        transition: background-color 0.15s ease;
+    }
+
+    .btn-sidebar-close:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .btn-sidebar-close:focus-visible {
+        outline: 2px solid #ffffff;
+        outline-offset: 2px;
+    }
+
+    /* 3. Dark semi-transparent overlay */
+    .sidebar-overlay {
+        display: block;
+    }
+
+    .sidebar-overlay.open {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    /* 4. Scroll lock when sidebar is open */
+    body.sidebar-open {
+        overflow: hidden !important;
+    }
+    body.sidebar-open .app-main {
+        overflow: hidden !important;
+    }
+
+    /* 5. Main content full width (no margin/padding reserved for sidebar) */
+    .app-main {
+        padding: 16px 16px 40px 16px !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    /* Topbar adjustments for tablets & small desktops */
+    .app-topbar {
+        padding: 10px 16px;
+        height: 60px;
+    }
+
+    .topbar-brand {
+        width: auto;
+        gap: 10px;
+        flex-shrink: 0;
+    }
+
+    .global-search-form {
+        margin: 0 12px;
+        max-width: none;
+        min-width: 0;
+    }
+
+    .search-input-group input {
+        height: 38px;
+        padding: 8px 12px 8px 38px;
+        font-size: 0.88rem;
+    }
+
+    .search-input-group input::placeholder {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .topbar-actions {
+        gap: 10px;
+        flex-shrink: 0;
+    }
+
+    /* 6. Stat cards stack (2 columns on tablet) */
+    .metrics-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 14px !important;
+        margin-bottom: 24px !important;
+    }
+
+    /* 7. Horizontally scrollable tables container */
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table-responsive table.admin-table {
+        min-width: 620px;
+    }
+}
+
+/* Small Screens & Mobile Phones (<= 600px) */
+@media (max-width: 600px) {
+    .app-topbar {
+        padding: 8px 12px;
+        height: 56px;
+    }
+
+    .topbar-brand {
+        gap: 6px;
+    }
+
+    .rpay-logo {
+        height: 26px !important;
+    }
+
+    .btn-sidebar-toggle {
+        width: 34px;
+        height: 34px;
+    }
+
+    .btn-sidebar-toggle svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .global-search-form {
+        margin: 0 6px;
+    }
+
+    .search-input-group input {
+        height: 34px;
+        padding: 6px 8px 6px 30px;
+        font-size: 0.8rem;
+    }
+
+    .search-icon {
+        left: 8px;
+    }
+
+    .search-icon svg {
+        width: 15px;
+        height: 15px;
+    }
+
+    .topbar-actions {
+        gap: 6px;
+    }
+
+    .btn-notif-bell,
+    .btn-theme-toggle {
+        width: 32px;
+        height: 32px;
+    }
+
+    .btn-notif-bell svg,
+    .btn-theme-toggle svg {
+        width: 17px;
+        height: 17px;
+    }
+
+    /* Hide user name and role badge, keep avatar chip compact */
+    .user-profile {
+        padding: 2px !important;
+    }
+
+    .user-profile .user-name,
+    .user-profile .vortex-role-badge,
+    .user-profile .profile-chevron {
+        display: none !important;
+    }
+
+    .user-avatar {
+        width: 30px;
+        height: 30px;
+        font-size: 0.82rem;
+    }
+
+    /* Stat cards stack to 1 column on mobile phones */
+    .metrics-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+
+    .app-main {
+        padding: 12px 12px 36px 12px !important;
+    }
+}
+
+/* Very Small Mobile Screens (<= 400px, e.g. iPhone SE 375px, Android 360px) */
+@media (max-width: 400px) {
+    .app-topbar {
+        padding: 6px 8px;
+    }
+
+    .rpay-logo {
+        height: 22px !important;
+    }
+
+    .global-search-form {
+        margin: 0 4px;
+    }
+
+    .search-input-group input {
+        padding: 5px 6px 5px 26px;
+        font-size: 0.78rem;
+    }
+
+    .search-icon {
+        left: 6px;
+    }
+
+    .search-icon svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .topbar-actions {
+        gap: 4px;
+    }
+}
+
+/* ============================================================
    GOOGLE DARK THEME COMPREHENSIVE OVERRIDES
    Matches Google Drive, Google Cloud Console, and Workspace
    ============================================================ */
@@ -2525,5 +2863,32 @@ table.admin-table tbody tr:hover {
     background-color: #8ab4f8 !important;
     border-color: #8ab4f8 !important;
     color: #202124 !important;
+}
+
+/* Responsive Mobile Components in Dark Mode */
+[data-theme="dark"] .sidebar-overlay {
+    background-color: rgba(0, 0, 0, 0.72) !important;
+}
+
+[data-theme="dark"] .sidebar-mobile-header {
+    border-bottom: 1px solid #3c4043 !important;
+}
+
+[data-theme="dark"] .btn-sidebar-close {
+    color: var(--text-dark) !important;
+}
+
+[data-theme="dark"] .btn-sidebar-close:hover {
+    background-color: #35363a !important;
+}
+
+[data-theme="dark"] .btn-sidebar-close:focus-visible {
+    outline-color: #8ab4f8 !important;
+}
+
+@media (max-width: 992px) {
+    [data-theme="dark"] .app-sidebar.open {
+        box-shadow: 4px 0 25px rgba(0, 0, 0, 0.65) !important;
+    }
 }
 

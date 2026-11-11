@@ -676,6 +676,101 @@
         });
     })();
     </script>
+
+    <!-- Responsive Mobile Off-Canvas Sidebar Controller -->
+    <script>
+    (function() {
+        const toggleBtn = document.getElementById('sidebarToggleBtn');
+        const sidebar = document.getElementById('appSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const closeBtn = document.getElementById('sidebarCloseBtn');
+
+        if (!toggleBtn || !sidebar || !overlay) return;
+
+        function isMenuOpen() {
+            return sidebar.classList.contains('open');
+        }
+
+        function openMenu() {
+            sidebar.classList.add('open');
+            overlay.classList.add('open');
+            document.body.classList.add('sidebar-open');
+            toggleBtn.setAttribute('aria-expanded', 'true');
+        }
+
+        function closeMenu(restoreFocus = false) {
+            if (!isMenuOpen()) return;
+            sidebar.classList.remove('open');
+            overlay.classList.remove('open');
+            document.body.classList.remove('sidebar-open');
+            toggleBtn.setAttribute('aria-expanded', 'false');
+            if (restoreFocus && toggleBtn) {
+                toggleBtn.focus();
+            }
+        }
+
+        function toggleMenu() {
+            if (isMenuOpen()) {
+                closeMenu(false);
+            } else {
+                openMenu();
+            }
+        }
+
+        // 1. Toggle button tap
+        toggleBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            toggleMenu();
+        });
+
+        // Optional close button inside sidebar drawer
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                closeMenu(true);
+            });
+        }
+
+        // 2. Overlay tap closes menu
+        overlay.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeMenu(false);
+        });
+
+        // 3. Navigation link tap inside sidebar closes menu
+        sidebar.querySelectorAll('a').forEach(function(link) {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 992) {
+                    closeMenu(false);
+                }
+            });
+        });
+
+        // Close when "New Event" button inside sidebar is tapped
+        const newEventBtn = document.getElementById('sidebarCreateEventBtn');
+        if (newEventBtn) {
+            newEventBtn.addEventListener('click', function() {
+                if (window.innerWidth <= 992) {
+                    closeMenu(false);
+                }
+            });
+        }
+
+        // 4. Escape key closes menu
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && isMenuOpen()) {
+                closeMenu(true);
+            }
+        });
+
+        // 5. Window resize above 992px closes menu & releases body scroll lock
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 992 && isMenuOpen()) {
+                closeMenu(false);
+            }
+        });
+    })();
+    </script>
 </body>
 </html>
 
