@@ -22,10 +22,10 @@ if ($registration_id === '') {
     exit;
 }
 
-$reg_id_db = mysqli_real_escape_string($db_conn, $registration_id);
-
-$select_sql = "SELECT id, first_name, last_name, email, phone, base_amount, country_category FROM user_registrations WHERE registration_id = '$reg_id_db' LIMIT 1";
-$res = mysqli_query($db_conn, $select_sql);
+$stmt = mysqli_prepare($db_conn, "SELECT id, first_name, last_name, email, phone, base_amount, country_category, designation, organization FROM user_registrations WHERE registration_id = ? LIMIT 1");
+mysqli_stmt_bind_param($stmt, "s", $registration_id);
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
 
 if ($res === false || mysqli_num_rows($res) === 0) {
     http_response_code(404);
@@ -72,7 +72,9 @@ try {
         'currency' => $currency, 
         'payment_capture' => 1,
         'notes' => [
-            'registration_id' => $registration_id
+            'registration_id' => $registration_id,
+            'designation' => $row['designation'] ?? '',
+            'organization' => $row['organization'] ?? ''
         ]
     ]);
 } catch (Throwable $e) {

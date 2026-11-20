@@ -266,6 +266,14 @@ try {
                         <div class="summary-value"><?php echo htmlspecialchars($user['registration_id']); ?></div>
                     </div>
                     <div class="summary-item">
+                        <div class="summary-label">Designation</div>
+                        <div class="summary-value"><?php echo htmlspecialchars($user['designation'] ?? 'N/A'); ?></div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Organization</div>
+                        <div class="summary-value"><?php echo htmlspecialchars($user['organization'] ?? 'N/A'); ?></div>
+                    </div>
+                    <div class="summary-item">
                         <div class="summary-label">Contact</div>
                         <div class="summary-value" style="font-size: 0.95rem;">
                             <div><?php echo htmlspecialchars($user['email']); ?></div>

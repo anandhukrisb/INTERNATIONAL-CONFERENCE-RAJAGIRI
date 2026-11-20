@@ -18,30 +18,48 @@ try {
     $data = json_decode($json, true);
 
     if (!$data) {
-        throw new Exception("Invalid JSON payload received.");
+        if (!empty($_POST)) {
+            $data = $_POST;
+        } else {
+            throw new Exception("Invalid JSON payload received.");
+        }
     }
 
     // 3. Extract variables from payload
-    $firstName = $data['firstName'] ?? '';
-    $middleName = $data['middleName'] ?? null;
-    $lastName = $data['lastName'] ?? '';
-    $email = $data['email'] ?? '';
-    $organization = $data['organization'] ?? '';
-    $phone = $data['phone'] ?? '';
+    $firstName = trim($data['firstName'] ?? '');
+    $middleName = isset($data['middleName']) && trim($data['middleName']) !== '' ? trim($data['middleName']) : null;
+    $lastName = trim($data['lastName'] ?? '');
+    $email = trim($data['email'] ?? '');
+    $organization = trim($data['organization'] ?? '');
+    $designation = trim($data['designation'] ?? $_POST['designation'] ?? '');
+    $phone = trim($data['phone'] ?? '');
     $dob = $data['dob'] ?? null;
     $participantType = $data['participantType'] ?? '';
-    $countryCategory = $data['countryCategory'] ?? ''; // not in DB, wait, actually countryCategory is in DB
-    $country = $_POST['country'] ?? ''; // Wait, the JS payload does not pass 'country'
-    // Let me check what the JS payload passes. It didn't pass 'country' but 'countryCategory'.
-    // Let's modify the JS payload to include 'country' in registration.php and registration.html later if needed,
-    // or just assume we'll fix the payload.
-    // For now, I will extract 'country' from $data if it exists, else 'Unknown'.
-    $country = $data['country'] ?? 'Unknown';
+    $countryCategory = $data['countryCategory'] ?? '';
+    $country = $data['country'] ?? ($_POST['country'] ?? 'Unknown');
     $package = $data['requiredPackage'] ?? '';
     $abstractSubmitted = $data['abstractSubmitted'] ?? 'no';
     $abstractEmail = $data['abstractEmail'] ?? null;
     $baseAmount = $data['baseAmount'] ?? 0;
     $paymentStatus = $data['paymentStatus'] ?? 'Not Completed';
+
+    // Server-side validation for Designation
+    if ($designation === '') {
+        throw new Exception("Designation is required.");
+    }
+    $desLen = mb_strlen($designation, 'UTF-8');
+    if ($desLen < 2 || $desLen > 100) {
+        throw new Exception("Designation must be between 2 and 100 characters.");
+    }
+    if (!preg_match('/^[a-zA-Z\s.,&\-\/()]+$/', $designation)) {
+        throw new Exception("Designation can only contain letters, spaces, and punctuation (. , & - / ( )).");
+    }
+
+    // Carry forward into session if session is present
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        $_SESSION['registration_data']['designation'] = $designation;
+        $_SESSION['registration_data']['organization'] = $organization;
+    }
 
     // 4. Check if the email already exists to prevent duplicate registrations and data overwriting
     $stmtCheck = $pdo->prepare("SELECT registration_id, id FROM user_registrations WHERE email = :email LIMIT 1");
@@ -77,11 +95,11 @@ try {
         
         $sql = "INSERT INTO user_registrations (
             registration_id, first_name, middle_name, last_name, email,
-            organization, phone, date_of_birth, participant_category, country, country_category,
+            organization, designation, phone, date_of_birth, participant_category, country, country_category,
             package, abstract_submitted, abstract_email, base_amount, payment_status
         ) VALUES (
             :reg_id, :fname, :mname, :lname, :email,
-            :org, :phone, :dob, :ptype, :country, :ccat,
+            :org, :designation, :phone, :dob, :ptype, :country, :ccat,
             :pkg, :absub, :abemail, :baseamt, :paystat
         )";
 
@@ -93,6 +111,7 @@ try {
             ':lname' => $lastName,
             ':email' => $email,
             ':org' => $organization,
+            ':designation' => $designation,
             ':phone' => $phone,
             ':dob' => $dob,
             ':ptype' => $participantType,
@@ -136,6 +155,8 @@ try {
         $message .= "Thank you for starting your registration for ICSWHMH.\n\n";
         $message .= "Here are your registration details:\n";
         $message .= "- Registration ID: $registrationId\n";
+        $message .= "- Organization: $organization\n";
+        $message .= "- Designation: $designation\n";
         $message .= "- Participant Type: $participantType\n";
         $message .= "- Package Selected: $package\n";
         $message .= "- Base Amount: $baseAmount\n\n";

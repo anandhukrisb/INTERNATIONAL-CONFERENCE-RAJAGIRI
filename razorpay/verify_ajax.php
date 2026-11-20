@@ -125,8 +125,10 @@ try {
 
     
     
-    $select_sql = "SELECT first_name, last_name, email, package, base_amount FROM user_registrations WHERE registration_id = '$reg_id_db' LIMIT 1";
-    $res = mysqli_query($db_conn, $select_sql);
+    $select_stmt = mysqli_prepare($db_conn, "SELECT first_name, last_name, email, package, base_amount, organization, designation FROM user_registrations WHERE registration_id = ? LIMIT 1");
+    mysqli_stmt_bind_param($select_stmt, "s", $registration_id);
+    mysqli_stmt_execute($select_stmt);
+    $res = mysqli_stmt_get_result($select_stmt);
     if ($res && mysqli_num_rows($res) > 0) {
         $user = mysqli_fetch_assoc($res);
         $email = $user['email'];
@@ -134,6 +136,8 @@ try {
         $lastName = $user['last_name'];
         $package = $user['package'];
         $baseAmount = $user['base_amount'];
+        $organization = $user['organization'] ?? '';
+        $designation = $user['designation'] ?? '';
         
         require_once __DIR__ . '/../backend/PHPMailer/src/Exception.php';
         require_once __DIR__ . '/../backend/PHPMailer/src/PHPMailer.php';
@@ -173,6 +177,14 @@ try {
                         <td style='padding: 8px 0; text-align: right;'>$razorpay_payment_id</td>
                     </tr>
                     <tr>
+                        <td style='padding: 8px 0;'><strong>Organization:</strong></td>
+                        <td style='padding: 8px 0; text-align: right;'>$organization</td>
+                    </tr>
+                    <tr>
+                        <td style='padding: 8px 0;'><strong>Designation:</strong></td>
+                        <td style='padding: 8px 0; text-align: right;'>$designation</td>
+                    </tr>
+                    <tr>
                         <td style='padding: 8px 0;'><strong>Package:</strong></td>
                         <td style='padding: 8px 0; text-align: right;'>$package</td>
                     </tr>
@@ -191,7 +203,7 @@ try {
             
             $mail->Body = $htmlBody;
             
-            $mail->AltBody = "Payment Receipt\n\nDear $firstName $lastName,\n\nThank you! Your payment has been successfully processed.\n\nRegistration ID: $registration_id\nTransaction ID: $razorpay_payment_id\nPackage: $package\nPayment Status: COMPLETED\nTotal Paid: $baseAmount\n\nIf you have any questions, please reply to this email.";
+            $mail->AltBody = "Payment Receipt\n\nDear $firstName $lastName,\n\nThank you! Your payment has been successfully processed.\n\nRegistration ID: $registration_id\nTransaction ID: $razorpay_payment_id\nOrganization: $organization\nDesignation: $designation\nPackage: $package\nPayment Status: COMPLETED\nTotal Paid: $baseAmount\n\nIf you have any questions, please reply to this email.";
 
             $mail->send();
         } catch (Exception $e) {

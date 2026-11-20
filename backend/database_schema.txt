@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS `abstract_details` (
 -- This table stores all the information collected during the registration process.
 CREATE TABLE IF NOT EXISTS `user_registrations` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `designation` VARCHAR(100) NOT NULL DEFAULT '',  -- Participant's designation/title (first data field)
     `registration_id` VARCHAR(50) NOT NULL UNIQUE, -- For the ICSWYYMMDD-XXXXX format
     `first_name` VARCHAR(100) NOT NULL,
     `middle_name` VARCHAR(100) DEFAULT NULL,

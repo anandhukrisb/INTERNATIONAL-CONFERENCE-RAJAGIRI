@@ -318,6 +318,16 @@ function sendPaymentConfirmationEmail($user, $vortexTxnId, $env) {
         $amount = htmlspecialchars((string)($user['base_amount'] ?? ''));
         $currency = htmlspecialchars($user['currency'] ?? 'INR');
         $safeTxn = htmlspecialchars($vortexTxnId);
+        $organization = htmlspecialchars($user['organization'] ?? '');
+        $designation = htmlspecialchars($user['designation'] ?? '');
+
+        $orgRows = '';
+        if ($organization !== '') {
+            $orgRows .= "<tr><td style='padding: 6px 0; color: #555;'><strong>Organization:</strong></td><td style='padding: 6px 0; color: #2D3436;'>{$organization}</td></tr>";
+        }
+        if ($designation !== '') {
+            $orgRows .= "<tr><td style='padding: 6px 0; color: #555;'><strong>Designation:</strong></td><td style='padding: 6px 0; color: #2D3436;'>{$designation}</td></tr>";
+        }
 
         $mail->Body = "
         <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 25px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #ffffff;'>
@@ -339,6 +349,7 @@ function sendPaymentConfirmationEmail($user, $vortexTxnId, $env) {
                         <td style='padding: 6px 0; color: #555;'><strong>Transaction ID:</strong></td>
                         <td style='padding: 6px 0; color: #2D3436; font-family: monospace;'>{$safeTxn}</td>
                     </tr>
+                    {$orgRows}
                     <tr>
                         <td style='padding: 6px 0; color: #555;'><strong>Selected Package:</strong></td>
                         <td style='padding: 6px 0; color: #2D3436;'>{$package}</td>

@@ -280,6 +280,10 @@ function renderHistoryItem($item) {
                                 <div class="detail-label">Organization</div>
                                 <div class="detail-value"><?php echo htmlspecialchars($user_details['organization']); ?></div>
                             </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Designation</div>
+                                <div class="detail-value"><?php echo htmlspecialchars($user_details['designation'] ?? 'N/A'); ?></div>
+                            </div>
                         </div>
                     </div>
 

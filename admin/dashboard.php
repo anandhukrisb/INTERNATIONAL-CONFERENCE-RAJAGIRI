@@ -23,7 +23,7 @@ try {
     $params = [];
 
     if (!empty($search)) {
-        $query .= " AND (email LIKE :search OR phone LIKE :search OR registration_id LIKE :search OR first_name LIKE :search OR last_name LIKE :search)";
+        $query .= " AND (email LIKE :search OR phone LIKE :search OR registration_id LIKE :search OR first_name LIKE :search OR last_name LIKE :search OR organization LIKE :search OR designation LIKE :search)";
         $params[':search'] = '%' . $search . '%';
     }
 
@@ -78,7 +78,7 @@ try {
         header('Content-Disposition: attachment; filename=registrations_' . date('Y-m-d') . '.csv');
         $output = fopen('php://output', 'w');
         
-        fputcsv($output, ['Registration ID', 'First Name', 'Middle Name', 'Last Name', 'Email', 'Organization', 'Phone', 'Participant Category', 'Country', 'Country Category', 'Package', 'Abstract Submitted', 'Base Amount', 'Currency', 'Payment Status', 'Transaction ID', 'Registration Date']);
+        fputcsv($output, ['Registration ID', 'First Name', 'Middle Name', 'Last Name', 'Email', 'Organization', 'Designation', 'Phone', 'Participant Category', 'Country', 'Country Category', 'Package', 'Abstract Submitted', 'Base Amount', 'Currency', 'Payment Status', 'Transaction ID', 'Registration Date']);
         
         foreach ($registrations as $row) {
             $rowCurrency = 'INR';
@@ -109,6 +109,7 @@ try {
                 $row['last_name'],
                 $row['email'],
                 $row['organization'],
+                $row['designation'] ?? '',
                 $row['phone'],
                 $row['participant_category'],
                 $row['country'],
@@ -841,7 +842,19 @@ try {
                                 ?>
                                 <tr>
                                     <td><strong style="color: var(--primary-purple);"><?php echo htmlspecialchars($reg['registration_id']); ?></strong></td>
-                                    <td><?php echo htmlspecialchars(trim($reg['first_name'] . ' ' . (!empty($reg['middle_name']) ? $reg['middle_name'] . ' ' : '') . $reg['last_name'])); ?></td>
+                                    <td>
+                                        <strong><?php echo htmlspecialchars(trim($reg['first_name'] . ' ' . (!empty($reg['middle_name']) ? $reg['middle_name'] . ' ' : '') . $reg['last_name'])); ?></strong>
+                                        <?php if (!empty($reg['designation']) || !empty($reg['organization'])): ?>
+                                            <div style="font-size: 0.82em; color: #64748b; margin-top: 3px;">
+                                                <?php 
+                                                    $orgParts = [];
+                                                    if (!empty($reg['designation'])) $orgParts[] = htmlspecialchars($reg['designation']);
+                                                    if (!empty($reg['organization'])) $orgParts[] = htmlspecialchars($reg['organization']);
+                                                    echo implode(' &bull; ', $orgParts);
+                                                ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </td>
                                     <td>
                                         <div style="font-size: 0.9em;"><?php echo htmlspecialchars($reg['email']); ?></div>
                                         <div style="font-size: 0.85em; color: #64748b; margin-top: 3px;"><?php echo htmlspecialchars($reg['phone']); ?></div>

@@ -1230,6 +1230,12 @@
 
                     <div class="form-row">
                         <div class="form-group">
+                            <label for="designation" class="form-label">Designation <span style="color: red;">*</span></label>
+                            <input type="text" id="designation" name="designation" class="form-control"
+                                placeholder="e.g. Assistant Professor / Research Scholar" maxlength="100" autocomplete="organization-title" required autofocus value="<?= htmlspecialchars($_POST['designation'] ?? $_SESSION['registration_data']['designation'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                            <div id="designationError" style="display: none; color: #C53030; font-size: 0.85rem; margin-top: 5px;"></div>
+                        </div>
+                        <div class="form-group">
                             <label for="firstName" class="form-label">First Name <span style="color: red;">*</span></label>
                             <input type="text" id="firstName" name="firstName" class="form-control" placeholder="Alan"
                                 required>
@@ -1238,35 +1244,35 @@
                             <label for="middleName" class="form-label">Middle Name</label>
                             <input type="text" id="middleName" name="middleName" class="form-control" placeholder="J.">
                         </div>
+                    </div>
+
+                    <div class="form-row">
                         <div class="form-group">
                             <label for="lastName" class="form-label">Last Name <span style="color: red;">*</span></label>
                             <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Wake"
                                 required>
                         </div>
-                    </div>
-
-                    <div class="form-row">
                         <div class="form-group">
                             <label for="organization" class="form-label">Organization / Institution <span style="color: red;">*</span></label>
                             <input type="text" id="organization" name="organization" class="form-control"
-                                placeholder="University / Institution Name" required>
+                                placeholder="University / Institution Name" required value="<?= htmlspecialchars($_POST['organization'] ?? $_SESSION['registration_data']['organization'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
                         </div>
                         <div class="form-group">
                             <label for="email" class="form-label">Email Address <span style="color: red;">*</span></label>
                             <input type="email" id="email" name="email" class="form-control"
-                                placeholder="alan.wake@example.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="dob" class="form-label">Date of Birth <span style="color: red;">*</span></label>
-                            <input type="date" id="dob" name="dob" class="form-control" required>
+                                placeholder="alan.wake@example.com" required value="<?= htmlspecialchars($_POST['email'] ?? $_SESSION['registration_data']['email'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
+                            <label for="dob" class="form-label">Date of Birth <span style="color: red;">*</span></label>
+                            <input type="date" id="dob" name="dob" class="form-control" required value="<?= htmlspecialchars($_POST['dob'] ?? $_SESSION['registration_data']['dob'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                        </div>
+                        <div class="form-group">
                             <label for="phone" class="form-label">Phone Number <span style="color: red;">*</span></label>
                             <input type="tel" id="phone" name="phone" class="form-control" placeholder="+91 98765 43210"
-                                required>
+                                required value="<?= htmlspecialchars($_POST['phone'] ?? $_SESSION['registration_data']['phone'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
                         </div>
                         <div class="form-group">
                             <label for="participantType" class="form-label">Participant Category (Who are you?) <span style="color: red;">*</span></label>
@@ -1668,6 +1674,7 @@
             lastName: '',
             email: '',
             organization: '',
+            designation: '',
             phone: '',
             dob: '',
             participantType: '',
@@ -1946,6 +1953,7 @@
             const lastName = capitalize(document.getElementById('lastName').value.trim());
             const email = document.getElementById('email').value.trim();
             const organization = document.getElementById('organization').value.trim();
+            const designation = document.getElementById('designation').value.trim();
             const phone = document.getElementById('phone').value.trim();
             const dob = document.getElementById('dob').value.trim();
             const pTypeSelect = document.getElementById('participantType');
@@ -1953,13 +1961,40 @@
             const cCatInput = document.getElementById('countryCategory');
             const reqSelect = document.getElementById('requirement');
 
+            const desError = document.getElementById('designationError');
+            if (desError) {
+                desError.style.display = 'none';
+                desError.textContent = '';
+            }
+
             const pType = pTypeSelect.value;
             const countryVal = countrySelect.value;
             const cCat = cCatInput.value;
             const reqIdx = parseInt(reqSelect.value);
 
-            if (!firstName || !lastName || !email || !organization || !phone || !dob || !pType || !countryVal || !cCat || isNaN(reqIdx)) {
+            if (!firstName || !lastName || !email || !organization || !designation || !phone || !dob || !pType || !countryVal || !cCat || isNaN(reqIdx)) {
                 alert('Please fill out all required fields before proceeding.');
+                return;
+            }
+
+            // Designation client-side validation: 2 to 100 chars, letters/spaces/. , & - / ( ) only
+            const desRegex = /^[a-zA-Z\s.,&\-\/()]+$/;
+            if (designation.length < 2 || designation.length > 100) {
+                if (desError) {
+                    desError.textContent = '⚠ Designation must be between 2 and 100 characters.';
+                    desError.style.display = 'block';
+                }
+                alert('Designation must be between 2 and 100 characters.');
+                document.getElementById('designation').focus();
+                return;
+            }
+            if (!desRegex.test(designation)) {
+                if (desError) {
+                    desError.textContent = '⚠ Designation can only contain letters, spaces, and punctuation (. , & - / ( )).';
+                    desError.style.display = 'block';
+                }
+                alert('Designation can only contain letters, spaces, and punctuation (. , & - / ( )).');
+                document.getElementById('designation').focus();
                 return;
             }
 
@@ -1984,6 +2019,7 @@
             registrationState.lastName = lastName;
             registrationState.email = email;
             registrationState.organization = organization;
+            registrationState.designation = designation;
             registrationState.phone = phone;
             registrationState.dob = dob;
             registrationState.participantType = pTypeSelect.options[pTypeSelect.selectedIndex].text;
@@ -2023,6 +2059,7 @@
                 lastName: registrationState.lastName,
                 email: registrationState.email,
                 organization: registrationState.organization,
+                designation: registrationState.designation,
                 phone: registrationState.phone,
                 dob: registrationState.dob,
                 participantType: registrationState.participantType,
@@ -2069,6 +2106,29 @@
                 submitBtn.innerHTML = originalBtnText;
             });
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const desInput = document.getElementById('designation');
+            const desError = document.getElementById('designationError');
+            if (desInput) {
+                desInput.addEventListener('input', function() {
+                    const val = this.value.trim();
+                    const desRegex = /^[a-zA-Z\s.,&\-\/()]+$/;
+                    if (desError) {
+                        if (val.length > 0 && (val.length < 2 || val.length > 100)) {
+                            desError.textContent = '⚠ Designation must be between 2 and 100 characters.';
+                            desError.style.display = 'block';
+                        } else if (val.length > 0 && !desRegex.test(val)) {
+                            desError.textContent = '⚠ Allowed characters: letters, spaces, and . , & - / ( )';
+                            desError.style.display = 'block';
+                        } else {
+                            desError.style.display = 'none';
+                            desError.textContent = '';
+                        }
+                    }
+                });
+            }
+        });
 
 
 

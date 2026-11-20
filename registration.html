@@ -1946,6 +1946,7 @@
             lastName: '',
             email: '',
             organization: '',
+            designation: '',
             phone: '',
             participantType: '',
             country: '',
@@ -2191,6 +2192,7 @@
             const lastName = document.getElementById('lastName').value.trim();
             const email = document.getElementById('email').value.trim();
             const organization = document.getElementById('organization').value.trim();
+            const designation = document.getElementById('designation') ? document.getElementById('designation').value.trim() : '';
             const phone = document.getElementById('phone').value.trim();
             const pTypeSelect = document.getElementById('participantType');
             const countrySelect = document.getElementById('country');
@@ -2202,8 +2204,19 @@
             const cCat = cCatInput.value;
             const reqIdx = parseInt(reqSelect.value);
 
-            if (!firstName || !lastName || !email || !organization || !phone || !pType || !countryVal || !cCat || isNaN(reqIdx)) {
+            if (!firstName || !lastName || !email || !organization || !designation || !phone || !pType || !countryVal || !cCat || isNaN(reqIdx)) {
                 alert('Please fill out all required fields before proceeding.');
+                return;
+            }
+
+            // Designation client-side validation
+            const desRegex = /^[a-zA-Z\s.,&\-\/()]+$/;
+            if (designation.length < 2 || designation.length > 100) {
+                alert('Designation must be between 2 and 100 characters.');
+                return;
+            }
+            if (!desRegex.test(designation)) {
+                alert('Designation can only contain letters, spaces, and punctuation (. , & - / ( )).');
                 return;
             }
 
@@ -2216,6 +2229,7 @@
             wizardState.lastName = lastName;
             wizardState.email = email;
             wizardState.organization = organization;
+            wizardState.designation = designation;
             wizardState.phone = phone;
             wizardState.participantType = pTypeSelect.options[pTypeSelect.selectedIndex].text;
             wizardState.country = countryVal;
@@ -2256,6 +2270,7 @@
                 lastName: wizardState.lastName,
                 email: wizardState.email,
                 organization: wizardState.organization,
+                designation: wizardState.designation,
                 phone: wizardState.phone,
                 participantType: wizardState.participantType,
                 country: wizardState.country,

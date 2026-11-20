@@ -800,6 +800,7 @@ ON DUPLICATE KEY UPDATE id=id;
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `user_registrations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `designation` varchar(100) NOT NULL DEFAULT '',
   `registration_id` varchar(50) NOT NULL,
   `first_name` varchar(100) NOT NULL,
   `middle_name` varchar(100) DEFAULT NULL,
@@ -829,8 +830,8 @@ CREATE TABLE IF NOT EXISTS `user_registrations` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Data for table `user_registrations` (1 rows)
-INSERT INTO `user_registrations` (`id`, `registration_id`, `first_name`, `middle_name`, `last_name`, `email`, `organization`, `phone`, `participant_category`, `country`, `country_category`, `package`, `abstract_submitted`, `abstract_email`, `base_amount`, `currency`, `payment_status`, `transaction_id`, `created_at`, `updated_at`, `date_of_birth`, `refund_status`) VALUES
-('1', 'ICSW261018-1606TO', 'Anandhu', '', 'B', 'anandhukrishna10b@gmail.com', 'Rajagiri', '8921315216', 'Students', 'India', 'National (India)', 'Online (Recorded) (1 INR)', 'no', '', '1.00', NULL, 'Completed', 'VTX179235473187170F18694', '2026-10-19 01:05:53', '2026-10-19 01:49:46', '2003-10-19', NULL)
+INSERT INTO `user_registrations` (`id`, `designation`, `registration_id`, `first_name`, `middle_name`, `last_name`, `email`, `organization`, `phone`, `participant_category`, `country`, `country_category`, `package`, `abstract_submitted`, `abstract_email`, `base_amount`, `currency`, `payment_status`, `transaction_id`, `created_at`, `updated_at`, `date_of_birth`, `refund_status`) VALUES
+('1', 'Student', 'ICSW261018-1606TO', 'Anandhu', '', 'B', 'anandhukrishna10b@gmail.com', 'Rajagiri', '8921315216', 'Students', 'India', 'National (India)', 'Online (Recorded) (1 INR)', 'no', '', '1.00', NULL, 'Completed', 'VTX179235473187170F18694', '2026-10-19 01:05:53', '2026-10-19 01:49:46', '2003-10-19', NULL)
 ON DUPLICATE KEY UPDATE id=id;
 
 -- ------------------------------------------------------------

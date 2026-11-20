@@ -1758,6 +1758,10 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
                                 <span class="receipt-value" id="reviewOrganization"><?= htmlspecialchars($fetched_user['organization'] ?? '') ?></span>
                             </div>
                             <div class="receipt-item">
+                                <span class="receipt-label">Designation</span>
+                                <span class="receipt-value" id="reviewDesignation"><?= htmlspecialchars($fetched_user['designation'] ?? '') ?></span>
+                            </div>
+                            <div class="receipt-item">
                                 <span class="receipt-label">Phone Number</span>
                                 <span class="receipt-value" id="reviewPhone"><?= htmlspecialchars($fetched_user['phone'] ?? '') ?></span>
                             </div>
@@ -1976,6 +1980,8 @@ $currency = (strpos(strtolower($fetched_user['country_category']), 'india') !== 
             firstName: <?= json_encode($fetched_user['first_name'] ?? '') ?>,
             middleName: <?= json_encode($fetched_user['middle_name'] ?? '') ?>,
             lastName: <?= json_encode($fetched_user['last_name'] ?? '') ?>,
+            organization: <?= json_encode($fetched_user['organization'] ?? '') ?>,
+            designation: <?= json_encode($fetched_user['designation'] ?? '') ?>,
             participantType: <?= json_encode($fetched_user['participant_category'] ?? '') ?>,
             countryCategory: <?= json_encode($fetched_user['country_category'] ?? '') ?>,
             requirementLabel: <?= json_encode($fetched_user['package'] ?? '') ?>,
