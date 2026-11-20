@@ -65,7 +65,7 @@ class CheckoutSession
     public function createSession(
         int $transactionId,
         string $redirectUrl,
-        int $durationMinutes = 5
+        int $durationMinutes = 15
     ): array {
         try {
             date_default_timezone_set($_ENV['APP_TIMEZONE'] ?? 'Asia/Kolkata');

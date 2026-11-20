@@ -72,10 +72,17 @@ class Validator
         // Remove unnecessary spaces.
         $mobile = trim((string) $mobile);
 
-        // Indian mobile number must:
-        // - contain exactly 10 digits
-        // - start with 6, 7, 8 or 9
+        // Indian mobile number:
+        // - exactly 10 digits, starting with 6, 7, 8 or 9
         if (preg_match('/^[6-9][0-9]{9}$/', $mobile)) {
+            return true;
+        }
+
+        // International E.164 format:
+        // - starts with + followed by country code and number
+        // - total length 8–15 digits (excluding the +)
+        // Examples: +14155552671 (US), +447911123456 (UK), +33612345678 (FR)
+        if (preg_match('/^\+[1-9][0-9]{6,14}$/', $mobile)) {
             return true;
         }
 

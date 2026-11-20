@@ -826,9 +826,33 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
                 }
             },
             modal: {
-                ondismiss: function () {
+                ondismiss: async function () {
                     // Only re-enable if payment authorization was not submitted
                     if (isRecovering) return;
+
+                    // Poll current status - if Razorpay already processed a failure, reflect it
+                    try {
+                        const res = await fetch('api/get_checkout_payment_status.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ session_token: sessionToken })
+                        });
+                        if (res.ok) {
+                            const json = await res.json();
+                            if (json.status === 'success' && json.data?.payment_status === 'FAILED') {
+                                showAlert('Payment was not completed. You can try again.', 'error');
+                                btn.disabled = false;
+                                btn.innerHTML = '<span>Pay <?= $sessionData['currency'] === 'INR' ? '₹' : '$' ?><?= number_format((float)$sessionData['amount'], 2) ?></span>';
+                                return;
+                            }
+                            if (json.status === 'success' && json.data?.payment_status === 'SUCCESS') {
+                                // Edge case: payment succeeded but dismiss fired
+                                startPaymentStatusRecovery({});
+                                return;
+                            }
+                        }
+                    } catch (e) { /* ignore fetch error on dismiss */ }
+
                     btn.disabled = false;
                     btn.innerHTML = '<span>Pay <?= $sessionData['currency'] === 'INR' ? '₹' : '$' ?><?= number_format((float)$sessionData['amount'], 2) ?></span>';
                 }

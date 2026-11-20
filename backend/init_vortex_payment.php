@@ -59,13 +59,32 @@ try {
     
     $returnUrl = $protocol . $host . rtrim($basePath, '/\\') . '/backend/verify_vortex_payment.php?reg_id=' . urlencode($regId);
     
+    // Normalize mobile number for Vortex/Razorpay:
+    // - Indian 10-digit numbers (starting with 6-9): pass as-is
+    // - International numbers (with + prefix): pass as-is (E.164)
+    // - Anything else: use a safe placeholder so payment is not blocked
+    $rawPhone = trim($user['phone'] ?? '');
+    if (preg_match('/^[6-9][0-9]{9}$/', $rawPhone)) {
+        $mobile = $rawPhone; // Valid Indian number
+    } elseif (preg_match('/^\+[1-9][0-9]{6,14}$/', $rawPhone)) {
+        $mobile = $rawPhone; // Valid international E.164 number
+    } else {
+        // Strip non-digits and check if it looks like an international number
+        $digitsOnly = preg_replace('/\D/', '', $rawPhone);
+        if (strlen($digitsOnly) >= 7 && strlen($digitsOnly) <= 15) {
+            $mobile = $digitsOnly;
+        } else {
+            $mobile = '9999999999'; // Safe fallback placeholder
+        }
+    }
+
     // 3. Prepare Vortex API Request
     $payload = [
         'api_key' => $vortexApiKey,
         'api_secret' => $vortexApiSecret,
         'event_id' => $vortexEventId,
         'email' => $user['email'],
-        'mobile' => $user['phone'] ?? '9999999999',
+        'mobile' => $mobile,
         'amount' => $user['base_amount'],
         'currency' => $currency,
         'redirect_url' => $returnUrl
