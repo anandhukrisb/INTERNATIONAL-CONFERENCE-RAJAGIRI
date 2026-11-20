@@ -1,20 +1,15 @@
 <?php
 /**
  * ------------------------------------------------------------
- * test_payment.php - Vortex Unified Payment Gateway Test Lab
- * ------------------------------------------------------------
- * Project : ICSWHMH 2027 / Vortex Unified Payments
- * Purpose : Standalone test payment page to verify 1 Rupee (INR)
- *           and 1 Dollar (USD) transactions via PayVortex.
+ * test_payment.php - Minimal Vortex Test Payment Page
  * ------------------------------------------------------------
  */
 
-// Enable session for CSRF & return tracking
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Locate and load environment configuration
+// Load environment configuration
 $rootEnvPath = __DIR__ . '/.env';
 $vortexEnvPath = __DIR__ . '/vortex/.env';
 
@@ -40,15 +35,13 @@ $vortexApiKey    = $env['VORTEX_API_KEY'] ?? getenv('VORTEX_API_KEY') ?: '839109
 $vortexApiSecret = $env['VORTEX_API_SECRET'] ?? getenv('VORTEX_API_SECRET') ?: '0b48b7bd0f581246fc3f80130ba8c2e9';
 $vortexEventId   = $env['VORTEX_EVENT_ID'] ?? getenv('VORTEX_EVENT_ID') ?: 'ICSW20261011MV3SALAS2FM';
 
-// Determine host & protocol
+// Host & return URL
 $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? null) == 443;
 $protocol = $isHttps ? 'https://' : 'http://';
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 $currentScript = $_SERVER['SCRIPT_NAME'] ?? '/test_payment.php';
 $baseDir = dirname($currentScript);
 if ($baseDir === '/' || $baseDir === '\\') $baseDir = '';
-
-// Determine redirect return URL after checkout
 $returnUrl = $protocol . $host . rtrim($baseDir, '/\\') . '/test_payment.php?returned=1';
 
 // -------------------------------------------------------------------------
@@ -67,9 +60,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'create_order') {
         $selection = $payload['payment_tier'] ?? '1_INR';
         $email     = trim($payload['email'] ?? 'test.payer@rajagiri.edu');
         $mobile    = trim($payload['mobile'] ?? '9876543210');
-        $name      = trim($payload['name'] ?? 'Test Payer');
+        $name      = trim($payload['name'] ?? 'Test Participant');
 
-        // Parse amount & currency based on dropdown selection
         if ($selection === '1_USD') {
             $amount = 1.00;
             $currency = 'USD';
@@ -79,28 +71,17 @@ if (isset($_GET['action']) && $_GET['action'] === 'create_order') {
         }
 
         if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new Exception("Please provide a valid test email address.");
+            throw new Exception("Please enter a valid email address.");
         }
 
         if (empty($mobile) || !preg_match('/^[0-9]{10}$/', preg_replace('/[^0-9]/', '', $mobile))) {
-            throw new Exception("Please provide a valid 10-digit mobile number.");
+            throw new Exception("Please enter a valid 10-digit mobile number.");
         }
 
-        $orderPayload = [
-            'api_key'      => $vortexApiKey,
-            'api_secret'   => $vortexApiSecret,
-            'event_id'     => $vortexEventId,
-            'email'        => $email,
-            'mobile'       => $mobile,
-            'amount'       => $amount,
-            'currency'     => $currency,
-            'redirect_url' => $returnUrl
-        ];
-
-        // 1. Try internal direct class invocation first (failsafe against single-threaded loopback freeze)
         $paymentUrl = null;
         $vortexTxnId = null;
 
+        // Use direct internal OOP instantiation
         if (file_exists(__DIR__ . '/vortex/classes/Auth.php') &&
             file_exists(__DIR__ . '/vortex/classes/Payment.php') &&
             file_exists(__DIR__ . '/vortex/classes/CheckoutSession.php')) {
@@ -112,89 +93,45 @@ if (isset($_GET['action']) && $_GET['action'] === 'create_order') {
             require_once __DIR__ . '/vortex/classes/Validator.php';
             require_once __DIR__ . '/vortex/classes/Response.php';
 
-            try {
-                $auth = new Auth();
-                $client = $auth->authenticate($vortexApiKey, $vortexApiSecret);
-                if ($client === false) {
-                    throw new Exception("Vortex API Authentication Failed: Invalid API Key or Secret.");
-                }
+            $auth = new Auth();
+            $client = $auth->authenticate($vortexApiKey, $vortexApiSecret);
+            if ($client === false) {
+                throw new Exception("Vortex API Authentication Failed: Invalid credentials.");
+            }
 
-                $paymentObj = new Payment();
-                $payResult = $paymentObj->createPayment(
-                    $client['id'],
-                    $vortexEventId,
-                    $email,
-                    $mobile,
-                    $amount,
-                    $currency,
-                    $client['is_test_mode'] ?? 1
-                );
+            $paymentObj = new Payment();
+            $payResult = $paymentObj->createPayment(
+                $client['id'],
+                $vortexEventId,
+                $email,
+                $mobile,
+                $amount,
+                $currency,
+                $client['is_test_mode'] ?? 1
+            );
 
-                if (is_array($payResult) && ($payResult['success'] ?? false) === true) {
-                    $txDbId = $payResult['data']['database_transaction_id'];
-                    $vortexTxnId = $payResult['data']['vortex_transaction_id'];
+            if (is_array($payResult) && ($payResult['success'] ?? false) === true) {
+                $txDbId = $payResult['data']['database_transaction_id'];
+                $vortexTxnId = $payResult['data']['vortex_transaction_id'];
 
-                    $sessionObj = new CheckoutSession();
-                    $sessionRes = $sessionObj->createSession($txDbId, $returnUrl, 5);
+                $sessionObj = new CheckoutSession();
+                $sessionRes = $sessionObj->createSession($txDbId, $returnUrl, 5);
 
-                    if (($sessionRes['success'] ?? false) === true) {
-                        $token = $sessionRes['session_token'];
-                        $vortexDir = rtrim($baseDir, '/\\') . '/vortex';
-                        $paymentUrl = $protocol . $host . $vortexDir . '/checkout.php?token=' . urlencode($token);
-                    } else {
-                        throw new Exception("Failed to generate checkout session: " . ($sessionRes['message'] ?? 'Unknown session error'));
-                    }
+                if (($sessionRes['success'] ?? false) === true) {
+                    $token = $sessionRes['session_token'];
+                    $vortexDir = rtrim($baseDir, '/\\') . '/vortex';
+                    $paymentUrl = $protocol . $host . $vortexDir . '/checkout.php?token=' . urlencode($token);
                 } else {
-                    $errMsg = is_array($payResult) ? ($payResult['message'] ?? 'Unable to create payment order.') : 'Payment engine returned invalid response.';
-                    throw new Exception($errMsg);
+                    throw new Exception("Failed to generate checkout session: " . ($sessionRes['message'] ?? 'Error'));
                 }
-            } catch (\Throwable $directEx) {
-                // If it's a known error from Payment.php (like validation or inactive event), rethrow it directly
-                $isLocalServer = (php_sapi_name() === 'cli-server') || in_array($host, ['localhost', '127.0.0.1', 'localhost:8000']);
-                if ($isLocalServer || !empty($directEx->getMessage())) {
-                    throw $directEx;
-                }
-                $paymentUrl = null;
+            } else {
+                $errMsg = is_array($payResult) ? ($payResult['message'] ?? 'Unable to create payment.') : 'Payment engine error.';
+                throw new Exception($errMsg);
             }
         }
 
-        // 2. If direct call wasn't completed, execute via HTTP cURL API
         if (empty($paymentUrl)) {
-            $apiUrl = $protocol . $host . rtrim($baseDir, '/\\') . '/vortex/api/create_payment_order.php';
-            
-            $ch = curl_init($apiUrl);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($orderPayload));
-            curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                'Content-Type: application/json',
-                'Accept: application/json'
-            ]);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 15);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
-            $response = curl_exec($ch);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            $curlError = curl_error($ch);
-            curl_close($ch);
-
-            if ($curlError) {
-                throw new Exception("cURL Gateway Connection Error: " . $curlError);
-            }
-
-            $resData = json_decode($response, true);
-            if ($httpCode !== 200 || !isset($resData['status']) || $resData['status'] !== 'success') {
-                $err = $resData['message'] ?? ("Vortex HTTP {$httpCode}: " . strip_tags($response));
-                throw new Exception($err);
-            }
-
-            $paymentUrl  = $resData['data']['payment_url'] ?? '';
-            $vortexTxnId = $resData['data']['vortex_transaction_id'] ?? '';
-        }
-
-        if (empty($paymentUrl)) {
-            throw new Exception("Vortex failed to generate a valid checkout URL.");
+            throw new Exception("Could not initialize payment session.");
         }
 
         echo json_encode([
@@ -227,7 +164,6 @@ $returnedCurrency = $_GET['currency'] ?? '';
 $txnDetails = null;
 
 if ($isReturned && !empty($returnedTxnId)) {
-    // Attempt to read status from Vortex database directly
     try {
         if (file_exists(__DIR__ . '/vortex/classes/Database.php')) {
             require_once __DIR__ . '/vortex/classes/Database.php';
@@ -236,9 +172,7 @@ if ($isReturned && !empty($returnedTxnId)) {
             $stmt->execute([$returnedTxnId]);
             $txnDetails = $stmt->fetch(PDO::FETCH_ASSOC);
         }
-    } catch (\Throwable $e) {
-        // Fallback to query params
-    }
+    } catch (\Throwable $e) {}
 }
 ?>
 <!DOCTYPE html>
@@ -246,36 +180,11 @@ if ($isReturned && !empty($returnedTxnId)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PayVortex Payment Testing Lab</title>
-    <link rel="icon" type="image/x-icon" href="https://res.cloudinary.com/dswfp5fwx/image/upload/v1778131826/Favicon-192_hdltam.ico">
-
-    <!-- Fonts -->
+    <title>Test Payment - PayVortex</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-purple: #1D0A3F;
-            --primary-purple-hover: #291054;
-            --accent-gold: #C9A227;
-            --accent-gold-hover: #b8921e;
-            --bg-page: #0f1422;
-            --card-bg: #171d30;
-            --card-border: rgba(255, 255, 255, 0.08);
-            --card-border-focus: #C9A227;
-            --text-light: #f8fafc;
-            --text-muted: #94a3b8;
-            --text-dark: #1e293b;
-            --success-green: #10b981;
-            --error-red: #ef4444;
-            --badge-bg: rgba(201, 162, 39, 0.15);
-            --badge-text: #FAD02C;
-            --font-heading: 'Outfit', sans-serif;
-            --font-body: 'Inter', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-        }
-
         * {
             box-sizing: border-box;
             margin: 0;
@@ -283,400 +192,226 @@ if ($isReturned && !empty($returnedTxnId)) {
         }
 
         body {
-            background-color: var(--bg-page);
-            background-image: 
-                radial-gradient(circle at 10% 15%, rgba(29, 10, 63, 0.8) 0%, transparent 45%),
-                radial-gradient(circle at 90% 85%, rgba(201, 162, 39, 0.15) 0%, transparent 45%);
-            color: var(--text-light);
-            font-family: var(--font-body);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
-            padding: 24px;
+            justify-content: center;
+            padding: 20px;
         }
 
         .container {
             width: 100%;
-            max-width: 580px;
+            max-width: 440px;
         }
 
-        /* Top Header */
-        .brand-header {
-            text-align: center;
-            margin-bottom: 28px;
+        .card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 32px 28px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
         }
 
-        .brand-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--badge-bg);
-            color: var(--badge-text);
-            padding: 6px 14px;
-            border-radius: 50px;
-            font-size: 0.8rem;
+        .header {
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            font-size: 1.35rem;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-            border: 1px solid rgba(201, 162, 39, 0.3);
+            color: #0f172a;
+            margin-bottom: 4px;
         }
 
-        .brand-badge::before {
-            content: "";
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: var(--accent-gold);
-            box-shadow: 0 0 10px var(--accent-gold);
-        }
-
-        .brand-title {
-            font-family: var(--font-heading);
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: #ffffff;
-            margin-bottom: 6px;
-        }
-
-        .brand-title span {
-            color: var(--accent-gold);
-        }
-
-        .brand-subtitle {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        /* Testing Card */
-        .test-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 34px 30px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(12px);
-        }
-
-        .section-label {
-            font-family: var(--font-heading);
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .mode-tag {
-            font-size: 0.72rem;
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--success-green);
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-family: var(--font-mono);
-            border: 1px solid rgba(16, 185, 129, 0.3);
+        .header p {
+            font-size: 0.875rem;
+            color: #64748b;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
-        .form-label {
+        label {
             display: block;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: 8px;
+            color: #334155;
+            margin-bottom: 6px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.03em;
         }
 
-        .form-select, .form-input {
+        select, input {
             width: 100%;
-            background-color: rgba(15, 20, 34, 0.7);
-            border: 1.5px solid var(--card-border);
-            border-radius: 12px;
-            padding: 14px 16px;
-            color: #ffffff;
-            font-size: 1rem;
-            font-family: var(--font-body);
-            transition: all 0.2s ease;
+            padding: 10px 14px;
+            font-size: 0.95rem;
+            color: #0f172a;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
             outline: none;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+            font-family: inherit;
         }
 
-        .form-select {
+        select:focus, input:focus {
+            border-color: #0f172a;
+            box-shadow: 0 0 0 1px #0f172a;
+        }
+
+        select {
             cursor: pointer;
-            font-weight: 600;
-            font-size: 1.05rem;
-            color: var(--badge-text);
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23C9A227'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 14px center;
-            background-size: 18px;
             appearance: none;
             -webkit-appearance: none;
         }
 
-        .form-select option {
-            background-color: #171d30;
-            color: #ffffff;
-            padding: 10px;
-        }
-
-        .form-select:focus, .form-input:focus {
-            border-color: var(--card-border-focus);
-            box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.2);
-            background-color: rgba(15, 20, 34, 0.9);
-        }
-
-        .grid-2 {
+        .row-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 14px;
+            gap: 12px;
         }
 
-        /* Pricing Preview Banner */
-        .price-preview-banner {
-            background: linear-gradient(135deg, rgba(29, 10, 63, 0.6) 0%, rgba(201, 162, 39, 0.12) 100%);
-            border: 1px solid rgba(201, 162, 39, 0.25);
-            border-radius: 14px;
-            padding: 16px 20px;
-            margin-bottom: 24px;
+        .summary-box {
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 22px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        .price-preview-title {
+        .summary-label {
             font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 2px;
+            color: #475569;
+            font-weight: 500;
         }
 
-        .price-preview-val {
-            font-family: var(--font-heading);
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: #ffffff;
-        }
-
-        .price-preview-val span {
-            color: var(--accent-gold);
-        }
-
-        .gateway-tag {
-            font-size: 0.8rem;
-            background: rgba(255, 255, 255, 0.08);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-family: var(--font-mono);
-            color: var(--text-light);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .gateway-tag::before {
-            content: "⚡";
-        }
-
-        /* Payment Button */
-        .btn-pay {
-            width: 100%;
-            background: linear-gradient(135deg, var(--accent-gold) 0%, #E6BF3A 100%);
-            color: var(--primary-purple);
-            font-family: var(--font-heading);
+        .summary-amount {
             font-size: 1.15rem;
             font-weight: 700;
-            padding: 16px 24px;
-            border-radius: 12px;
+            color: #0f172a;
+        }
+
+        .btn-pay {
+            width: 100%;
+            background: #0f172a;
+            color: #ffffff;
             border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 10px 25px -5px rgba(201, 162, 39, 0.4);
-            transition: all 0.25s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            transition: background-color 0.15s ease;
+            font-family: inherit;
         }
 
         .btn-pay:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px -5px rgba(201, 162, 39, 0.55);
-            background: linear-gradient(135deg, #dfb42c 0%, #ffd64f 100%);
-        }
-
-        .btn-pay:active {
-            transform: translateY(0);
+            background: #1e293b;
         }
 
         .btn-pay:disabled {
             opacity: 0.6;
             cursor: not-allowed;
-            transform: none !important;
         }
 
-        /* Spinner */
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2.5px solid rgba(29, 10, 63, 0.3);
-            border-top-color: var(--primary-purple);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+        .footer-note {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #94a3b8;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        /* Error alert */
+        .alert-error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 18px;
+            display: none;
         }
 
-        /* Technical Info Box */
-        .tech-info-box {
-            margin-top: 24px;
-            padding-top: 20px;
-            border-top: 1px solid var(--card-border);
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .tech-row {
-            display: flex;
-            justify-content: space-between;
-            font-family: var(--font-mono);
-        }
-
-        .tech-val {
-            color: #ffffff;
-            font-weight: 500;
-        }
-
-        /* Alert / Status Card */
-        .result-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 34px 30px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            margin-bottom: 24px;
+        /* Receipt Card */
+        .receipt {
             text-align: center;
         }
 
-        .result-icon {
-            width: 68px;
-            height: 68px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            margin-bottom: 16px;
+        .status-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .result-success .result-icon {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--success-green);
-            border: 2px solid rgba(16, 185, 129, 0.4);
+        .status-success {
+            background: #dcfce7;
+            color: #15803d;
         }
 
-        .result-failure .result-icon {
-            background: rgba(239, 68, 68, 0.15);
-            color: var(--error-red);
-            border: 2px solid rgba(239, 68, 68, 0.4);
+        .status-failed {
+            background: #fee2e2;
+            color: #b91c1c;
         }
 
-        .result-title {
-            font-family: var(--font-heading);
-            font-size: 1.6rem;
-            font-weight: 800;
-            margin-bottom: 8px;
+        .receipt h2 {
+            font-size: 1.25rem;
+            color: #0f172a;
+            margin-bottom: 18px;
         }
 
-        .result-desc {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-bottom: 22px;
-        }
-
-        .receipt-table {
-            width: 100%;
-            background: rgba(15, 20, 34, 0.7);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 24px;
+        .receipt-details {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 20px;
             text-align: left;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
         }
 
-        .receipt-row {
+        .receipt-item {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 6px 0;
+            border-bottom: 1px solid #f1f5f9;
         }
 
-        .receipt-row:last-child {
+        .receipt-item:last-child {
             border-bottom: none;
         }
 
-        .receipt-label {
-            color: var(--text-muted);
+        .receipt-item span:first-child {
+            color: #64748b;
         }
 
-        .receipt-val {
-            font-family: var(--font-mono);
-            color: #ffffff;
+        .receipt-item span:last-child {
             font-weight: 600;
+            color: #0f172a;
             word-break: break-all;
         }
 
-        .btn-secondary {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            padding: 12px 24px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
         .btn-link {
-            color: var(--accent-gold);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-left: 12px;
-        }
-
-        .btn-link:hover {
+            display: inline-block;
+            font-size: 0.875rem;
+            color: #0f172a;
             text-decoration: underline;
-        }
-
-        /* Error Notification Banner */
-        .toast-error {
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            color: #fca5a5;
-            padding: 12px 16px;
-            border-radius: 10px;
-            margin-bottom: 16px;
-            font-size: 0.9rem;
-            display: none;
+            font-weight: 500;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -684,197 +419,137 @@ if ($isReturned && !empty($returnedTxnId)) {
 
 <div class="container">
 
-    <!-- Brand Header -->
-    <div class="brand-header">
-        <div class="brand-badge">ICSWHMH 2027 • PayVortex Gateway</div>
-        <h1 class="brand-title">Testing <span>Payment Page</span></h1>
-        <p class="brand-subtitle">Simulate real-time 1 Rupee (INR) and 1 Dollar (USD) transactions via Vortex</p>
-    </div>
-
     <?php if ($isReturned): ?>
         <?php 
             $statusNormalized = strtoupper($txnDetails['status'] ?? ($returnedStatusCode == 200 ? 'SUCCESS' : 'FAILED'));
             $isSuccess = ($statusNormalized === 'SUCCESS');
         ?>
-        <!-- Payment Result Receipt Card -->
-        <div class="result-card <?= $isSuccess ? 'result-success' : 'result-failure' ?>">
-            <div class="result-icon">
-                <?= $isSuccess ? '✓' : '✕' ?>
-            </div>
-            <h2 class="result-title">
-                <?= $isSuccess ? 'Test Payment Completed!' : 'Payment Unsuccessful' ?>
-            </h2>
-            <p class="result-desc">
-                <?= $isSuccess ? 'Your test transaction was verified and recorded in the PayVortex engine.' : 'The test transaction was not completed or failed verification.' ?>
-            </p>
+        <div class="card receipt">
+            <span class="status-badge <?= $isSuccess ? 'status-success' : 'status-failed' ?>">
+                <?= htmlspecialchars($statusNormalized) ?>
+            </span>
+            <h2><?= $isSuccess ? 'Payment Successful' : 'Payment Failed' ?></h2>
 
-            <div class="receipt-table">
-                <div class="receipt-row">
-                    <span class="receipt-label">Vortex Transaction ID</span>
-                    <span class="receipt-val"><?= htmlspecialchars($returnedTxnId) ?></span>
+            <div class="receipt-details">
+                <div class="receipt-item">
+                    <span>Transaction ID</span>
+                    <span><?= htmlspecialchars($returnedTxnId) ?></span>
                 </div>
-                <div class="receipt-row">
-                    <span class="receipt-label">Amount & Currency</span>
-                    <span class="receipt-val">
-                        <?= ($txnDetails['currency'] ?? $returnedCurrency) === 'INR' ? '₹' : '$' ?>
-                        <?= number_format((float)($txnDetails['amount'] ?? $returnedAmount ?: 1.00), 2) ?> 
-                        (<?= htmlspecialchars($txnDetails['currency'] ?? $returnedCurrency ?: 'INR') ?>)
-                    </span>
-                </div>
-                <div class="receipt-row">
-                    <span class="receipt-label">Status</span>
-                    <span class="receipt-val" style="color: <?= $isSuccess ? 'var(--success-green)' : 'var(--error-red)' ?>;">
-                        <?= htmlspecialchars($statusNormalized) ?>
+                <div class="receipt-item">
+                    <span>Amount</span>
+                    <span>
+                        <?= ($txnDetails['currency'] ?? $returnedCurrency) === 'INR' ? '₹' : '$' ?><?= number_format((float)($txnDetails['amount'] ?? $returnedAmount ?: 1.00), 2) ?>
+                        <?= htmlspecialchars($txnDetails['currency'] ?? $returnedCurrency ?: 'INR') ?>
                     </span>
                 </div>
                 <?php if (!empty($txnDetails['razorpay_payment_id'])): ?>
-                <div class="receipt-row">
-                    <span class="receipt-label">Gateway Payment ID</span>
-                    <span class="receipt-val"><?= htmlspecialchars($txnDetails['razorpay_payment_id']) ?></span>
+                <div class="receipt-item">
+                    <span>Payment ID</span>
+                    <span><?= htmlspecialchars($txnDetails['razorpay_payment_id']) ?></span>
                 </div>
                 <?php endif; ?>
-                <?php if (!empty($txnDetails['razorpay_order_id'])): ?>
-                <div class="receipt-row">
-                    <span class="receipt-label">Gateway Order ID</span>
-                    <span class="receipt-val"><?= htmlspecialchars($txnDetails['razorpay_order_id']) ?></span>
-                </div>
-                <?php endif; ?>
-                <div class="receipt-row">
-                    <span class="receipt-label">Date & Time</span>
-                    <span class="receipt-val"><?= htmlspecialchars($txnDetails['created_at'] ?? date('Y-m-d H:i:s')) ?></span>
+                <div class="receipt-item">
+                    <span>Date</span>
+                    <span><?= htmlspecialchars($txnDetails['created_at'] ?? date('Y-m-d H:i')) ?></span>
                 </div>
             </div>
 
-            <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 12px;">
-                <a href="test_payment.php" class="btn-secondary">← Run Another Test Payment</a>
-                <a href="vortex/admin/payments/view.php?id=<?= urlencode($txnDetails['id'] ?? '') ?>" target="_blank" class="btn-link">View in Admin Inspector &rarr;</a>
+            <a href="test_payment.php" class="btn-link">Make another test payment &rarr;</a>
+        </div>
+
+    <?php else: ?>
+
+        <div class="card">
+            <div class="header">
+                <h1>Test Payment</h1>
+                <p>Select currency and test payment via PayVortex</p>
+            </div>
+
+            <div class="alert-error" id="errorBox"></div>
+
+            <form id="paymentForm" onsubmit="submitPayment(event)">
+                
+                <!-- Dropdown: 1 Rupee or 1 Dollar -->
+                <div class="form-group">
+                    <label for="paymentTier">Select Amount</label>
+                    <select id="paymentTier" name="payment_tier" onchange="updateAmount()">
+                        <option value="1_INR" selected>1 Rupee (₹1.00 INR)</option>
+                        <option value="1_USD">1 Dollar ($1.00 USD)</option>
+                    </select>
+                </div>
+
+                <div class="summary-box">
+                    <span class="summary-label">Total to pay</span>
+                    <span class="summary-amount" id="displayAmount">₹1.00</span>
+                </div>
+
+                <!-- Customer Details -->
+                <div class="form-group">
+                    <label for="customerName">Name</label>
+                    <input type="text" id="customerName" name="name" value="Test Participant" required>
+                </div>
+
+                <div class="row-2">
+                    <div class="form-group">
+                        <label for="customerEmail">Email</label>
+                        <input type="email" id="customerEmail" name="email" value="test.payer@rajagiri.edu" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customerMobile">Mobile</label>
+                        <input type="tel" id="customerMobile" name="mobile" value="9876543210" required>
+                    </div>
+                </div>
+
+                <!-- Payment Button -->
+                <button type="submit" id="payBtn" class="btn-pay">Pay ₹1.00</button>
+            </form>
+
+            <div class="footer-note">
+                Vortex Unified Payment Gateway Sandbox
             </div>
         </div>
+
     <?php endif; ?>
-
-    <!-- Main Payment Configuration Form Card -->
-    <div class="test-card" id="paymentTestCard" <?= $isReturned ? 'style="display:none;"' : '' ?>>
-        <div class="section-label">
-            <span>Configure Test Transaction</span>
-            <span class="mode-tag">Vortex Sandbox Ready</span>
-        </div>
-
-        <div class="toast-error" id="errorToast"></div>
-
-        <form id="testPaymentForm" onsubmit="initiateTestPayment(event)">
-            
-            <!-- Amount & Currency Dropdown (Required) -->
-            <div class="form-group">
-                <label for="paymentTier" class="form-label">Select Amount & Currency <span style="color:var(--accent-gold);">*</span></label>
-                <select id="paymentTier" name="payment_tier" class="form-select" onchange="updatePriceBanner()">
-                    <option value="1_INR" selected>1 Rupee (₹1.00 INR) — Domestic National Test</option>
-                    <option value="1_USD">1 Dollar ($1.00 USD) — International Test</option>
-                </select>
-            </div>
-
-            <!-- Real-time Preview Banner -->
-            <div class="price-preview-banner">
-                <div>
-                    <div class="price-preview-title">Payable Charge</div>
-                    <div class="price-preview-val" id="bannerAmountDisplay">₹1.<span>00</span> <small style="font-size: 0.9rem; font-weight: normal; color: var(--text-muted);">INR</small></div>
-                </div>
-                <div class="gateway-tag">Razorpay Sandbox</div>
-            </div>
-
-            <!-- Customer Details (Optional/Configurable with sensible test defaults) -->
-            <div class="form-group">
-                <label for="customerName" class="form-label">Test Customer Name</label>
-                <input type="text" id="customerName" name="name" class="form-input" value="Test Participant" required>
-            </div>
-
-            <div class="grid-2">
-                <div class="form-group">
-                    <label for="customerEmail" class="form-label">Customer Email</label>
-                    <input type="email" id="customerEmail" name="email" class="form-input" value="test.user@rajagiri.edu" required>
-                </div>
-                <div class="form-group">
-                    <label for="customerMobile" class="form-label">Customer Mobile</label>
-                    <input type="tel" id="customerMobile" name="mobile" class="form-input" value="9876543210" required>
-                </div>
-            </div>
-
-            <!-- Payment Action Button -->
-            <button type="submit" id="btnPay" class="btn-pay">
-                <span id="btnPayText">Pay ₹1.00 with PayVortex</span>
-            </button>
-        </form>
-
-        <!-- Technical Metadata -->
-        <div class="tech-info-box">
-            <div class="tech-row">
-                <span>Vortex Event ID:</span>
-                <span class="tech-val"><?= htmlspecialchars($vortexEventId) ?></span>
-            </div>
-            <div class="tech-row">
-                <span>Vortex API Key:</span>
-                <span class="tech-val"><?= htmlspecialchars(substr($vortexApiKey, 0, 8) . '...' . substr($vortexApiKey, -6)) ?></span>
-            </div>
-            <div class="tech-row">
-                <span>Session Duration:</span>
-                <span class="tech-val">5 Minutes (Temporary Token)</span>
-            </div>
-            <div class="tech-row">
-                <span>Target Checkout:</span>
-                <span class="tech-val">vortex/checkout.php</span>
-            </div>
-        </div>
-    </div>
 
 </div>
 
 <script>
-    function updatePriceBanner() {
+    function updateAmount() {
         const tier = document.getElementById('paymentTier').value;
-        const bannerDisplay = document.getElementById('bannerAmountDisplay');
-        const btnText = document.getElementById('btnPayText');
+        const displayAmount = document.getElementById('displayAmount');
+        const payBtn = document.getElementById('payBtn');
 
         if (tier === '1_USD') {
-            bannerDisplay.innerHTML = '$1.<span>00</span> <small style="font-size: 0.9rem; font-weight: normal; color: var(--text-muted);">USD</small>';
-            btnText.textContent = 'Pay $1.00 with PayVortex';
+            displayAmount.textContent = '$1.00';
+            payBtn.textContent = 'Pay $1.00';
         } else {
-            bannerDisplay.innerHTML = '₹1.<span>00</span> <small style="font-size: 0.9rem; font-weight: normal; color: var(--text-muted);">INR</small>';
-            btnText.textContent = 'Pay ₹1.00 with PayVortex';
+            displayAmount.textContent = '₹1.00';
+            payBtn.textContent = 'Pay ₹1.00';
         }
     }
 
-    async function initiateTestPayment(event) {
-        event.preventDefault();
+    async function submitPayment(e) {
+        e.preventDefault();
 
-        const btn = document.getElementById('btnPay');
-        const btnText = document.getElementById('btnPayText');
-        const errorToast = document.getElementById('errorToast');
+        const btn = document.getElementById('payBtn');
+        const errorBox = document.getElementById('errorBox');
         
-        errorToast.style.display = 'none';
-        errorToast.textContent = '';
+        errorBox.style.display = 'none';
+        errorBox.textContent = '';
 
         const tier = document.getElementById('paymentTier').value;
         const name = document.getElementById('customerName').value.trim();
         const email = document.getElementById('customerEmail').value.trim();
         const mobile = document.getElementById('customerMobile').value.trim();
 
-        // Validation
-        if (!email || !mobile) {
-            showError('Please fill in both email and mobile number.');
-            return;
-        }
-
-        // Set loading state
         btn.disabled = true;
-        const originalText = btnText.textContent;
-        btn.innerHTML = '<span class="spinner"></span><span>Connecting to Vortex Gateway...</span>';
+        const originalText = btn.textContent;
+        btn.textContent = 'Processing...';
 
         try {
-            const response = await fetch('test_payment.php?action=create_order', {
+            const res = await fetch('test_payment.php?action=create_order', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     payment_tier: tier,
                     name: name,
@@ -883,32 +558,22 @@ if ($isReturned && !empty($returnedTxnId)) {
                 })
             });
 
-            const data = await response.json();
+            const data = await res.json();
 
-            if (!response.ok || !data.success || !data.payment_url) {
-                throw new Error(data.error || 'Failed to initialize test payment order.');
+            if (!res.ok || !data.success || !data.payment_url) {
+                throw new Error(data.error || 'Failed to start payment session.');
             }
 
-            // Redirect user directly to the Vortex Checkout session
-            btn.innerHTML = '<span class="spinner"></span><span>Launching Checkout Interface...</span>';
+            // Redirect to Vortex checkout
             window.location.href = data.payment_url;
 
         } catch (err) {
-            console.error('Payment Initialization Error:', err);
-            showError(err.message || 'An error occurred while connecting to PayVortex.');
+            errorBox.textContent = err.message || 'Payment initiation failed.';
+            errorBox.style.display = 'block';
             btn.disabled = false;
-            btn.innerHTML = `<span id="btnPayText">${originalText}</span>`;
+            btn.textContent = originalText;
         }
     }
-
-    function showError(msg) {
-        const errorToast = document.getElementById('errorToast');
-        errorToast.textContent = '⚠ ' + msg;
-        errorToast.style.display = 'block';
-    }
-
-    // Initialize display state on load
-    document.addEventListener('DOMContentLoaded', updatePriceBanner);
 </script>
 
 </body>
