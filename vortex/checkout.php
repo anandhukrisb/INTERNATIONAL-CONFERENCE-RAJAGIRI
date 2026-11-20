@@ -11,7 +11,7 @@ header("Pragma: no-cache");
  *
  * Purpose:
  * Customer-facing payment checkout page for Vortex transactions.
- * Validates the 5-minute temporary session token and launches Razorpay.
+ * Validates the 15-minute temporary session token and launches Razorpay.
  * ------------------------------------------------------------
  */
 
@@ -523,7 +523,7 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
                         <img src="assets/images/rpay-logo-white-text.png" alt="Rpay Logo" style="height: 38px; width: auto; object-fit: contain;">
                     </div>
                     <div class="timer-badge safe" id="timer-display">
-                        ⏱ 5:00
+                        ⏱ 15:00
                     </div>
                 </div>
 
@@ -603,10 +603,10 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
 
             const minutes = Math.floor(diff / 60000);
             const seconds = Math.floor((diff % 60000) / 1000);
-            if (minutes > 1) {
-                timerEl.classList.add('safe');
+            if (minutes > 3) {
+                timerEl.classList.add('safe');   // green: > 3 min remaining
             } else {
-                timerEl.classList.remove('safe');
+                timerEl.classList.remove('safe'); // red: <= 3 min remaining
             }
             timerEl.innerHTML = `⏱ ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
         }, 1000);

@@ -115,7 +115,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'create_order') {
                 $vortexTxnId = $payResult['data']['vortex_transaction_id'];
 
                 $sessionObj = new CheckoutSession();
-                $sessionRes = $sessionObj->createSession($txDbId, $returnUrl, 5);
+                $sessionRes = $sessionObj->createSession($txDbId, $returnUrl, 15);
 
                 if (($sessionRes['success'] ?? false) === true) {
                     $token = $sessionRes['session_token'];

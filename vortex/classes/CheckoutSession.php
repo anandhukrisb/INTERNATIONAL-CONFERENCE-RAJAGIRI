@@ -7,7 +7,7 @@
  * Project : Vortex Unified Payment Gateway
  *
  * Purpose:
- * Manages 5-minute temporary checkout sessions for customer payment.
+ * Manages 15-minute temporary checkout sessions for customer payment.
  * Decouples developer backend requests from customer browser flows
  * without storing redirect URL permanently in transactions.
  * ------------------------------------------------------------
@@ -53,12 +53,12 @@ class CheckoutSession
 
     /**
      * --------------------------------------------------------
-     * Create a 5-minute Checkout Session
+     * Create a 15-minute Checkout Session
      * --------------------------------------------------------
      *
      * @param int    $transactionId   Database transaction ID
      * @param string $redirectUrl    Developer's single redirect URL
-     * @param int    $durationMinutes Session validity (default: 5)
+     * @param int    $durationMinutes Session validity (default: 15)
      * @return array
      * --------------------------------------------------------
      */
