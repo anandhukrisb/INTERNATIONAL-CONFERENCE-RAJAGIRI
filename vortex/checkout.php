@@ -550,6 +550,12 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
                     </div>
                 </div>
 
+                <?php if ($sessionData['currency'] !== 'INR'): ?>
+                <div style="margin-top: 12px; margin-bottom: 4px; font-size: 0.8rem; color: #cbd5e1; line-height: 1.45; text-align: left; background: rgba(255,255,255,0.06); padding: 10px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+                    🌐 <strong>International Card Note:</strong> Please ensure international transactions are enabled on your card. If your bank prompts via SMS, app notification, or a verification screen, please approve it to complete payment.
+                </div>
+                <?php endif; ?>
+
                 <button class="btn-pay" id="pay-btn" onclick="launchRazorpayCheckout()">
                     <span>Pay <?= $sessionData['currency'] === 'INR' ? '₹' : '$' ?><?= number_format((float)$sessionData['amount'], 2) ?></span>
                 </button>
@@ -860,6 +866,24 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
         };
 
         const rzp = new Razorpay(options);
+
+        // Capture payment failure directly from Razorpay SDK
+        rzp.on('payment.failed', function (response) {
+            console.error('Razorpay payment failed:', response.error);
+            const err = response.error || {};
+            let msg = err.description || 'Payment was declined by your bank or authentication failed.';
+            
+            if (err.reason === 'payment_timed_out') {
+                msg = 'Bank authentication timed out or the challenge window was closed. Please ensure international online transactions are enabled on your card, check for pop-up/tracker blockers, and try again.';
+            } else if (err.code === 'BAD_REQUEST_ERROR' && err.step === 'payment_authentication') {
+                msg = 'Your bank declined the cross-border authentication challenge. Please contact your card issuer to allow international transactions, or try another card.';
+            }
+            
+            showAlert(msg, 'error');
+            btn.disabled = false;
+            btn.innerHTML = '<span>Pay <?= $sessionData['currency'] === 'INR' ? '₹' : '$' ?><?= number_format((float)$sessionData['amount'], 2) ?></span>';
+        });
+
         rzp.open();
     }
 </script>
