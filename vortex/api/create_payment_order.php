@@ -180,14 +180,14 @@ $transactionDbId = $paymentData['database_transaction_id'];
 $vortexTransactionId = $paymentData['vortex_transaction_id'];
 
 // ------------------------------------------------------------
-// 7. Create 15-Minute Checkout Session
+// 7. Create 5-Minute Checkout Session
 // ------------------------------------------------------------
 
 $checkoutSession = new CheckoutSession();
 $sessionResult = $checkoutSession->createSession(
     $transactionDbId,
     $redirectUrl,
-    15 // 15-minute expiry
+    5 // 5-minute expiry
 );
 
 if (!$sessionResult['success']) {
