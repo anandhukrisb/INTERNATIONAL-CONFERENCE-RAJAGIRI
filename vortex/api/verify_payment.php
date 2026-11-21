@@ -26,6 +26,7 @@ require_once __DIR__ . '/../classes/Database.php';
 require_once __DIR__ . '/../classes/Response.php';
 require_once __DIR__ . '/../classes/Logger.php';
 require_once __DIR__ . '/../classes/CheckoutSession.php';
+require_once __DIR__ . '/../classes/PaymentLogger.php';
 
 header('Content-Type: application/json');
 
@@ -178,6 +179,21 @@ try {
             'Payment verification failed: Invalid Razorpay signature for Order ID '
             . $razorpayOrderId . '. Error: ' . $e->getMessage()
         );
+
+        // ---- Log the failed verification ----
+        PaymentLogger::logVerification(
+            false,
+            array_merge($data, ['session_token' => '[REDACTED]']),
+            [
+                'transaction_id'       => (int) $transaction['id'],
+                'vortex_transaction_id'=> $transaction['vortex_transaction_id'],
+                'api_client_id'        => $transaction['api_client_id'] ?? null,
+                'currency'             => $transaction['currency'] ?? null,
+                'amount'               => isset($transaction['amount']) ? (float)$transaction['amount'] : null,
+            ],
+            'Invalid Razorpay signature: ' . $e->getMessage()
+        );
+
         Response::error('Payment verification failed.', [
             'status_code'  => 400,
             'redirect_url' => $sessionData['redirect_url']
@@ -240,6 +256,21 @@ try {
         . 'Vortex Transaction ID: ' . $transaction['vortex_transaction_id']
         . ', Razorpay Payment ID: ' . $razorpayPaymentId
         . ', Status: SUCCESS'
+    );
+
+    // ---- Log the successful verification ----
+    PaymentLogger::logVerification(
+        true,
+        array_merge($data, ['session_token' => '[REDACTED]']),
+        [
+            'transaction_id'       => (int) $transaction['id'],
+            'vortex_transaction_id'=> $transaction['vortex_transaction_id'],
+            'api_client_id'        => $transaction['api_client_id'] ?? null,
+            'currency'             => $transaction['currency'] ?? null,
+            'amount'               => isset($transaction['amount']) ? (float)$transaction['amount'] : null,
+            'razorpay_payment_id'  => $razorpayPaymentId,
+            'razorpay_order_id'    => $razorpayOrderId,
+        ]
     );
 
     // --------------------------------------------------------

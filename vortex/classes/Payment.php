@@ -20,6 +20,7 @@ require_once __DIR__ . '/Database.php';
 require_once __DIR__ . '/Validator.php';
 require_once __DIR__ . '/Event.php';
 require_once __DIR__ . '/Logger.php';
+require_once __DIR__ . '/PaymentLogger.php';
 
 
 class Payment
@@ -527,11 +528,39 @@ class Payment
             // 5. Create Razorpay order
             // ------------------------------------------------
 
+            // ------------------------------------------------
+            // Build the order request payload for logging
+            // ------------------------------------------------
+            $razorpayAmountForLog = (int) round($amount * 100);
+            $orderRequestPayload = [
+                'receipt'  => $vortexTransactionId,
+                'amount'   => $razorpayAmountForLog,
+                'currency' => strtoupper(trim($currency)),
+            ];
+
             $razorpayOrder = $this->createRazorpayOrder(
                 $amount,
                 $currency,
                 $vortexTransactionId,
                 $isTestMode
+            );
+
+            // ------------------------------------------------
+            // Log the order creation attempt (success or fail)
+            // ------------------------------------------------
+            PaymentLogger::logFromRazorpayOrder(
+                $orderRequestPayload,
+                $razorpayOrder,
+                [
+                    'transaction_id'       => (int) $transactionId,
+                    'vortex_transaction_id'=> $vortexTransactionId,
+                    'api_client_id'        => $apiClientId,
+                    'currency'             => strtoupper(trim($currency)),
+                    'amount'               => $amount,
+                    'customer_email'       => $email,
+                    'customer_mobile'      => $mobile,
+                    'error_description'    => $razorpayOrder === false ? ($this->lastRazorpayError ?? null) : null,
+                ]
             );
 
 

@@ -26,6 +26,7 @@ $dotenv->safeLoad();
 
 require_once __DIR__ . '/../classes/Webhook.php';
 require_once __DIR__ . '/../classes/Logger.php';
+require_once __DIR__ . '/../classes/PaymentLogger.php';
 
 header('Content-Type: application/json');
 
@@ -170,6 +171,19 @@ if ($razorpayEventId === '') {
 try {
     $webhook = new Webhook();
     $result = $webhook->process($event, $webhookSignature, $razorpayEventId);
+
+    // ---- Log this webhook event (success or failure) ----
+    $eventName = $event['event'] ?? 'unknown';
+    $paymentEntity = $event['payload']['payment']['entity'] ?? [];
+    PaymentLogger::logWebhook(
+        $eventName,
+        $event,
+        [
+            'razorpay_order_id'   => $paymentEntity['order_id'] ?? null,
+            'razorpay_payment_id' => $paymentEntity['id']       ?? null,
+            'vortex_transaction_id' => $paymentEntity['receipt'] ?? null,
+        ]
+    );
 
     if (!is_array($result) || ($result['status'] ?? null) === 'FAILED') {
         Logger::error('Razorpay Webhook Error: Webhook processing returned FAILED.');
