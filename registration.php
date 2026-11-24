@@ -4,7 +4,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- RESPONSIVE: viewport with safe area support for notched devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Registration - ICSWHMH 2027</title>
     <link rel="icon" type="image/x-icon"
         href="https://res.cloudinary.com/dswfp5fwx/image/upload/v1778131826/Favicon-192_hdltam.ico">
@@ -19,914 +20,100 @@
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@400;600;800&display=swap"
         rel="stylesheet">
 
+    <!-- RESPONSIVE: Shared responsive CSS replaces all inline styles -->
+    <link rel="stylesheet" href="responsive-shared.css">
+
+    <!-- FIX: Registration Action Buttons (Unified Consistent Styling) Styles -->
     <style>
-        
-        :root {
-            --primary-purple: #1D0A3F;
-            --accent-gold: #C9A227;
-            --bg-light: #FDFBF7;
-            --text-dark: #2D3436;
-            --text-muted: #555;
-            --white: #ffffff;
-            --shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
-        }
+        /* FIX: CSS Custom Properties & shared layout for Registration Action Buttons */
+        .registration-buttons-group {
+            --btn-bg: var(--accent-gold, #C9A227);
+            --btn-text: var(--primary-purple, #1D0A3F);
+            --btn-border: var(--accent-gold, #C9A227);
+            --btn-shadow: 0 4px 15px rgba(201, 162, 39, 0.25);
+            --btn-hover-shadow: 0 6px 20px rgba(201, 162, 39, 0.35);
+            --btn-focus-outline: var(--primary-purple, #1D0A3F);
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html {
-            overflow-x: hidden;
-            width: 100%;
-        }
-
-        body {
-            background-color: var(--bg-light);
-            color: var(--text-dark);
-            font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        .main-container {
-            max-width: 95%;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        
-        .title-section {
-            margin-top: 150px;
-            margin-bottom: 60px;
-        }
-
-        #pageTitle {
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary-purple);
-            text-transform: uppercase;
-            position: relative;
-            display: inline-block;
-        }
-
-        #pageTitle::after {
-            content: "";
-            display: block;
-            width: 80px;
-            height: 4px;
-            background-color: var(--accent-gold);
-            margin-top: 10px;
-            border-radius: 2px;
-        }
-
-        
-        .intro-text {
-            font-size: 1.15rem;
-            margin-bottom: 40px;
-            color: var(--text-muted);
-            max-width: 100%;
-            text-align: justify;
-        }
-
-        .section-header {
-            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            font-size: 1.8rem;
-            color: var(--primary-purple);
-            margin-bottom: 25px;
-            font-weight: 600;
-        }
-
-        
-        .inclusions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-            gap: 30px;
-            margin-bottom: 60px;
-        }
-
-        .inclusion-card {
-            background: #1D0A3F;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            border-left: 6px solid var(--accent-gold);
-            border-top: none;
-        }
-
-        .inclusion-card h3 {
-            font-family: 'Outfit', sans-serif;
-            color: var(--white);
-            margin-bottom: 20px;
-            font-size: 1.4rem;
-            font-weight: 700;
-        }
-
-        .inclusion-list {
-            list-style: none;
-        }
-
-        .inclusion-list li {
-            position: relative;
-            padding-left: 25px;
-            margin-bottom: 12px;
-            font-size: 1rem;
-            color: #F0F0F0;
-        }
-
-        .inclusion-list li::before {
-            content: "\F272";
-            
-            font-family: "bootstrap-icons";
-            position: absolute;
-            left: 0;
-            color: var(--accent-gold);
-            font-weight: bold;
-        }
-
-        
-        .pricing-section {
-            margin-bottom: 60px;
-            overflow-x: auto;
-        }
-
-        .pricing-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: var(--white);
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-        }
-
-        .pricing-table th {
-            background-color: var(--primary-purple);
-            color: var(--white);
-            text-align: left;
-            padding: 18px 25px;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .pricing-table td {
-            padding: 18px 25px;
-            border-bottom: 1px solid #eee;
-            color: var(--text-muted);
-        }
-
-        .pricing-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .pricing-table tr:nth-child(even) {
-            background-color: #f9f9fb;
-        }
-
-        .price-tag {
-            font-weight: 700;
-            color: var(--primary-purple);
-        }
-
-        
-        .info-section {
-            margin-bottom: 80px;
-        }
-
-        .info-strip {
-            margin-bottom: 25px;
-            background: var(--white);
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            
-            overflow: hidden;
-        }
-
-        .info-header {
-            background-color: var(--primary-purple);
-            color: var(--white);
-            padding: 15px 25px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
-            font-size: 1.1rem;
-            cursor: pointer;
-        }
-
-        .info-header .icon {
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .info-content {
-            padding: 0 25px;
-            color: var(--text-muted);
-            font-size: 1rem;
-            max-height: 0;
-            
-            opacity: 0;
-            transition: max-height 0.3s ease-out, opacity 0.3s ease, padding 0.3s ease;
-            overflow: hidden;
-            text-align: justify;
-        }
-
-        .info-strip.expanded .info-content {
-            max-height: 1000px;
-            
-            opacity: 1;
-            padding-top: 0;
-            padding-bottom: 0;
-        }
-
-        .info-content-inner {
-            padding: 25px 0;
-        }
-
-        .info-content p {
-            margin-bottom: 15px;
-        }
-
-        .info-content p:last-child {
-            margin-bottom: 0;
-        }
-
-        
-        .cancel-table {
+            flex-direction: column;
+            gap: 12px; /* FIX: 12px gap between the two buttons */
             width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
+            margin-top: 25px;
+            align-items: center;
         }
 
-        .cancel-table th,
-        .cancel-table td {
-            border: 1px solid #333;
-            padding: 12px 18px;
-            text-align: left;
-        }
-
-        .cancel-table th {
-            background-color: #fff;
-            color: #000;
-            font-weight: 700;
-        }
-
-        .cancel-table tr td:first-child {
-            width: 60%;
-        }
-
-        .btn-register {
-            display: inline-block;
-            background-color: var(--accent-gold);
-            color: #1D0A3F;
-            padding: 15px 35px;
+        /* FIX: Unified shared styling for both Proceed and Check Details buttons */
+        .registration-buttons-group .btn-reg-flow,
+        .btn-reg-flow.btn-proceed,
+        .btn-reg-flow.btn-check-details {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-height: 48px; /* FIX: Touch-friendly (at least 44px touch height) */
+            padding: 14px 28px;
             border-radius: 50px;
-            text-decoration: none;
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Outfit', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-size: var(--fs-base, 1rem);
             font-weight: 600;
             text-transform: capitalize;
             letter-spacing: normal;
-            transition: transform 0.3s ease;
-            margin-top: 30px;
-            border: none;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-        }
-
-        .btn-register::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #1D0A3F;
-            z-index: -1;
-            transition: clip-path 0.4s ease-out;
-            clip-path: circle(0% at 0 50%);
-        }
-
-        .btn-register:hover::before {
-            clip-path: circle(150% at 0 50%);
-        }
-
-        .btn-register:hover {
-            transform: translateY(-3px);
-            color: var(--accent-gold);
-            box-shadow: 0 10px 20px rgba(29, 10, 63, 0.2);
-        }
-
-
-
-        
-        @font-face {
-            font-family: "bootstrap-icons";
-            src: url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/fonts/bootstrap-icons.woff2?24ad65009a63aa365fd148d0a1b9b395") format("woff2");
-        }
-
-        
-        @media (max-width: 768px) {
-            * {
-                max-width: 100%;
-            }
-
-            .main-container {
-                padding: 0 15px;
-                width: 100%;
-                max-width: 100vw;
-                box-sizing: border-box;
-            }
-
-            .title-section {
-                margin-top: 120px;
-                text-align: center;
-                width: 100%;
-            }
-
-            #pageTitle {
-                font-size: 2rem;
-            }
-
-            #pageTitle::after {
-                margin: 10px auto;
-            }
-
-            .intro-text {
-                font-size: 1rem;
-                text-align: left;
-                width: 100%;
-                max-width: 100%;
-            }
-
-            .section-header {
-                font-size: 1.5rem;
-            }
-
-            .inclusions-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-                width: 100%;
-            }
-
-            .inclusion-card {
-                padding: 25px;
-                width: 100%;
-                box-sizing: border-box;
-            }
-
-            .pricing-section {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                width: 100%;
-                margin-left: -15px;
-                margin-right: -15px;
-                padding: 0 15px;
-            }
-
-            .pricing-table {
-                min-width: 600px;
-            }
-
-            .pricing-table th,
-            .pricing-table td {
-                padding: 12px 15px;
-                font-size: 0.85rem;
-            }
-
-            .cancel-table {
-                min-width: 100%;
-                font-size: 0.85rem;
-            }
-
-            .cancel-table th,
-            .cancel-table td {
-                padding: 10px 12px;
-            }
-
-            .info-section {
-                width: 100%;
-            }
-
-            .info-strip {
-                width: 100%;
-                box-sizing: border-box;
-            }
-
-            .info-header {
-                font-size: 1rem;
-                padding: 12px 20px;
-            }
-
-            .info-content {
-                padding: 0 20px;
-            }
-
-            .info-content-inner {
-                padding: 20px 0;
-            }
-
-            .btn-register {
-                padding: 14px 35px;
-                font-size: 0.9rem;
-            }
-        }
-
-        
-        .fee-guidelines-section {
-            margin: 0 auto 50px auto;
-            max-width: 1050px;
-            background: var(--white);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            border-top: 5px solid var(--accent-gold);
-        }
-
-        .fee-toggle-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .fee-toggle-btn {
-            background-color: #f0f0f0;
-            color: var(--text-dark);
-            border: none;
-            padding: 12px 25px;
-            border-radius: 50px;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-        }
-
-        .fee-toggle-btn.active {
-            background-color: var(--primary-purple);
-            color: var(--white);
-        }
-
-        .fee-tab-content {
-            display: none;
-        }
-
-        .fee-tab-content.active {
-            display: block;
-            animation: fadeIn 0.4s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fee-table-title {
-            font-family: 'Outfit', sans-serif;
-            color: var(--primary-purple);
-            font-size: 1.3rem;
-            margin-top: 30px;
-            margin-bottom: 15px;
-        }
-
-        .fee-table-title:first-child {
-            margin-top: 0;
-        }
-
-        
-        .pricing-cards-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .pricing-card {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 30px 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-            border: 1px solid #eaeaea;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .pricing-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
-        }
-
-        .pricing-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: var(--primary-purple);
-        }
-
-        .pricing-card.accent::before {
-            background: var(--accent-gold);
-        }
-
-        .pricing-card-header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .pricing-category {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: var(--primary-purple);
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .pricing-main-price {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--text-dark);
-            line-height: 1;
-        }
-
-        .pricing-main-label {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-top: 6px;
-            font-weight: 500;
-        }
-
-        .pricing-features {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            flex-grow: 1;
-        }
-
-        .pricing-features li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px dashed #eaeaea;
-            font-size: 0.95rem;
-            color: var(--text-muted);
-        }
-
-        .pricing-features li:last-child {
-            border-bottom: none;
-        }
-
-        .pricing-feature-label {
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .pricing-feature-label::before {
-            content: "✓";
-            color: var(--accent-gold);
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        .pricing-feature-value {
-            font-weight: 700;
-            color: var(--text-dark);
-        }
-
-        .fee-filter-controls {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 30px;
-            background: #f9f9fb;
-            padding: 20px;
-            border-radius: 8px;
-        }
-
-        .filtered-fee-result {
-            background: #f0f4f8;
-            padding: 25px;
-            border-radius: 8px;
-            border-left: 4px solid var(--primary-purple);
-        }
-
-        .result-card {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background: #fff;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-        }
-
-        .result-label {
-            font-weight: 600;
-            color: var(--text-dark);
-            font-size: 1.1rem;
-        }
-
-        .result-value {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--primary-purple);
-        }
-
-        @media (max-width: 768px) {
-            .fee-filter-controls {
-                flex-direction: column;
-            }
-
-            .result-card {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 5px;
-            }
-
-            .fee-toggle-btn {
-                padding: 10px 15px;
-                font-size: 0.9rem;
-            }
-        }
-
-        
-        .registration-form-section {
-            margin-bottom: 80px;
-            background: #fff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            border-top: 5px solid var(--accent-gold);
-        }
-
-        .form-row {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-label {
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--primary-purple);
-            font-size: 0.95rem;
-        }
-
-        .form-control {
-            padding: 12px 15px;
-            border: 2px solid #A0AEC0;
-            border-radius: 8px;
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            transition: border-color 0.3s, box-shadow 0.3s;
-            background-color: #f9f9fb;
-            box-sizing: border-box;
-        }
-
-        .form-control::placeholder {
-            color: #CBD5E0;
-            opacity: 1; 
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary-purple);
-            box-shadow: 0 0 0 3px rgba(29, 10, 63, 0.1);
-            background-color: #fff;
-        }
-
-        #firstName, #middleName, #lastName {
-            text-transform: capitalize;
-        }
-
-        select.form-control {
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%231D0A3F' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 15px center;
-            background-size: 12px;
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: var(--primary-purple);
-        }
-
-        .checkbox-label {
-            font-size: 0.95rem;
-            color: var(--text-dark);
-            cursor: pointer;
-        }
-
-        @media (max-width: 768px) {
-            .form-row {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .registration-form-section {
-                padding: 25px;
-            }
-        }
-
-        
-        .sticky-sidebar-buttons {
-            position: fixed;
-            top: 170px;
-            right: 0;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .sidebar-btn {
-            display: block;
-            background-color: #C9A227;
-            color: #1D0A3F;
-            padding: 12px 20px;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
             text-decoration: none;
             text-align: center;
-            border-radius: 8px 0 0 8px;
-            box-shadow: -2px 2px 10px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
-            min-width: 140px;
+            box-sizing: border-box;
+            cursor: pointer;
+            margin: 0 !important;
+            background-color: var(--btn-bg) !important;
+            color: var(--btn-text) !important;
+            border: 2px solid var(--btn-border) !important;
+            box-shadow: var(--btn-shadow);
             position: relative;
             overflow: hidden;
-            z-index: 1;
-            cursor: pointer;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
         }
 
-        .sidebar-btn::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #1D0A3F;
-            z-index: -1;
-            transition: clip-path 0.3s ease-out;
-            clip-path: circle(0% at 0 50%);
+        /* FIX: Suppress inherited ::before circle background animation for unified look */
+        .registration-buttons-group .btn-reg-flow::before {
+            display: none !important;
+            content: none !important;
         }
 
-        .sidebar-btn:hover::before {
-            clip-path: circle(150% at 0 50%);
-        }
-
-        .sidebar-btn:hover {
-            transform: translateX(-5px);
-            color: #FFFFFF;
-        }
-
-        @media (max-width: 768px) {
-            .sticky-sidebar-buttons {
-                top: auto;
-                bottom: 20px;
-                right: 20px;
-            }
-
-            .sidebar-btn {
-                border-radius: 8px;
-                min-width: 120px;
-                font-size: 0.85rem;
-            }
-        }
-
-
-        .verification-box {
-            background: linear-gradient(135deg, rgba(29, 10, 63, 0.02) 0%, rgba(201, 162, 39, 0.05) 100%);
-            border: 1px dashed var(--accent-gold);
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 25px;
-            transition: all 0.3s ease;
-        }
-
-        .verification-row {
-            display: flex;
-            gap: 15px;
-            align-items: flex-end;
-        }
-
-        .btn-verify {
-            background-color: var(--primary-purple);
-            color: var(--white);
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 130px;
-        }
-
-        .btn-verify:hover {
-            background-color: var(--accent-gold);
-            color: #1D0A3F;
+        /* FIX: Unified hover style - slightly darker gold (brightness 0.94) + subtle lift */
+        .registration-buttons-group .btn-reg-flow:hover:not(:disabled),
+        .btn-reg-flow.btn-proceed:hover:not(:disabled),
+        .btn-reg-flow.btn-check-details:hover {
+            filter: brightness(0.94);
             transform: translateY(-2px);
+            box-shadow: var(--btn-hover-shadow);
+            color: var(--btn-text) !important;
+            text-decoration: none;
         }
 
-        .btn-verify:disabled {
-            background-color: #CBD5E0;
-            color: #718096;
+        /* FIX: Unified active click feedback */
+        .registration-buttons-group .btn-reg-flow:active:not(:disabled),
+        .btn-reg-flow.btn-proceed:active:not(:disabled),
+        .btn-reg-flow.btn-check-details:active {
+            transform: translateY(0);
+            filter: brightness(0.90);
+            box-shadow: var(--btn-shadow);
+        }
+
+        /* FIX: High-contrast focus-visible outline against the gold button (7.47:1 contrast ratio) */
+        .registration-buttons-group .btn-reg-flow:focus-visible,
+        .btn-reg-flow:focus-visible {
+            outline: 3px solid var(--btn-focus-outline);
+            outline-offset: 3px;
+        }
+
+        /* FIX: Proceed button disabled state preserved (Check Details is never disabled) */
+        .registration-buttons-group .btn-proceed:disabled,
+        .btn-reg-flow.btn-proceed:disabled {
+            opacity: 0.7;
             cursor: not-allowed;
-            transform: none;
-        }
-
-        .verification-status {
-            margin-top: 12px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            display: none;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .verification-status.success {
-            color: #2F855A;
-            display: flex;
-        }
-
-        .verification-status.error {
-            color: #C53030;
-            display: flex;
-        }
-
-        .verified-badge {
-            background-color: #C6F6D5;
-            color: #22543D;
-            padding: 4px 10px;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .locked-form-overlay {
-            opacity: 0.4;
-            pointer-events: none;
-            transition: all 0.3s ease;
-        }
-
-        .unlocked-form {
-            opacity: 1 !important;
-            pointer-events: auto !important;
+            transform: none !important;
+            filter: none !important;
+            box-shadow: var(--btn-shadow) !important;
         }
     </style>
 
@@ -936,10 +123,7 @@
 
     <floating-navbar></floating-navbar>
 
-    
-    <div class="sticky-sidebar-buttons">
-        <a href="view_transaction.php" class="sidebar-btn">Check Details</a>
-    </div>
+    <!-- FIX: Floating Check Details button removed from body; moved below Proceed button in form -->
 
     <main class="main-container">
 
@@ -1227,10 +411,11 @@
                 <p style="color: red; font-size: 0.9em; margin-bottom: 15px;">* Fields are mandatory</p>
                 <form id="registrationForm" onsubmit="submitRegistration(event)" class="locked-form-overlay">
 
-                    <div class="form-row">
-                        <div class="form-group" style="flex: 1;">
+                    <!-- RESPONSIVE: 4-col row on desktop, stacks on mobile via grid -->
+                    <div class="form-row form-row--quad">
+                        <div class="form-group">
                             <label for="designation" class="form-label">Designation <span style="color: red;">*</span></label>
-                            <select id="designation" name="designation" class="form-control" onchange="handleDesignationChange()" required>
+                            <select id="designation" name="designation" class="form-control" autocomplete="honorific-prefix" onchange="handleDesignationChange()" required>
                                 <option value="" disabled selected>Select Designation</option>
                                 <option value="Professor">Professor</option>
                                 <option value="Associate Professor">Associate Professor</option>
@@ -1245,19 +430,20 @@
                                 <option value="Other">Other</option>
                             </select>
                         </div>
-                        <div class="form-group" style="flex: 1;">
+                        <div class="form-group">
                             <label for="firstName" class="form-label">First Name <span style="color: red;">*</span></label>
                             <input type="text" id="firstName" name="firstName" class="form-control" placeholder="Alan"
-                                required>
+                                autocomplete="given-name" required>
                         </div>
-                        <div class="form-group" style="flex: 1;">
+                        <div class="form-group">
                             <label for="middleName" class="form-label">Middle Name</label>
-                            <input type="text" id="middleName" name="middleName" class="form-control" placeholder="J.">
+                            <input type="text" id="middleName" name="middleName" class="form-control" placeholder="J."
+                                autocomplete="additional-name">
                         </div>
-                        <div class="form-group" style="flex: 1;">
+                        <div class="form-group">
                             <label for="lastName" class="form-label">Last Name <span style="color: red;">*</span></label>
                             <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Wake"
-                                required>
+                                autocomplete="family-name" required>
                         </div>
                     </div>
 
@@ -1293,7 +479,7 @@
                                 required>
                         </div>
                         <div class="form-group">
-                            <label for="participantType" class="form-label">Participant Category (Who are you?) <span style="color: red;">*</span></label>
+                            <label for="participantType" class="form-label">Participant Category  <span style="color: red;">*</span></label>
                             <select id="participantType" name="participantType" class="form-control"
                                 onchange="updateRequirementsOptions()" required>
                                 <option value="" disabled selected>Select Category</option>
@@ -1587,8 +773,10 @@
                                 Conditions</a> and Payment Policy.</label>
                     </div>
 
-                    <div style="text-align: center;">
-                        <button type="submit" class="btn-register">Proceed to Payment Details</button>
+                    <!-- FIX: Normal page flow action buttons container with 12px gap -->
+                    <div class="registration-buttons-group">
+                        <button type="submit" class="btn-register btn-reg-flow btn-proceed">Proceed to Payment Details</button>
+                        <a href="view_transaction.php" class="btn-reg-flow btn-check-details" aria-label="Check existing registration details">Check Details</a>
                     </div>
                 </form>
             </div>
