@@ -1095,8 +1095,7 @@
                     <div class="pricing-card">
                         <div class="pricing-card-header">
                             <div class="pricing-category">Developed Countries</div>
-                            <!-- <div class="pricing-main-price">100 USD</div> -->
-                            <div class="pricing-main-price">1 USD</div>
+                            <div class="pricing-main-price">100 USD</div>
                             <div class="pricing-main-label">In-Person (Offline)</div>
                         </div>
                         <ul class="pricing-features">
@@ -1229,19 +1228,44 @@
                 <form id="registrationForm" onsubmit="submitRegistration(event)" class="locked-form-overlay">
 
                     <div class="form-row">
-                        <div class="form-group">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="designation" class="form-label">Designation <span style="color: red;">*</span></label>
+                            <select id="designation" name="designation" class="form-control" onchange="handleDesignationChange()" required>
+                                <option value="" disabled selected>Select Designation</option>
+                                <option value="Professor">Professor</option>
+                                <option value="Associate Professor">Associate Professor</option>
+                                <option value="Assistant Professor">Assistant Professor</option>
+                                <option value="Dr. / Researcher">Dr. / Researcher</option>
+                                <option value="Research Scholar">Research Scholar</option>
+                                <option value="Postdoctoral Fellow">Postdoctoral Fellow</option>
+                                <option value="Dean / Director / Principal">Dean / Director / Principal</option>
+                                <option value="Lecturer / Senior Lecturer">Lecturer / Senior Lecturer</option>
+                                <option value="Field Practitioner / Consultant">Field Practitioner / Consultant</option>
+                                <option value="Student">Student</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
                             <label for="firstName" class="form-label">First Name <span style="color: red;">*</span></label>
                             <input type="text" id="firstName" name="firstName" class="form-control" placeholder="Alan"
                                 required>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="flex: 1;">
                             <label for="middleName" class="form-label">Middle Name</label>
                             <input type="text" id="middleName" name="middleName" class="form-control" placeholder="J.">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="flex: 1;">
                             <label for="lastName" class="form-label">Last Name <span style="color: red;">*</span></label>
                             <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Wake"
                                 required>
+                        </div>
+                    </div>
+
+                    <!-- Other Designation (Appears only if "Other" is selected) -->
+                    <div class="form-row" id="otherDesignationGroup" style="display: none; transition: all 0.3s ease;">
+                        <div class="form-group" style="max-width: 50%;">
+                            <label for="otherDesignation" class="form-label">Please Specify Designation <span style="color: red;">*</span></label>
+                            <input type="text" id="otherDesignation" name="otherDesignation" class="form-control" placeholder="Enter your designation">
                         </div>
                     </div>
 
@@ -1492,6 +1516,69 @@
                         </div>
                     </div>
 
+                    <!-- Passport Number (Popped up if nationality is non-Indian) -->
+                    <div class="form-row" id="passportRow" style="display: none; transition: all 0.3s ease;">
+                        <div class="form-group" style="flex: 1 1 100%;">
+                            <label for="passportNumber" class="form-label">Passport Number <span style="color: red;">*</span> <span style="font-size: 0.85rem; font-weight: normal; color: #64748b;">(Required for non-Indian participants)</span></label>
+                            <input type="text" id="passportNumber" name="passportNumber" class="form-control" placeholder="Enter your Passport Number">
+                        </div>
+                    </div>
+
+                    <!-- Address for Communication -->
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1 1 100%;">
+                            <label for="communicationAddress" class="form-label">Address for Communication <span style="color: red;">*</span></label>
+                            <textarea id="communicationAddress" name="communicationAddress" class="form-control" rows="2" placeholder="Street address, City, State/Province, Postal Code, Country" required style="resize: vertical; min-height: 70px;"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Participation Details Section -->
+                    <div style="margin-top: 25px; margin-bottom: 25px; padding-top: 20px; border-top: 2px solid #E2E8F0;">
+                        <h3 style="color: var(--primary-purple); font-size: 1.18rem; font-weight: 700; margin-bottom: 18px; display: flex; align-items: center; gap: 8px;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-gold);"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7.5" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>
+                            Participation Details
+                        </h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="modeOfPresentation" class="form-label">Mode of Presentation <span style="color: red;">*</span></label>
+                                <select id="modeOfPresentation" name="modeOfPresentation" class="form-control" onchange="handleModeChange()" required>
+                                    <option value="" disabled selected>Select Mode of Presentation</option>
+                                    <option value="In-person presentation">In-person presentation</option>
+                                    <option value="Online (virtual presentation) subject to approval">Online (virtual presentation) subject to approval</option>
+                                    <option value="Attending as a delegate without presenting (in person)">Attending as a delegate without presenting (in person)</option>
+                                    <option value="Attending as a delegate (online)">Attending as a delegate (online)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" id="typeOfPresentationGroup">
+                                <label for="typeOfPresentation" class="form-label">Type of Presentation <span style="color: red;" id="typePresStar">*</span></label>
+                                <select id="typeOfPresentation" name="typeOfPresentation" class="form-control" required>
+                                    <option value="" disabled selected>Select Type of Presentation</option>
+                                    <option value="Paper presentation">Paper presentation</option>
+                                    <option value="Panel presentation">Panel presentation</option>
+                                    <option value="Workshop">Workshop</option>
+                                    <option value="Pecha Kucha">Pecha Kucha</option>
+                                    <option value="Student track: seed ideas">Student track: seed ideas</option>
+                                    <option value="Student track: best student paper">Student track: best student paper</option>
+                                    <option value="PhD scholar track: best paper">PhD scholar track: best paper</option>
+                                    <option value="PhD scholar track: best poster">PhD scholar track: best poster</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group" style="max-width: 50%;">
+                                <label for="foodPreference" class="form-label">Food Preference <span style="color: red;">*</span></label>
+                                <select id="foodPreference" name="foodPreference" class="form-control" required>
+                                    <option value="" disabled selected>Select Food Preference</option>
+                                    <option value="Veg">Veg</option>
+                                    <option value="Non veg">Non veg</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
 
                     <div class="checkbox-group" style="margin-bottom: 30px;">
                         <input type="checkbox" id="terms" name="terms" required>
@@ -1591,8 +1678,7 @@
             },
             student: {
                 developed: [
-                    // { label: "In-Person (Offline)", value: "100 USD" },
-                    { label: "In-Person (Offline)", value: "1 USD" },
+                    { label: "In-Person (Offline)", value: "100 USD" },
                     { label: "Online (Recorded)", value: "50 USD" }
                 ],
                 developing: [
@@ -1600,10 +1686,8 @@
                     { label: "Online (Recorded)", value: "40 USD" }
                 ],
                 national: [
-                    
-                    
-                    { label: "In-Person (Offline)", value: "1 INR" },
-                    { label: "Online (Recorded)", value: "1 INR" }
+                    { label: "In-Person (Offline)", value: "1,000 INR" },
+                    { label: "Online (Recorded)", value: "500 INR" }
                 ]
             }
         };
@@ -1695,21 +1779,109 @@
         ];
 
         
+        function handleDesignationChange() {
+            const desig = document.getElementById('designation').value;
+            const otherGroup = document.getElementById('otherDesignationGroup');
+            const otherInput = document.getElementById('otherDesignation');
+            if (otherGroup) {
+                if (desig === 'Other') {
+                    otherGroup.style.display = 'flex';
+                    if (otherInput) {
+                        otherInput.required = true;
+                        otherInput.focus();
+                    }
+                } else {
+                    otherGroup.style.display = 'none';
+                    if (otherInput) {
+                        otherInput.required = false;
+                        otherInput.value = '';
+                    }
+                }
+            }
+        }
+
         function handleCountryChange() {
             const countrySelect = document.getElementById('country');
             const countryVal = countrySelect.value;
             const cCatInput = document.getElementById('countryCategory');
+            const passportRow = document.getElementById('passportRow');
+            const passportInput = document.getElementById('passportNumber');
 
             if (countryVal === 'India') {
                 cCatInput.value = 'national';
-            } else if (DEVELOPED_COUNTRIES.includes(countryVal)) {
-                cCatInput.value = 'developed';
+                if (passportRow) passportRow.style.display = 'none';
+                if (passportInput) {
+                    passportInput.required = false;
+                    passportInput.value = '';
+                }
             } else {
-                cCatInput.value = 'developing';
+                if (DEVELOPED_COUNTRIES.includes(countryVal)) {
+                    cCatInput.value = 'developed';
+                } else {
+                    cCatInput.value = 'developing';
+                }
+                if (passportRow) passportRow.style.display = 'flex';
+                if (passportInput) {
+                    passportInput.required = true;
+                }
             }
 
-            
             updateRequirementsOptions();
+        }
+
+        function handleModeChange() {
+            const modeSelect = document.getElementById('modeOfPresentation');
+            const typeSelect = document.getElementById('typeOfPresentation');
+            const typeStar = document.getElementById('typePresStar');
+            const typeGroup = document.getElementById('typeOfPresentationGroup');
+            const foodSelect = document.getElementById('foodPreference');
+
+            const mode = modeSelect.value;
+            const isDelegateOnly = mode.includes('without presenting') || mode.includes('Attending as a delegate');
+
+            // Handle presentation type requirement and options
+            let naOption = typeSelect.querySelector('option[value="Not Applicable (Delegate only)"]');
+            if (isDelegateOnly) {
+                if (!naOption) {
+                    naOption = document.createElement('option');
+                    naOption.value = 'Not Applicable (Delegate only)';
+                    naOption.textContent = 'Not Applicable (Delegate only)';
+                    typeSelect.appendChild(naOption);
+                }
+                typeSelect.value = 'Not Applicable (Delegate only)';
+                typeSelect.required = false;
+                if (typeStar) typeStar.style.display = 'none';
+                if (typeGroup) typeGroup.style.opacity = '0.7';
+            } else {
+                if (typeSelect.value === 'Not Applicable (Delegate only)') {
+                    typeSelect.value = '';
+                }
+                typeSelect.required = true;
+                if (typeStar) typeStar.style.display = 'inline';
+                if (typeGroup) typeGroup.style.opacity = '1';
+                if (naOption) {
+                    naOption.remove();
+                }
+            }
+
+            // Handle food preference for online participants
+            let naFood = foodSelect.querySelector('option[value="Not Applicable (Online)"]');
+            if (mode.includes('(online)') || mode.includes('Online (virtual presentation)')) {
+                if (!naFood) {
+                    naFood = document.createElement('option');
+                    naFood.value = 'Not Applicable (Online)';
+                    naFood.textContent = 'Not Applicable (Online)';
+                    foodSelect.appendChild(naFood);
+                }
+                foodSelect.value = 'Not Applicable (Online)';
+            } else {
+                if (foodSelect.value === 'Not Applicable (Online)') {
+                    foodSelect.value = '';
+                }
+                if (naFood) {
+                    naFood.remove();
+                }
+            }
         }
 
         
@@ -1941,6 +2113,19 @@
             const status = registrationState.abstractSubmitted || 'no';
 
             const capitalize = (s) => s.replace(/\b\w/g, c => c.toUpperCase());
+            const desigSelect = document.getElementById('designation');
+            let designation = desigSelect ? desigSelect.value.trim() : '';
+            if (designation === 'Other') {
+                const otherInput = document.getElementById('otherDesignation');
+                const customDesig = otherInput ? otherInput.value.trim() : '';
+                if (!customDesig) {
+                    alert('Please specify your Designation.');
+                    if (otherInput) otherInput.focus();
+                    return;
+                }
+                designation = capitalize(customDesig);
+            }
+
             const firstName = capitalize(document.getElementById('firstName').value.trim());
             const middleName = capitalize(document.getElementById('middleName').value.trim());
             const lastName = capitalize(document.getElementById('lastName').value.trim());
@@ -1958,8 +2143,51 @@
             const cCat = cCatInput.value;
             const reqIdx = parseInt(reqSelect.value);
 
+            const commAddr = document.getElementById('communicationAddress') ? document.getElementById('communicationAddress').value.trim() : '';
+            const passportInput = document.getElementById('passportNumber');
+            const passportVal = passportInput ? passportInput.value.trim() : '';
+            const modeVal = document.getElementById('modeOfPresentation') ? document.getElementById('modeOfPresentation').value : '';
+            const typeVal = document.getElementById('typeOfPresentation') ? document.getElementById('typeOfPresentation').value : '';
+            const foodVal = document.getElementById('foodPreference') ? document.getElementById('foodPreference').value : '';
+
+            if (!designation) {
+                alert('Please select your Designation.');
+                if (desigSelect) desigSelect.focus();
+                return;
+            }
+
             if (!firstName || !lastName || !email || !organization || !phone || !dob || !pType || !countryVal || !cCat || isNaN(reqIdx)) {
                 alert('Please fill out all required fields before proceeding.');
+                return;
+            }
+
+            if (countryVal !== 'India' && !passportVal) {
+                alert('Please enter your Passport Number (Required for non-Indian participants).');
+                if (passportInput) passportInput.focus();
+                return;
+            }
+
+            if (!commAddr) {
+                alert('Please enter your Address for Communication.');
+                document.getElementById('communicationAddress').focus();
+                return;
+            }
+
+            if (!modeVal) {
+                alert('Please select your Mode of Presentation.');
+                document.getElementById('modeOfPresentation').focus();
+                return;
+            }
+
+            if (!typeVal) {
+                alert('Please select your Type of Presentation.');
+                document.getElementById('typeOfPresentation').focus();
+                return;
+            }
+
+            if (!foodVal) {
+                alert('Please select your Food Preference.');
+                document.getElementById('foodPreference').focus();
                 return;
             }
 
@@ -1979,6 +2207,7 @@
             const selectedPackageData = feeData[pType][cCat][reqIdx];
 
             
+            registrationState.designation = designation;
             registrationState.firstName = firstName;
             registrationState.middleName = middleName;
             registrationState.lastName = lastName;
@@ -1988,7 +2217,11 @@
             registrationState.dob = dob;
             registrationState.participantType = pTypeSelect.options[pTypeSelect.selectedIndex].text;
             registrationState.country = countryVal;
-            
+            registrationState.passportNumber = passportVal;
+            registrationState.communicationAddress = commAddr;
+            registrationState.modeOfPresentation = modeVal;
+            registrationState.typeOfPresentation = typeVal;
+            registrationState.foodPreference = foodVal;
             
             registrationState.countryCategory = cCat === 'developed' ? 'Developed Countries' : (cCat === 'national' ? 'National (India)' : 'Developing Countries');
             
@@ -2014,21 +2247,24 @@
             submitBtn.innerHTML = spinnerSvg + 'Saving details...';
 
             
-            
-
-            
             const payload = {
+                designation: registrationState.designation,
                 firstName: registrationState.firstName,
                 middleName: registrationState.middleName,
                 lastName: registrationState.lastName,
                 email: registrationState.email,
                 organization: registrationState.organization,
                 phone: registrationState.phone,
+                communicationAddress: registrationState.communicationAddress,
                 dob: registrationState.dob,
                 participantType: registrationState.participantType,
                 country: registrationState.country,
+                passportNumber: registrationState.passportNumber,
                 countryCategory: registrationState.countryCategory,
                 requiredPackage: `${registrationState.requirementLabel} (${rawCost})`,
+                modeOfPresentation: registrationState.modeOfPresentation,
+                typeOfPresentation: registrationState.typeOfPresentation,
+                foodPreference: registrationState.foodPreference,
                 abstractSubmitted: status,
                 abstractEmail: status === 'yes' ? document.getElementById('verifyEmail').value.trim() : '',
                 baseAmount: registrationState.basePrice,

@@ -22,22 +22,23 @@ try {
     }
 
     // 3. Extract variables from payload
+    $designation = !empty($data['designation']) ? trim($data['designation']) : null;
     $firstName = $data['firstName'] ?? '';
     $middleName = $data['middleName'] ?? null;
     $lastName = $data['lastName'] ?? '';
     $email = $data['email'] ?? '';
     $organization = $data['organization'] ?? '';
     $phone = $data['phone'] ?? '';
+    $communicationAddress = !empty($data['communicationAddress']) ? trim($data['communicationAddress']) : null;
     $dob = $data['dob'] ?? null;
     $participantType = $data['participantType'] ?? '';
-    $countryCategory = $data['countryCategory'] ?? ''; // not in DB, wait, actually countryCategory is in DB
-    $country = $_POST['country'] ?? ''; // Wait, the JS payload does not pass 'country'
-    // Let me check what the JS payload passes. It didn't pass 'country' but 'countryCategory'.
-    // Let's modify the JS payload to include 'country' in registration.php and registration.html later if needed,
-    // or just assume we'll fix the payload.
-    // For now, I will extract 'country' from $data if it exists, else 'Unknown'.
+    $countryCategory = $data['countryCategory'] ?? '';
     $country = $data['country'] ?? 'Unknown';
+    $passportNumber = !empty($data['passportNumber']) ? trim($data['passportNumber']) : null;
     $package = $data['requiredPackage'] ?? '';
+    $modeOfPresentation = !empty($data['modeOfPresentation']) ? trim($data['modeOfPresentation']) : null;
+    $typeOfPresentation = !empty($data['typeOfPresentation']) ? trim($data['typeOfPresentation']) : null;
+    $foodPreference = !empty($data['foodPreference']) ? trim($data['foodPreference']) : null;
     $abstractSubmitted = $data['abstractSubmitted'] ?? 'no';
     $abstractEmail = $data['abstractEmail'] ?? null;
     $baseAmount = $data['baseAmount'] ?? 0;
@@ -76,33 +77,39 @@ try {
         error_log("save_registration.php: Generated secure unique registration_id = $registrationId");
         
         $sql = "INSERT INTO user_registrations (
-            registration_id, first_name, middle_name, last_name, email,
-            organization, phone, date_of_birth, participant_category, country, country_category,
-            package, abstract_submitted, abstract_email, base_amount, payment_status
+            registration_id, designation, first_name, middle_name, last_name, email,
+            organization, phone, communication_address, date_of_birth, participant_category, country, passport_number, country_category,
+            package, mode_of_presentation, type_of_presentation, food_preference, abstract_submitted, abstract_email, base_amount, payment_status
         ) VALUES (
-            :reg_id, :fname, :mname, :lname, :email,
-            :org, :phone, :dob, :ptype, :country, :ccat,
-            :pkg, :absub, :abemail, :baseamt, :paystat
+            :reg_id, :desig, :fname, :mname, :lname, :email,
+            :org, :phone, :comm_addr, :dob, :ptype, :country, :passport, :ccat,
+            :pkg, :mode_pres, :type_pres, :food_pref, :absub, :abemail, :baseamt, :paystat
         )";
 
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
-            ':reg_id' => $registrationId,
-            ':fname' => $firstName,
-            ':mname' => $middleName,
-            ':lname' => $lastName,
-            ':email' => $email,
-            ':org' => $organization,
-            ':phone' => $phone,
-            ':dob' => $dob,
-            ':ptype' => $participantType,
-            ':country' => $country,
-            ':ccat' => $countryCategory,
-            ':pkg' => $package,
-            ':absub' => $abstractSubmitted,
-            ':abemail' => $abstractEmail,
-            ':baseamt' => $baseAmount,
-            ':paystat' => $paymentStatus
+            ':reg_id'    => $registrationId,
+            ':desig'     => $designation,
+            ':fname'     => $firstName,
+            ':mname'     => $middleName,
+            ':lname'     => $lastName,
+            ':email'     => $email,
+            ':org'       => $organization,
+            ':phone'     => $phone,
+            ':comm_addr' => $communicationAddress,
+            ':dob'       => $dob,
+            ':ptype'     => $participantType,
+            ':country'   => $country,
+            ':passport'  => $passportNumber,
+            ':ccat'      => $countryCategory,
+            ':pkg'       => $package,
+            ':mode_pres' => $modeOfPresentation,
+            ':type_pres' => $typeOfPresentation,
+            ':food_pref' => $foodPreference,
+            ':absub'     => $abstractSubmitted,
+            ':abemail'   => $abstractEmail,
+            ':baseamt'   => $baseAmount,
+            ':paystat'   => $paymentStatus
         ]);
         $dbId = $pdo->lastInsertId();
         error_log("save_registration.php: Registration inserted successfully. ID: " . $dbId);
@@ -125,19 +132,32 @@ try {
 
         // Recipients
         $mail->setFrom($env['SMTP_USER'] ?? 'icswhmh2027@rajagiri.edu', 'ICSWHMH Organizing Team');
-        $mail->addAddress($email, "$firstName $lastName");
+        $displayName = (!empty($designation) ? "$designation " : "") . "$firstName $lastName";
+        $mail->addAddress($email, $displayName);
         $mail->addReplyTo($env['SMTP_USER'] ?? 'icswhmh2027@rajagiri.edu', 'ICSWHMH Support');
 
         // Content
         $mail->isHTML(false);
         $mail->Subject = 'Your Registration ID for ICSWHMH';
         
-        $message = "Dear $firstName $lastName,\n\n";
+        $message = "Dear $displayName,\n\n";
         $message .= "Thank you for starting your registration for ICSWHMH.\n\n";
         $message .= "Here are your registration details:\n";
         $message .= "- Registration ID: $registrationId\n";
+        if (!empty($designation)) {
+            $message .= "- Designation: $designation\n";
+        }
         $message .= "- Participant Type: $participantType\n";
         $message .= "- Package Selected: $package\n";
+        if (!empty($modeOfPresentation)) {
+            $message .= "- Mode of Presentation: $modeOfPresentation\n";
+        }
+        if (!empty($typeOfPresentation)) {
+            $message .= "- Type of Presentation: $typeOfPresentation\n";
+        }
+        if (!empty($foodPreference)) {
+            $message .= "- Food Preference: $foodPreference\n";
+        }
         $message .= "- Base Amount: $baseAmount\n\n";
         $message .= "Please keep this Registration ID safe. You can use it to track your registration or complete your payment if it was interrupted.\n\n";
         $message .= "Best Regards,\nICSWHMH Organizing Team";

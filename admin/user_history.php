@@ -258,8 +258,8 @@ try {
                 <h2>Participant Information</h2>
                 <div class="summary-grid">
                     <div class="summary-item">
-                        <div class="summary-label">Name</div>
-                        <div class="summary-value"><?php echo htmlspecialchars(trim($user['first_name'] . ' ' . (!empty($user['middle_name']) ? $user['middle_name'] . ' ' : '') . $user['last_name'])); ?></div>
+                        <div class="summary-label">Name & Designation</div>
+                        <div class="summary-value"><?php echo htmlspecialchars(trim((!empty($user['designation']) ? $user['designation'] . ' ' : '') . $user['first_name'] . ' ' . (!empty($user['middle_name']) ? $user['middle_name'] . ' ' : '') . $user['last_name'])); ?></div>
                     </div>
                     <div class="summary-item">
                         <div class="summary-label">Registration ID</div>
@@ -296,6 +296,39 @@ try {
                         <div class="summary-label">Vortex Transaction ID</div>
                         <div class="summary-value"><?php echo htmlspecialchars($user['transaction_id'] ?: 'N/A'); ?></div>
                     </div>
+                    <?php if (!empty($user['country']) || !empty($user['passport_number'])): ?>
+                    <div class="summary-item">
+                        <div class="summary-label">Country & Passport</div>
+                        <div class="summary-value" style="font-size: 0.95rem;">
+                            <div><?php echo htmlspecialchars($user['country'] ?? 'N/A'); ?></div>
+                            <?php if (!empty($user['passport_number'])): ?>
+                                <div style="color: #64748b; font-size: 0.85rem; margin-top: 2px;">Passport: <?php echo htmlspecialchars($user['passport_number']); ?></div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    <?php if (!empty($user['communication_address'])): ?>
+                    <div class="summary-item" style="grid-column: span 2;">
+                        <div class="summary-label">Address for Communication</div>
+                        <div class="summary-value" style="font-size: 0.92rem; font-weight: normal;"><?php echo nl2br(htmlspecialchars($user['communication_address'])); ?></div>
+                    </div>
+                    <?php endif; ?>
+                    <?php if (!empty($user['mode_of_presentation']) || !empty($user['type_of_presentation']) || !empty($user['food_preference'])): ?>
+                    <div class="summary-item" style="grid-column: span 2;">
+                        <div class="summary-label">Participation Details</div>
+                        <div class="summary-value" style="font-size: 0.92rem;">
+                            <?php if (!empty($user['mode_of_presentation'])): ?>
+                                <div><strong>Mode:</strong> <?php echo htmlspecialchars($user['mode_of_presentation']); ?></div>
+                            <?php endif; ?>
+                            <?php if (!empty($user['type_of_presentation'])): ?>
+                                <div><strong>Type:</strong> <?php echo htmlspecialchars($user['type_of_presentation']); ?></div>
+                            <?php endif; ?>
+                            <?php if (!empty($user['food_preference'])): ?>
+                                <div><strong>Food:</strong> <?php echo htmlspecialchars($user['food_preference']); ?></div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <?php endif; ?>
                 </div>
 
                 <h2>Transaction Timeline & Events</h2>
