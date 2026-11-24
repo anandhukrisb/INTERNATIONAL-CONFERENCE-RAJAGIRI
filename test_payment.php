@@ -88,8 +88,23 @@ if (isset($_GET['action']) && $_GET['action'] === 'create_order') {
         }
         $fullMobile = $countryCode . $cleanPhone;
 
-        if ($selection === '1_USD') {
-            $amount = 1.00;
+        if ($selection === '2_USD') {
+            $amount = 2.00;
+            $currency = 'USD';
+        } elseif ($selection === '3_USD') {
+            $amount = 3.00;
+            $currency = 'USD';
+        } elseif ($selection === '4_USD') {
+            $amount = 4.00;
+            $currency = 'USD';
+        } elseif ($selection === '25_USD') {
+            $amount = 25.00;
+            $currency = 'USD';
+        } elseif ($selection === '50_USD') {
+            $amount = 50.00;
+            $currency = 'USD';
+        } elseif ($selection === '100_USD') {
+            $amount = 100.00;
             $currency = 'USD';
         } else {
             $amount = 1.00;
@@ -634,12 +649,14 @@ if ($isReturned && !empty($returnedTxnId)) {
 
             <form id="paymentForm" onsubmit="submitPayment(event)">
                 
-                <!-- Dropdown: 1 Rupee or 1 Dollar -->
+                <!-- Dropdown: Payment Tiers -->
                 <div class="form-group">
                     <label for="paymentTier">Select Amount <span class="required-star">*</span></label>
                     <select id="paymentTier" name="payment_tier" onchange="updateAmount()" required>
                         <option value="1_INR" selected>1 Rupee (₹1.00 INR)</option>
-                        <option value="1_USD">1 Dollar ($1.00 USD)</option>
+                        <option value="2_USD">2 Dollars ($2.00 USD)</option>
+                        <option value="3_USD">3 Dollars ($3.00 USD)</option>
+                        <option value="4_USD">4 Dollars ($4.00 USD)</option>
                     </select>
                 </div>
 
@@ -864,9 +881,18 @@ if ($isReturned && !empty($returnedTxnId)) {
         const displayAmount = document.getElementById('displayAmount');
         const payBtn = document.getElementById('payBtn');
 
-        if (tier === '1_USD') {
-            displayAmount.textContent = '$1.00';
-            payBtn.textContent = 'Pay $1.00';
+        if (tier.endsWith('_USD')) {
+            let amountStr = '2.00';
+            if (tier === '2_USD') amountStr = '2.00';
+            else if (tier === '3_USD') amountStr = '3.00';
+            else if (tier === '4_USD') amountStr = '4.00';
+            else if (tier === '25_USD') amountStr = '25.00';
+            else if (tier === '50_USD') amountStr = '50.00';
+            else if (tier === '100_USD') amountStr = '100.00';
+
+            displayAmount.textContent = '$' + amountStr;
+            payBtn.textContent = 'Pay $' + amountStr;
+
             // If currently India, suggest US as default for convenience
             if (currentSelectedCode === '+91') {
                 const us = countries.find(c => c.iso === 'US');
