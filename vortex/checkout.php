@@ -588,6 +588,36 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
 
     let isRecovering = false;
     let recoveryInterval = null;
+    let paymentFailedInAttempt = false;
+
+    function logCheckoutEvent(eventType, errorObj = null, clientInfo = {}) {
+        try {
+            const payload = JSON.stringify({
+                session_token: sessionToken,
+                event_type: eventType,
+                error: errorObj,
+                client_info: {
+                    online: navigator.onLine,
+                    viewport: `${window.innerWidth}x${window.innerHeight}`,
+                    ...clientInfo
+                }
+            });
+
+            if (navigator.sendBeacon) {
+                const blob = new Blob([payload], { type: 'application/json' });
+                if (navigator.sendBeacon('api/log_checkout_event.php', blob)) {
+                    return;
+                }
+            }
+
+            fetch('api/log_checkout_event.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: payload,
+                keepalive: true
+            }).catch(() => {});
+        } catch (e) { /* never break checkout UX */ }
+    }
 
     // Countdown Timer
     function startTimer() {
@@ -762,6 +792,20 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
         if (isRecovering) return;
 
         const btn = document.getElementById('pay-btn');
+
+        if (typeof Razorpay === 'undefined') {
+            logCheckoutEvent('checkout.sdk_error', {
+                code: 'RAZORPAY_SDK_BLOCKED',
+                source: 'browser',
+                step: 'sdk_load',
+                reason: 'checkout_js_not_loaded',
+                description: 'Razorpay checkout.js failed to load (possible content blocker or network restriction).'
+            });
+            showAlert('Payment popup could not load. Please disable pop-up/content blockers (or try Chrome) and tap Pay again.', 'error');
+            return;
+        }
+
+        paymentFailedInAttempt = false;
         btn.disabled = true;
 
         const options = {
@@ -836,6 +880,13 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
                     // Only re-enable if payment authorization was not submitted
                     if (isRecovering) return;
 
+                    logCheckoutEvent('checkout.dismissed', null, {
+                        after_payment_failed: paymentFailedInAttempt,
+                        message: paymentFailedInAttempt
+                            ? 'Customer dismissed modal after payment failure'
+                            : 'Customer closed modal before completing payment'
+                    });
+
                     // Poll current status - if Razorpay already processed a failure, reflect it
                     try {
                         const res = await fetch('api/get_checkout_payment_status.php', {
@@ -870,7 +921,9 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
         // Capture payment failure directly from Razorpay SDK
         rzp.on('payment.failed', function (response) {
             console.error('Razorpay payment failed:', response.error);
+            paymentFailedInAttempt = true;
             const err = response.error || {};
+            logCheckoutEvent('payment.failed.js', err);
             let msg = err.description || 'Payment was declined by your bank or authentication failed.';
             
             if (err.reason === 'payment_timed_out') {
@@ -884,7 +937,21 @@ if ($isValid && $sessionData && ($sessionData['transaction_status'] ?? '') === '
             btn.innerHTML = '<span>Pay <?= $sessionData['currency'] === 'INR' ? '₹' : '$' ?><?= number_format((float)$sessionData['amount'], 2) ?></span>';
         });
 
-        rzp.open();
+        try {
+            logCheckoutEvent('checkout.opened');
+            rzp.open();
+        } catch (openErr) {
+            logCheckoutEvent('checkout.sdk_error', {
+                code: 'RAZORPAY_OPEN_ERROR',
+                source: 'browser',
+                step: 'modal_open',
+                reason: 'rzp_open_exception',
+                description: openErr && openErr.message ? openErr.message : 'Failed to open Razorpay modal'
+            });
+            showAlert('Unable to open the payment window. Please allow pop-ups and try again.', 'error');
+            btn.disabled = false;
+            btn.innerHTML = '<span>Pay <?= $sessionData['currency'] === 'INR' ? '₹' : '$' ?><?= number_format((float)$sessionData['amount'], 2) ?></span>';
+        }
     }
 </script>
 <?php endif; ?>

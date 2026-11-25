@@ -1293,7 +1293,7 @@
                                 required>
                         </div>
                         <div class="form-group">
-                            <label for="participantType" class="form-label">Participant Category (Who are you?) <span style="color: red;">*</span></label>
+                            <label for="participantType" class="form-label">Participant Category<span style="color: red;">*</span></label>
                             <select id="participantType" name="participantType" class="form-control"
                                 onchange="updateRequirementsOptions()" required>
                                 <option value="" disabled selected>Select Category</option>
